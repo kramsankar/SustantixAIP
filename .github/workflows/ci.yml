@@ -1,0 +1,118 @@
+name: ci
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: TypeScript packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sustantix/license build
+      - name: Typecheck
+        run: |
+          pnpm --filter @sustantix/license typecheck
+          pnpm --filter @sustantix/host-bridge typecheck
+          pnpm --filter @sustantix/schema typecheck
+          pnpm --filter @sustantix/pp-provision typecheck
+          pnpm --filter @sustantix/license-cli typecheck
+          pnpm --filter @sustantix/aip-web typecheck
+      - name: Unit tests
+        run: |
+          pnpm --filter @sustantix/license test
+          pnpm --filter @sustantix/host-bridge test
+          pnpm --filter @sustantix/schema test
+          pnpm --filter @sustantix/pp-provision test
+          pnpm --filter @sustantix/aip-powerapp test
+          pnpm --filter @sustantix/aip-web test
+      - name: Generated schema is current
+        run: |
+          pnpm --filter @sustantix/schema generate
+          git diff --exit-code -- schema supabase/migrations powerplatform/schema
+
+  plugin:
+    name: Dataverse license plug-in
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - name: Conformance tests (shared fixtures with the TypeScript verifier)
+        run: dotnet test powerplatform/plugins/Sustantix.Aip.Licensing.Tests
+      - name: Build signed assembly
+        env:
+          SX_PLUGIN_SNK_B64: ${{ secrets.SX_PLUGIN_SNK_B64 }}
+        run: |
+          if [ -n "$SX_PLUGIN_SNK_B64" ]; then
+            echo "$SX_PLUGIN_SNK_B64" | base64 -d > "$RUNNER_TEMP/aip-plugin.snk"
+            dotnet build powerplatform/plugins/Sustantix.Aip.Licensing -c Release -p:SxSnkPath="$RUNNER_TEMP/aip-plugin.snk"
+            rm -f "$RUNNER_TEMP/aip-plugin.snk"
+          else
+            echo "::warning::SX_PLUGIN_SNK_B64 not configured — building unsigned (not deployable to Dataverse)"
+            dotnet build powerplatform/plugins/Sustantix.Aip.Licensing -c Release
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: license-plugin
+          path: powerplatform/plugins/Sustantix.Aip.Licensing/bin/Release/net462/Sustantix.Aip.Licensing.dll
+          retention-days: 14
+
+  database:
+    name: Supabase migrations + RLS isolation
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: aip_test }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: aip_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Apply migrations and prove tenant isolation
+        run: |
+          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql; do
+            psql -v ON_ERROR_STOP=1 -q -f "$f"
+          done
+      - name: Seed loads idempotently
+        run: |
+          pnpm --silent --filter @sustantix/schema seed:sql --tenant 00000000-0000-0000-0000-0000000000c1 --name "CI seed" > "$RUNNER_TEMP/seed.sql"
+          psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
+          psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
+          test "$(psql -At -c "select count(*) from aip.work_orders where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "377"
+
+  parity:
+    name: v732 screen parity + license gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sustantix/license build
+      - run: pnpm --filter @sustantix/aip-runtime exec playwright install --with-deps chromium
+      - run: pnpm --filter @sustantix/aip-runtime test

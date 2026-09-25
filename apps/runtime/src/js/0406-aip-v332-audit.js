@@ -1,0 +1,2 @@
+
+window.AIP_V332_AUDIT={release:'v332',baseline:'v331',scope:'AI Model Registry presentation simplification',changes:['Replaced 2x2 capability-status matrix with one inline four-category count line','Removed static total capabilities message','Standardized value-chain stage headers to existing blue header treatment with white stage number/title/arrow','Retained Governance & Model Operations navigation after validation because it opens the dedicated model-risk, drift, governance-control and auditability view'],excelChanged:false};

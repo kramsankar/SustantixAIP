@@ -1,0 +1,71 @@
+name: release-powerplatform
+# Builds the SustantixAIP solution in the Sustantix build environment and exports
+# managed + unmanaged packages for customer rollout. Manual, protected environment.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Solution version (major.minor.build.revision)"
+        required: true
+        default: "7.32.0.0"
+      data_model:
+        description: "Include the 107-table governed data model"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: windows-latest
+    environment: powerplatform-build
+    env:
+      PP_ENV_URL: ${{ secrets.PP_ENV_URL }}
+      PP_TENANT_ID: ${{ secrets.PP_TENANT_ID }}
+      PP_CLIENT_ID: ${{ secrets.PP_CLIENT_ID }}
+      PP_CLIENT_SECRET: ${{ secrets.PP_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - uses: microsoft/powerplatform-actions/actions-install@v1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sustantix/license build
+      - name: Build signed license plug-in
+        shell: bash
+        env:
+          SX_PLUGIN_SNK_B64: ${{ secrets.SX_PLUGIN_SNK_B64 }}
+        run: |
+          test -n "$SX_PLUGIN_SNK_B64" || { echo "SX_PLUGIN_SNK_B64 is required for release"; exit 1; }
+          echo "$SX_PLUGIN_SNK_B64" | base64 -d > "$RUNNER_TEMP/aip-plugin.snk"
+          dotnet build powerplatform/plugins/Sustantix.Aip.Licensing -c Release -p:SxSnkPath="$RUNNER_TEMP/aip-plugin.snk"
+          rm -f "$RUNNER_TEMP/aip-plugin.snk"
+      - name: Provision solution components
+        shell: bash
+        run: |
+          pnpm --filter @sustantix/pp-provision sx-pp provision --env "$PP_ENV_URL" --version "${{ inputs.version }}" \
+            ${{ inputs.data_model && '--data-model' || '' }} --report "$GITHUB_WORKSPACE/out/provision-report.json"
+      - name: Push code app into the solution
+        shell: bash
+        working-directory: apps/powerapp
+        run: |
+          pac auth create --environment "$PP_ENV_URL" --tenant "$PP_TENANT_ID" --applicationId "$PP_CLIENT_ID" --clientSecret "$PP_CLIENT_SECRET"
+          test -f power.config.json || { echo "commit apps/powerapp/power.config.json produced by 'pac code init' for the build environment"; exit 1; }
+          pac code add-data-source -a dataverse -t sus_runtimestate
+          node scripts/build.mjs --release
+          pac code push --solutionName SustantixAIP
+      - name: Export managed and unmanaged packages
+        shell: bash
+        run: |
+          mkdir -p out
+          pac solution export --name SustantixAIP --managed --path out/SustantixAIP_${{ inputs.version }}_managed.zip --overwrite
+          pac solution export --name SustantixAIP --path out/SustantixAIP_${{ inputs.version }}_unmanaged.zip --overwrite
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SustantixAIP-${{ inputs.version }}
+          path: out/
+          retention-days: 90

@@ -1,0 +1,12 @@
+{
+  "appDisplayName": "Sustantix Asset Intelligence Platform",
+  "description": "Portfolio, maintenance, planning and sustainability intelligence for renewable asset owners.",
+  "environmentId": "<set by `pac code init`>",
+  "buildPath": "./dist",
+  "buildEntryPoint": "index.html",
+  "logoPath": "Default",
+  "localAppUrl": "http://localhost:5173/",
+  "region": "prod",
+  "connectionReferences": {},
+  "databaseReferences": {}
+}

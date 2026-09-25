@@ -1,0 +1,1 @@
+window.AIP_V732_AUDIT={release:'v732',baseline:'v731',scope:'Data Quality & Observability KPI vertical compacting only',cardHeight:'78px',valueFont:'10.5px/13px Arial',noteBarClearancePreserved:true,mainHeadingChanged:false,businessDataChanged:false};window.AIP_CURRENT_BUILD='v732';

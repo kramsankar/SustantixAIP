@@ -1,0 +1,15 @@
+{
+  "name": "@sustantix/aip-powerapp",
+  "version": "7.32.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Sustantix AIP as a Power Apps code app (Dataverse + Entra ID).",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/local-play.mjs",
+    "push": "node scripts/build.mjs --release && pac code push --solutionName SustantixAIP",
+    "test": "node --test scripts/datasources.test.mjs"
+  },
+  "devDependencies": { "@sustantix/aip-runtime": "workspace:*", "@sustantix/host-bridge": "workspace:*" }
+}

@@ -1,0 +1,2 @@
+
+window.AIP_V214_AUDIT={release:'v2.14',baseline:'v2.13',area:'Work Order Intelligence',uiOnly:true,excelBusinessDataChanged:false,changes:['Replaced the legacy first-paint KPI builder with the exact authoritative wo213 KPI markup','Matched first-paint Work Order title, eyebrow and tab labels to the authoritative renderer','Removed the first-load KPI border/style/color swap by using identical classes and accent colors before the stable module initializes']};

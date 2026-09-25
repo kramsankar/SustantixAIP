@@ -1,0 +1,1 @@
+window.__AIP_V764_COMPACT_STRATEGY_CHAIN__=true;

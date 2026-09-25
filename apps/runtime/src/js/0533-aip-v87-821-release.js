@@ -1,0 +1,3 @@
+
+window.AIP_CURRENT_BUILD='v87_821';
+window.AIP_V822_AUDIT={release:'v87_823',baseline:'v87_821',area:'Condition-Based Maintenance',uiOnly:true,excelBusinessDataChanged:false,syntheticBusinessEvidenceChanged:false,changes:['Source and Priority All-state filters corrected and persisted visually','Condition Attention Queue keeps P1-P4 visible while register is filtered','Priority click toggles off on second click and All priorities explicitly restores','Search includes a clear × control','Site selection uses an independent site filter instead of overwriting search','Clear all filters restores the full CBM population']};

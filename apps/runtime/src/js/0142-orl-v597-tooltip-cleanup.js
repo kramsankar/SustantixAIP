@@ -1,0 +1,1 @@
+document.addEventListener('click',function(ev){const t=document.getElementById('orlRichTip');if(window.__orlTipPinned&&t&&!t.contains(ev.target)&&!ev.target.closest?.('.orl-attention-point')){}},true);document.addEventListener('visibilitychange',function(){if(document.hidden)window.orlClosePinnedTip?.()});

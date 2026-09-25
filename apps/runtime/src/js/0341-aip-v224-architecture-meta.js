@@ -1,0 +1,2 @@
+
+window.AIP_V224_META={version:'v224',planningTabs:['Overview','Plan & Resources','Intervention Schedule','Optimize & Govern'],resourceCostBasisLocation:'Plan & Resources',executionHandoff:'Track Execution → Work Order Intelligence / ERP-EAM',resourceCostRule:'Existing AIP resource/site/OEM/part/tool masters are joined at render time to governed rate and cost attributes; no duplicate master data.',costTransparency:'Intervention execution-cost build-up is visible and excludes Value Exposure.'};

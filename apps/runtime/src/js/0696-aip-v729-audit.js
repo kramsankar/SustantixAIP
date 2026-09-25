@@ -1,0 +1,1 @@
+window.AIP_V729_AUDIT={release:'v729',baseline:'user-supplied v728',scope:'Targeted compactness only; no Home screen',views:['Portfolio Action Prioritization','Work Order Constraint Prioritization','Data Management','Data Quality & Observability'],headingFontsChanged:false,boxBorderColorsChanged:false,businessDataChanged:false};window.AIP_CURRENT_BUILD='v729';
