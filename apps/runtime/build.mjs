@@ -2,14 +2,14 @@
 //   node build.mjs --target standalone|vercel|powerapps --out <dir>
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const arg = (k, d) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : d; };
 const target = arg("target", "standalone");
-const out = join(here, arg("out", `dist/${target}`));
+const out = resolve(here, arg("out", `dist/${target}`));
 if (!["standalone", "vercel", "powerapps"].includes(target)) throw new Error("unknown target " + target);
 
 const src = join(here, "src");

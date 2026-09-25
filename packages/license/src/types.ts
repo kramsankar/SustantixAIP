@@ -79,7 +79,7 @@ export interface LicenseStatus {
   reason: string;
   license?: LicensePayload;
   kid?: string;
-  /** Whole days until expiry (negative once expired). */
+  /** Days until expiry, rounded up (≤ 0 once expired). */
   daysRemaining?: number;
   expiresAt?: string;
   fingerprint?: string;

@@ -8,8 +8,14 @@
     "build": "node build.mjs --target standalone --out dist/standalone",
     "build:all": "node build.mjs --target standalone --out dist/standalone && node build.mjs --target vercel --out dist/vercel && node build.mjs --target powerapps --out dist/powerapps",
     "serve": "node serve.mjs dist/standalone 4173",
-    "test": "node --test test/"
+    "test": "node test/parity.mjs"
   },
-  "dependencies": { "xlsx": "0.18.5" },
-  "devDependencies": { "@sustantix/host-bridge": "workspace:*", "playwright": "^1.49.0" }
+  "dependencies": {
+    "xlsx": "0.18.5"
+  },
+  "devDependencies": {
+    "@sustantix/host-bridge": "workspace:*",
+    "playwright": "^1.49.0",
+    "@sustantix/license": "workspace:*"
+  }
 }

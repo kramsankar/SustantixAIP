@@ -194,7 +194,7 @@ export async function verifyLicense(token: string | null | undefined, opts: Veri
     firstSeen: opts.clock?.lid === p.lid ? opts.clock.firstSeen : now,
     lastSeen: Math.max(now, opts.clock?.lid === p.lid ? opts.clock.lastSeen : 0),
   };
-  const daysRemaining = Math.floor((p.exp - now) / DAY);
+  const daysRemaining = Math.ceil((p.exp - now) / DAY);
   if (now < p.nbf) return { status: status("not_yet_valid", "license is not yet active", { ...base, daysRemaining }), nextClock };
   if (now >= p.exp) {
     const grace = p.edition === "trial" ? 0 : p.graceDays ?? 0;

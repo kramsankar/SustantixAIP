@@ -1,6 +1,6 @@
 import { getContext, type IContext } from "@microsoft/power-apps/app";
 import { getClient, type DataClient } from "@microsoft/power-apps/data";
-import type { LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
+import type { LicensePayload, LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
 import type { HostAdapter, Identity, RuntimeState } from "../types.js";
 
 /** Dataverse artefacts provisioned by powerplatform/provision (see schema/aip-platform.json). */
@@ -24,6 +24,38 @@ async function gunzip(bytes: Uint8Array): Promise<string> {
 function unwrap<T>(r: { success: boolean; data?: T; error?: unknown }, what: string): T {
   if (!r.success) throw new Error(`${what} failed: ${r.error instanceof Error ? r.error.message : JSON.stringify(r.error)}`);
   return r.data as T;
+}
+
+/** Shape emitted by the Dataverse plug-in (Core/Contracts.cs · LicenseStatus). */
+export interface ServerVerdict {
+  state: LicenseStatus["state"];
+  access: LicenseStatus["access"];
+  reason: string;
+  lid?: string;
+  edition?: string;
+  customer?: string;
+  modules?: string[];
+  daysRemaining?: number;
+  expiresAt?: string;
+  fingerprint?: string;
+  kid?: string;
+}
+
+export function normalizeServerVerdict(v: ServerVerdict): LicenseStatus {
+  const status: LicenseStatus = { state: v.state, access: v.access, reason: v.reason };
+  if (v.daysRemaining !== undefined) status.daysRemaining = v.daysRemaining;
+  if (v.expiresAt) status.expiresAt = v.expiresAt;
+  if (v.fingerprint) status.fingerprint = v.fingerprint;
+  if (v.kid) status.kid = v.kid;
+  if (v.lid) {
+    status.license = {
+      lid: v.lid,
+      edition: (v.edition ?? "standard") as LicensePayload["edition"],
+      customer: { id: "", name: v.customer ?? "" },
+      modules: v.modules ?? [],
+    } as LicensePayload;
+  }
+  return status;
 }
 
 /**
@@ -65,7 +97,7 @@ export function powerAppsAdapter(dataSourcesInfo: Parameters<typeof getClient>[0
       });
       const out = unwrap(r, "license verdict");
       if (!out?.StatusJson) return null;
-      return JSON.parse(out.StatusJson) as LicenseStatus;
+      return normalizeServerVerdict(JSON.parse(out.StatusJson) as ServerVerdict);
     },
     async trustedNow() {
       return Math.floor(Date.now() / 1000);

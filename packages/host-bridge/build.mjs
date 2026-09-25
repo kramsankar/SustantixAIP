@@ -10,8 +10,12 @@ if (process.env.AIP_EXTRA_TRUSTED_KEYS && existsSync(process.env.AIP_EXTRA_TRUST
   if (process.env.AIP_RELEASE === "1") throw new Error("AIP_EXTRA_TRUSTED_KEYS is forbidden in release builds");
   keys.push(...JSON.parse(readFileSync(process.env.AIP_EXTRA_TRUSTED_KEYS, "utf8")));
 }
+// Power Apps: the pac-generated data-source map replaces the checked-in placeholder.
+const paDataSources = process.env.AIP_PA_DATASOURCES;
+const alias = paDataSources && existsSync(paDataSources) ? { "./powerapps-datasources.json": paDataSources } : undefined;
 for (const target of ["standalone", "vercel", "powerapps"]) {
   await build({
+    plugins: target === "powerapps" && alias ? [{ name: "aip-datasources", setup(b) { b.onResolve({ filter: /powerapps-datasources\.json$/ }, () => ({ path: alias["./powerapps-datasources.json"] })); } }] : [],
     entryPoints: [`src/entry-${target}.ts`],
     bundle: true,
     format: "iife",

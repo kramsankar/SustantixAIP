@@ -241,7 +241,7 @@ namespace Sustantix.Aip.Licensing.Core
                         FirstSeen = same ? clock.FirstSeen : now,
                         LastSeen = Math.Max(now, same ? clock.LastSeen : 0),
                     };
-                    var days = (long)Math.Floor((p.Exp.Value - now) / (double)Day);
+                    var days = (long)Math.Ceiling((p.Exp.Value - now) / (double)Day);
                     if (now < p.Nbf) result = Status("not_yet_valid", "license is not yet active", p);
                     else if (now >= p.Exp)
                     {
