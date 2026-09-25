@@ -1,0 +1,2 @@
+
+window.AIP_V141_AUDIT={release:'v1.41',baseline:'v1.40',area:'Planning & Optimization contextual return',uiOnly:true,excelBusinessDataChanged:false,changes:['Back and Alt+Left from a Planning-origin exact Work Order now honor AIP_PLAN_EXTERNAL_RETURN.tab instead of forcing Planning Overview','Plan & Resources exact-WO return restores the resources tab, originating intervention selection and saved scroll position','Clear highlight does not destroy the Planning return context']};

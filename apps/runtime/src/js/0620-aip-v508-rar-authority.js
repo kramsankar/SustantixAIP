@@ -1,0 +1,30 @@
+
+(function(){
+'use strict';
+const ROWS=[
+{id:'SP-01',name:'Suryanagar Solar Park',lost:5896.80,tar:4.05,rateId:'RATE-TARIFF-SP-01',net:23882040,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-02',name:'Kalyanpura SPV',lost:3950.10,tar:4.10,rateId:'RATE-TARIFF-SP-02',net:16195410,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-03',name:'Bellary Ridge Solar',lost:2993.76,tar:4.15,rateId:'RATE-TARIFF-SP-03',net:12424104,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-04',name:'Thoothukudi Coastal PV',lost:6237.00,tar:4.20,rateId:'RATE-TARIFF-SP-04',net:26195400,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-05',name:'Ramagundam Solar Farm',lost:3685.50,tar:4.25,rateId:'RATE-TARIFF-SP-05',net:15663375,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-06',name:'Solapur Plains SPV',lost:2494.80,tar:4.30,rateId:'RATE-TARIFF-SP-06',net:10727640,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-07',name:'Anantapur Sun Fields',lost:3470.04,tar:4.05,rateId:'RATE-TARIFF-SP-07',net:14053662,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-08',name:'Rewa Ridge Solar',lost:3855.60,tar:4.10,rateId:'RATE-TARIFF-SP-08',net:15807960,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-09',name:'Bathinda Solar Belt',lost:4422.60,tar:4.15,rateId:'RATE-TARIFF-SP-09',net:18353790,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-10',name:'Hisar Open Plains',lost:2286.90,tar:4.20,rateId:'RATE-TARIFF-SP-10',net:9604980,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-11',name:'Dhenkanal Solar Estate',lost:2857.68,tar:4.25,rateId:'RATE-TARIFF-SP-11',net:12145140,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'},
+{id:'SP-12',name:'Jhansi Uplands SPV',lost:2835.00,tar:4.30,rateId:'RATE-TARIFF-SP-12',net:12190500,adj:0,audit:'Reconciled — governed tariff applied; no unsupported penalty/recovery assumptions'}
+];
+const lost=ROWS.reduce((s,r)=>s+r.lost,0),adj=ROWS.reduce((s,r)=>s+r.adj,0),total=ROWS.reduce((s,r)=>s+r.net,0);
+const fmt=(v,d=2)=>Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=v=>'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:0});
+const moneyExecutive=v=>Math.abs(Number(v))>=1e7?'₹'+(Number(v)/1e7).toLocaleString('en-IN',{minimumFractionDigits:1,maximumFractionDigits:1})+' Cr':money(v);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bars='<div class="v508-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';
+function markup(){return `<h3>Revenue at Risk — Governed Reconciliation</h3><div class="v508-rar-kpis"><div class="v508-rar-kpi"><span class="v508-label">Lost generation</span><b class="v508-value" data-kpi="lost">${fmt(lost,2)} <small>MWh</small></b>${bars}</div><div class="v508-rar-kpi"><span class="v508-label">Penalty / recovery adjustments</span><b class="v508-value" data-kpi="adj">${money(adj)}</b>${bars}</div><div class="v508-rar-kpi"><span class="v508-label">Revenue at Risk</span><b class="v508-value" data-kpi="rar">${moneyExecutive(total)}</b>${bars}</div></div><ul class="v508-rar-note"><li>Revenue at Risk = lost generation × the site's effective PPA tariff × 1,000.</li><li>The tariff is the governed PPA / contract rate applicable to that site and effective period.</li><li>Availability penalties, curtailment compensation and recoveries are included only when authoritative commercial records exist; no fallback percentage assumptions are used.</li></ul><div class="v508-rar-table"><table><thead><tr><th>Site</th><th class="num">Lost MWh</th><th class="num">Tariff ₹/kWh</th><th>Tariff record</th><th class="num">Revenue at Risk</th><th>Audit</th></tr></thead><tbody>${ROWS.map(r=>`<tr data-site="${r.id}"><td><b>${r.id}</b><small style="display:block;color:#64748b">${esc(r.name)}</small></td><td class="num">${fmt(r.lost,2)}</td><td class="num">${fmt(r.tar,2)}</td><td>${r.rateId}</td><td class="num">${money(r.net)}</td><td>${esc(r.audit)}</td></tr>`).join('')}</tbody></table></div>`}
+function render(){const host=document.getElementById('view-commercialppa');if(!host)return false;let panel=host.querySelector(':scope > .v508-rar-panel');if(panel)return true;panel=document.createElement('div');panel.className='v508-rar-panel';panel.innerHTML=markup();const anchor=host.querySelector('.cppa-topcards')||host.querySelector('.grid.g4')||host.querySelector('.grid');if(anchor)anchor.insertAdjacentElement('afterend',panel);else host.prepend(panel);panel.dataset.rows=String(ROWS.length);panel.dataset.lost=String(lost);panel.dataset.total=String(total);return true;}
+let queued=false;function ensure(){if(queued)return;queued=true;setTimeout(()=>{queued=false;const host=document.getElementById('view-commercialppa');if(host&&!host.querySelector(':scope > .v508-rar-panel'))render()},20)}
+function start(){const host=document.getElementById('view-commercialppa');if(host){new MutationObserver(()=>{if(host.classList.contains('active')&&!host.querySelector(':scope > .v508-rar-panel'))ensure()}).observe(host,{childList:true});render()}['aip:data-source-changed','apm:datasource-refreshed','aip:view-changed'].forEach(ev=>document.addEventListener(ev,ensure));document.addEventListener('click',ensure,true)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+window.aipRenderRevenueRiskV508=render;window.AIP_V508_RAR_TEST={rows:ROWS.length,lostGenerationMWh:lost,penaltyRecoveryAdjustmentsINR:adj,revenueAtRiskINR:total,firstSite:ROWS[0].id,lastSite:ROWS[ROWS.length-1].id};
+})();

@@ -1,0 +1,1 @@
+window.__AIP_V774_CORRECTIVE_COMPACT_LAYOUT__=true;

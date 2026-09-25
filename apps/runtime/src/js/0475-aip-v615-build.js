@@ -1,0 +1,2 @@
+
+window.AIP_V615_AUDIT={release:'v615',baseline:'v614',scope:'Maintenance Spares Forecast typography and card-density correction only',changes:['Model Evidence heading matched exactly to Model Status heading at 12px','Forecast composition values matched exactly to Forecast KPI value size at 11px','Four Forecast KPI cards reduced to 78px with protected label/value/unit/bar bands','Five maintenance-origin cards reduced to 66px without overlap'],dataChanged:false,forecastAlgorithmsChanged:false};window.AIP_CURRENT_BUILD='v617';

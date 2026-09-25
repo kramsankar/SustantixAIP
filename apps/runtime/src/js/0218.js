@@ -1,0 +1,1 @@
+window.AIP_V826_AUDIT={release:'v87_826',baseline:'v87_825',area:'Condition-Based Maintenance',uiOnly:true,excelBusinessDataChanged:false,syntheticBusinessEvidenceChanged:false,changes:['Wrap Evidence quality in CBM register','Clarify ambiguous evidence notation as corroborated count out of total evidence count']};

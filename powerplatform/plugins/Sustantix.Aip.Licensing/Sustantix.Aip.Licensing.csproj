@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>Sustantix.Aip.Licensing</AssemblyName>
+    <RootNamespace>Sustantix.Aip.Licensing</RootNamespace>
+    <Version>1.0.0</Version>
+    <Company>Sustantix</Company>
+    <Product>Sustantix Asset Intelligence Platform</Product>
+    <Copyright>Confidential — Sustantix. All rights reserved.</Copyright>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <!-- Dataverse requires strong-named plug-in assemblies. The .snk is held by
+         Sustantix (CI secret SX_PLUGIN_SNK_B64); identity must stay stable across releases. -->
+    <SignAssembly Condition="'$(SxSnkPath)' != ''">true</SignAssembly>
+    <AssemblyOriginatorKeyFile Condition="'$(SxSnkPath)' != ''">$(SxSnkPath)</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Public signing keys only; private keys never exist in this repository. -->
+    <EmbeddedResource Include="..\..\..\config\license\trusted-keys.json" LogicalName="Sustantix.Aip.Licensing.trusted-keys.json" />
+  </ItemGroup>
+</Project>

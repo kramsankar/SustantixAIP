@@ -1,0 +1,1 @@
+window.AIP_V219_AUDIT={release:'v2.19',baseline:'v2.18',fixes:['Restored Intervention Schedule to prior scale-only controls','Removed Plan View dropdown and alternate-plan Gantt override','Fixed Optimize & Govern first-render Value Exposure field mismatch','Retained Baseline and Schedule Alternative terminology without changing Gantt scheduling logic']};

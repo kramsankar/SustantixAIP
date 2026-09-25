@@ -1,0 +1,2 @@
+
+window.AIP_V380_AUDIT={release:'v380',baseline:'v379',scope:'Sustainability Performance > Energy, Carbon & Water KPI typography only',changes:['Preserved both Cleaning Water KPIs: total m³ and normalized L/MWh','Reduced seven-card KPI title/value/unit/meta typography further','Allowed long KPI title to wrap cleanly without clipping','Narrowed five-bar indicators further'],dataImpact:'None — KPI values, formulas, Excel and Synthetic data unchanged',excelChanged:false};
