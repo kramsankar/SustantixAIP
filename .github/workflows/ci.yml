@@ -98,7 +98,7 @@ jobs:
           done
       - name: Seed loads idempotently
         run: |
-          pnpm --filter @sustantix/schema seed:sql --tenant 00000000-0000-0000-0000-0000000000c1 --name "CI seed" > "$RUNNER_TEMP/seed.sql"
+          pnpm --silent --filter @sustantix/schema seed:sql --tenant 00000000-0000-0000-0000-0000000000c1 --name "CI seed" > "$RUNNER_TEMP/seed.sql"
           psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
           psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
           test "$(psql -At -c "select count(*) from aip.work_orders where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "377"
