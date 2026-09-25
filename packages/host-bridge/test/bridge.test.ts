@@ -44,3 +44,24 @@ describe("Dataverse verdict normalisation", () => {
     expect(normalizeServerVerdict({ state: "no_license", access: "none", reason: "no license key installed" })).toEqual({ state: "no_license", access: "none", reason: "no license key installed" });
   });
 });
+
+describe("Vercel adapter", () => {
+  it("sends state saves gzip-compressed", async () => {
+    const { vercelAdapter } = await import("../src/adapters/vercel.js");
+    const seen: Array<{ headers: Record<string, string>; body: Uint8Array }> = [];
+    const orig = globalThis.fetch;
+    globalThis.fetch = (async (_u: string, init: RequestInit) => {
+      seen.push({ headers: init.headers as Record<string, string>, body: init.body as Uint8Array });
+      return new Response(null, { status: 204 });
+    }) as typeof fetch;
+    try {
+      const state = { data: { Sites: [{ Plant_ID: "SP-01" }] }, lastImport: null, mode: "Uploaded data" };
+      await vercelAdapter().persistence!.save(state);
+      expect(seen[0]!.headers["content-encoding"]).toBe("gzip");
+      const text = await new Response(new Blob([seen[0]!.body as BlobPart]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+      expect(JSON.parse(text)).toEqual(state);
+    } finally {
+      globalThis.fetch = orig;
+    }
+  });
+});

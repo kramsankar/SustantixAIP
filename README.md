@@ -63,14 +63,14 @@ Runbooks:
 |---|---|---|
 | `packages/license` | SXL1 signature, binding, trial policy, grace, revocation, clock rollback, conformance fixtures | 36 / 36 |
 | `powerplatform/plugins` (.NET) | same conformance fixtures as the TypeScript verifier, weak-key rejection, fail-closed | 17 / 17 |
-| `packages/host-bridge` | server-verdict precedence, fail-closed paths, Dataverse verdict mapping | 5 / 5 |
+| `packages/host-bridge` | server-verdict precedence, fail-closed paths, Dataverse verdict mapping, gzip state saves | 6 / 6 |
+| `apps/web` | license verdict API, 402 gating, CSRF, sign-in rate limit, tenant resolution, state codec/service | 133 / 133 |
 | `tools/schema` | inference, key uniqueness over all seed rows, Postgres + Dataverse payloads | 11 / 11 |
 | `powerplatform/provision` | full provisioning against a Dataverse double, idempotent re-run, throttling | 6 / 6 |
 | `apps/powerapp` | pac data-source wiring | 3 / 3 |
 | `supabase/tests` | migrations on Postgres 16, cross-tenant isolation, append-only audit | pass |
 | `apps/runtime/test/parity.mjs` | 27 / 27 screens identical to v732 + 8 license-gate checks | 36 / 36 |
 
-The Vercel host (`apps/web`) ships with its own suite. See its README.
 
 ---
 Karthikram S · Co-founder, Sustantix · Chennai · linkedin.com/in/karthiksustantix

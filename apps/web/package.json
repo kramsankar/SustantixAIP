@@ -1,0 +1,34 @@
+{
+  "name": "@sustantix/aip-web",
+  "version": "7.32.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Sustantix AIP — Vercel / Next.js + Supabase host (confidential, proprietary).",
+  "type": "module",
+  "scripts": {
+    "prebuild": "node scripts/prebuild.mjs",
+    "build": "next build",
+    "dev": "node scripts/prebuild.mjs --if-missing && next dev",
+    "start": "next start",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.1",
+    "@sustantix/license": "workspace:*",
+    "next": "^15.5.26",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@sustantix/aip-runtime": "workspace:*",
+    "@sustantix/host-bridge": "workspace:*",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

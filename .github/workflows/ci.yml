@@ -29,6 +29,7 @@ jobs:
           pnpm --filter @sustantix/schema typecheck
           pnpm --filter @sustantix/pp-provision typecheck
           pnpm --filter @sustantix/license-cli typecheck
+          pnpm --filter @sustantix/aip-web typecheck
       - name: Unit tests
         run: |
           pnpm --filter @sustantix/license test
@@ -36,6 +37,7 @@ jobs:
           pnpm --filter @sustantix/schema test
           pnpm --filter @sustantix/pp-provision test
           pnpm --filter @sustantix/aip-powerapp test
+          pnpm --filter @sustantix/aip-web test
       - name: Generated schema is current
         run: |
           pnpm --filter @sustantix/schema generate
