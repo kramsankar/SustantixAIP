@@ -20,3 +20,6 @@ obj/
 out/
 *.zip
 .power/
+
+# Local agent worktrees
+.claude/worktrees/
