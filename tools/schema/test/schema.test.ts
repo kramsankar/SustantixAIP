@@ -82,11 +82,13 @@ describe("registry over the governed workbook", () => {
 describe("generated backends", () => {
   it("enables RLS, audit and tenant scoping on every Postgres table", () => {
     const sql = dataModelSql(reg);
-    for (const t of reg.tables) {
-      expect(sql).toContain(`alter table aip."${t.name}" enable row level security;`);
-      expect(sql).toContain(`create trigger t_audit after insert or update or delete on aip."${t.name}"`);
-    }
-    expect(platformSql("INR")).toMatch(/audit_log is append-only/);
+    for (const t of reg.tables) expect(sql).toContain(`select aip.create_tenant_table('${t.name}', `);
+    const platform = platformSql("INR");
+    expect(platform).toMatch(/audit_log is append-only/);
+    expect(platform).toContain("enable row level security");
+    expect(platform).toContain("create policy p_read");
+    expect(platform).toContain("create trigger t_audit after insert or update or delete");
+    expect(platform).toContain("revoke all on function aip.create_tenant_table(text, text, text, char) from public;");
   });
   it("emits Dataverse metadata with a primary name, alternate key and typed attributes", () => {
     const plan = dataModelPlan(reg);

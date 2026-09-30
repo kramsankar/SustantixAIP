@@ -113,6 +113,32 @@ begin
   return new;
 end $$;
 
+-- Creates (idempotently) one tenant-scoped data-model table with the standard columns,
+-- row-level security (viewer read; planner/admin write), audit and updated_at triggers.
+-- Migration-only: executes the supplied column DDL, so no application role may call it.
+create or replace function aip.create_tenant_table(p_table text, p_sheet text, p_columns text, p_currency char(3) default null)
+returns void language plpgsql set search_path = aip, pg_temp as $fn$
+declare
+  t text := format('aip.%I', p_table);
+begin
+  if p_currency is not null and p_currency !~ '^[A-Z]{3}$' then raise exception 'invalid currency %', p_currency; end if;
+  execute format(
+    'create table if not exists %s (tenant_id uuid not null references aip.tenants(id) on delete cascade, row_key text not null, %s%s, created_at timestamptz not null default now(), updated_at timestamptz not null default now(), primary key (tenant_id, row_key))',
+    t, p_columns,
+    case when p_currency is null then '' else format(', currency char(3) not null default %L check (currency ~ ''^[A-Z]{3}$'')', p_currency) end);
+  execute format('comment on table %s is %L', t, 'Workbook sheet "' || p_sheet || '"');
+  execute format('alter table %s enable row level security', t);
+  execute format('drop policy if exists p_read on %s', t);
+  execute format('create policy p_read on %s for select to authenticated using (aip.has_role(tenant_id))', t);
+  execute format('drop policy if exists p_write on %s', t);
+  execute format('create policy p_write on %s for all to authenticated using (aip.has_role(tenant_id, array[''planner'',''admin''])) with check (aip.has_role(tenant_id, array[''planner'',''admin'']))', t);
+  execute format('drop trigger if exists t_audit on %s', t);
+  execute format('create trigger t_audit after insert or update or delete on %s for each row execute function aip.audit_row()', t);
+  execute format('drop trigger if exists t_touch on %s', t);
+  execute format('create trigger t_touch before update on %s for each row execute function aip.touch_updated_at()', t);
+end $fn$;
+revoke all on function aip.create_tenant_table(text, text, text, char) from public;
+
 -- Daily FX rates for multi-currency reporting (rate: 1 base = rate quote).
 create table if not exists aip.fx_rates (
   rate_date date not null,
@@ -160,32 +186,11 @@ revoke all on aip.license_clock from authenticated;
 }
 
 function tableSql(t: TableDef, defaultCurrency: string): string {
-  const hasMoney = t.columns.some((c) => c.kind === "money");
-  const cols = t.columns.map((c) => `  ${q(c.name)} ${pgType(c)}`);
-  const moneyCurrency = t.columns.find((c) => c.kind === "money")?.currency ?? defaultCurrency;
-  const name = `aip.${q(t.name)}`;
-  const keyComment = t.key.length ? `business key: ${t.key.join(" + ")}` : "synthetic row key (no natural key in source)";
-  return `
--- ${t.sheet} · ${t.domain} · ${keyComment}
-create table if not exists ${name} (
-  tenant_id uuid not null references aip.tenants(id) on delete cascade,
-  row_key text not null,
-${cols.join(",\n")},${hasMoney ? `\n  currency char(3) not null default ${lit(moneyCurrency)} check (currency ~ '^[A-Z]{3}$'),` : ""}
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  primary key (tenant_id, row_key)
-);
-comment on table ${name} is ${lit(`Workbook sheet "${t.sheet}"`)};
-alter table ${name} enable row level security;
-drop policy if exists p_read on ${name};
-create policy p_read on ${name} for select to authenticated using (aip.has_role(tenant_id));
-drop policy if exists p_write on ${name};
-create policy p_write on ${name} for all to authenticated
-  using (aip.has_role(tenant_id, array['planner','admin'])) with check (aip.has_role(tenant_id, array['planner','admin']));
-drop trigger if exists t_audit on ${name};
-create trigger t_audit after insert or update or delete on ${name} for each row execute function aip.audit_row();
-drop trigger if exists t_touch on ${name};
-create trigger t_touch before update on ${name} for each row execute function aip.touch_updated_at();`;
+  const moneyCurrency = t.columns.some((c) => c.kind === "money") ? (t.columns.find((c) => c.kind === "money")?.currency ?? defaultCurrency) : null;
+  const cols = t.columns.map((c) => `${q(c.name)} ${pgType(c)}`).join(", ");
+  const key = t.key.length ? `key: ${t.key.join(" + ")}` : "synthetic row key";
+  return `-- ${t.sheet} · ${t.domain} · ${key}
+select aip.create_tenant_table(${lit(t.name)}, ${lit(t.sheet)}, $cols$${cols}$cols$, ${moneyCurrency ? lit(moneyCurrency) : "null"});`;
 }
 
 export function dataModelSql(reg: Registry): string {

@@ -81,6 +81,32 @@ begin
   return new;
 end $$;
 
+-- Creates (idempotently) one tenant-scoped data-model table with the standard columns,
+-- row-level security (viewer read; planner/admin write), audit and updated_at triggers.
+-- Migration-only: executes the supplied column DDL, so no application role may call it.
+create or replace function aip.create_tenant_table(p_table text, p_sheet text, p_columns text, p_currency char(3) default null)
+returns void language plpgsql set search_path = aip, pg_temp as $fn$
+declare
+  t text := format('aip.%I', p_table);
+begin
+  if p_currency is not null and p_currency !~ '^[A-Z]{3}$' then raise exception 'invalid currency %', p_currency; end if;
+  execute format(
+    'create table if not exists %s (tenant_id uuid not null references aip.tenants(id) on delete cascade, row_key text not null, %s%s, created_at timestamptz not null default now(), updated_at timestamptz not null default now(), primary key (tenant_id, row_key))',
+    t, p_columns,
+    case when p_currency is null then '' else format(', currency char(3) not null default %L check (currency ~ ''^[A-Z]{3}$'')', p_currency) end);
+  execute format('comment on table %s is %L', t, 'Workbook sheet "' || p_sheet || '"');
+  execute format('alter table %s enable row level security', t);
+  execute format('drop policy if exists p_read on %s', t);
+  execute format('create policy p_read on %s for select to authenticated using (aip.has_role(tenant_id))', t);
+  execute format('drop policy if exists p_write on %s', t);
+  execute format('create policy p_write on %s for all to authenticated using (aip.has_role(tenant_id, array[''planner'',''admin''])) with check (aip.has_role(tenant_id, array[''planner'',''admin'']))', t);
+  execute format('drop trigger if exists t_audit on %s', t);
+  execute format('create trigger t_audit after insert or update or delete on %s for each row execute function aip.audit_row()', t);
+  execute format('drop trigger if exists t_touch on %s', t);
+  execute format('create trigger t_touch before update on %s for each row execute function aip.touch_updated_at()', t);
+end $fn$;
+revoke all on function aip.create_tenant_table(text, text, text, char) from public;
+
 -- Daily FX rates for multi-currency reporting (rate: 1 base = rate quote).
 create table if not exists aip.fx_rates (
   rate_date date not null,
