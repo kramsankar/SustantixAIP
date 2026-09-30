@@ -22,8 +22,21 @@ await page.waitForFunction(() => document.getElementById("loginScreen")?.style.d
 await page.waitForTimeout(4000);
 // v9xx opens on the Operations Hub landing layer; record it, then enter the workspace.
 const result = [];
+// Screens keep decorating for several seconds after activation (v915 decorators run on a
+// debounce after later mutations), so snapshot only once the page has been quiet for QUIET_MS (capped at 30 s).
+const QUIET_MS = Number(process.env.AIP_CRAWL_QUIET_MS ?? 4000);
+async function settle() {
+  await page.evaluate((quiet) => new Promise((resolve) => {
+    let timer;
+    const done = () => { obs.disconnect(); clearTimeout(cap); resolve(); };
+    const obs = new MutationObserver(() => { clearTimeout(timer); timer = setTimeout(done, quiet); });
+    obs.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    timer = setTimeout(done, quiet);
+    const cap = setTimeout(done, 30000);
+  }), QUIET_MS);
+}
 if (await page.isVisible("#aipHomeOverlay").catch(() => false)) {
-  await page.waitForTimeout(4000);
+  await settle();
   const hub = await page.evaluate(() => {
     const el = document.getElementById("aipHomeOverlay");
     const tabs = [...el.querySelectorAll("button")].filter((b) => b.offsetParent && b.innerText.trim().length < 50).map((b) => b.innerText.trim()).filter(Boolean);
@@ -32,7 +45,7 @@ if (await page.isVisible("#aipHomeOverlay").catch(() => false)) {
   });
   result.push({ v: "operationshub", t: "Operations Hub", ...hub });
   await page.click("#aipHomeSkip");
-  await page.waitForTimeout(4000);
+  await settle();
 }
 const views = await page.$$eval("#sidebar .nav-item[data-view]", (n) => n.map((x) => ({ v: x.dataset.view, t: x.innerText.trim() })));
 for (const v of views) {
@@ -40,7 +53,7 @@ for (const v of views) {
     document.querySelectorAll("#sidebar .x-nav-body").forEach((b) => (b.style.display = "block"));
     document.querySelector(`#sidebar .nav-item[data-view="${v}"]`).click();
   }, v.v);
-  await page.waitForTimeout(3500);
+  await settle();
   const info = await page.evaluate(() => {
     const act = [...document.querySelectorAll("#main .view")].filter((x) => x.offsetParent !== null || getComputedStyle(x).display !== "none");
     const el = act[0] || document.getElementById("main");
