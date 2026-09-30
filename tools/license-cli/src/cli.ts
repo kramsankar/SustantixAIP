@@ -8,6 +8,7 @@
  *           [--grace <n>] [--seats <n>] [--modules a,b] [--org <guid>] [--env <guid>]
  *           [--tenant <guid>] [--domain <host> ...] [--ledger <file.jsonl>]
  *   trial   (same binding flags as issue) --trial-days <1..90>
+ *   pubkey  --key <private.pem> --kid <id> --keyset <trusted-keys.json>   (re-derive the public key)
  *   revoke  --key <private.pem> --kid <id> --lid <license-id> [--lid ...]
  *   inspect <token>
  *   verify  <token> --keyset <trusted-keys.json> --platform <p> [--org|--env|--tenant|--host] [--now <epoch>]
@@ -16,7 +17,7 @@ import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, writeFi
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { b64urlDecode, verifyLicense, type RuntimeEnvironment, type TrustedKey } from "@sustantix/license";
-import { generateSigningKey, issueLicense, issueRevocationList, type IssueRequest, type SigningKey } from "@sustantix/license/issuer";
+import { generateSigningKey, issueLicense, issueRevocationList, publicJwkFromPrivatePem, type IssueRequest, type SigningKey } from "@sustantix/license/issuer";
 
 type Flags = Record<string, string[]>;
 
@@ -112,6 +113,20 @@ async function main() {
       ledger(flags, { action: cmd, lid: payload.lid, customer: payload.customer, edition: payload.edition, exp: payload.exp, bind: payload.bind, kid: key.kid });
       console.error(`license ${payload.lid} · ${payload.edition} · expires ${new Date(payload.exp * 1000).toISOString()}`);
       console.log(token);
+      return;
+    }
+    case "pubkey": {
+      const key = loadKey(flags);
+      const jwk = publicJwkFromPrivatePem(key.kid, key.privateKeyPem);
+      const keyset = one(flags, "keyset", true)!;
+      const keys: TrustedKey[] = existsSync(keyset) ? JSON.parse(readFileSync(keyset, "utf8")) : [];
+      const at = keys.findIndex((k) => k.kid === key.kid);
+      if (at >= 0 && keys[at]!.n !== jwk.n) throw new Error(`kid ${key.kid} in ${keyset} belongs to a different key`);
+      if (at < 0) {
+        keys.push(jwk);
+        writeFileSync(keyset, JSON.stringify(keys, null, 2) + "\n");
+      }
+      console.log(`${at < 0 ? "added" : "already present"}: ${key.kid} → ${keyset}`);
       return;
     }
     case "revoke": {
