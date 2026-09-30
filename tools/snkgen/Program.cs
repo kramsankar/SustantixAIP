@@ -6,8 +6,14 @@ using System.IO;
 using System.Security.Cryptography;
 
 if (args.Length != 1) { Console.Error.WriteLine("usage: snkgen <output.snk>"); return 1; }
-if (File.Exists(args[0])) { Console.Error.WriteLine("refusing to overwrite " + args[0]); return 1; }
+// Expand a leading "~" (cmd.exe and PowerShell pass it through literally).
+var target = args[0];
+if (target == "~" || target.StartsWith("~/") || target.StartsWith("~\\"))
+    target = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), target.Length > 2 ? target.Substring(2) : "");
+target = Path.GetFullPath(target);
+if (File.Exists(target)) { Console.Error.WriteLine("refusing to overwrite " + target); return 1; }
+Directory.CreateDirectory(Path.GetDirectoryName(target)!);
 using var rsa = new RSACryptoServiceProvider(2048);
-File.WriteAllBytes(args[0], rsa.ExportCspBlob(true));
-Console.WriteLine("strong-name key written to " + args[0]);
+File.WriteAllBytes(target, rsa.ExportCspBlob(true));
+Console.WriteLine("strong-name key written to " + target);
 return 0;

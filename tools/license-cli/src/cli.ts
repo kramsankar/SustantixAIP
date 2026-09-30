@@ -14,6 +14,7 @@
  */
 import { appendFileSync, chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { homedir } from "node:os";
 import { b64urlDecode, verifyLicense, type RuntimeEnvironment, type TrustedKey } from "@sustantix/license";
 import { generateSigningKey, issueLicense, issueRevocationList, type IssueRequest, type SigningKey } from "@sustantix/license/issuer";
 
@@ -41,6 +42,9 @@ const one = (f: Flags, k: string, required = false): string | undefined => {
 };
 const int = (f: Flags, k: string) => (one(f, k) ? Number.parseInt(one(f, k)!, 10) : undefined);
 
+/** Expands a leading "~" — Windows shells pass it through literally. */
+const expandHome = (p: string) => (p === "~" || p.startsWith("~/") || p.startsWith("~\\") ? join(homedir(), p.slice(2)) : p);
+
 /** Private keys must never be written inside a git working tree. */
 function assertOutsideRepo(dir: string) {
   let d = resolve(dir);
@@ -53,7 +57,7 @@ function assertOutsideRepo(dir: string) {
 }
 
 function loadKey(f: Flags): SigningKey {
-  return { kid: one(f, "kid", true)!, privateKeyPem: readFileSync(one(f, "key", true)!, "utf8") };
+  return { kid: one(f, "kid", true)!, privateKeyPem: readFileSync(expandHome(one(f, "key", true)!), "utf8") };
 }
 
 function request(f: Flags, edition: IssueRequest["edition"]): IssueRequest {
@@ -72,7 +76,8 @@ function request(f: Flags, edition: IssueRequest["edition"]): IssueRequest {
 }
 
 function ledger(f: Flags, entry: object) {
-  const file = one(f, "ledger");
+  const raw = one(f, "ledger");
+  const file = raw ? expandHome(raw) : undefined;
   if (file) appendFileSync(file, JSON.stringify({ at: new Date().toISOString(), ...entry }) + "\n");
 }
 
@@ -81,7 +86,7 @@ async function main() {
   switch (cmd) {
     case "keygen": {
       const kid = one(flags, "kid", true)!;
-      const out = one(flags, "out", true)!;
+      const out = resolve(expandHome(one(flags, "out", true)!));
       assertOutsideRepo(out);
       mkdirSync(out, { recursive: true });
       const { signing, publicJwk } = generateSigningKey(kid);
