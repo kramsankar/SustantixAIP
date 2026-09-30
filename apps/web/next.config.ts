@@ -7,7 +7,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 /**
  * Content-Security-Policy for the AIP runtime.
  *
- * 'unsafe-inline' and 'unsafe-eval' in script-src are deliberate: the v732 runtime is
+ * 'unsafe-inline' and 'unsafe-eval' in script-src are deliberate: the AIP reference runtime is
  * shipped as one HTML document whose scripts are inlined at their original positions
  * (see apps/runtime/build.mjs), it wires UI through inline on* handler attributes, and
  * parts of it evaluate generated code. Nonces cannot be applied to a static document

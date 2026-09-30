@@ -6,9 +6,9 @@ Sustantix builds AIP in its own Power Platform account, exports it as a **manage
 
 | Component | Detail |
 |---|---|
-| Code app | *Sustantix Asset Intelligence Platform* (the v732 runtime) |
+| Code app | *Sustantix Asset Intelligence Platform* (the v915 runtime) |
 | Platform tables | `sus_runtimestate`: workbook-import snapshot, gzip JSON file column. `sus_licensestate`: anti-rollback memory, plug-in only. |
-| Data-model tables | 107 `sus_*` tables generated from the governed workbook, each with an alternate key `sus_<table>_bk` and native multi-currency Money columns. Optional. |
+| Data-model tables | 161 `sus_*` tables generated from the governed workbook, each with an alternate key `sus_<table>_bk` and native multi-currency Money columns. Optional. |
 | Plug-in assembly | `Sustantix.Aip.Licensing`: `LicenseGuard` steps and the `sus_GetLicenseStatus` Custom API |
 | Environment variables | `sus_LicenseKey`, `sus_LicenseRevocationList` |
 | Security roles | *Sustantix AIP User* (read). *Sustantix AIP Administrator* (read/write, workbook import). |
@@ -23,22 +23,22 @@ Sustantix builds AIP in its own Power Platform account, exports it as a **manage
 
 ## B. Build a release
 
-Run the **release-powerplatform** workflow with version `7.32.0.0`, or run the same steps locally:
+Run the **release-powerplatform** workflow with version `9.15.0.0`, or run the same steps locally:
 
 ```bash
 pnpm install && pnpm --filter @sustantix/license build
 dotnet build powerplatform/plugins/Sustantix.Aip.Licensing -c Release -p:SxSnkPath=<vault>/aip-plugin.snk
 
 # Idempotent: safe to re-run; only missing components are created
-pnpm --filter @sustantix/pp-provision sx-pp provision --env $PP_ENV_URL --version 7.32.0.0 --data-model
+pnpm --filter @sustantix/pp-provision sx-pp provision --env $PP_ENV_URL --version 9.15.0.0 --data-model
 
 cd apps/powerapp
 pac code add-data-source -a dataverse -t sus_runtimestate
 node scripts/build.mjs --release          # refuses test keys in release builds
 pac code push --solutionName SustantixAIP
 
-pac solution export --name SustantixAIP --managed   --path out/SustantixAIP_7.32.0.0_managed.zip
-pac solution export --name SustantixAIP             --path out/SustantixAIP_7.32.0.0_unmanaged.zip
+pac solution export --name SustantixAIP --managed   --path out/SustantixAIP_9.15.0.0_managed.zip
+pac solution export --name SustantixAIP             --path out/SustantixAIP_9.15.0.0_unmanaged.zip
 ```
 
 Only the **managed** package goes to customers. The unmanaged package stays in Sustantix's source vault.
@@ -60,12 +60,12 @@ Before exporting, set the plug-in steps and the Custom API as **not customisable
 
 - The plug-in builds for .NET Framework 4.6.2 and signs with a strong-name key. Its verifier passes the shared conformance suite.
 - The provisioning plan runs end to end against an in-memory Dataverse double. A second run creates nothing, and every create carries the `MSCRM.SolutionUniqueName: SustantixAIP` header.
-- The code-app bundle builds, and the runtime inside it is proven screen-identical to v732.
+- The code-app bundle builds, and the runtime inside it is proven screen-identical to v915.
 
 These were *not* possible from the build container and must be done on the first run in the Sustantix build environment:
 
 1. The first live `sx-pp provision`: Web API metadata calls against a real org.
-2. `pac code push`: the code-app hosting size limits for the ~65 MB bundle (57 MB of it governed datasets).
+2. `pac code push`: the code-app hosting size limits for the ~80 MB bundle (72 MB of it governed datasets).
 3. A managed export and import round trip.
 
 If the bundle exceeds the code-app limits, the fallback is to move the datasets out of the bundle into a Dataverse file column and have the host bridge fetch them before the runtime boots. This fallback is **not yet implemented**; it is a contained change in `packages/host-bridge` and `apps/runtime/build.mjs`.

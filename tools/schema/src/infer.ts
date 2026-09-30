@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import * as XLSX from "xlsx";
 import { MAX_NAME, type ColumnDef, type ColumnKind, type Registry, type TableDef } from "./registry.ts";
 
@@ -10,6 +12,14 @@ const INT32 = 2 ** 31;
 const RESERVED = new Set(["name", "id", "key", "tenant_id", "row_key", "created_at", "updated_at", "currency", "source_row"]);
 
 const DOMAINS: Array<[RegExp, string]> = [
+  [/^BESS /, "Battery Energy Storage"],
+  [/^PV_/, "PV Module Register"],
+  [/^Sites$|^Asset Master$|^Inverter |^Engineering Reference|^Graph /, "Asset Master & Engineering"],
+  [/^Vision /, "AI Vision & Inspection"],
+  [/^Event |^Reliability_|^Prescriptive|^AI Alerts|^PM Plans|^Planned Outages/, "Maintenance & Reliability"],
+  [/^Forecast |^Twin /, "Forecast & Twin"],
+  [/^Spare Parts|^Inventory /, "Maintenance Spares"],
+  [/^Commercial /, "Sustainability & Portfolio"],
   [/^PNO_|^PLAN_/, "Planning & Optimization"],
   [/^VE_/, "Value Exposure"],
   [/^SUS_|^PORT_/, "Sustainability & Portfolio"],
@@ -134,7 +144,19 @@ export function detectKey(headers: string[], rows: Record<string, unknown>[]): s
   return [];
 }
 
-export function inferRegistry(workbook: Buffer, sourceName: string, defaultCurrency = "INR"): Registry {
+/** Business keys declared by the runtime's own import rules (APM_SHEET_RULES), when available. */
+export type DeclaredKeys = Record<string, string[]>;
+
+export function parseDeclaredKeys(runtimeSource: string): DeclaredKeys {
+  const out: DeclaredKeys = {};
+  for (const m of runtimeSource.matchAll(/"([^"]+)":\{key:\[([^\]]*)\]/g)) {
+    const cols = [...m[2]!.matchAll(/"([^"]+)"/g)].map((c) => c[1]!);
+    if (cols.length) out[m[1]!] = cols;
+  }
+  return out;
+}
+
+export function inferRegistry(workbook: Buffer, sourceName: string, defaultCurrency = "INR", declared: DeclaredKeys = {}): Registry {
   const wb = XLSX.read(workbook, { type: "buffer", cellDates: false });
   const tableNames = new Set<string>();
   const tables: TableDef[] = [];
@@ -161,7 +183,7 @@ export function inferRegistry(workbook: Buffer, sourceName: string, defaultCurre
       label: label(sheet),
       pluralLabel: label(sheet),
       domain: DOMAINS.find(([re]) => re.test(sheet))?.[1] ?? "Core",
-      key: detectKey(headers, rows),
+      key: declared[sheet] && declared[sheet]!.every((k) => headers.includes(k)) && unique(rows, declared[sheet]!) ? declared[sheet]! : detectKey(headers, rows),
       columns,
       rowCount: rows.length,
     });
@@ -176,3 +198,15 @@ export function inferRegistry(workbook: Buffer, sourceName: string, defaultCurre
 }
 
 export type { ColumnKind };
+
+/** Reads APM_SHEET_RULES from the extracted runtime sources (apps/runtime/src/js). */
+export function runtimeDeclaredKeys(repoRoot: string): DeclaredKeys {
+  const dir = join(repoRoot, "apps/runtime/src/js");
+  if (!existsSync(dir)) return {};
+  for (const f of readdirSync(dir)) {
+    const src = readFileSync(join(dir, f), "utf8");
+    const i = src.search(/APM_SHEET_RULES\s*=\s*\{/);
+    if (i >= 0) return parseDeclaredKeys(src.slice(i, i + 200000));
+  }
+  return {};
+}

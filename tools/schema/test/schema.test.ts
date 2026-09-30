@@ -6,8 +6,8 @@ import { dataModelSql, platformSql } from "../src/postgres.ts";
 import { MAX_NAME } from "../src/registry.ts";
 import { dataverseRecord, pgRecord, readSheets, rowKey } from "../src/rows.ts";
 
-const wb = readFileSync(new URL("../../../reference/AIP_Data_v732.xlsx", import.meta.url));
-const reg = inferRegistry(wb, "AIP_Data_v732.xlsx");
+const wb = readFileSync(new URL("../../../reference/AIP_Data_v915.xlsx", import.meta.url));
+const reg = inferRegistry(wb, "AIP_Data_v915.xlsx");
 const sheets = readSheets(wb);
 
 describe("type inference", () => {
@@ -102,5 +102,15 @@ describe("generated backends", () => {
     const money = plan.flatMap((p) => p.attributes).filter((a) => a.AttributeType === "Money");
     expect(money.length).toBe(reg.tables.flatMap((t) => t.columns).filter((c) => c.kind === "money").length);
     expect(platformPlan().map((p) => p.logicalName)).toEqual(["sus_runtimestate", "sus_licensestate"]);
+  });
+});
+
+describe("runtime-declared keys", () => {
+  it("parses APM_SHEET_RULES keys and prefers them over inference", async () => {
+    const { parseDeclaredKeys } = await import("../src/infer.ts");
+    const keys = parseDeclaredKeys(`const APM_SHEET_RULES={"Vision Work Order Link":{key:["Finding_ID","Work_Order_ID"],required:[]},"Sites":{key:["Plant_ID"]}}`);
+    expect(keys).toEqual({ "Vision Work Order Link": ["Finding_ID", "Work_Order_ID"], Sites: ["Plant_ID"] });
+    const reg2 = inferRegistry(wb, "x.xlsx", "INR", keys);
+    expect(reg2.tables.find((t) => t.sheet === "Vision Work Order Link")?.key).toEqual(["Finding_ID", "Work_Order_ID"]);
   });
 });

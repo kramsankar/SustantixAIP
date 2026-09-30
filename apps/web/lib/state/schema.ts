@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** Shape of the snapshot the v732 runtime persists (see host-bridge RuntimeState). */
+/** Shape of the snapshot the AIP runtime persists (see host-bridge RuntimeState). */
 
 const Row = z.record(z.string(), z.unknown()).refine((v) => v !== null && typeof v === "object" && !Array.isArray(v), {
   message: "row must be an object",

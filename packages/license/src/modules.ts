@@ -5,7 +5,7 @@
 export const MODULES: Record<string, { label: string; views: string[] }> = {
   core: {
     label: "Platform Core",
-    views: ["datamanagement", "dataquality", "controlassurance", "guardrails", "models", "integrations"],
+    views: ["datamanagement", "dataquality", "controlassurance", "guardrails", "models", "integrations", "actionworkflow"],
   },
   portfolio: {
     label: "Portfolio Intelligence",

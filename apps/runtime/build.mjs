@@ -52,7 +52,7 @@ rmSync(join(out, "js"), { recursive: true, force: true });
 const manifest = JSON.parse(readFileSync(join(src, "manifest.json"), "utf8"));
 const info = {
   product: "Sustantix Asset Intelligence Platform",
-  release: "7.32.0",
+  release: JSON.parse(readFileSync(join(here, "package.json"), "utf8")).version,
   target,
   referenceSha256: manifest.sourceSha256,
   bridgeSha256: createHash("sha256").update(readFileSync(bridge)).digest("hex"),

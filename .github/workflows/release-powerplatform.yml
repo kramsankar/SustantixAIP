@@ -7,7 +7,7 @@ on:
       version:
         description: "Solution version (major.minor.build.revision)"
         required: true
-        default: "7.32.0.0"
+        default: "9.15.0.0"
       data_model:
         description: "Include the 107-table governed data model"
         type: boolean

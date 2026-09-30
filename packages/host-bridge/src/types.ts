@@ -1,6 +1,6 @@
 import type { LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
 
-/** Snapshot the v732 runtime persists through saveEamState / loadEamState. */
+/** Snapshot the AIP runtime persists through saveEamState / loadEamState. */
 export interface RuntimeState {
   data: Record<string, unknown[]>;
   lastImport: unknown;

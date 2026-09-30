@@ -1,0 +1,1 @@
+window.AIP_V846_MODEL_AUDIT={basis:'right-censored likelihood + AICc + rolling-origin validation',lognormal:'right-censored MLE',cutoffExposure:'operating-hour exposure prorated to historical cutoff',selection:'lowest AICc; validation reported independently'};

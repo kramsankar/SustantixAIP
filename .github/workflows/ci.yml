@@ -101,10 +101,10 @@ jobs:
           pnpm --silent --filter @sustantix/schema seed:sql --tenant 00000000-0000-0000-0000-0000000000c1 --name "CI seed" > "$RUNNER_TEMP/seed.sql"
           psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
           psql -v ON_ERROR_STOP=1 -q -f "$RUNNER_TEMP/seed.sql"
-          test "$(psql -At -c "select count(*) from aip.work_orders where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "377"
+          test "$(psql -At -c "select count(*) from aip.work_orders where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "383"
 
   parity:
-    name: v732 screen parity + license gate
+    name: reference screen parity + license gate
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:

@@ -1,6 +1,6 @@
 // End-to-end parity + license-gate verification for the AIP runtime.
 //  1. builds the standalone target with an ephemeral trusted key (test-only)
-//  2. crawls all 27 screens and requires exact equality with reference/v732-screen-crawl.json
+//  2. crawls every screen (incl. the Operations Hub) and requires exact equality with reference/v915-screen-crawl.json
 //  3. proves the license gate: no key, expired trial, module-restricted license
 import { execFileSync, spawn } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
@@ -33,7 +33,7 @@ try {
   // 2 · screen parity
   const full = lic({ edition: "enterprise", validDays: 30 });
   execFileSync("node", [join(here, "crawl.mjs"), url, join(tmp, "crawl.json"), "--license", full], { stdio: "inherit" });
-  const ref = Object.fromEntries(JSON.parse(readFileSync(join(root, "reference/v732-screen-crawl.json"), "utf8")).views.map((v) => [v.v, v]));
+  const ref = Object.fromEntries(JSON.parse(readFileSync(join(root, "reference/v915-screen-crawl.json"), "utf8")).views.map((v) => [v.v, v]));
   const got = JSON.parse(readFileSync(join(tmp, "crawl.json"), "utf8")).views;
   check(got.length === Object.keys(ref).length, `all ${Object.keys(ref).length} screens reachable`);
   for (const v of got) {
@@ -66,9 +66,16 @@ try {
   await page.fill("#loginUser", "qa"); await page.fill("#loginPass", "x"); await page.click("#loginBtn");
   await page.waitForFunction(() => document.getElementById("loginScreen")?.style.display === "none", null, { timeout: 120000 });
   const badge = await page.textContent("#sxLicenseBadge");
-  check(/Trial · 1[34] days left/.test(badge ?? ""), `trial badge shows remaining days (${badge})`);
-  check(await page.isHidden('#sidebar .nav-item[data-view="workorderintelligence"]'), "module gate hides unlicensed Maintenance views");
-  check(await page.isHidden('#sidebar .nav-item[data-view="sustainabilityintelligence"]'), "module gate hides unlicensed Sustainability views");
+  check(/Trial · 14 days left/.test(badge ?? ""), `trial badge shows remaining days (${badge})`);
+  if (await page.isVisible("#aipHomeSkip").catch(() => false)) await page.click("#aipHomeSkip");
+  await page.waitForTimeout(1500);
+  // Nav groups may be collapsed by the runtime, so judge each item by its own computed display.
+  const gated = (view) => page.evaluate((v) => getComputedStyle(document.querySelector(`#sidebar .nav-item[data-view="${v}"]`)).display === "none", view);
+  check(!(await gated("assetexplorer")), "licensed Portfolio views remain available");
+  check(!(await gated("datamanagement")), "core views remain available");
+  check(!(await gated("actionworkflow")), "Action & Workflow Management is part of core");
+  check(await gated("workorderintelligence"), "module gate hides unlicensed Maintenance views");
+  check(await gated("sustainabilityintelligence"), "module gate hides unlicensed Sustainability views");
   await page.close();
 
   const foreign = issueLicense(signing, { customer: cust, edition: "enterprise", platform: "vercel", bind: { domains: ["aip.customer.example"] }, validDays: 30 }).token;

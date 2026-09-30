@@ -1,14 +1,14 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { inferRegistry } from "@sustantix/schema";
+import type { Registry } from "@sustantix/schema";
 import { provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
 
 const ORG = "3f2504e0-4f89-11d3-9a0c-0305e82c3301";
 const BU = "9a9a9a9a-0000-0000-0000-000000000001";
-const wb = readFileSync(new URL("../../../reference/AIP_Data_v732.xlsx", import.meta.url));
-const registry = inferRegistry(wb, "AIP_Data_v732.xlsx");
+const wb = readFileSync(new URL("../../../reference/AIP_Data_v915.xlsx", import.meta.url));
+const registry = JSON.parse(readFileSync(new URL("../../../schema/aip-data-model.json", import.meta.url), "utf8")) as Registry;
 
 /** In-memory Dataverse double covering the Web API surface the provisioner uses. */
 function mockDataverse() {
@@ -98,7 +98,7 @@ describe("provision", () => {
     const dv = mockDataverse();
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
     const logs: string[] = [];
-    const first = await provision(api, { version: "7.32.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, seedWorkbook: wb, fx: {} }, (m) => logs.push(m));
+    const first = await provision(api, { version: "9.15.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, seedWorkbook: wb, fx: {} }, (m) => logs.push(m));
 
     expect(first.organizationId).toBe(ORG);
     expect(first.tables).toBe(registry.tables.length + 2);
@@ -116,7 +116,7 @@ describe("provision", () => {
     expect(creates.every((c) => c.solution === "SustantixAIP")).toBe(true);
 
     const before = dv.calls.length;
-    const second = await provision(api, { version: "7.32.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, fx: {} }, () => {});
+    const second = await provision(api, { version: "9.15.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, fx: {} }, () => {});
     const secondCreates = dv.calls.slice(before).filter((c) => c.method === "POST" && !["PublishAllXml"].includes(c.path) && !c.path.endsWith("AddPrivilegesRole"));
     expect(second.guardStepsCreated).toBe(0);
     expect(secondCreates).toEqual([]);
@@ -125,7 +125,7 @@ describe("provision", () => {
   it("guards every data-model table when requested", async () => {
     const dv = mockDataverse();
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
-    const r = await provision(api, { version: "7.32.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: true, fx: {} }, () => {});
+    const r = await provision(api, { version: "9.15.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: true, fx: {} }, () => {});
     expect(r.guardStepsCreated).toBe((registry.tables.length + 1) * GUARD_MESSAGES.length);
   });
 
@@ -133,7 +133,7 @@ describe("provision", () => {
     const dv = mockDataverse();
     dv.sets.transactioncurrencies = [];
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
-    await expect(provision(api, { version: "7.32.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, fx: {} }, () => {})).rejects.toThrow(/--fx INR=/);
+    await expect(provision(api, { version: "9.15.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: false, fx: {} }, () => {})).rejects.toThrow(/--fx INR=/);
   });
 
   it("gives users read-only access and never exposes license memory", () => {

@@ -3,9 +3,8 @@
  *   tsx src/seed-sql.ts --tenant <uuid> --name "Tenant name" [--region IN] [--currency INR] [--workbook file] > seed.sql
  */
 import { readFileSync } from "node:fs";
-import { basename, join } from "node:path";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inferRegistry } from "./infer.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
 
@@ -53,9 +52,10 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     return i > 0 ? process.argv[i + 1] : d;
   };
   const root = fileURLToPath(new URL("../../../", import.meta.url));
-  const file = flag("workbook", join(root, "reference/AIP_Data_v732.xlsx"))!;
+  const file = flag("workbook", join(root, "reference/AIP_Data_v915.xlsx"))!;
   const wb = readFileSync(file);
-  const reg = inferRegistry(wb, basename(file));
+  // The committed registry is the contract; the workbook only supplies rows.
+  const reg = JSON.parse(readFileSync(join(root, "schema/aip-data-model.json"), "utf8")) as Registry;
   process.stdout.write(
     seedSql(reg, wb, {
       id: flag("tenant") ?? (() => { throw new Error("--tenant is required"); })(),

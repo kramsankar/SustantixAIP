@@ -10,12 +10,12 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dataModelPlan, platformPlan } from "./dataverse.ts";
-import { inferRegistry } from "./infer.ts";
+import { inferRegistry, runtimeDeclaredKeys } from "./infer.ts";
 import { dataModelSql, platformSql } from "./postgres.ts";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
-const workbook = process.argv[2] ?? join(root, "reference/AIP_Data_v732.xlsx");
-const reg = inferRegistry(readFileSync(workbook), basename(workbook));
+const workbook = process.argv[2] ?? join(root, "reference/AIP_Data_v915.xlsx");
+const reg = inferRegistry(readFileSync(workbook), basename(workbook), "INR", runtimeDeclaredKeys(root));
 
 mkdirSync(join(root, "schema"), { recursive: true });
 writeFileSync(join(root, "schema/aip-data-model.json"), JSON.stringify(reg, null, 1) + "\n");

@@ -1,4 +1,4 @@
-// Screen-by-screen crawler used for v732 parity. Logs in, visits every navigation view and
+// Screen-by-screen crawler used for reference parity. Logs in, visits every navigation view and
 // records visible headings, controls and text. Usage:
 //   node test/crawl.mjs <url> <out.json> [--user u --pass p] [--license <token>]
 import { chromium } from "playwright";
@@ -20,8 +20,21 @@ await page.fill("#loginPass", flag("pass", "sustantix2026"));
 await page.click("#loginBtn");
 await page.waitForFunction(() => document.getElementById("loginScreen")?.style.display === "none", null, { timeout: 120000 });
 await page.waitForTimeout(4000);
-const views = await page.$$eval("#sidebar .nav-item[data-view]", (n) => n.map((x) => ({ v: x.dataset.view, t: x.innerText.trim() })));
+// v9xx opens on the Operations Hub landing layer; record it, then enter the workspace.
 const result = [];
+if (await page.isVisible("#aipHomeOverlay").catch(() => false)) {
+  await page.waitForTimeout(4000);
+  const hub = await page.evaluate(() => {
+    const el = document.getElementById("aipHomeOverlay");
+    const tabs = [...el.querySelectorAll("button")].filter((b) => b.offsetParent && b.innerText.trim().length < 50).map((b) => b.innerText.trim()).filter(Boolean);
+    const heads = [...el.querySelectorAll("h1,h2,h3,h4")].filter((h) => h.offsetParent).map((h) => h.innerText.trim()).filter(Boolean);
+    return { id: el.id, tabs: [...new Set(tabs)].slice(0, 60), heads: heads.slice(0, 60), text: el.innerText.slice(0, 4000) };
+  });
+  result.push({ v: "operationshub", t: "Operations Hub", ...hub });
+  await page.click("#aipHomeSkip");
+  await page.waitForTimeout(4000);
+}
+const views = await page.$$eval("#sidebar .nav-item[data-view]", (n) => n.map((x) => ({ v: x.dataset.view, t: x.innerText.trim() })));
 for (const v of views) {
   await page.evaluate((v) => {
     document.querySelectorAll("#sidebar .x-nav-body").forEach((b) => (b.style.display = "block"));

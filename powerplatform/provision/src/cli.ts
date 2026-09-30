@@ -3,7 +3,7 @@
  *
  *   whoami     --env https://<org>.crm.dynamics.com
  *              Prints the organisation id to bind a license to.
- *   provision  --env <url> --version 7.32.0.0 --plugin <Sustantix.Aip.Licensing.dll>
+ *   provision  --env <url> --version 9.15.0.0 --plugin <Sustantix.Aip.Licensing.dll>
  *              [--data-model] [--guard-data-model] [--seed [workbook.xlsx]] [--fx INR=83.2 ...]
  *              [--report out/provision-report.json]
  *   set-license --env <url> --token <SXL1...>   (writes the environment variable value)
@@ -11,9 +11,9 @@
  * Authentication: see src/auth.ts (PP_ACCESS_TOKEN, service principal or device code).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename, dirname, join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inferRegistry } from "@sustantix/schema";
+import type { Registry } from "@sustantix/schema";
 import { tokenProvider } from "./auth.ts";
 import { provision } from "./provision.ts";
 import { ENV_VARS, whoAmI } from "./steps.ts";
@@ -46,10 +46,10 @@ async function main() {
       return;
     }
     case "provision": {
-      const version = flag("version") ?? "7.32.0.0";
+      const version = flag("version") ?? "9.15.0.0";
       if (!/^\d+\.\d+\.\d+\.\d+$/.test(version)) throw new Error("--version must be major.minor.build.revision");
       const pluginPath = flag("plugin") ?? join(root, "powerplatform/plugins/Sustantix.Aip.Licensing/bin/Release/net462/Sustantix.Aip.Licensing.dll");
-      const workbookPath = join(root, "reference/AIP_Data_v732.xlsx");
+      const workbookPath = join(root, "reference/AIP_Data_v915.xlsx");
       const workbook = readFileSync(workbookPath);
       const seedArg = flag("seed");
       const fx = Object.fromEntries(
@@ -63,7 +63,7 @@ async function main() {
         api(),
         {
           version,
-          registry: inferRegistry(workbook, basename(workbookPath)),
+          registry: JSON.parse(readFileSync(join(root, "schema/aip-data-model.json"), "utf8")) as Registry,
           pluginDll: readFileSync(pluginPath),
           dataModel: flag("data-model") === "true" || !!seedArg,
           guardDataModel: flag("guard-data-model") === "true",

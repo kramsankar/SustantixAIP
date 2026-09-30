@@ -1,7 +1,7 @@
 {
  "version": 1,
- "source": "AIP_Data_v732.xlsx",
- "sourceSha256": "bc89da203530b1b5f683c3e1ef2b6ffd108adffaca0f7e5b237e62c4d1375fa8",
+ "source": "AIP_Data_v915.xlsx",
+ "sourceSha256": "797316150ccea97baaa813ada24b1d5bb1f7a90590770ad6c7877becb8b5e808",
  "defaultCurrency": "INR",
  "tables": [
   {
@@ -138,7 +138,7 @@
      "label": "Assigned Technician ID",
      "kind": "text",
      "maxLength": 200,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "Assigned_Crew",
@@ -146,7 +146,7 @@
      "label": "Assigned Crew",
      "kind": "text",
      "maxLength": 200,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "PM_Frequency_Days",
@@ -190,9 +190,48 @@
      "label": "PM Overdue Days",
      "kind": "integer",
      "nullable": true
+    },
+    {
+     "source": "Linked_Alert_ID",
+     "name": "linked_alert_id",
+     "label": "Linked Alert ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Required_Part_ID",
+     "name": "required_part_id",
+     "label": "Required Part ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Required_Part_Qty",
+     "name": "required_part_qty",
+     "label": "Required Part Qty",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
     }
    ],
-   "rowCount": 377
+   "rowCount": 383
   },
   {
    "sheet": "Cost & Rate Master",
@@ -3560,7 +3599,7 @@
      "name": "intervention",
      "label": "Intervention",
      "kind": "text",
-     "maxLength": 200,
+     "maxLength": 1000,
      "nullable": false
     },
     {
@@ -3586,7 +3625,7 @@
      "kind": "money",
      "precision": 2,
      "currency": "INR",
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "Required_By",
@@ -3645,7 +3684,7 @@
      "label": "Required Tool ID",
      "kind": "text",
      "maxLength": 200,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "Vehicle_Class",
@@ -3739,7 +3778,7 @@
      "nullable": true
     }
    ],
-   "rowCount": 69
+   "rowCount": 75
   },
   {
    "sheet": "PLAN_Requirements",
@@ -3807,7 +3846,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 276
+   "rowCount": 282
   },
   {
    "sheet": "PLAN_Readiness",
@@ -5399,7 +5438,7 @@
      "name": "rate_or_value",
      "label": "Rate or Value",
      "kind": "decimal",
-     "precision": 10,
+     "precision": 2,
      "nullable": false
     },
     {
@@ -5470,6 +5509,14 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "Previous_Value",
+     "name": "previous_value",
+     "label": "Previous Value",
+     "kind": "decimal",
+     "precision": 10,
+     "nullable": true
     }
    ],
    "rowCount": 38
@@ -6073,6 +6120,14 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "Asset_Reference_Basis",
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
     }
    ],
    "rowCount": 24
@@ -6160,38 +6215,6 @@
      "nullable": false
     },
     {
-     "source": "Factor_ID",
-     "name": "factor_id",
-     "label": "Factor ID",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": true
-    },
-    {
-     "source": "Factor_Value",
-     "name": "factor_value",
-     "label": "Factor Value",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": true
-    },
-    {
-     "source": "Factor_Unit",
-     "name": "factor_unit",
-     "label": "Factor Unit",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": true
-    },
-    {
-     "source": "Calculated_tCO2e",
-     "name": "calculated_t_co2e",
-     "label": "Calculated tCO2e",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": false
-    },
-    {
      "source": "Source_System",
      "name": "source_system",
      "label": "Source System",
@@ -6205,7 +6228,47 @@
      "label": "Data Status",
      "kind": "text",
      "maxLength": 200,
-     "nullable": true
+     "nullable": false
+    },
+    {
+     "source": "Asset_Reference_Basis",
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Factor_ID",
+     "name": "factor_id",
+     "label": "Factor ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Factor_Value",
+     "name": "factor_value",
+     "label": "Factor Value",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Factor_Unit",
+     "name": "factor_unit",
+     "label": "Factor Unit",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Factor_Resolution",
+     "name": "factor_resolution",
+     "label": "Factor Resolution",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
     }
    ],
    "rowCount": 36
@@ -6291,14 +6354,6 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
-    },
-    {
-     "source": "Source_ID",
-     "name": "source_id",
-     "label": "Source ID",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": true
     },
     {
      "source": "Data_Status",
@@ -6393,6 +6448,14 @@
      "source": "Climate_Priority_Formula_Trace",
      "name": "climate_priority_formula_trace",
      "label": "Climate Priority Formula Trace",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Reference_Basis",
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
@@ -6509,6 +6572,14 @@
      "source": "Data_Status",
      "name": "data_status",
      "label": "Data Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Reference_Basis",
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
@@ -6870,6 +6941,14 @@
      "kind": "text",
      "maxLength": 1000,
      "nullable": false
+    },
+    {
+     "source": "Asset_Reference_Basis",
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
     }
    ],
    "rowCount": 24
@@ -7152,91 +7231,81 @@
    "pluralLabel": "SUS PV Array Master",
    "domain": "Sustainability & Portfolio",
    "key": [
-    "KPI_ID"
+    "PV_Array_ID"
    ],
    "columns": [
     {
-     "source": "KPI_ID",
-     "name": "kpi_id",
-     "label": "KPI ID",
+     "source": "PV_Array_ID",
+     "name": "pv_array_id",
+     "label": "PV Array ID",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "KPI_Name",
-     "name": "kpi_name",
-     "label": "KPI Name",
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "Excel_Value",
-     "name": "excel_value",
-     "label": "Excel Value",
-     "kind": "decimal",
-     "precision": 2,
-     "nullable": false
-    },
-    {
-     "source": "Unit",
-     "name": "unit",
-     "label": "Unit",
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "Numerator_or_Value_Basis",
-     "name": "numerator_or_value_basis",
-     "label": "Numerator or Value Basis",
+     "source": "Array_Name",
+     "name": "array_name",
+     "label": "Array Name",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "Denominator",
-     "name": "denominator",
-     "label": "Denominator",
+     "source": "Module_Quantity",
+     "name": "module_quantity",
+     "label": "Module Quantity",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Commission_Year",
+     "name": "commission_year",
+     "label": "Commission Year",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Data_Status",
+     "name": "data_status",
+     "label": "Data Status",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "Formula",
-     "name": "formula",
-     "label": "Formula",
+     "source": "Source_Sheet",
+     "name": "source_sheet",
+     "label": "Source Sheet",
      "kind": "text",
      "maxLength": 200,
      "nullable": false
     },
     {
-     "source": "Source_Fields",
-     "name": "source_fields",
-     "label": "Source Fields",
+     "source": "Source_Record_ID",
+     "name": "source_record_id",
+     "label": "Source Record ID",
      "kind": "text",
      "maxLength": 200,
-     "nullable": false
-    },
-    {
-     "source": "Drilldown_Filter",
-     "name": "drilldown_filter",
-     "label": "Drilldown Filter",
-     "kind": "text",
-     "maxLength": 200,
-     "nullable": false
-    },
-    {
-     "source": "Assumption_Disclosure",
-     "name": "assumption_disclosure",
-     "label": "Assumption Disclosure",
-     "kind": "text",
-     "maxLength": 1000,
      "nullable": false
     }
    ],
-   "rowCount": 4
+   "rowCount": 6
   },
   {
    "sheet": "SUS_EOL_Assumptions",
@@ -7659,7 +7728,8 @@
    "pluralLabel": "RCM Strategy",
    "domain": "Maintenance & Reliability",
    "key": [
-    "RCM_ID"
+    "Asset_Class",
+    "Failure_Mode"
    ],
    "columns": [
     {
@@ -7719,7 +7789,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 8
+   "rowCount": 9
   },
   {
    "sheet": "RCM Policy Governance",
@@ -7801,7 +7871,7 @@
      "label": "Standard URL",
      "kind": "url",
      "maxLength": 1000,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "PV_OandM_URL",
@@ -7809,7 +7879,7 @@
      "label": "PV OandM URL",
      "kind": "url",
      "maxLength": 1000,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "Outcome_Evidence_State",
@@ -7851,7 +7921,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 8
+   "rowCount": 9
   },
   {
    "sheet": "CBM Assessments",
@@ -7956,7 +8026,7 @@
      "label": "Max Deviation %",
      "kind": "decimal",
      "precision": 2,
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "Evidence_Count",
@@ -8033,7 +8103,7 @@
      "name": "recommended_action",
      "label": "Recommended Action",
      "kind": "text",
-     "maxLength": 200,
+     "maxLength": 1000,
      "nullable": false
     },
     {
@@ -8109,7 +8179,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 36
+   "rowCount": 42
   },
   {
    "sheet": "CBM Evidence",
@@ -8273,7 +8343,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 132
+   "rowCount": 138
   },
   {
    "sheet": "CBM Governance",
@@ -8351,7 +8421,7 @@
    "pluralLabel": "Risk Queue",
    "domain": "Maintenance & Reliability",
    "key": [
-    "Alert_ID"
+    "Queue_Rank"
    ],
    "columns": [
     {
@@ -8398,7 +8468,7 @@
      "name": "rated_capacity_mw",
      "label": "Rated Capacity MW",
      "kind": "decimal",
-     "precision": 2,
+     "precision": 5,
      "nullable": false
     },
     {
@@ -8421,7 +8491,7 @@
      "name": "energy_impact_mwh",
      "label": "Energy Impact MWh",
      "kind": "decimal",
-     "precision": 2,
+     "precision": 5,
      "nullable": false
     },
     {
@@ -8484,9 +8554,25 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "Exposure_Basis",
+     "name": "exposure_basis",
+     "label": "Exposure Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
     }
    ],
-   "rowCount": 72
+   "rowCount": 78
   },
   {
    "sheet": "Technology_Integration_Registry",
@@ -8800,6 +8886,202 @@
      "label": "Solar Window Method",
      "kind": "text",
      "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Mounting_Type",
+     "name": "mounting_type",
+     "label": "Mounting Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Tracker_Axis_Azimuth_Deg",
+     "name": "tracker_axis_azimuth_deg",
+     "label": "Tracker Axis Azimuth Deg",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Tracker_Max_Angle_Deg",
+     "name": "tracker_max_angle_deg",
+     "label": "Tracker Max Angle Deg",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Tracker_GCR",
+     "name": "tracker_gcr",
+     "label": "Tracker GCR",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Backtracking",
+     "name": "backtracking",
+     "label": "Backtracking",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Derate_Start_C",
+     "name": "inverter_derate_start_c",
+     "label": "Inverter Derate Start C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Derate_Limit_Pct",
+     "name": "inverter_derate_limit_pct",
+     "label": "Inverter Derate Limit %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Mounting_Source",
+     "name": "mounting_source",
+     "label": "Mounting Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Site_Elevation_m",
+     "name": "site_elevation_m",
+     "label": "Site Elevation m",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Linke_Turbidity_Monthly",
+     "name": "linke_turbidity_monthly",
+     "label": "Linke Turbidity Monthly",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Albedo",
+     "name": "albedo",
+     "label": "Albedo",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "IAM_b0",
+     "name": "iam_b0",
+     "label": "IAM b0",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "IAM_Diffuse_Factor",
+     "name": "iam_diffuse_factor",
+     "label": "IAM Diffuse Factor",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "IAM_Ground_Factor",
+     "name": "iam_ground_factor",
+     "label": "IAM Ground Factor",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Module_Technology",
+     "name": "module_technology",
+     "label": "Module Technology",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Bifaciality_Pct",
+     "name": "bifaciality_pct",
+     "label": "Bifaciality %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Rear_Shading_Mismatch_Pct",
+     "name": "rear_shading_mismatch_pct",
+     "label": "Rear Shading Mismatch %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Low_Irradiance_Loss_Pct_at_200Wm2",
+     "name": "low_irradiance_loss_pct_at_200_wm2",
+     "label": "Low Irradiance Loss % at 200Wm2",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Back_DeltaT_C",
+     "name": "cell_back_delta_t_c",
+     "label": "Cell Back DeltaT C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Faiman_U0",
+     "name": "faiman_u0",
+     "label": "Faiman U0",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Faiman_U1",
+     "name": "faiman_u1",
+     "label": "Faiman U1",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Derate_Ambient_Start_C",
+     "name": "inverter_derate_ambient_start_c",
+     "label": "Inverter Derate Ambient Start C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Derate_Pct_per_C",
+     "name": "inverter_derate_pct_per_c",
+     "label": "Inverter Derate % per C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Telemetry_Timestamp_Convention",
+     "name": "telemetry_timestamp_convention",
+     "label": "Telemetry Timestamp Convention",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Telemetry_Interval_Min",
+     "name": "telemetry_interval_min",
+     "label": "Telemetry Interval Min",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Physics_Param_Source",
+     "name": "physics_param_source",
+     "label": "Physics Param Source",
+     "kind": "text",
+     "maxLength": 1000,
      "nullable": false
     }
    ],
@@ -9215,6 +9497,2806 @@
     }
    ],
    "rowCount": 12
+  },
+  {
+   "sheet": "Twin Telemetry",
+   "name": "twin_telemetry",
+   "label": "Twin Telemetry",
+   "pluralLabel": "Twin Telemetry",
+   "domain": "Forecast & Twin",
+   "key": [
+    "Timestamp",
+    "Plant_ID"
+   ],
+   "columns": [
+    {
+     "source": "Timestamp",
+     "name": "timestamp",
+     "label": "Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "POA_Wm2",
+     "name": "poa_wm2",
+     "label": "POA Wm2",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "GHI_Wm2",
+     "name": "ghi_wm2",
+     "label": "GHI Wm2",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Ambient_Temp_C",
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Module_Temp_C",
+     "name": "module_temp_c",
+     "label": "Module Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Wind_Speed_ms",
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Soiling_Ratio",
+     "name": "soiling_ratio",
+     "label": "Soiling Ratio",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Expected_DC_MW",
+     "name": "expected_dc_mw",
+     "label": "Expected DC MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Expected_AC_MW",
+     "name": "expected_ac_mw",
+     "label": "Expected AC MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Actual_AC_MW",
+     "name": "actual_ac_mw",
+     "label": "Actual AC MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "PR_Pct",
+     "name": "pr_pct",
+     "label": "PR %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Availability_Pct",
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Efficiency_Pct",
+     "name": "inverter_efficiency_pct",
+     "label": "Inverter Efficiency %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Grid_Frequency_Hz",
+     "name": "grid_frequency_hz",
+     "label": "Grid Frequency Hz",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Power_Factor",
+     "name": "power_factor",
+     "label": "Power Factor",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Data_Quality_Pct",
+     "name": "data_quality_pct",
+     "label": "Data Quality %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Source",
+     "name": "source",
+     "label": "Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "ClearSky_POA_Wm2",
+     "name": "clear_sky_poa_wm2",
+     "label": "ClearSky POA Wm2",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cloud_Cover_Pct",
+     "name": "cloud_cover_pct",
+     "label": "Cloud Cover %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cloud_Transmittance_Pct",
+     "name": "cloud_transmittance_pct",
+     "label": "Cloud Transmittance %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "ClearSky_AC_Potential_MW",
+     "name": "clear_sky_ac_potential_mw",
+     "label": "ClearSky AC Potential MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Weather_Adjusted_Expected_AC_MW",
+     "name": "weather_adjusted_expected_ac_mw",
+     "label": "Weather Adjusted Expected AC MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Weather_Loss_MW",
+     "name": "weather_loss_mw",
+     "label": "Weather Loss MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Plant_Operational_Loss_MW",
+     "name": "plant_operational_loss_mw",
+     "label": "Plant Operational Loss MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Curtailment_Pct",
+     "name": "curtailment_pct",
+     "label": "Curtailment %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Health_Score",
+     "name": "asset_health_score",
+     "label": "Asset Health Score",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Weather_Source",
+     "name": "weather_source",
+     "label": "Weather Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Weather_Mode",
+     "name": "weather_mode",
+     "label": "Weather Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 19944
+  },
+  {
+   "sheet": "Inverter Configuration",
+   "name": "inverter_configuration",
+   "label": "Inverter Configuration",
+   "pluralLabel": "Inverter Configuration",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Asset_ID"
+   ],
+   "columns": [
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Tag",
+     "name": "inverter_tag",
+     "label": "Inverter Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Block_ID",
+     "name": "block_id",
+     "label": "Block ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "AC_Rating_MW",
+     "name": "ac_rating_mw",
+     "label": "AC Rating MW",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "DC_Capacity_MWp",
+     "name": "dc_capacity_mwp",
+     "label": "DC Capacity MWp",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "DC_AC_Ratio",
+     "name": "dc_ac_ratio",
+     "label": "DC AC Ratio",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Strings",
+     "name": "strings",
+     "label": "Strings",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Modules_per_String",
+     "name": "modules_per_string",
+     "label": "Modules per String",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Module_Wp",
+     "name": "module_wp",
+     "label": "Module Wp",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "MPPT_Count",
+     "name": "mppt_count",
+     "label": "MPPT Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "SCB_Count",
+     "name": "scb_count",
+     "label": "SCB Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Nominal_Efficiency_Pct",
+     "name": "nominal_efficiency_pct",
+     "label": "Nominal Efficiency %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "DC_Voltage_Nominal_V",
+     "name": "dc_voltage_nominal_v",
+     "label": "DC Voltage Nominal V",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Tracker_Asset_ID",
+     "name": "tracker_asset_id",
+     "label": "Tracker Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 323
+  },
+  {
+   "sheet": "Inverter Telemetry",
+   "name": "inverter_telemetry",
+   "label": "Inverter Telemetry",
+   "pluralLabel": "Inverter Telemetry",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Timestamp",
+    "Asset_ID"
+   ],
+   "columns": [
+    {
+     "source": "Timestamp",
+     "name": "timestamp",
+     "label": "Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Tag",
+     "name": "inverter_tag",
+     "label": "Inverter Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "DC_Power_MW",
+     "name": "dc_power_mw",
+     "label": "DC Power MW",
+     "kind": "decimal",
+     "precision": 4,
+     "nullable": true
+    },
+    {
+     "source": "AC_Power_MW",
+     "name": "ac_power_mw",
+     "label": "AC Power MW",
+     "kind": "decimal",
+     "precision": 4,
+     "nullable": true
+    },
+    {
+     "source": "DC_Voltage_V",
+     "name": "dc_voltage_v",
+     "label": "DC Voltage V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "DC_Current_A",
+     "name": "dc_current_a",
+     "label": "DC Current A",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Inverter_Temp_C",
+     "name": "inverter_temp_c",
+     "label": "Inverter Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Alarm_Code",
+     "name": "alarm_code",
+     "label": "Alarm Code",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 17119
+  },
+  {
+   "sheet": "Forecast Weather",
+   "name": "forecast_weather",
+   "label": "Forecast Weather",
+   "pluralLabel": "Forecast Weather",
+   "domain": "Forecast & Twin",
+   "key": [
+    "Plant_ID",
+    "Interval_Start"
+   ],
+   "columns": [
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Forecast_Run_Timestamp",
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Interval_Start",
+     "name": "interval_start",
+     "label": "Interval Start",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Lead_Hours",
+     "name": "lead_hours",
+     "label": "Lead Hours",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Clear_Sky_Index",
+     "name": "clear_sky_index",
+     "label": "Clear Sky Index",
+     "kind": "decimal",
+     "precision": 4,
+     "nullable": false
+    },
+    {
+     "source": "Cloud_Cover_Pct",
+     "name": "cloud_cover_pct",
+     "label": "Cloud Cover %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Ambient_Temp_C",
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Wind_Speed_ms",
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Forecast_Curtailment_Pct",
+     "name": "forecast_curtailment_pct",
+     "label": "Forecast Curtailment %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "NWP_Source",
+     "name": "nwp_source",
+     "label": "NWP Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 8064
+  },
+  {
+   "sheet": "Forecast Runs",
+   "name": "forecast_runs",
+   "label": "Forecast Runs",
+   "pluralLabel": "Forecast Runs",
+   "domain": "Forecast & Twin",
+   "key": [
+    "Plant_ID",
+    "Forecast_Run_Timestamp"
+   ],
+   "columns": [
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Forecast_Run_Timestamp",
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Observation_Window_Start",
+     "name": "observation_window_start",
+     "label": "Observation Window Start",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Observation_Window_End",
+     "name": "observation_window_end",
+     "label": "Observation Window End",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Next_Scheduled_Run",
+     "name": "next_scheduled_run",
+     "label": "Next Scheduled Run",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Run_Status",
+     "name": "run_status",
+     "label": "Run Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Resolution_Minutes",
+     "name": "resolution_minutes",
+     "label": "Resolution Minutes",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Weather_Revision_Pct",
+     "name": "weather_revision_pct",
+     "label": "Weather Revision %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Physics_Model",
+     "name": "physics_model",
+     "label": "Physics Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Residual_Model_Status",
+     "name": "residual_model_status",
+     "label": "Residual Model Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Input_Source_Set",
+     "name": "input_source_set",
+     "label": "Input Source Set",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 48
+  },
+  {
+   "sheet": "Forecast Input Snapshots",
+   "name": "forecast_input_snapshots",
+   "label": "Forecast Input Snapshots",
+   "pluralLabel": "Forecast Input Snapshots",
+   "domain": "Forecast & Twin",
+   "key": [
+    "Plant_ID",
+    "Forecast_Run_Timestamp"
+   ],
+   "columns": [
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Forecast_Run_Timestamp",
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Observation_Window_Start",
+     "name": "observation_window_start",
+     "label": "Observation Window Start",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Observation_Window_End",
+     "name": "observation_window_end",
+     "label": "Observation Window End",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "SCADA_AC_Power_MW",
+     "name": "scada_ac_power_mw",
+     "label": "SCADA AC Power MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Observed_POA_Wm2",
+     "name": "observed_poa_wm2",
+     "label": "Observed POA Wm2",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Ambient_Temp_C",
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Wind_Speed_ms",
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Availability_Pct",
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Curtailment_Pct",
+     "name": "curtailment_pct",
+     "label": "Curtailment %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Asset_Health_Score",
+     "name": "asset_health_score",
+     "label": "Asset Health Score",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Soiling_Pct",
+     "name": "soiling_pct",
+     "label": "Soiling %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "SCADA_Timestamp",
+     "name": "scada_timestamp",
+     "label": "SCADA Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Weather_Timestamp",
+     "name": "weather_timestamp",
+     "label": "Weather Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Asset_State_Timestamp",
+     "name": "asset_state_timestamp",
+     "label": "Asset State Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Grid_Timestamp",
+     "name": "grid_timestamp",
+     "label": "Grid Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 48
+  },
+  {
+   "sheet": "Planned Outages",
+   "name": "planned_outages",
+   "label": "Planned Outages",
+   "pluralLabel": "Planned Outages",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Outage_ID"
+   ],
+   "columns": [
+    {
+     "source": "Outage_ID",
+     "name": "outage_id",
+     "label": "Outage ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Scope",
+     "name": "asset_scope",
+     "label": "Asset Scope",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Capacity_Out_MW",
+     "name": "capacity_out_mw",
+     "label": "Capacity Out MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Start",
+     "name": "start",
+     "label": "Start",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "End",
+     "name": "end",
+     "label": "End",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Reason",
+     "name": "reason",
+     "label": "Reason",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 4
+  },
+  {
+   "sheet": "Forecast Settings",
+   "name": "forecast_settings",
+   "label": "Forecast Settings",
+   "pluralLabel": "Forecast Settings",
+   "domain": "Forecast & Twin",
+   "key": [
+    "Plant_ID"
+   ],
+   "columns": [
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Uncertainty_Base_Pct",
+     "name": "uncertainty_base_pct",
+     "label": "Uncertainty Base %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Uncertainty_per_Lead_Day_Pct",
+     "name": "uncertainty_per_lead_day_pct",
+     "label": "Uncertainty per Lead Day %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Uncertainty_Cloud_Coeff_Pct",
+     "name": "uncertainty_cloud_coeff_pct",
+     "label": "Uncertainty Cloud Coeff %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Band_Basis",
+     "name": "band_basis",
+     "label": "Band Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Soiling_Rate_Pct_per_Day",
+     "name": "soiling_rate_pct_per_day",
+     "label": "Soiling Rate % per Day",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Deviation_Band_Pct",
+     "name": "deviation_band_pct",
+     "label": "Deviation Band %",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Deviation_Band_Source",
+     "name": "deviation_band_source",
+     "label": "Deviation Band Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Residual_Model_Status",
+     "name": "residual_model_status",
+     "label": "Residual Model Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Min_History_Days_For_Residual_Model",
+     "name": "min_history_days_for_residual_model",
+     "label": "Min History Days For Residual Model",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 12
+  },
+  {
+   "sheet": "Twin Engine Guide",
+   "name": "twin_engine_guide",
+   "label": "Twin Engine Guide",
+   "pluralLabel": "Twin Engine Guide",
+   "domain": "Forecast & Twin",
+   "key": [],
+   "columns": [
+    {
+     "source": "Worksheet",
+     "name": "worksheet",
+     "label": "Worksheet",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Field",
+     "name": "field",
+     "label": "Field",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Role in native engine",
+     "name": "role_in_native_engine",
+     "label": "Role in native engine",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "How it is used",
+     "name": "how_it_is_used",
+     "label": "How it is used",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
+    }
+   ],
+   "rowCount": 88
+  },
+  {
+   "sheet": "BESS Systems",
+   "name": "bess_systems",
+   "label": "BESS Systems",
+   "pluralLabel": "BESS Systems",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BESS_Name",
+     "name": "bess_name",
+     "label": "BESS Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Configuration",
+     "name": "configuration",
+     "label": "Configuration",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rated_Power_MW",
+     "name": "rated_power_mw",
+     "label": "Rated Power MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Contracted_Energy_MWh",
+     "name": "contracted_energy_mwh",
+     "label": "Contracted Energy MWh",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Nameplate_Energy_MWh_BOL",
+     "name": "nameplate_energy_mwh_bol",
+     "label": "Nameplate Energy MWh BOL",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Duration_h",
+     "name": "duration_h",
+     "label": "Duration h",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Usable_SoC_Min_Pct",
+     "name": "usable_so_c_min_pct",
+     "label": "Usable SoC Min %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Usable_SoC_Max_Pct",
+     "name": "usable_so_c_max_pct",
+     "label": "Usable SoC Max %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Commissioning_Date",
+     "name": "commissioning_date",
+     "label": "Commissioning Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Design_Life_Years",
+     "name": "design_life_years",
+     "label": "Design Life Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Container_Count",
+     "name": "container_count",
+     "label": "Container Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "PCS_Count",
+     "name": "pcs_count",
+     "label": "PCS Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "MV_Transformer_Count",
+     "name": "mv_transformer_count",
+     "label": "MV Transformer Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Point_of_Interconnection",
+     "name": "point_of_interconnection",
+     "label": "Point of Interconnection",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Charging_Source",
+     "name": "charging_source",
+     "label": "Charging Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Commercial_Model",
+     "name": "commercial_model",
+     "label": "Commercial Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Operating_Status",
+     "name": "operating_status",
+     "label": "Operating Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Specifications",
+   "name": "bess_specifications",
+   "label": "BESS Specifications",
+   "pluralLabel": "BESS Specifications",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Chemistry",
+     "name": "chemistry",
+     "label": "Chemistry",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Cell_OEM",
+     "name": "cell_oem",
+     "label": "Cell OEM",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Format",
+     "name": "cell_format",
+     "label": "Cell Format",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Nominal_Voltage_V",
+     "name": "cell_nominal_voltage_v",
+     "label": "Cell Nominal Voltage V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Capacity_Ah",
+     "name": "cell_capacity_ah",
+     "label": "Cell Capacity Ah",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cells_per_Module",
+     "name": "cells_per_module",
+     "label": "Cells per Module",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Modules_per_Rack",
+     "name": "modules_per_rack",
+     "label": "Modules per Rack",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Racks_per_Container",
+     "name": "racks_per_container",
+     "label": "Racks per Container",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Container_Energy_MWh",
+     "name": "container_energy_mwh",
+     "label": "Container Energy MWh",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Container_Type",
+     "name": "container_type",
+     "label": "Container Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rack_Nominal_Voltage_V",
+     "name": "rack_nominal_voltage_v",
+     "label": "Rack Nominal Voltage V",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "DC_Voltage_Min_V",
+     "name": "dc_voltage_min_v",
+     "label": "DC Voltage Min V",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "DC_Voltage_Max_V",
+     "name": "dc_voltage_max_v",
+     "label": "DC Voltage Max V",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "PCS_OEM",
+     "name": "pcs_oem",
+     "label": "PCS OEM",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "PCS_Unit_Rating_MW",
+     "name": "pcs_unit_rating_mw",
+     "label": "PCS Unit Rating MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "PCS_Nominal_Efficiency_Pct",
+     "name": "pcs_nominal_efficiency_pct",
+     "label": "PCS Nominal Efficiency %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "MV_Transformer_MVA",
+     "name": "mv_transformer_mva",
+     "label": "MV Transformer MVA",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "MV_Transformer_Efficiency_Pct",
+     "name": "mv_transformer_efficiency_pct",
+     "label": "MV Transformer Efficiency %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Battery_DC_RTE_Pct",
+     "name": "battery_dc_rte_pct",
+     "label": "Battery DC RTE %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Self_Discharge_Pct_per_Day",
+     "name": "self_discharge_pct_per_day",
+     "label": "Self Discharge % per Day",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Aux_Base_kW_per_Container",
+     "name": "aux_base_k_w_per_container",
+     "label": "Aux Base kW per Container",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Aux_HVAC_kW_per_Container_per_10C",
+     "name": "aux_hvac_k_w_per_container_per_10_c",
+     "label": "Aux HVAC kW per Container per 10C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Aux_Throughput_Coeff_Pct",
+     "name": "aux_throughput_coeff_pct",
+     "label": "Aux Throughput Coeff %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Thermal_Management",
+     "name": "thermal_management",
+     "label": "Thermal Management",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rated_C_Rate",
+     "name": "rated_c_rate",
+     "label": "Rated C Rate",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Operating Limits",
+   "name": "bess_operating_limits",
+   "label": "BESS Operating Limits",
+   "pluralLabel": "BESS Operating Limits",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "SoC_Operating_Min_Pct",
+     "name": "so_c_operating_min_pct",
+     "label": "SoC Operating Min %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "SoC_Operating_Max_Pct",
+     "name": "so_c_operating_max_pct",
+     "label": "SoC Operating Max %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "SoC_BMS_Hard_Min_Pct",
+     "name": "so_c_bms_hard_min_pct",
+     "label": "SoC BMS Hard Min %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "SoC_BMS_Hard_Max_Pct",
+     "name": "so_c_bms_hard_max_pct",
+     "label": "SoC BMS Hard Max %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Operating_Min_C",
+     "name": "cell_temp_operating_min_c",
+     "label": "Cell Temp Operating Min C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Operating_Max_C",
+     "name": "cell_temp_operating_max_c",
+     "label": "Cell Temp Operating Max C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Alarm_C",
+     "name": "cell_temp_alarm_c",
+     "label": "Cell Temp Alarm C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Trip_C",
+     "name": "cell_temp_trip_c",
+     "label": "Cell Temp Trip C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cell_Voltage_Min_V",
+     "name": "cell_voltage_min_v",
+     "label": "Cell Voltage Min V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Voltage_Max_V",
+     "name": "cell_voltage_max_v",
+     "label": "Cell Voltage Max V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Max_Charge_MW",
+     "name": "max_charge_mw",
+     "label": "Max Charge MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_Discharge_MW",
+     "name": "max_discharge_mw",
+     "label": "Max Discharge MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_C_Rate",
+     "name": "max_c_rate",
+     "label": "Max C Rate",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Ramp_Rate_Pct_per_Min",
+     "name": "ramp_rate_pct_per_min",
+     "label": "Ramp Rate % per Min",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_Cycles_per_Day",
+     "name": "max_cycles_per_day",
+     "label": "Max Cycles per Day",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Source_Document",
+     "name": "source_document",
+     "label": "Source Document",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Residual_Tolerance_Pct",
+     "name": "residual_tolerance_pct",
+     "label": "Residual Tolerance %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "SoC_Drift_Tolerance_Pct",
+     "name": "so_c_drift_tolerance_pct",
+     "label": "SoC Drift Tolerance %",
+     "kind": "integer",
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Warranty & Maintenance",
+   "name": "bess_warranty_and_maintenance",
+   "label": "BESS Warranty & Maintenance",
+   "pluralLabel": "BESS Warranty & Maintenance",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Warranty_Provider",
+     "name": "warranty_provider",
+     "label": "Warranty Provider",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Product_Warranty_Start",
+     "name": "product_warranty_start",
+     "label": "Product Warranty Start",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Product_Warranty_End",
+     "name": "product_warranty_end",
+     "label": "Product Warranty End",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Performance_Warranty_Years",
+     "name": "performance_warranty_years",
+     "label": "Performance Warranty Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Guaranteed_Retention_Pct_Year10",
+     "name": "guaranteed_retention_pct_year10",
+     "label": "Guaranteed Retention % Year10",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Guaranteed_Retention_Pct_EOL",
+     "name": "guaranteed_retention_pct_eol",
+     "label": "Guaranteed Retention % EOL",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Warranty_Cycle_Limit",
+     "name": "warranty_cycle_limit",
+     "label": "Warranty Cycle Limit",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Warranty_Throughput_Limit_MWh",
+     "name": "warranty_throughput_limit_mwh",
+     "label": "Warranty Throughput Limit MWh",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Guaranteed_AC_RTE_Pct",
+     "name": "guaranteed_ac_rte_pct",
+     "label": "Guaranteed AC RTE %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Warranty_Temp_Condition_C",
+     "name": "warranty_temp_condition_c",
+     "label": "Warranty Temp Condition C",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Warranty_SoC_Condition",
+     "name": "warranty_so_c_condition",
+     "label": "Warranty SoC Condition",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "LTSA_Provider",
+     "name": "ltsa_provider",
+     "label": "LTSA Provider",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "LTSA_Availability_Guarantee_Pct",
+     "name": "ltsa_availability_guarantee_pct",
+     "label": "LTSA Availability Guarantee %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Visual_Inspection_Interval_Days",
+     "name": "visual_inspection_interval_days",
+     "label": "Visual Inspection Interval Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Thermography_Interval_Days",
+     "name": "thermography_interval_days",
+     "label": "Thermography Interval Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Coolant_HVAC_Service_Interval_Days",
+     "name": "coolant_hvac_service_interval_days",
+     "label": "Coolant HVAC Service Interval Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Capacity_Test_Interval_Days",
+     "name": "capacity_test_interval_days",
+     "label": "Capacity Test Interval Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Fire_System_Inspection_Interval_Days",
+     "name": "fire_system_inspection_interval_days",
+     "label": "Fire System Inspection Interval Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Last_Visual_Inspection",
+     "name": "last_visual_inspection",
+     "label": "Last Visual Inspection",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Last_Thermography",
+     "name": "last_thermography",
+     "label": "Last Thermography",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Last_HVAC_Service",
+     "name": "last_hvac_service",
+     "label": "Last HVAC Service",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Commercial & Dispatch",
+   "name": "bess_commercial_and_dispatch",
+   "label": "BESS Commercial & Dispatch",
+   "pluralLabel": "BESS Commercial & Dispatch",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "Contract_ID"
+   ],
+   "columns": [
+    {
+     "source": "Contract_ID",
+     "name": "contract_id",
+     "label": "Contract ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Commercial_Model",
+     "name": "commercial_model",
+     "label": "Commercial Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Contract_Start",
+     "name": "contract_start",
+     "label": "Contract Start",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Contracted_Power_MW",
+     "name": "contracted_power_mw",
+     "label": "Contracted Power MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Contracted_Energy_MWh",
+     "name": "contracted_energy_mwh",
+     "label": "Contracted Energy MWh",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Cycles_per_Day",
+     "name": "cycles_per_day",
+     "label": "Cycles per Day",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Min_Availability_Pct",
+     "name": "min_availability_pct",
+     "label": "Min Availability %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Availability_Measurement",
+     "name": "availability_measurement",
+     "label": "Availability Measurement",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Availability_LD_Multiplier",
+     "name": "availability_ld_multiplier",
+     "label": "Availability LD Multiplier",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Min_RTE_Pct",
+     "name": "min_rte_pct",
+     "label": "Min RTE %",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "RTE_Measurement",
+     "name": "rte_measurement",
+     "label": "RTE Measurement",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "RTE_Penalty_Basis",
+     "name": "rte_penalty_basis",
+     "label": "RTE Penalty Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Min_Dispatch_Fulfilment_Pct",
+     "name": "min_dispatch_fulfilment_pct",
+     "label": "Min Dispatch Fulfilment %",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Offtaker",
+     "name": "offtaker",
+     "label": "Offtaker",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Capacity_Charge_INR_per_MW_Month",
+     "name": "capacity_charge_per_mw_month",
+     "label": "Capacity Charge per MW Month",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Peak_Tariff_INR_kWh",
+     "name": "peak_tariff_k_wh",
+     "label": "Peak Tariff kWh",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Charging_Energy_Tariff_INR_kWh",
+     "name": "charging_energy_tariff_k_wh",
+     "label": "Charging Energy Tariff kWh",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Charge_Window",
+     "name": "charge_window",
+     "label": "Charge Window",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Discharge_Window",
+     "name": "discharge_window",
+     "label": "Discharge Window",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Tenure_Years",
+     "name": "tenure_years",
+     "label": "Tenure Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "VGF_Support",
+     "name": "vgf_support",
+     "label": "VGF Support",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "VGF_INR_per_MWh",
+     "name": "vgf_per_mwh",
+     "label": "VGF per MWh",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Capacity Tests",
+   "name": "bess_capacity_tests",
+   "label": "BESS Capacity Tests",
+   "pluralLabel": "BESS Capacity Tests",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "Test_ID"
+   ],
+   "columns": [
+    {
+     "source": "Test_ID",
+     "name": "test_id",
+     "label": "Test ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Test_Date",
+     "name": "test_date",
+     "label": "Test Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Test_Type",
+     "name": "test_type",
+     "label": "Test Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Test_Standard",
+     "name": "test_standard",
+     "label": "Test Standard",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rated_Power_During_Test_MW",
+     "name": "rated_power_during_test_mw",
+     "label": "Rated Power During Test MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Discharged_Energy_POI_MWh",
+     "name": "discharged_energy_poi_mwh",
+     "label": "Discharged Energy POI MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Charged_Energy_POI_MWh",
+     "name": "charged_energy_poi_mwh",
+     "label": "Charged Energy POI MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "AC_RTE_Pct",
+     "name": "ac_rte_pct",
+     "label": "AC RTE %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "SOH_Energy_Pct",
+     "name": "soh_energy_pct",
+     "label": "SOH Energy %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Ambient_Temp_C",
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Witness",
+     "name": "witness",
+     "label": "Witness",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Result",
+     "name": "result",
+     "label": "Result",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 10
+  },
+  {
+   "sheet": "BESS Degradation Plan",
+   "name": "bess_degradation_plan",
+   "label": "BESS Degradation Plan",
+   "pluralLabel": "BESS Degradation Plan",
+   "domain": "Battery Energy Storage",
+   "key": [],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Operating_Year",
+     "name": "operating_year",
+     "label": "Operating Year",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Calendar_Year",
+     "name": "calendar_year",
+     "label": "Calendar Year",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Expected_Retention_Pct",
+     "name": "expected_retention_pct",
+     "label": "Expected Retention %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Expected_Usable_MWh",
+     "name": "expected_usable_mwh",
+     "label": "Expected Usable MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Planned_Augmentation_MWh",
+     "name": "planned_augmentation_mwh",
+     "label": "Planned Augmentation MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Expected_Cumulative_Cycles",
+     "name": "expected_cumulative_cycles",
+     "label": "Expected Cumulative Cycles",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Basis",
+     "name": "basis",
+     "label": "Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 80
+  },
+  {
+   "sheet": "BESS Safety & Compliance",
+   "name": "bess_safety_and_compliance",
+   "label": "BESS Safety & Compliance",
+   "pluralLabel": "BESS Safety & Compliance",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Applicable_Regulation",
+     "name": "applicable_regulation",
+     "label": "Applicable Regulation",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "System_Voltage_Class",
+     "name": "system_voltage_class",
+     "label": "System Voltage Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Containers_With_Auto_Suppression",
+     "name": "containers_with_auto_suppression",
+     "label": "Containers With Auto Suppression",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Suppression_Agent",
+     "name": "suppression_agent",
+     "label": "Suppression Agent",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Gas_Smoke_Heat_Flame_Detection",
+     "name": "gas_smoke_heat_flame_detection",
+     "label": "Gas Smoke Heat Flame Detection",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Explosion_Venting_Deflagration_Panels",
+     "name": "explosion_venting_deflagration_panels",
+     "label": "Explosion Venting Deflagration Panels",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Forced_Ventilation_Auto_Louvers",
+     "name": "forced_ventilation_auto_louvers",
+     "label": "Forced Ventilation Auto Louvers",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Two_Fault_Tolerance_Design_Review",
+     "name": "two_fault_tolerance_design_review",
+     "label": "Two Fault Tolerance Design Review",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Last_Third_Party_Fire_Audit",
+     "name": "last_third_party_fire_audit",
+     "label": "Last Third Party Fire Audit",
+     "kind": "date",
+     "nullable": true
+    },
+    {
+     "source": "Fire_Audit_Due_By",
+     "name": "fire_audit_due_by",
+     "label": "Fire Audit Due By",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Perimeter_Fence_m",
+     "name": "perimeter_fence_m",
+     "label": "Perimeter Fence m",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "CCTV_Motion_Detection",
+     "name": "cctv_motion_detection",
+     "label": "CCTV Motion Detection",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Emergency_Stop_Auto_and_Manual",
+     "name": "emergency_stop_auto_and_manual",
+     "label": "Emergency Stop Auto and Manual",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Fire_Brigade_NOC",
+     "name": "fire_brigade_noc",
+     "label": "Fire Brigade NOC",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Document_ID",
+     "name": "evidence_document_id",
+     "label": "Evidence Document ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Controls & Comms",
+   "name": "bess_controls_and_comms",
+   "label": "BESS Controls & Comms",
+   "pluralLabel": "BESS Controls & Comms",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "EMS_ID",
+     "name": "ems_id",
+     "label": "EMS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "EMS_Vendor",
+     "name": "ems_vendor",
+     "label": "EMS Vendor",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BMS_Vendor",
+     "name": "bms_vendor",
+     "label": "BMS Vendor",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "PPC_ID",
+     "name": "ppc_id",
+     "label": "PPC ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "SCADA_Protocol",
+     "name": "scada_protocol",
+     "label": "SCADA Protocol",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BMS_to_EMS_Protocol",
+     "name": "bms_to_ems_protocol",
+     "label": "BMS to EMS Protocol",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Telemetry_Resolution_s",
+     "name": "telemetry_resolution_s",
+     "label": "Telemetry Resolution s",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Historian_Aggregation",
+     "name": "historian_aggregation",
+     "label": "Historian Aggregation",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Tag_Prefix",
+     "name": "tag_prefix",
+     "label": "Tag Prefix",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Tag_Map",
+     "name": "tag_map",
+     "label": "Tag Map",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Integration_Status",
+     "name": "integration_status",
+     "label": "Integration Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 5
+  },
+  {
+   "sheet": "BESS Daily Operations",
+   "name": "bess_daily_operations",
+   "label": "BESS Daily Operations",
+   "pluralLabel": "BESS Daily Operations",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "Date",
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "Date",
+     "name": "date",
+     "label": "Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Charge_MWh_POI",
+     "name": "charge_mwh_poi",
+     "label": "Charge MWh POI",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Discharge_MWh_POI",
+     "name": "discharge_mwh_poi",
+     "label": "Discharge MWh POI",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Aux_MWh",
+     "name": "aux_mwh",
+     "label": "Aux MWh",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Start_SoC_Pct",
+     "name": "start_so_c_pct",
+     "label": "Start SoC %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "End_SoC_Pct",
+     "name": "end_so_c_pct",
+     "label": "End SoC %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Equivalent_Full_Cycles",
+     "name": "equivalent_full_cycles",
+     "label": "Equivalent Full Cycles",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Availability_Pct",
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Scheduled_Discharge_MWh",
+     "name": "scheduled_discharge_mwh",
+     "label": "Scheduled Discharge MWh",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_Cell_Temp_C",
+     "name": "max_cell_temp_c",
+     "label": "Max Cell Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cumulative_Discharge_MWh_Since_COD",
+     "name": "cumulative_discharge_mwh_since_cod",
+     "label": "Cumulative Discharge MWh Since COD",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 155
+  },
+  {
+   "sheet": "BESS Telemetry",
+   "name": "bess_telemetry",
+   "label": "BESS Telemetry",
+   "pluralLabel": "BESS Telemetry",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "Timestamp",
+    "BESS_ID"
+   ],
+   "columns": [
+    {
+     "source": "Timestamp",
+     "name": "timestamp",
+     "label": "Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Charge_MW_POI",
+     "name": "charge_mw_poi",
+     "label": "Charge MW POI",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Discharge_MW_POI",
+     "name": "discharge_mw_poi",
+     "label": "Discharge MW POI",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Charge_Source",
+     "name": "charge_source",
+     "label": "Charge Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Dispatch_Schedule_MW",
+     "name": "dispatch_schedule_mw",
+     "label": "Dispatch Schedule MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Available_MW",
+     "name": "available_mw",
+     "label": "Available MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "SoC_Pct",
+     "name": "so_c_pct",
+     "label": "SoC %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Aux_Load_MW",
+     "name": "aux_load_mw",
+     "label": "Aux Load MW",
+     "kind": "decimal",
+     "precision": 4,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Max_C",
+     "name": "cell_temp_max_c",
+     "label": "Cell Temp Max C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Temp_Avg_C",
+     "name": "cell_temp_avg_c",
+     "label": "Cell Temp Avg C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Ambient_Temp_C",
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Co_located_PV_MW",
+     "name": "co_located_pv_mw",
+     "label": "Co located PV MW",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Operating_Mode",
+     "name": "operating_mode",
+     "label": "Operating Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Quality_Pct",
+     "name": "data_quality_pct",
+     "label": "Data Quality %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 480
+  },
+  {
+   "sheet": "BESS Data Guide",
+   "name": "bess_data_guide",
+   "label": "BESS Data Guide",
+   "pluralLabel": "BESS Data Guide",
+   "domain": "Battery Energy Storage",
+   "key": [],
+   "columns": [
+    {
+     "source": "Worksheet",
+     "name": "worksheet",
+     "label": "Worksheet",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Field",
+     "name": "field",
+     "label": "Field",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
+    },
+    {
+     "source": "Unit / format",
+     "name": "unit_format",
+     "label": "Unit / format",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Required",
+     "name": "required",
+     "label": "Required",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Definition",
+     "name": "definition",
+     "label": "Definition",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Used by AIP for",
+     "name": "used_by_aip_for",
+     "label": "Used by AIP for",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 219
   },
   {
    "sheet": "PLAN_Field_Packs",
@@ -9806,7 +12888,7 @@
      "name": "source_reference",
      "label": "Source Reference",
      "kind": "text",
-     "maxLength": 200,
+     "maxLength": 1000,
      "nullable": false
     },
     {
@@ -9840,7 +12922,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 2
+   "rowCount": 4
   },
   {
    "sheet": "SUS_Avoided_Emissions_Calc",
@@ -10014,7 +13096,7 @@
      "name": "tariff_per_k_wh",
      "label": "Tariff per kWh",
      "kind": "money",
-     "precision": 4,
+     "precision": 2,
      "currency": "INR",
      "nullable": true
     },
@@ -12207,7 +15289,7 @@
      "kind": "money",
      "precision": 2,
      "currency": "INR",
-     "nullable": false
+     "nullable": true
     },
     {
      "source": "RCA_Required",
@@ -12240,9 +15322,49 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "Model_ID",
+     "name": "model_id",
+     "label": "Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Batch_ID",
+     "name": "batch_id",
+     "label": "Batch ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Performance_Guarantee",
+     "name": "performance_guarantee",
+     "label": "Performance Guarantee",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
     }
    ],
-   "rowCount": 18
+   "rowCount": 40
   },
   {
    "sheet": "Warranty Claims",
@@ -12386,9 +15508,33 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "Work_Order_ID",
+     "name": "work_order_id",
+     "label": "Work Order ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
     }
    ],
-   "rowCount": 18
+   "rowCount": 24
   },
   {
    "sheet": "MSI_ERP_Spares",
@@ -12569,7 +15715,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 336
+   "rowCount": 342
   },
   {
    "sheet": "MSI_Part_Master",
@@ -12682,9 +15828,32 @@
      "kind": "text",
      "maxLength": 200,
      "nullable": false
+    },
+    {
+     "source": "On_Hand_Qty",
+     "name": "on_hand_qty",
+     "label": "On Hand Qty",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Compatible_Model_ID",
+     "name": "compatible_model_id",
+     "label": "Compatible Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Compatibility_Notes",
+     "name": "compatibility_notes",
+     "label": "Compatibility Notes",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
     }
    ],
-   "rowCount": 28
+   "rowCount": 30
   },
   {
    "sheet": "MSI_Spare_Requirements",
@@ -12816,7 +15985,7 @@
      "nullable": false
     }
    ],
-   "rowCount": 68
+   "rowCount": 74
   },
   {
    "sheet": "MSI_Data_Quality",
@@ -12913,6 +16082,3930 @@
     }
    ],
    "rowCount": 9
+  },
+  {
+   "sheet": "Asset Master",
+   "name": "asset_master",
+   "label": "Asset Master",
+   "pluralLabel": "Asset Master",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Asset_ID"
+   ],
+   "columns": [
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Description",
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rated_Capacity_MW",
+     "name": "rated_capacity_mw",
+     "label": "Rated Capacity MW",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": true
+    },
+    {
+     "source": "Operating_Status",
+     "name": "operating_status",
+     "label": "Operating Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "OEM",
+     "name": "oem",
+     "label": "OEM",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Model",
+     "name": "model",
+     "label": "Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Install_Year",
+     "name": "install_year",
+     "label": "Install Year",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Cost_Centre",
+     "name": "cost_centre",
+     "label": "Cost Centre",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Health_Score",
+     "name": "health_score",
+     "label": "Health Score",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Risk_Band",
+     "name": "risk_band",
+     "label": "Risk Band",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Last_Maintenance_Date",
+     "name": "last_maintenance_date",
+     "label": "Last Maintenance Date",
+     "kind": "date",
+     "nullable": true
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Group_ID",
+     "name": "group_id",
+     "label": "Group ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Asset_Granularity",
+     "name": "asset_granularity",
+     "label": "Asset Granularity",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Module_Quantity",
+     "name": "module_quantity",
+     "label": "Module Quantity",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Model_ID",
+     "name": "model_id",
+     "label": "Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Capacity_Basis",
+     "name": "capacity_basis",
+     "label": "Capacity Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Parent_Asset_ID",
+     "name": "parent_asset_id",
+     "label": "Parent Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Source",
+     "name": "source",
+     "label": "Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 969
+  },
+  {
+   "sheet": "Reliability_Life_History",
+   "name": "reliability_life_history",
+   "label": "Reliability Life History",
+   "pluralLabel": "Reliability Life History",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Reliability_Record_ID"
+   ],
+   "columns": [
+    {
+     "source": "Reliability_Record_ID",
+     "name": "reliability_record_id",
+     "label": "Reliability Record ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Commissioned_Date",
+     "name": "commissioned_date",
+     "label": "Commissioned Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Observation_Date",
+     "name": "observation_date",
+     "label": "Observation Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Operating_Hours",
+     "name": "operating_hours",
+     "label": "Operating Hours",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Event_Type",
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failed_Surviving",
+     "name": "failed_surviving",
+     "label": "Failed Surviving",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Right_Censored",
+     "name": "right_censored",
+     "label": "Right Censored",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Replacement_Reset",
+     "name": "replacement_reset",
+     "label": "Replacement Reset",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Source",
+     "name": "evidence_source",
+     "label": "Evidence Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_Mode",
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Quality_Status",
+     "name": "data_quality_status",
+     "label": "Data Quality Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Group_ID",
+     "name": "group_id",
+     "label": "Group ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Observation_Basis",
+     "name": "observation_basis",
+     "label": "Observation Basis",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
+    },
+    {
+     "source": "Calendar_Exposure_Hours",
+     "name": "calendar_exposure_hours",
+     "label": "Calendar Exposure Hours",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Model_ID",
+     "name": "model_id",
+     "label": "Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Batch_ID",
+     "name": "batch_id",
+     "label": "Batch ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Failure_Criterion",
+     "name": "failure_criterion",
+     "label": "Failure Criterion",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 7584
+  },
+  {
+   "sheet": "PV_Module_Groups",
+   "name": "pv_module_groups",
+   "label": "PV Module Groups",
+   "pluralLabel": "PV Module Groups",
+   "domain": "PV Module Register",
+   "key": [
+    "Group_ID"
+   ],
+   "columns": [
+    {
+     "source": "Group_ID",
+     "name": "group_id",
+     "label": "Group ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Group_Name",
+     "name": "group_name",
+     "label": "Group Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Block",
+     "name": "block",
+     "label": "Block",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Reported_Quantity",
+     "name": "reported_quantity",
+     "label": "Reported Quantity",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Source_Sheet",
+     "name": "source_sheet",
+     "label": "Source Sheet",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_Record_ID",
+     "name": "source_record_id",
+     "label": "Source Record ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_Asset_ID",
+     "name": "source_asset_id",
+     "label": "Source Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Commission_Year",
+     "name": "commission_year",
+     "label": "Commission Year",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Notes",
+     "name": "notes",
+     "label": "Notes",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 6
+  },
+  {
+   "sheet": "PV_Module_Models",
+   "name": "pv_module_models",
+   "label": "PV Module Models",
+   "pluralLabel": "PV Module Models",
+   "domain": "PV Module Register",
+   "key": [
+    "Model_ID"
+   ],
+   "columns": [
+    {
+     "source": "Model_ID",
+     "name": "model_id",
+     "label": "Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Manufacturer",
+     "name": "manufacturer",
+     "label": "Manufacturer",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Model_Name",
+     "name": "model_name",
+     "label": "Model Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Technology",
+     "name": "technology",
+     "label": "Technology",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rated_Wp",
+     "name": "rated_wp",
+     "label": "Rated Wp",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Unit_Mass_kg",
+     "name": "unit_mass_kg",
+     "label": "Unit Mass kg",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Document_Reference",
+     "name": "document_reference",
+     "label": "Document Reference",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Count",
+     "name": "cell_count",
+     "label": "Cell Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Length_mm",
+     "name": "length_mm",
+     "label": "Length mm",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Width_mm",
+     "name": "width_mm",
+     "label": "Width mm",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Thickness_mm",
+     "name": "thickness_mm",
+     "label": "Thickness mm",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Voc_V",
+     "name": "voc_v",
+     "label": "Voc V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Isc_A",
+     "name": "isc_a",
+     "label": "Isc A",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Vmp_V",
+     "name": "vmp_v",
+     "label": "Vmp V",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Imp_A",
+     "name": "imp_a",
+     "label": "Imp A",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Efficiency_Pct",
+     "name": "efficiency_pct",
+     "label": "Efficiency %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Temperature_Coefficient_Pmax_Pct_C",
+     "name": "temperature_coefficient_pmax_pct_c",
+     "label": "Temperature Coefficient Pmax % C",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "NOCT_C",
+     "name": "noct_c",
+     "label": "NOCT C",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_System_Voltage_V",
+     "name": "max_system_voltage_v",
+     "label": "Max System Voltage V",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_Series_Fuse_A",
+     "name": "max_series_fuse_a",
+     "label": "Max Series Fuse A",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Connector_Type",
+     "name": "connector_type",
+     "label": "Connector Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Frame",
+     "name": "frame",
+     "label": "Frame",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Glass",
+     "name": "glass",
+     "label": "Glass",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Bypass_Diode_Count",
+     "name": "bypass_diode_count",
+     "label": "Bypass Diode Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Bifacial",
+     "name": "bifacial",
+     "label": "Bifacial",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Product_Warranty_Years",
+     "name": "product_warranty_years",
+     "label": "Product Warranty Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Performance_Warranty_Years",
+     "name": "performance_warranty_years",
+     "label": "Performance Warranty Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Planning_Service_Life_Years",
+     "name": "planning_service_life_years",
+     "label": "Planning Service Life Years",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Service_Life_Basis",
+     "name": "service_life_basis",
+     "label": "Service Life Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Warranty_Reference",
+     "name": "warranty_reference",
+     "label": "Warranty Reference",
+     "kind": "url",
+     "maxLength": 1000,
+     "nullable": false
+    }
+   ],
+   "rowCount": 2
+  },
+  {
+   "sheet": "PV_Population_Segments",
+   "name": "pv_population_segments",
+   "label": "PV Population Segments",
+   "pluralLabel": "PV Population Segments",
+   "domain": "PV Module Register",
+   "key": [
+    "Segment_ID"
+   ],
+   "columns": [
+    {
+     "source": "Segment_ID",
+     "name": "segment_id",
+     "label": "Segment ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Group_ID",
+     "name": "group_id",
+     "label": "Group ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Model_ID",
+     "name": "model_id",
+     "label": "Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Batch_ID",
+     "name": "batch_id",
+     "label": "Batch ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Installation_Date",
+     "name": "installation_date",
+     "label": "Installation Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Balance_As_Of",
+     "name": "balance_as_of",
+     "label": "Balance As Of",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Opening_Quantity",
+     "name": "opening_quantity",
+     "label": "Opening Quantity",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 6
+  },
+  {
+   "sheet": "PV_Module_Register",
+   "name": "pv_module_register",
+   "label": "PV Module Register",
+   "pluralLabel": "PV Module Register",
+   "domain": "PV Module Register",
+   "key": [
+    "Module_ID"
+   ],
+   "columns": [
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Segment_ID",
+     "name": "segment_id",
+     "label": "Segment ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Serial_Number",
+     "name": "serial_number",
+     "label": "Serial Number",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Position",
+     "name": "position",
+     "label": "Position",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Installed_Date",
+     "name": "installed_date",
+     "label": "Installed Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Removed_Date",
+     "name": "removed_date",
+     "label": "Removed Date",
+     "kind": "date",
+     "nullable": true
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Removal_Status",
+     "name": "removal_status",
+     "label": "Removal Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 6000
+  },
+  {
+   "sheet": "PV_Lifecycle_Events",
+   "name": "pv_lifecycle_events",
+   "label": "PV Lifecycle Events",
+   "pluralLabel": "PV Lifecycle Events",
+   "domain": "PV Module Register",
+   "key": [
+    "Event_ID"
+   ],
+   "columns": [
+    {
+     "source": "Event_ID",
+     "name": "event_id",
+     "label": "Event ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Segment_ID",
+     "name": "segment_id",
+     "label": "Segment ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_Date",
+     "name": "event_date",
+     "label": "Event Date",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_Type",
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Quantity",
+     "name": "quantity",
+     "label": "Quantity",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Related_Event_ID",
+     "name": "related_event_id",
+     "label": "Related Event ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Notes",
+     "name": "notes",
+     "label": "Notes",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 0
+  },
+  {
+   "sheet": "PV_Batch_Allocations",
+   "name": "pv_batch_allocations",
+   "label": "PV Batch Allocations",
+   "pluralLabel": "PV Batch Allocations",
+   "domain": "PV Module Register",
+   "key": [
+    "Allocation_ID"
+   ],
+   "columns": [
+    {
+     "source": "Allocation_ID",
+     "name": "allocation_id",
+     "label": "Allocation ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Segment_ID",
+     "name": "segment_id",
+     "label": "Segment ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Batch_ID",
+     "name": "batch_id",
+     "label": "Batch ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Shipment_ID",
+     "name": "shipment_id",
+     "label": "Shipment ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Quantity",
+     "name": "quantity",
+     "label": "Quantity",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Receipt_Date",
+     "name": "receipt_date",
+     "label": "Receipt Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Supplier",
+     "name": "supplier",
+     "label": "Supplier",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Reference",
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 6
+  },
+  {
+   "sheet": "PV_Defect_Catalog",
+   "name": "pv_defect_catalog",
+   "label": "PV Defect Catalog",
+   "pluralLabel": "PV Defect Catalog",
+   "domain": "PV Module Register",
+   "key": [
+    "Defect_Code"
+   ],
+   "columns": [
+    {
+     "source": "Defect_Code",
+     "name": "defect_code",
+     "label": "Defect Code",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Category",
+     "name": "category",
+     "label": "Category",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Description",
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Component",
+     "name": "component",
+     "label": "Component",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Suggested_Evidence",
+     "name": "suggested_evidence",
+     "label": "Suggested Evidence",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Review_Required",
+     "name": "failure_review_required",
+     "label": "Failure Review Required",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 14
+  },
+  {
+   "sheet": "PV_Register_Guide",
+   "name": "pv_register_guide",
+   "label": "PV Register Guide",
+   "pluralLabel": "PV Register Guide",
+   "domain": "PV Module Register",
+   "key": [
+    "Topic"
+   ],
+   "columns": [
+    {
+     "source": "Topic",
+     "name": "topic",
+     "label": "Topic",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Guidance",
+     "name": "guidance",
+     "label": "Guidance",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    }
+   ],
+   "rowCount": 24
+  },
+  {
+   "sheet": "PM Plans",
+   "name": "pm_plans",
+   "label": "PM Plans",
+   "pluralLabel": "PM Plans",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "PM_Plan_ID"
+   ],
+   "columns": [
+    {
+     "source": "PM_Plan_ID",
+     "name": "pm_plan_id",
+     "label": "PM Plan ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Task",
+     "name": "task",
+     "label": "Task",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Frequency_Days",
+     "name": "frequency_days",
+     "label": "Frequency Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Last_Done",
+     "name": "last_done",
+     "label": "Last Done",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Next_Due",
+     "name": "next_due",
+     "label": "Next Due",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Overdue_Days",
+     "name": "overdue_days",
+     "label": "Overdue Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Standard_Labour_Hours",
+     "name": "standard_labour_hours",
+     "label": "Standard Labour Hours",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Primary_Part_ID",
+     "name": "primary_part_id",
+     "label": "Primary Part ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Required_Skill",
+     "name": "required_skill",
+     "label": "Required Skill",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 150
+  },
+  {
+   "sheet": "AI Alerts & RUL",
+   "name": "ai_alerts_and_rul",
+   "label": "AI Alerts & RUL",
+   "pluralLabel": "AI Alerts & RUL",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Alert_ID"
+   ],
+   "columns": [
+    {
+     "source": "Alert_ID",
+     "name": "alert_id",
+     "label": "Alert ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Component",
+     "name": "component",
+     "label": "Component",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Alert_Timestamp",
+     "name": "alert_timestamp",
+     "label": "Alert Timestamp",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Model",
+     "name": "model",
+     "label": "Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Risk_Score",
+     "name": "risk_score",
+     "label": "Risk Score",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "RUL_Days",
+     "name": "rul_days",
+     "label": "RUL Days",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Confidence_Pct",
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Risk_Tier",
+     "name": "risk_tier",
+     "label": "Risk Tier",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Alert_Status",
+     "name": "alert_status",
+     "label": "Alert Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Summary",
+     "name": "evidence_summary",
+     "label": "Evidence Summary",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 78
+  },
+  {
+   "sheet": "Prescriptive Actions",
+   "name": "prescriptive_actions",
+   "label": "Prescriptive Actions",
+   "pluralLabel": "Prescriptive Actions",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Recommendation_ID"
+   ],
+   "columns": [
+    {
+     "source": "Recommendation_ID",
+     "name": "recommendation_id",
+     "label": "Recommendation ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Alert_ID",
+     "name": "alert_id",
+     "label": "Alert ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Risk_Score",
+     "name": "risk_score",
+     "label": "Risk Score",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "RUL_Days",
+     "name": "rul_days",
+     "label": "RUL Days",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Recommended_Action",
+     "name": "recommended_action",
+     "label": "Recommended Action",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Cost_Now_INR",
+     "name": "cost_now",
+     "label": "Cost Now",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Cost_If_Deferred_INR",
+     "name": "cost_if_deferred",
+     "label": "Cost If Deferred",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Cost_Avoided_INR",
+     "name": "cost_avoided",
+     "label": "Cost Avoided",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Confidence_Pct",
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Decision_Status",
+     "name": "decision_status",
+     "label": "Decision Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rationale",
+     "name": "rationale",
+     "label": "Rationale",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 78
+  },
+  {
+   "sheet": "Vision Inspections",
+   "name": "vision_inspections",
+   "label": "Vision Inspections",
+   "pluralLabel": "Vision Inspections",
+   "domain": "AI Vision & Inspection",
+   "key": [
+    "Inspection_ID"
+   ],
+   "columns": [
+    {
+     "source": "Inspection_ID",
+     "name": "inspection_id",
+     "label": "Inspection ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_Name",
+     "name": "plant_name",
+     "label": "Plant Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inspection_Date_Time",
+     "name": "inspection_date_time",
+     "label": "Inspection Date Time",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Inspection_Type",
+     "name": "inspection_type",
+     "label": "Inspection Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Device_ID",
+     "name": "device_id",
+     "label": "Device ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Panels_Inspected",
+     "name": "panels_inspected",
+     "label": "Panels Inspected",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Images_Captured",
+     "name": "images_captured",
+     "label": "Images Captured",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Coverage_Pct",
+     "name": "coverage_pct",
+     "label": "Coverage %",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Weather",
+     "name": "weather",
+     "label": "Weather",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Flight_Altitude_m",
+     "name": "flight_altitude_m",
+     "label": "Flight Altitude m",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Inspection_Status",
+     "name": "inspection_status",
+     "label": "Inspection Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inspector",
+     "name": "inspector",
+     "label": "Inspector",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 31
+  },
+  {
+   "sheet": "Vision Findings",
+   "name": "vision_findings",
+   "label": "Vision Findings",
+   "pluralLabel": "Vision Findings",
+   "domain": "AI Vision & Inspection",
+   "key": [
+    "Finding_ID"
+   ],
+   "columns": [
+    {
+     "source": "Finding_ID",
+     "name": "finding_id",
+     "label": "Finding ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inspection_ID",
+     "name": "inspection_id",
+     "label": "Inspection ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Defect_Type",
+     "name": "defect_type",
+     "label": "Defect Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Detection_Mode",
+     "name": "detection_mode",
+     "label": "Detection Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Confidence_Pct",
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Severity",
+     "name": "severity",
+     "label": "Severity",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Finding_Status",
+     "name": "finding_status",
+     "label": "Finding Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Estimated_Loss_kWh_Day",
+     "name": "estimated_loss_k_wh_day",
+     "label": "Estimated Loss kWh Day",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Annual_Revenue_Risk_INR",
+     "name": "annual_revenue_risk",
+     "label": "Annual Revenue Risk",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Recommended_Action",
+     "name": "recommended_action",
+     "label": "Recommended Action",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Work_Order_ID",
+     "name": "work_order_id",
+     "label": "Work Order ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Affected_Area_sqm",
+     "name": "affected_area_sqm",
+     "label": "Affected Area sqm",
+     "kind": "decimal",
+     "precision": 3,
+     "nullable": false
+    },
+    {
+     "source": "Physical_Location",
+     "name": "physical_location",
+     "label": "Physical Location",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Inspection_Date",
+     "name": "inspection_date",
+     "label": "Inspection Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Inspector",
+     "name": "inspector",
+     "label": "Inspector",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Classified_Failure",
+     "name": "classified_failure",
+     "label": "Classified Failure",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 31
+  },
+  {
+   "sheet": "Vision Work Order Link",
+   "name": "vision_work_order_link",
+   "label": "Vision Work Order Link",
+   "pluralLabel": "Vision Work Order Link",
+   "domain": "AI Vision & Inspection",
+   "key": [
+    "Finding_ID",
+    "Work_Order_ID"
+   ],
+   "columns": [
+    {
+     "source": "Finding_ID",
+     "name": "finding_id",
+     "label": "Finding ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Work_Order_ID",
+     "name": "work_order_id",
+     "label": "Work Order ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Link_Date_Time",
+     "name": "link_date_time",
+     "label": "Link Date Time",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Link_Status",
+     "name": "link_status",
+     "label": "Link Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_System",
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Response_Time_Hours",
+     "name": "response_time_hours",
+     "label": "Response Time Hours",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    }
+   ],
+   "rowCount": 19
+  },
+  {
+   "sheet": "Event Log",
+   "name": "event_log",
+   "label": "Event Log",
+   "pluralLabel": "Event Log",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Event_ID"
+   ],
+   "columns": [
+    {
+     "source": "Event_ID",
+     "name": "event_id",
+     "label": "Event ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Incident_ID",
+     "name": "incident_id",
+     "label": "Incident ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_Date_Time",
+     "name": "event_date_time",
+     "label": "Event Date Time",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Event_Type",
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Severity",
+     "name": "severity",
+     "label": "Severity",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Alarm_Code",
+     "name": "alarm_code",
+     "label": "Alarm Code",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Weather_Context",
+     "name": "weather_context",
+     "label": "Weather Context",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Generation_Loss_MWh",
+     "name": "generation_loss_mwh",
+     "label": "Generation Loss MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Revenue_Impact_INR",
+     "name": "revenue_impact",
+     "label": "Revenue Impact",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": true
+    },
+    {
+     "source": "Event_Status",
+     "name": "event_status",
+     "label": "Event Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_System",
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Event_Timestamp",
+     "name": "event_timestamp",
+     "label": "Event Timestamp",
+     "kind": "datetime",
+     "nullable": true
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Classified_Failure",
+     "name": "classified_failure",
+     "label": "Classified Failure",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 42
+  },
+  {
+   "sheet": "Event Root Cause Cases",
+   "name": "event_root_cause_cases",
+   "label": "Event Root Cause Cases",
+   "pluralLabel": "Event Root Cause Cases",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCA_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCA_ID",
+     "name": "rca_id",
+     "label": "RCA ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_ID",
+     "name": "event_id",
+     "label": "Event ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_Name",
+     "name": "plant_name",
+     "label": "Plant Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "OEM",
+     "name": "oem",
+     "label": "OEM",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Model",
+     "name": "model",
+     "label": "Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_Type",
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Severity",
+     "name": "severity",
+     "label": "Severity",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_Time",
+     "name": "event_time",
+     "label": "Event Time",
+     "kind": "datetime",
+     "nullable": false
+    },
+    {
+     "source": "Cause_Name",
+     "name": "cause_name",
+     "label": "Cause Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Reference_ID",
+     "name": "reference_id",
+     "label": "Reference ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Verification_Method",
+     "name": "verification_method",
+     "label": "Verification Method",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Confidence_Pct",
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Validation_Status",
+     "name": "validation_status",
+     "label": "Validation Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Engineer_Approval",
+     "name": "engineer_approval",
+     "label": "Engineer Approval",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 30
+  },
+  {
+   "sheet": "Event Root Cause Evidence",
+   "name": "event_root_cause_evidence",
+   "label": "Event Root Cause Evidence",
+   "pluralLabel": "Event Root Cause Evidence",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "Evidence_ID"
+   ],
+   "columns": [
+    {
+     "source": "Evidence_ID",
+     "name": "evidence_id",
+     "label": "Evidence ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Event_ID",
+     "name": "event_id",
+     "label": "Event ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "RCA_ID",
+     "name": "rca_id",
+     "label": "RCA ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Tag",
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Signal",
+     "name": "signal",
+     "label": "Signal",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Actual_Value",
+     "name": "actual_value",
+     "label": "Actual Value",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Peer_Baseline",
+     "name": "peer_baseline",
+     "label": "Peer Baseline",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Unit",
+     "name": "unit",
+     "label": "Unit",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Deviation_Pct",
+     "name": "deviation_pct",
+     "label": "Deviation %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Source_System",
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Role",
+     "name": "evidence_role",
+     "label": "Evidence Role",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Engineering_Interpretation",
+     "name": "engineering_interpretation",
+     "label": "Engineering Interpretation",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    }
+   ],
+   "rowCount": 102
+  },
+  {
+   "sheet": "Inventory Balance",
+   "name": "inventory_balance",
+   "label": "Inventory Balance",
+   "pluralLabel": "Inventory Balance",
+   "domain": "Maintenance Spares",
+   "key": [
+    "Part_ID",
+    "Plant_ID"
+   ],
+   "columns": [
+    {
+     "source": "Part_ID",
+     "name": "part_id",
+     "label": "Part ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Opening_Qty",
+     "name": "opening_qty",
+     "label": "Opening Qty",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Receipts_30D",
+     "name": "receipts_30_d",
+     "label": "Receipts 30D",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Issues_30D",
+     "name": "issues_30_d",
+     "label": "Issues 30D",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Closing_Qty",
+     "name": "closing_qty",
+     "label": "Closing Qty",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Avg_Daily_Consumption",
+     "name": "avg_daily_consumption",
+     "label": "Avg Daily Consumption",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Days_of_Inventory",
+     "name": "days_of_inventory",
+     "label": "Days of Inventory",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": true
+    },
+    {
+     "source": "Stock_Status",
+     "name": "stock_status",
+     "label": "Stock Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "As_Of_Date",
+     "name": "as_of_date",
+     "label": "As Of Date",
+     "kind": "date",
+     "nullable": true
+    },
+    {
+     "source": "Reserved_Qty",
+     "name": "reserved_qty",
+     "label": "Reserved Qty",
+     "kind": "integer",
+     "nullable": true
+    },
+    {
+     "source": "Data_Basis",
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 198
+  },
+  {
+   "sheet": "Graph Entities",
+   "name": "graph_entities",
+   "label": "Graph Entities",
+   "pluralLabel": "Graph Entities",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Entity_ID"
+   ],
+   "columns": [
+    {
+     "source": "Entity_ID",
+     "name": "entity_id",
+     "label": "Entity ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Entity_Type",
+     "name": "entity_type",
+     "label": "Entity Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Entity_Name",
+     "name": "entity_name",
+     "label": "Entity Name",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Risk_Score",
+     "name": "risk_score",
+     "label": "Risk Score",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Criticality",
+     "name": "criticality",
+     "label": "Criticality",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_Mode",
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1158
+  },
+  {
+   "sheet": "Graph Relationships",
+   "name": "graph_relationships",
+   "label": "Graph Relationships",
+   "pluralLabel": "Graph Relationships",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Relationship_ID"
+   ],
+   "columns": [
+    {
+     "source": "Relationship_ID",
+     "name": "relationship_id",
+     "label": "Relationship ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "From_Entity_ID",
+     "name": "from_entity_id",
+     "label": "From Entity ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Relationship_Type",
+     "name": "relationship_type",
+     "label": "Relationship Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "To_Entity_ID",
+     "name": "to_entity_id",
+     "label": "To Entity ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Strength_Pct",
+     "name": "strength_pct",
+     "label": "Strength %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Confidence_Pct",
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Relationship_Status",
+     "name": "relationship_status",
+     "label": "Relationship Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Count",
+     "name": "evidence_count",
+     "label": "Evidence Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Valid_From",
+     "name": "valid_from",
+     "label": "Valid From",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Valid_To",
+     "name": "valid_to",
+     "label": "Valid To",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Approval_Status",
+     "name": "approval_status",
+     "label": "Approval Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_Mode",
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 3866
+  },
+  {
+   "sheet": "Spare Parts Master",
+   "name": "spare_parts_master",
+   "label": "Spare Parts Master",
+   "pluralLabel": "Spare Parts Master",
+   "domain": "Maintenance Spares",
+   "key": [
+    "Part_ID"
+   ],
+   "columns": [
+    {
+     "source": "Part_ID",
+     "name": "part_id",
+     "label": "Part ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Part_Name",
+     "name": "part_name",
+     "label": "Part Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Category",
+     "name": "category",
+     "label": "Category",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "On_Hand_Qty",
+     "name": "on_hand_qty",
+     "label": "On Hand Qty",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Reorder_Point",
+     "name": "reorder_point",
+     "label": "Reorder Point",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Max_Level",
+     "name": "max_level",
+     "label": "Max Level",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Lead_Time_Days",
+     "name": "lead_time_days",
+     "label": "Lead Time Days",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Unit_Cost_INR",
+     "name": "unit_cost",
+     "label": "Unit Cost",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Criticality",
+     "name": "criticality",
+     "label": "Criticality",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Preferred_Supplier",
+     "name": "preferred_supplier",
+     "label": "Preferred Supplier",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Storage_Location",
+     "name": "storage_location",
+     "label": "Storage Location",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Replenishment_Mode",
+     "name": "replenishment_mode",
+     "label": "Replenishment Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Shelf_Life_Control",
+     "name": "shelf_life_control",
+     "label": "Shelf Life Control",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source",
+     "name": "source",
+     "label": "Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Compatible_Model_ID",
+     "name": "compatible_model_id",
+     "label": "Compatible Model ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Compatibility_Notes",
+     "name": "compatibility_notes",
+     "label": "Compatibility Notes",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": true
+    }
+   ],
+   "rowCount": 24
+  },
+  {
+   "sheet": "RCM Functions & Failures",
+   "name": "rcm_functions_and_failures",
+   "label": "RCM Functions & Failures",
+   "pluralLabel": "RCM Functions & Failures",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Required_Function",
+     "name": "required_function",
+     "label": "Required Function",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Performance_Standard",
+     "name": "performance_standard",
+     "label": "Performance Standard",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Functional_Failure",
+     "name": "functional_failure",
+     "label": "Functional Failure",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "RCM Consequence Assessment",
+   "name": "rcm_consequence_assessment",
+   "label": "RCM Consequence Assessment",
+   "pluralLabel": "RCM Consequence Assessment",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Effect",
+     "name": "failure_effect",
+     "label": "Failure Effect",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Consequence_Class",
+     "name": "consequence_class",
+     "label": "Consequence Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Criticality",
+     "name": "criticality",
+     "label": "Criticality",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Business_Rule",
+     "name": "business_rule",
+     "label": "Business Rule",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Primary_Source",
+     "name": "primary_source",
+     "label": "Primary Source",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "RCM Decision Logic",
+   "name": "rcm_decision_logic",
+   "label": "RCM Decision Logic",
+   "pluralLabel": "RCM Decision Logic",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Detectable_Before_Functional_Failure",
+     "name": "detectable_before_functional_failure",
+     "label": "Detectable Before Functional Failure",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Condition_Trend_Available",
+     "name": "condition_trend_available",
+     "label": "Condition Trend Available",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Hidden_Or_Protective_Function",
+     "name": "hidden_or_protective_function",
+     "label": "Hidden Or Protective Function",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Scheduled_Task_Technically_Feasible",
+     "name": "scheduled_task_technically_feasible",
+     "label": "Scheduled Task Technically Feasible",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Task_Economically_Justified",
+     "name": "task_economically_justified",
+     "label": "Task Economically Justified",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Selected_Failure_Management_Policy",
+     "name": "selected_failure_management_policy",
+     "label": "Selected Failure Management Policy",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Decision_Basis",
+     "name": "decision_basis",
+     "label": "Decision Basis",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Standard_Basis",
+     "name": "standard_basis",
+     "label": "Standard Basis",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_URL",
+     "name": "source_url",
+     "label": "Source URL",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Primary_RCM_Policy",
+     "name": "primary_rcm_policy",
+     "label": "Primary RCM Policy",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Secondary_RCM_Policy",
+     "name": "secondary_rcm_policy",
+     "label": "Secondary RCM Policy",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Fallback_Policy",
+     "name": "fallback_policy",
+     "label": "Fallback Policy",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Design_Change_Required",
+     "name": "design_change_required",
+     "label": "Design Change Required",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Decision_Path_Summary",
+     "name": "decision_path_summary",
+     "label": "Decision Path Summary",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "RCM Task Triggers",
+   "name": "rcm_task_triggers",
+   "label": "RCM Task Triggers",
+   "pluralLabel": "RCM Task Triggers",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Selected_Policy",
+     "name": "selected_policy",
+     "label": "Selected Policy",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Task_Definition",
+     "name": "task_definition",
+     "label": "Task Definition",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Trigger_Or_Threshold",
+     "name": "trigger_or_threshold",
+     "label": "Trigger Or Threshold",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Base_Interval",
+     "name": "base_interval",
+     "label": "Base Interval",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Required_Skill",
+     "name": "required_skill",
+     "label": "Required Skill",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Likely_Parts",
+     "name": "likely_parts",
+     "label": "Likely Parts",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Isolation_Or_Outage",
+     "name": "isolation_or_outage",
+     "label": "Isolation Or Outage",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Execution_Owner",
+     "name": "execution_owner",
+     "label": "Execution Owner",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "RCM Climate Applicability",
+   "name": "rcm_climate_applicability",
+   "label": "RCM Climate Applicability",
+   "pluralLabel": "RCM Climate Applicability",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Climate_Stressors",
+     "name": "climate_stressors",
+     "label": "Climate Stressors",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "RCM_Adjustment_Rule",
+     "name": "rcm_adjustment_rule",
+     "label": "RCM Adjustment Rule",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rule_Type",
+     "name": "rule_type",
+     "label": "Rule Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Source_URL_1",
+     "name": "source_url_1",
+     "label": "Source URL 1",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Source_URL_2",
+     "name": "source_url_2",
+     "label": "Source URL 2",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "RCM Source Linkage",
+   "name": "rcm_source_linkage",
+   "label": "RCM Source Linkage",
+   "pluralLabel": "RCM Source Linkage",
+   "domain": "Maintenance & Reliability",
+   "key": [
+    "RCM_ID"
+   ],
+   "columns": [
+    {
+     "source": "RCM_ID",
+     "name": "rcm_id",
+     "label": "RCM ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Class",
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Failure_Mode",
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Authoritative_Module",
+     "name": "authoritative_module",
+     "label": "Authoritative Module",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Target_View",
+     "name": "target_view",
+     "label": "Target View",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "RCM_Use",
+     "name": "rcm_use",
+     "label": "RCM Use",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Duplication_Boundary",
+     "name": "duplication_boundary",
+     "label": "Duplication Boundary",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 1
+  },
+  {
+   "sheet": "Engineering Reference Taxonomy",
+   "name": "engineering_reference_taxonomy",
+   "label": "Engineering Reference Taxonomy",
+   "pluralLabel": "Engineering Reference Taxonomy",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Reference_ID"
+   ],
+   "columns": [
+    {
+     "source": "Reference_ID",
+     "name": "reference_id",
+     "label": "Reference ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_Group",
+     "name": "asset_group",
+     "label": "Asset Group",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Cause_Name",
+     "name": "cause_name",
+     "label": "Cause Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Reference_Type",
+     "name": "reference_type",
+     "label": "Reference Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Reference_Name",
+     "name": "reference_name",
+     "label": "Reference Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Engineering_Basis",
+     "name": "engineering_basis",
+     "label": "Engineering Basis",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Trigger_Signals",
+     "name": "trigger_signals",
+     "label": "Trigger Signals",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Matching_Terms",
+     "name": "matching_terms",
+     "label": "Matching Terms",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Verification_Method",
+     "name": "verification_method",
+     "label": "Verification Method",
+     "kind": "text",
+     "maxLength": 1000,
+     "nullable": false
+    },
+    {
+     "source": "Physics_Domain",
+     "name": "physics_domain",
+     "label": "Physics Domain",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Owner",
+     "name": "owner",
+     "label": "Owner",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Revision",
+     "name": "revision",
+     "label": "Revision",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Status",
+     "name": "status",
+     "label": "Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 21
+  },
+  {
+   "sheet": "Sites",
+   "name": "sites",
+   "label": "Sites",
+   "pluralLabel": "Sites",
+   "domain": "Asset Master & Engineering",
+   "key": [
+    "Plant_ID"
+   ],
+   "columns": [
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_Name",
+     "name": "plant_name",
+     "label": "Plant Name",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "State",
+     "name": "state",
+     "label": "State",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Capacity_MW",
+     "name": "capacity_mw",
+     "label": "Capacity MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Inverter_Count",
+     "name": "inverter_count",
+     "label": "Inverter Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Tracker_Rows",
+     "name": "tracker_rows",
+     "label": "Tracker Rows",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "String_Count",
+     "name": "string_count",
+     "label": "String Count",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "PR_Pct",
+     "name": "pr_pct",
+     "label": "PR %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Availability_Pct",
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Health_Score",
+     "name": "health_score",
+     "label": "Health Score",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Commission_Year",
+     "name": "commission_year",
+     "label": "Commission Year",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Has_BESS",
+     "name": "has_bess",
+     "label": "Has BESS",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": true
+    },
+    {
+     "source": "Grid_Connection_kV",
+     "name": "grid_connection_k_v",
+     "label": "Grid Connection kV",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Grid_Connection_Type",
+     "name": "grid_connection_type",
+     "label": "Grid Connection Type",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Export_Limit_MW",
+     "name": "export_limit_mw",
+     "label": "Export Limit MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Import_Limit_MW",
+     "name": "import_limit_mw",
+     "label": "Import Limit MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Timezone",
+     "name": "timezone",
+     "label": "Timezone",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 12
+  },
+  {
+   "sheet": "Commercial & PPA",
+   "name": "commercial_and_ppa",
+   "label": "Commercial & PPA",
+   "pluralLabel": "Commercial & PPA",
+   "domain": "Sustainability & Portfolio",
+   "key": [
+    "PPA_ID"
+   ],
+   "columns": [
+    {
+     "source": "PPA_ID",
+     "name": "ppa_id",
+     "label": "PPA ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Plant_ID",
+     "name": "plant_id",
+     "label": "Plant ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Offtaker",
+     "name": "offtaker",
+     "label": "Offtaker",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "PPA_Tariff_INR_kWh",
+     "name": "ppa_tariff_k_wh",
+     "label": "PPA Tariff kWh",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Contracted_Capacity_MW",
+     "name": "contracted_capacity_mw",
+     "label": "Contracted Capacity MW",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Contract_Start_Date",
+     "name": "contract_start_date",
+     "label": "Contract Start Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Contract_Expiry_Date",
+     "name": "contract_expiry_date",
+     "label": "Contract Expiry Date",
+     "kind": "date",
+     "nullable": false
+    },
+    {
+     "source": "Availability_Obligation_Pct",
+     "name": "availability_obligation_pct",
+     "label": "Availability Obligation %",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Scheduled_Energy_MWh",
+     "name": "scheduled_energy_mwh",
+     "label": "Scheduled Energy MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Delivered_Energy_MWh",
+     "name": "delivered_energy_mwh",
+     "label": "Delivered Energy MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Deemed_Generation_MWh",
+     "name": "deemed_generation_mwh",
+     "label": "Deemed Generation MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Shortfall_Energy_MWh",
+     "name": "shortfall_energy_mwh",
+     "label": "Shortfall Energy MWh",
+     "kind": "decimal",
+     "precision": 2,
+     "nullable": false
+    },
+    {
+     "source": "Availability_Penalty_INR",
+     "name": "availability_penalty",
+     "label": "Availability Penalty",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Curtailment_Compensation_INR",
+     "name": "curtailment_compensation",
+     "label": "Curtailment Compensation",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Invoice_Amount_INR",
+     "name": "invoice_amount",
+     "label": "Invoice Amount",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Amount_Received_INR",
+     "name": "amount_received",
+     "label": "Amount Received",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Receivable_Balance_INR",
+     "name": "receivable_balance",
+     "label": "Receivable Balance",
+     "kind": "money",
+     "precision": 2,
+     "currency": "INR",
+     "nullable": false
+    },
+    {
+     "source": "Days_Outstanding",
+     "name": "days_outstanding",
+     "label": "Days Outstanding",
+     "kind": "integer",
+     "nullable": false
+    },
+    {
+     "source": "Contract_Status",
+     "name": "contract_status",
+     "label": "Contract Status",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 12
+  },
+  {
+   "sheet": "BESS Component Register",
+   "name": "bess_component_register",
+   "label": "BESS Component Register",
+   "pluralLabel": "BESS Component Register",
+   "domain": "Battery Energy Storage",
+   "key": [
+    "Component_ID"
+   ],
+   "columns": [
+    {
+     "source": "Component_ID",
+     "name": "component_id",
+     "label": "Component ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "BESS_ID",
+     "name": "bess_id",
+     "label": "BESS ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Parent_Asset_ID",
+     "name": "parent_asset_id",
+     "label": "Parent Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Asset_ID",
+     "name": "asset_id",
+     "label": "Asset ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Level",
+     "name": "level",
+     "label": "Level",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Container_ID",
+     "name": "container_id",
+     "label": "Container ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Rack_ID",
+     "name": "rack_id",
+     "label": "Rack ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Module_ID",
+     "name": "module_id",
+     "label": "Module ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Cell_Group_ID",
+     "name": "cell_group_id",
+     "label": "Cell Group ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Serial_Number",
+     "name": "serial_number",
+     "label": "Serial Number",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "OEM",
+     "name": "oem",
+     "label": "OEM",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Model",
+     "name": "model",
+     "label": "Model",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Install_Date",
+     "name": "install_date",
+     "label": "Install Date",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Retired_Date",
+     "name": "retired_date",
+     "label": "Retired Date",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Effective_From",
+     "name": "effective_from",
+     "label": "Effective From",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Effective_To",
+     "name": "effective_to",
+     "label": "Effective To",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Revision",
+     "name": "revision",
+     "label": "Revision",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Evidence_Document_ID",
+     "name": "evidence_document_id",
+     "label": "Evidence Document ID",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    },
+    {
+     "source": "Data_Provenance",
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text",
+     "maxLength": 200,
+     "nullable": false
+    }
+   ],
+   "rowCount": 0
   }
  ]
 }

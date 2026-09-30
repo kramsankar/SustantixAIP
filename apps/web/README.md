@@ -2,7 +2,7 @@
 
 Confidential and proprietary to Sustantix. Not for distribution.
 
-This app hosts the v732 AIP runtime (`apps/runtime`, built with `--target vercel`) as static
+This app hosts the AIP runtime (`apps/runtime`, built with `--target vercel`) as static
 files under `/aip/`. It also serves the server-side API that the runtime's Vercel host adapter
 (`packages/host-bridge/src/adapters/vercel.ts`) calls:
 
