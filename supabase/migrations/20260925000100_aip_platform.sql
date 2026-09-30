@@ -55,7 +55,7 @@ alter table aip.audit_log enable row level security;
 drop policy if exists audit_read on aip.audit_log;
 create policy audit_read on aip.audit_log for select to authenticated using (aip.has_role(tenant_id, array['admin']));
 
-create or replace function aip.audit_log_immutable() returns trigger language plpgsql as $$
+create or replace function aip.audit_log_immutable() returns trigger language plpgsql set search_path = aip, pg_temp as $$
 begin
   raise exception 'aip.audit_log is append-only';
 end $$;
@@ -75,7 +75,7 @@ begin
   return coalesce(new, old);
 end $$;
 
-create or replace function aip.touch_updated_at() returns trigger language plpgsql as $$
+create or replace function aip.touch_updated_at() returns trigger language plpgsql set search_path = aip, pg_temp as $$
 begin
   new.updated_at := now();
   return new;
