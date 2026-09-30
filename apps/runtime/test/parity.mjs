@@ -3,7 +3,7 @@
 //  2. crawls every screen (incl. the Operations Hub) and requires exact equality with reference/v915-screen-crawl.json
 //  3. proves the license gate: no key, expired trial, module-restricted license
 import { execFileSync, spawn } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +12,8 @@ import { generateSigningKey, issueLicense } from "@sustantix/license/issuer";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../../..");
-const tmp = mkdtempSync(join(tmpdir(), "aip-parity-"));
+const tmp = process.env.AIP_PARITY_OUT ?? mkdtempSync(join(tmpdir(), "aip-parity-"));
+mkdirSync(tmp, { recursive: true });
 const { signing, publicJwk } = generateSigningKey("sx-parity");
 writeFileSync(join(tmp, "keys.json"), JSON.stringify([publicJwk]));
 const env = { ...process.env, AIP_EXTRA_TRUSTED_KEYS: join(tmp, "keys.json") };
@@ -27,6 +28,18 @@ const now = Math.floor(Date.now() / 1000);
 const cust = { id: "QA", name: "Parity QA" };
 const lic = (extra) => issueLicense(signing, { customer: cust, platform: "vercel", bind: { domains: ["localhost"] }, ...extra }).token;
 let failures = 0;
+// Prints where a screen diverges so CI logs are enough to root-cause a mismatch.
+function explainDiff(r, v) {
+  for (const f of ["text", "tabs", "heads"]) {
+    const a = typeof r[f] === "string" ? r[f] : JSON.stringify(r[f]);
+    const b = typeof v[f] === "string" ? v[f] : JSON.stringify(v[f]);
+    if (a === b) continue;
+    let i = 0;
+    while (i < a.length && a[i] === b[i]) i++;
+    const ctx = (s) => JSON.stringify(s.slice(Math.max(0, i - 120), i + 200));
+    console.log(`    ${f} differs at ${i} (reference ${a.length} chars, got ${b.length})\n      reference: ${ctx(a)}\n      got:       ${ctx(b)}`);
+  }
+}
 const check = (ok, what) => { console.log(`${ok ? "✓" : "✗"} ${what}`); if (!ok) failures++; };
 
 try {
@@ -38,7 +51,9 @@ try {
   check(got.length === Object.keys(ref).length, `all ${Object.keys(ref).length} screens reachable`);
   for (const v of got) {
     const r = ref[v.v];
-    check(!!r && r.text === v.text && JSON.stringify(r.tabs) === JSON.stringify(v.tabs) && JSON.stringify(r.heads) === JSON.stringify(v.heads), `screen parity · ${v.t}`);
+    const ok = !!r && r.text === v.text && JSON.stringify(r.tabs) === JSON.stringify(v.tabs) && JSON.stringify(r.heads) === JSON.stringify(v.heads);
+    check(ok, `screen parity · ${v.t}`);
+    if (!ok && r) explainDiff(r, v);
   }
 
   // 3 · license gate

@@ -116,3 +116,11 @@ jobs:
       - run: pnpm --filter @sustantix/license build
       - run: pnpm --filter @sustantix/aip-runtime exec playwright install --with-deps chromium
       - run: pnpm --filter @sustantix/aip-runtime test
+        env:
+          AIP_PARITY_OUT: ${{ runner.temp }}/parity
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-crawl
+          path: ${{ runner.temp }}/parity/crawl.json
+          retention-days: 14
