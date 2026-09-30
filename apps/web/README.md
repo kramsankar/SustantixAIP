@@ -108,11 +108,9 @@ missing or invalid, the API answers `503 server_misconfigured` and the log names
 
 ## Known limits
 
-- **Vercel request body limit (4.5 MB).** The API accepts snapshots of up to 50 MB and also accepts
-  `Content-Encoding: gzip` request bodies under the same 50 MB decompressed ceiling. However, the current host bridge
-  sends plain JSON, so Vercel rejects snapshots larger than about 4.5 MB (`413 FUNCTION_PAYLOAD_TOO_LARGE`)
-  before this code runs. The fix belongs in the bridge: gzip the body with `CompressionStream` and set
-  `Content-Encoding: gzip`. Responses are not affected, because `GET /state` streams the stored gzip bytes directly.
+- **Vercel request body limit (4.5 MB).** The host bridge gzips snapshot saves (`Content-Encoding: gzip`), and the
+  API accepts them up to 50 MB decompressed. A snapshot whose compressed size still exceeds 4.5 MB is rejected by the
+  platform (`413`) before this code runs.
 - **Audit append is not transactional** with the state write. It happens after the write through the service role.
   A failed append is logged as an error, and the save still succeeds. Making them atomic needs a `security definer` RPC in a migration.
 - The verdict cache and rate limiter are per-process memory. On Vercel each function instance has its own.
