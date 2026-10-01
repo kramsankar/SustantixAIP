@@ -1,6 +1,8 @@
 // Screen-by-screen crawler used for reference parity. Logs in, visits every navigation view and
 // records visible headings, controls and text. Usage:
-//   node test/crawl.mjs <url> <out.json> [--user u --pass p] [--license <token>]
+//   node test/crawl.mjs <url> <out.json> [--user u --pass p] [--license <token>] [--clock <iso-instant>]
+// --clock starts the browser clock at that instant (time then flows normally). Screens print dates
+// relative to "today", so a reference crawl is only reproducible at the instant it was captured.
 import { chromium } from "playwright";
 import { writeFileSync } from "node:fs";
 
@@ -12,6 +14,11 @@ const browser = await chromium.launch({ args: ["--no-sandbox"], executablePath: 
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
+const clock = flag("clock");
+if (clock) {
+  await page.clock.install({ time: new Date(clock) });
+  await page.clock.resume();
+}
 const license = flag("license");
 if (license) await page.addInitScript((t) => localStorage.setItem("sx_aip_license", t), license);
 await page.goto(url, { timeout: 240000, waitUntil: "load" });
@@ -64,6 +71,6 @@ for (const v of views) {
   result.push({ ...v, ...info });
 }
 const topbar = await page.evaluate(() => document.querySelector("#topbar")?.innerText ?? "");
-writeFileSync(out, JSON.stringify({ views: result, topbar, errors }, null, 1));
+writeFileSync(out, JSON.stringify({ capturedAt: clock ? new Date(clock).toISOString() : new Date().toISOString(), views: result, topbar, errors }, null, 1));
 console.log(`${result.length} views crawled · ${errors.length} page errors → ${out}`);
 await browser.close();

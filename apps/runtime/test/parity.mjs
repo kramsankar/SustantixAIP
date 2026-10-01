@@ -26,7 +26,7 @@ await new Promise((r) => setTimeout(r, 800));
 const url = `http://localhost:${port}/`;
 const now = Math.floor(Date.now() / 1000);
 const cust = { id: "QA", name: "Parity QA" };
-const lic = (extra) => issueLicense(signing, { customer: cust, platform: "vercel", bind: { domains: ["localhost"] }, ...extra }).token;
+const lic = (extra, at) => issueLicense(signing, { customer: cust, platform: "vercel", bind: { domains: ["localhost"] }, ...extra }, at).token;
 let failures = 0;
 // Prints where a screen diverges so CI logs are enough to root-cause a mismatch.
 function explainDiff(r, v) {
@@ -43,10 +43,13 @@ function explainDiff(r, v) {
 const check = (ok, what) => { console.log(`${ok ? "✓" : "✗"} ${what}`); if (!ok) failures++; };
 
 try {
-  // 2 · screen parity
-  const full = lic({ edition: "enterprise", validDays: 30 });
-  execFileSync("node", [join(here, "crawl.mjs"), url, join(tmp, "crawl.json"), "--license", full], { stdio: "inherit" });
-  const ref = Object.fromEntries(JSON.parse(readFileSync(join(root, "reference/v915-screen-crawl.json"), "utf8")).views.map((v) => [v.v, v]));
+  // 2 · screen parity — replayed at the reference's capture instant, because screens print dates relative to today
+  const reference = JSON.parse(readFileSync(join(root, "reference/v915-screen-crawl.json"), "utf8"));
+  if (!reference.capturedAt) throw new Error("reference crawl has no capturedAt instant");
+  const capturedAt = Math.floor(Date.parse(reference.capturedAt) / 1000);
+  const full = lic({ edition: "enterprise", validDays: 30 }, capturedAt);
+  execFileSync("node", [join(here, "crawl.mjs"), url, join(tmp, "crawl.json"), "--license", full, "--clock", reference.capturedAt], { stdio: "inherit" });
+  const ref = Object.fromEntries(reference.views.map((v) => [v.v, v]));
   const got = JSON.parse(readFileSync(join(tmp, "crawl.json"), "utf8")).views;
   check(got.length === Object.keys(ref).length, `all ${Object.keys(ref).length} screens reachable`);
   for (const v of got) {
