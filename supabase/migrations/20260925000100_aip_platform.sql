@@ -74,6 +74,8 @@ begin
           case when tg_op in ('INSERT','UPDATE') then to_jsonb(new) end);
   return coalesce(new, old);
 end $$;
+-- Trigger-only: never callable through the API.
+revoke all on function aip.audit_row() from public, anon, authenticated;
 
 create or replace function aip.touch_updated_at() returns trigger language plpgsql set search_path = aip, pg_temp as $$
 begin

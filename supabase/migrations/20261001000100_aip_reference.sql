@@ -16,6 +16,7 @@ begin
   end if;
   return coalesce(new, old);
 end $$;
+revoke all on function aip.audit_ref_row() from public, anon, authenticated;
 
 -- Keeps updated_at current and increments row_version on every update (optimistic concurrency).
 create or replace function aip.touch_versioned() returns trigger language plpgsql set search_path = aip, pg_temp as $$
@@ -448,6 +449,7 @@ begin
   end if;
   return coalesce(new, old);
 end $$;
+revoke all on function aip.audit_alias_row() from public, anon, authenticated;
 drop trigger if exists t_audit on aip.ref_alias;
 create trigger t_audit after insert or update or delete on aip.ref_alias for each row execute function aip.audit_alias_row();
 insert into aip.ref_alias (ref_table, scope, alias, code, currency, provenance) values
