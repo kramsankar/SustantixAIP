@@ -1,4 +1,4 @@
-import { dataModelPlan, dataverseRecord, platformPlan, readSheets, type Registry } from "@sustantix/schema";
+import { dataModelPlan, dataverseRecord, platformPlan, readSheets, referencePlan, referenceRecords, type Registry, type Vocabulary } from "@sustantix/schema";
 import {
   GUARD_TYPE,
   ROLES,
@@ -32,6 +32,8 @@ export interface ProvisionOptions {
   guardDataModel: boolean;
   /** Load the governed workbook rows into the data-model tables. */
   seedWorkbook?: Buffer;
+  /** Controlled vocabulary: creates the reference tables and upserts the platform codes and aliases. */
+  vocabulary?: Vocabulary;
   fx: Record<string, number>;
 }
 
@@ -42,6 +44,7 @@ export interface ProvisionReport {
   tables: number;
   guardStepsCreated: number;
   seeded: Record<string, number>;
+  referenceRecords: number;
   seedFailures: Array<{ table: string; key: string; status: number; message: string }>;
 }
 
@@ -57,7 +60,8 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
 
   const platform = platformPlan();
   const model = o.dataModel ? dataModelPlan(o.registry) : [];
-  for (const p of [...platform, ...model]) await ensureTable(api, p, log);
+  const reference = o.vocabulary ? referencePlan(o.vocabulary) : [];
+  for (const p of [...platform, ...reference, ...model]) await ensureTable(api, p, log);
 
   await ensureEnvironmentVariables(api, log);
 
@@ -66,16 +70,30 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const statusId = await ensurePluginType(api, assemblyId, STATUS_TYPE, log);
   await ensureLicenseApi(api, statusId, log);
 
-  const guarded = ["sus_runtimestate", ...(o.dataModel && o.guardDataModel ? model.map((m) => m.logicalName) : [])];
+  const guarded = ["sus_runtimestate", ...(o.guardDataModel ? [...reference, ...model].map((m) => m.logicalName) : [])];
   const guardStepsCreated = await ensureGuardSteps(api, guardId, guarded, log);
 
-  const privileges = rolePrivileges(model.map((m) => m.logicalName));
+  const privileges = rolePrivileges([...reference, ...model].map((m) => m.logicalName));
   const userRole = await ensureRole(api, ROLES.user, me.BusinessUnitId, log);
   await grantPrivileges(api, userRole, me.BusinessUnitId, privileges.user, log);
   const adminRole = await ensureRole(api, ROLES.admin, me.BusinessUnitId, log);
   await grantPrivileges(api, adminRole, me.BusinessUnitId, privileges.admin, log);
 
   await publishAll(api, log);
+
+  let referenceCount = 0;
+  if (o.vocabulary) {
+    for (const { logicalName, records } of referenceRecords(o.vocabulary)) {
+      if (!records.length) continue;
+      const set = await entitySetName(api, logicalName);
+      for (let i = 0; i < records.length; i += 200) {
+        const failures = await api.batchUpsert(set, "sus_name", records.slice(i, i + 200));
+        if (failures.length) throw new Error(`reference upsert into ${logicalName} failed: ${failures[0]!.message}`);
+      }
+      referenceCount += records.length;
+    }
+    log(`  ⇪ ${referenceCount} reference code(s) and alias(es)`);
+  }
 
   const seeded: Record<string, number> = {};
   const seedFailures: ProvisionReport["seedFailures"] = [];
@@ -100,9 +118,10 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
     organizationId: me.OrganizationId,
     solution: "SustantixAIP",
     version: o.version,
-    tables: platform.length + model.length,
+    tables: platform.length + reference.length + model.length,
     guardStepsCreated,
     seeded,
+    referenceRecords: referenceCount,
     seedFailures,
   };
 }

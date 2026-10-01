@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { Registry } from "@sustantix/schema";
+import { fileURLToPath } from "node:url";
+import { loadVocabulary, type Registry } from "@sustantix/schema";
 import { provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
@@ -127,6 +128,24 @@ describe("provision", () => {
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
     const r = await provision(api, { version: "9.15.0.0", registry, pluginDll: dll, dataModel: true, guardDataModel: true, fx: {} }, () => {});
     expect(r.guardStepsCreated).toBe((registry.tables.length + 1) * GUARD_MESSAGES.length);
+  });
+
+  it("provisions the reference layer with every platform code and alias, idempotently", async () => {
+    const vocabulary = loadVocabulary(fileURLToPath(new URL("../../../", import.meta.url)));
+    const dv = mockDataverse();
+    const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
+    const r = await provision(api, { version: "9.15.0.0", registry, vocabulary, pluginDll: dll, dataModel: false, guardDataModel: true, fx: {} }, () => {});
+    const expected = vocabulary.tables.reduce((n, t) => n + t.values.length + t.aliases.length, 0);
+    expect(r.tables).toBe(2 + vocabulary.tables.length + 1);
+    expect(r.referenceRecords).toBe(expected);
+    expect(dv.entities.get("sus_ref_status")?.attrs.has("sus_scope")).toBe(true);
+    expect(dv.upserts.sus_ref_units).toBe(vocabulary.tables.find((t) => t.name === "unit")!.values.length);
+    expect(r.guardStepsCreated).toBe((vocabulary.tables.length + 2) * GUARD_MESSAGES.length);
+
+    const before = dv.calls.length;
+    await provision(api, { version: "9.15.0.0", registry, vocabulary, pluginDll: dll, dataModel: false, guardDataModel: true, fx: {} }, () => {});
+    const creates = dv.calls.slice(before).filter((c) => c.method === "POST" && !["PublishAllXml", "$batch"].includes(c.path) && !c.path.endsWith("AddPrivilegesRole"));
+    expect(creates).toEqual([]);
   });
 
   it("refuses to invent a currency without an FX rate", async () => {

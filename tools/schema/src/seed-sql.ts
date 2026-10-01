@@ -5,6 +5,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadVocabulary, tenantReferenceRows, type Vocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
 
@@ -20,7 +21,7 @@ export function literal(v: unknown): string {
   return `'${String(v).replace(/'/g, "''")}'`;
 }
 
-export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }): string {
+export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }, vocab?: Vocabulary): string {
   if (!GUID.test(tenant.id)) throw new Error("tenant id must be a GUID");
   if (!/^[A-Z]{3}$/.test(tenant.currency)) throw new Error("currency must be ISO-4217");
   const sheets = readSheets(workbook);
@@ -42,6 +43,14 @@ export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; n
       );
     }
   }
+  // Tenant-governed reference rows (for example emission factors), keyed on the tenant and code.
+  for (const { table, rows } of vocab ? tenantReferenceRows(vocab, reg, sheets) : []) {
+    if (!rows.length) continue;
+    const cols = ["tenant_id", ...Object.keys(rows[0]!)];
+    const values = rows.map((r) => `(${[literal(tenant.id), ...Object.keys(rows[0]!).map((c) => literal(r[c]))].join(",")})`);
+    const updates = cols.filter((c) => c !== "tenant_id" && c !== "code").map((c) => `"${c}" = excluded."${c}"`);
+    out.push(`insert into aip."${table}" (${cols.map((c) => `"${c}"`).join(",")}) values\n${values.join(",\n")}\non conflict (tenant_id, code) do update set ${updates.join(", ")};`);
+  }
   out.push("commit;");
   return out.join("\n") + "\n";
 }
@@ -62,6 +71,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       name: flag("name", "Seed tenant")!,
       region: flag("region", "IN")!,
       currency: flag("currency", reg.defaultCurrency)!,
-    }),
+    }, loadVocabulary(root)),
   );
 }

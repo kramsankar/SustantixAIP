@@ -1,0 +1,280 @@
+{
+ "version": 1,
+ "description": "Cross-sheet references in the governed workbook and how each unresolved value is classified. crosswalk and null-token rules are mechanical and must resolve every value they match; merge rules resolve when phase 2 consolidates the named entities; owner rules wait on a data-owner decision.",
+ "relationships": [
+  {
+   "from": "*.plant_id",
+   "to": "sites.plant_id"
+  },
+  {
+   "from": "*.asset_id",
+   "to": "asset_master.asset_id",
+   "except": [
+    "graph_entities"
+   ]
+  },
+  {
+   "from": "asset_master.parent_asset_id",
+   "to": "asset_master.asset_id"
+  },
+  {
+   "from": "*.bess_id",
+   "to": "bess_systems.bess_id"
+  },
+  {
+   "from": "*.part_id",
+   "to": "msi_part_master.part_id"
+  },
+  {
+   "from": "*.work_order_id",
+   "to": "work_orders.work_order_id"
+  },
+  {
+   "from": "*.intervention_id",
+   "to": "pno_interventions.intervention_id"
+  },
+  {
+   "from": "*.crew_id",
+   "to": "pno_crew_rates.crew_id"
+  },
+  {
+   "from": "*.technician_id",
+   "to": "pno_technician_skills.technician_id"
+  },
+  {
+   "from": "*.resource_id",
+   "to": "pno_resources.resource_id"
+  },
+  {
+   "from": "*.material_id",
+   "to": "pno_material_cost_logistics.material_id"
+  },
+  {
+   "from": "*.vehicle_id",
+   "to": "plan_vehicle_master.vehicle_id"
+  },
+  {
+   "from": "*.tool_id",
+   "to": "plan_tool_master.tool_id"
+  },
+  {
+   "from": "*.scenario_id",
+   "to": "pno_scenarios.scenario_id"
+  },
+  {
+   "from": "*.metric_id",
+   "to": "sus_metric_catalogue.metric_id"
+  },
+  {
+   "from": "*.inspection_id",
+   "to": "vision_inspections.inspection_id"
+  },
+  {
+   "from": "*.finding_id",
+   "to": "vision_findings.finding_id"
+  },
+  {
+   "from": "*.rca_id",
+   "to": "event_root_cause_cases.rca_id"
+  },
+  {
+   "from": "*.event_id",
+   "to": "event_log.event_id",
+   "except": [
+    "pv_lifecycle_events"
+   ]
+  },
+  {
+   "from": "*.warranty_id",
+   "to": "warranty_register.warranty_id"
+  },
+  {
+   "from": "*.alert_id",
+   "to": "ai_alerts_and_rul.alert_id"
+  },
+  {
+   "from": "*.rcm_id",
+   "to": "rcm_policy_governance.rcm_id"
+  },
+  {
+   "from": "*.module_id",
+   "to": "pv_module_register.module_id"
+  },
+  {
+   "from": "*.group_id",
+   "to": "pv_module_groups.group_id"
+  },
+  {
+   "from": "*.segment_id",
+   "to": "pv_population_segments.segment_id"
+  },
+  {
+   "from": "warranty_register.model_id",
+   "to": "pv_module_models.model_id"
+  },
+  {
+   "from": "asset_master.model_id",
+   "to": "pv_module_models.model_id"
+  },
+  {
+   "from": "reliability_life_history.model_id",
+   "to": "pv_module_models.model_id"
+  },
+  {
+   "from": "pv_population_segments.model_id",
+   "to": "pv_module_models.model_id"
+  },
+  {
+   "from": "fcst_interval.model_id",
+   "to": "fcst_model_governance.model_id"
+  },
+  {
+   "from": "fcst_model_performance.model_id",
+   "to": "fcst_model_governance.model_id"
+  },
+  {
+   "from": "*.forecast_run_id",
+   "to": "fcst_run.forecast_run_id"
+  }
+ ],
+ "rules": [
+  {
+   "from": "fcst_validation.forecast_run_id",
+   "class": "crosswalk",
+   "kind": "composite",
+   "template": "{forecast_run_id}-H{horizon_bucket_hours}",
+   "note": "Forecast runs are keyed per run and horizon; validations carry the horizon in horizon_bucket_hours."
+  },
+  {
+   "from": "reliability_life_history.asset_id",
+   "class": "crosswalk",
+   "kind": "alternate",
+   "to": "pv_module_register.module_id",
+   "note": "Module-level life history cites serialised PV modules, which become PV module records, not assets."
+  },
+  {
+   "from": "pno_resources.crew_id",
+   "class": "null-token",
+   "match": "^N/A$",
+   "note": "Resources that are not crews (vehicles, equipment) carry N/A; stored as null."
+  },
+  {
+   "from": "*.plant_id",
+   "class": "aggregate",
+   "match": "^PORTFOLIO$",
+   "note": "Portfolio-level rows become projections in phase 3, not site rows."
+  },
+  {
+   "from": "plan_interventions.intervention_id",
+   "class": "merge",
+   "match": "^INT-PV-",
+   "note": "PV module interventions exist only in the plan register; resolved by the phase 2 intervention merge."
+  },
+  {
+   "from": "plan_requirements.intervention_id",
+   "class": "merge",
+   "match": "^INT-PV-",
+   "note": "Requirements of the PV module interventions; resolved by the phase 2 intervention merge."
+  },
+  {
+   "from": "msi_spare_requirements.intervention_id",
+   "class": "merge",
+   "match": "^INT-PV-",
+   "note": "Spares for the PV module interventions; resolved by the phase 2 intervention merge."
+  },
+  {
+   "from": "plan_scenarios.scenario_id",
+   "class": "merge",
+   "note": "Plan scenarios are a second scenario register; resolved by the phase 2 scenario merge."
+  },
+  {
+   "from": "spare_parts_master.part_id",
+   "class": "merge",
+   "note": "Second part master; resolved by the phase 2 part merge."
+  },
+  {
+   "from": "sus_hse_events.event_id",
+   "class": "merge",
+   "match": "^HSE-",
+   "note": "HSE incidents have their own ID space; phase 2 moves them to hse_incident."
+  },
+  {
+   "from": "sus_hse_events.work_order_id",
+   "class": "owner",
+   "match": "^WO-7",
+   "question": "HSE incidents cite work orders WO-7001…WO-7024 that are not in the work-order register. Add them, or drop the link?"
+  },
+  {
+   "from": "work_orders.asset_id",
+   "class": "owner",
+   "match": "^AST-H",
+   "question": "220 work orders cite an AST-H asset series (tags such as SP-01-INV-H01) that the asset master lacks. Add these assets, or remap the work orders to existing assets?"
+  },
+  {
+   "from": "pno_interventions.asset_id",
+   "class": "owner",
+   "match": "^AST-H",
+   "question": "Interventions cite the same AST-H asset series as the work orders. Same decision applies."
+  },
+  {
+   "from": "*.work_order_id",
+   "class": "owner",
+   "match": "^WO-[24]0\\d{3}$",
+   "question": "Planned work orders WO-20xxx and WO-40xxx are referenced by planning sheets but absent from the work-order register. Create them as planned work orders, or treat them as not yet released?"
+  },
+  {
+   "from": "*.asset_id",
+   "class": "owner",
+   "match": "^(SP\\d\\d|ARV|DEC|VIN)-",
+   "question": "CBM and RCA cases use an alternate asset naming per plant (SP01-INV-A01, ARV-INV-204, DEC-INV-411, VIN-TRF-709). Provide the mapping to asset-master IDs, or add these as assets?"
+  },
+  {
+   "from": "event_log.plant_id",
+   "class": "owner",
+   "match": "^SOL-",
+   "question": "The event log uses plant codes SOL-01… that do not exist in Sites. Map them to SP-xx plants?"
+  },
+  {
+   "from": "event_log.asset_id",
+   "class": "owner",
+   "match": "^(INV|TRF|CMB|TRK|SCD|SWG|SCADA)-",
+   "question": "The event log uses short asset codes (INV-001, TRF-004). Map them to asset-master IDs?"
+  },
+  {
+   "from": "*.event_id",
+   "class": "owner",
+   "match": "^ERC-",
+   "question": "RCA cases cite events ERC-001… that are not in the event log. Add the originating events, or treat ERC IDs as the case's own event reference?"
+  },
+  {
+   "from": "msi_spare_requirements.asset_id",
+   "class": "owner",
+   "match": "^AST-F",
+   "question": "Spares requirements cite a forecast asset series AST-F… with no asset records. Are these planned assets?"
+  },
+  {
+   "from": "msi_spare_requirements.work_order_id",
+   "class": "owner",
+   "match": "^WO-F",
+   "question": "Spares requirements cite forecast work orders WO-F… Are they planned work orders to create?"
+  },
+  {
+   "from": "msi_spare_requirements.intervention_id",
+   "class": "owner",
+   "match": "^INT-F",
+   "question": "Spares requirements cite forecast interventions INT-F… Are they planned interventions to create?"
+  },
+  {
+   "from": "pno_optimization.intervention_id",
+   "class": "owner",
+   "match": "^INT-\\d{5}$",
+   "question": "Optimization rows cite INT-00001… Stripping the padding finds INT-001…, but 148 of 160 rows then point to a different asset, so they are not the same interventions. Which register do these IDs belong to?"
+  },
+  {
+   "from": "pno_governance.intervention_id",
+   "class": "owner",
+   "match": "^INT-\\d{5}$",
+   "question": "Governance rows cite the same INT-00001 series as optimization. Same decision applies."
+  }
+ ]
+}

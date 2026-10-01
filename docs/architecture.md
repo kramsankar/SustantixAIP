@@ -51,6 +51,21 @@ The reference ran every block synchronously in one parser pass. Loading ~750 blo
 
 Money is never a float. Postgres uses `numeric(24,p)` with a `currency char(3)` column; Dataverse uses Money with a transaction currency.
 
+## Reference data (phase 1 of the normalized model)
+
+`schema/reference/vocabulary.json` is the curated controlled vocabulary. It holds 16 code tables (asset class, status by entity, priority, severity, risk band, unit, currency, region, failure mode, defect, skill, event type, source system, framework, emission factor, maintenance type), the aliases observed in the workbook, which data-model column each table governs, and the questions still owed by the data owner. `schema/reference/integrity.json` declares the cross-sheet references and classifies every unresolved value:
+
+- mechanical rules (crosswalk, null token, aggregate row), each of which must resolve everything it matches;
+- phase 2 merges;
+- owner decisions.
+
+From these, `tools/schema` generates:
+
+- **Supabase:** `aip.ref_*` tables. Platform defaults (`tenant_id` null) are readable by every member and changed only by migrations. Tenant rows extend them, are writable by that tenant's administrators, and are audited and versioned (`row_version`). `aip.ref_alias` and `aip.ref_binding` drive validation and grid dropdowns.
+- **Dataverse:** `sus_ref_*` tables keyed on their code, provisioned by `sx-pp` with every platform code and alias.
+
+`pnpm --filter @sustantix/schema check:data` is the phase 1 gate. It fails CI on any vocabulary value that is neither mapped nor declared, any unclassified reference, or any mechanical rule that does not resolve. It writes `docs/data/phase1-reference-report.md`.
+
 ## Multi-region
 
 - **Currency:** stored per row. The tenant default currency is configurable (`aip.tenants.default_currency`); FX conversion comes from the stored daily rate table.

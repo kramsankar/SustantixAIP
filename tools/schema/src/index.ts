@@ -3,3 +3,5 @@ export * from "./infer.ts";
 export * from "./dataverse.ts";
 export * from "./postgres.ts";
 export * from "./rows.ts";
+export * from "./reference.ts";
+export * from "./conformance.ts";

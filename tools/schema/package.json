@@ -8,6 +8,7 @@
   "scripts": {
     "generate": "tsx src/cli.ts",
     "seed:sql": "tsx src/seed-sql.ts",
+    "check:data": "tsx src/check-data.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
