@@ -153,11 +153,11 @@ describe("provision", () => {
     const dv = mockDataverse();
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
     const r = await provision(api, { version: "9.15.0.0", registry, corrections, pluginDll: dll, dataModel: true, guardDataModel: false, seedWorkbook: wb, fx: {} }, () => {});
-    expect(r.correctedRecords).toBe(278);
+    expect(r.correctedRecords).toBe(493);
     expect(dv.entities.has("sus_datacorrection")).toBe(true);
-    expect(dv.upserts.sus_datacorrections).toBe(278);
-    expect(r.seeded.sus_work_orders).toBe(383 + 46);
-    expect(r.seeded.sus_asset_master).toBe(969 + 232);
+    expect(dv.upserts.sus_datacorrections).toBe(493);
+    expect(r.seeded.sus_work_orders).toBe(383 + 46 + 24);
+    expect(r.seeded.sus_asset_master).toBe(969 + 232 + 4);
     expect(r.seedFailures).toEqual([]);
   });
 

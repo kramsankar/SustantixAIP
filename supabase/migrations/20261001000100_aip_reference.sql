@@ -78,8 +78,9 @@ insert into aip.ref_asset_class (code, label, sort_order, category, parent_code)
   ('INSTRUMENTATION', 'Instrumentation', 19, 'monitoring', null),
   ('SCADA_SYSTEM', 'SCADA system', 20, 'monitoring', null),
   ('SAFETY_SYSTEM', 'Safety system', 21, 'protection', null)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, parent_code = excluded.parent_code;
--- Maintenance type: 6 platform value(s), 0 alias(es)
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, parent_code = excluded.parent_code, is_active = true;
+update aip.ref_asset_class set is_active = false where tenant_id is null and is_active and code not in ('PV_ARRAY', 'PV_MODULE', 'SCB', 'INVERTER', 'TRANSFORMER', 'SWITCHGEAR', 'HV_SWITCHGEAR', 'TRACKER', 'TRACKER_DRIVE', 'WEATHER_STATION', 'BESS_SYSTEM', 'BESS_CONTAINER', 'BESS_PCS', 'BESS_MV_TRANSFORMER', 'BESS_EMS', 'BACKUP_DG', 'PLANT_AUXILIARIES', 'ELECTRICAL_BOP', 'INSTRUMENTATION', 'SCADA_SYSTEM', 'SAFETY_SYSTEM');
+-- Maintenance type: 7 platform value(s), 0 alias(es)
 select aip.create_ref_table('maintenance_type', 'Maintenance type', 'strategy_family text', false);
 insert into aip.ref_maintenance_type (code, label, sort_order, strategy_family) values
   ('CORRECTIVE', 'Corrective', 1, 'reactive'),
@@ -87,8 +88,10 @@ insert into aip.ref_maintenance_type (code, label, sort_order, strategy_family) 
   ('PREDICTIVE', 'Predictive', 3, 'condition'),
   ('CONDITION_BASED', 'Condition-Based', 4, 'condition'),
   ('RISK_BASED', 'Risk-Based', 5, 'planned'),
-  ('INSPECTION', 'Inspection', 6, 'planned')
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, strategy_family = excluded.strategy_family;
+  ('INSPECTION', 'Inspection', 6, 'planned'),
+  ('INVENTORY_LED', 'Inventory-led', 7, 'planned')
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, strategy_family = excluded.strategy_family, is_active = true;
+update aip.ref_maintenance_type set is_active = false where tenant_id is null and is_active and code not in ('CORRECTIVE', 'PREVENTIVE', 'PREDICTIVE', 'CONDITION_BASED', 'RISK_BASED', 'INSPECTION', 'INVENTORY_LED');
 -- Priority: 4 platform value(s), 2 alias(es)
 select aip.create_ref_table('priority', 'Priority', 'rank integer', false);
 insert into aip.ref_priority (code, label, sort_order, rank) values
@@ -96,7 +99,8 @@ insert into aip.ref_priority (code, label, sort_order, rank) values
   ('HIGH', 'High', 2, 2),
   ('MEDIUM', 'Medium', 3, 3),
   ('LOW', 'Low', 4, 4)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank, is_active = true;
+update aip.ref_priority set is_active = false where tenant_id is null and is_active and code not in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW');
 -- Severity: 4 platform value(s), 0 alias(es)
 select aip.create_ref_table('severity', 'Severity', 'rank integer', false);
 insert into aip.ref_severity (code, label, sort_order, rank) values
@@ -104,7 +108,8 @@ insert into aip.ref_severity (code, label, sort_order, rank) values
   ('HIGH', 'High', 2, 2),
   ('MEDIUM', 'Medium', 3, 3),
   ('LOW', 'Low', 4, 4)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank, is_active = true;
+update aip.ref_severity set is_active = false where tenant_id is null and is_active and code not in ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW');
 -- Risk band: 5 platform value(s), 0 alias(es)
 select aip.create_ref_table('risk_band', 'Risk band', 'rank integer', false);
 insert into aip.ref_risk_band (code, label, sort_order, rank) values
@@ -113,7 +118,8 @@ insert into aip.ref_risk_band (code, label, sort_order, rank) values
   ('MEDIUM', 'Medium', 3, 3),
   ('WATCH', 'Watch', 4, 4),
   ('LOW', 'Low', 5, 5)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, rank = excluded.rank, is_active = true;
+update aip.ref_risk_band set is_active = false where tenant_id is null and is_active and code not in ('CRITICAL', 'HIGH', 'MEDIUM', 'WATCH', 'LOW');
 -- Status: 66 platform value(s), 1 alias(es)
 select aip.create_ref_table('status', 'Status', 'category text, is_terminal boolean', true);
 insert into aip.ref_status (scope, code, label, sort_order, category, is_terminal) values
@@ -183,8 +189,9 @@ insert into aip.ref_status (scope, code, label, sort_order, category, is_termina
   ('connector', 'AVAILABLE', 'Available', 3, 'active', false),
   ('connector', 'ACTIVE', 'Active', 4, 'active', false),
   ('connector', 'STANDBY', 'Standby', 5, 'active', false)
-on conflict (tenant_id, scope, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, is_terminal = excluded.is_terminal;
--- Unit of measure: 37 platform value(s), 40 alias(es)
+on conflict (tenant_id, scope, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, is_terminal = excluded.is_terminal, is_active = true;
+update aip.ref_status set is_active = false where tenant_id is null and is_active and (scope, code) not in (('work_order', 'OPEN'), ('work_order', 'SCHEDULED'), ('work_order', 'RELEASED'), ('work_order', 'IN_PROGRESS'), ('work_order', 'AWAITING_PART'), ('work_order', 'OVERDUE_ACTIONS'), ('work_order', 'COMPLETED'), ('intervention', 'UNDER_REVIEW'), ('intervention', 'PLANNED'), ('intervention', 'RESOURCE_READINESS'), ('intervention', 'AIP_OPTIMIZED'), ('intervention', 'APPROVED'), ('intervention', 'COMPLETED'), ('plan', 'DRAFT'), ('plan', 'ALTERNATIVE'), ('plan', 'UNDER_REVIEW'), ('plan', 'SELECTED'), ('plan', 'RETURNED_FOR_RE_OPTIMIZATION'), ('plan', 'APPROVED'), ('plan', 'APPROVED_WITH_EXCEPTION'), ('readiness', 'READY'), ('readiness', 'CONSTRAINED'), ('readiness', 'PENDING'), ('outage', 'PLANNED'), ('outage', 'APPROVED'), ('outage', 'NOTIFIED_BY_UTILITY'), ('hse_incident', 'CORRECTIVE_ACTION_OPEN'), ('hse_incident', 'CLOSED'), ('alert', 'OPEN'), ('alert', 'ACKNOWLEDGED'), ('alert', 'CONVERTED_TO_WORK_ORDER'), ('finding', 'OPEN'), ('finding', 'UNDER_REVIEW'), ('finding', 'ENGINEERING_REVIEW'), ('finding', 'WORK_ORDER_CREATED'), ('finding', 'RESOLVED'), ('event', 'OPEN'), ('event', 'RESOLVED'), ('event', 'CLOSED'), ('rca', 'UNDER_REVIEW'), ('rca', 'VALIDATED'), ('warranty', 'ACTIVE'), ('warranty', 'EXPIRING'), ('warranty', 'EXPIRED'), ('warranty_claim', 'OPPORTUNITY'), ('warranty_claim', 'EVIDENCE_READY'), ('warranty_claim', 'SUBMITTED'), ('warranty_claim', 'APPROVED'), ('stock', 'ADEQUATE'), ('stock', 'BELOW_REORDER'), ('stock', 'STOCKOUT'), ('asset_operating', 'OPERATIONAL'), ('asset_operating', 'FORCED_OUTAGE'), ('telemetry_state', 'RUNNING'), ('telemetry_state', 'DERATED'), ('telemetry_state', 'CURTAILED'), ('telemetry_state', 'TRIPPED'), ('telemetry_state', 'NO_DATA'), ('recommendation', 'UNDER_REVIEW'), ('scenario', 'DRAFT'), ('scenario', 'FEASIBLE'), ('connector', 'NOT_CONFIGURED'), ('connector', 'CONFIGURED'), ('connector', 'AVAILABLE'), ('connector', 'ACTIVE'), ('connector', 'STANDBY'));
+-- Unit of measure: 45 platform value(s), 50 alias(es)
 select aip.create_ref_table('unit', 'Unit of measure', 'symbol text, dimension text, base_factor numeric(24,10)', false);
 insert into aip.ref_unit (code, label, sort_order, symbol, dimension, base_factor) values
   ('PERCENT', 'Percent', 1, '%', 'ratio', 0.01),
@@ -223,8 +230,17 @@ insert into aip.ref_unit (code, label, sort_order, symbol, dimension, base_facto
   ('CUR_PER_INTERVENTION', 'Currency per intervention', 34, '¤/intervention', 'money_rate', null),
   ('CUR_PER_EVENT', 'Currency per event', 35, '¤/event', 'money_rate', null),
   ('CUR_PER_UNIT', 'Currency per unit', 36, '¤/unit', 'money_rate', null),
-  ('CUR_PER_KG', 'Currency per kg', 37, '¤/kg', 'money_rate', null)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, symbol = excluded.symbol, dimension = excluded.dimension, base_factor = excluded.base_factor;
+  ('CUR_PER_KG', 'Currency per kg', 37, '¤/kg', 'money_rate', null),
+  ('L_PER_RECOVERED_MWH', 'Litre per recovered MWh', 38, 'L/recovered MWh', 'water_intensity', 1),
+  ('STRATEGY', 'Strategy', 39, 'strategy', 'parameter_type', null),
+  ('RULE', 'Rule', 40, 'rule', 'parameter_type', null),
+  ('WORKFLOW', 'Workflow', 41, 'workflow', 'parameter_type', null),
+  ('LEXICOGRAPHIC', 'Lexicographic order', 42, 'lexicographic', 'parameter_type', null),
+  ('STATUS_VALUE', 'Status value', 43, 'status', 'parameter_type', null),
+  ('DATE_TIME', 'Date / time', 44, 'date/time', 'parameter_type', null),
+  ('MODEL_SCORE_SET', 'Model score set', 45, 'RUL/Condition/Readiness/Replacement/Regulatory', 'parameter_type', null)
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, symbol = excluded.symbol, dimension = excluded.dimension, base_factor = excluded.base_factor, is_active = true;
+update aip.ref_unit set is_active = false where tenant_id is null and is_active and code not in ('PERCENT', 'INDEX', 'RATING', 'RATE', 'STATE', 'COUNT', 'DEG_C', 'AMPERE', 'VOLT', 'HERTZ', 'DEGREE', 'MEGAWATT', 'MEGAWATT_HOUR', 'KILOWATT_HOUR', 'WATT_PER_M2', 'SECOND', 'HOUR', 'DAY', 'MONTH', 'YEAR', 'KM_PER_HOUR', 'CUBIC_METRE', 'LITRE', 'TONNE', 'TCO2E', 'L_PER_MWH', 'TCO2E_PER_MWH', 'KGCO2E_PER_L', 'KGCO2E_PER_KG', 'KG_PER_UNIT', 'CURRENCY', 'CUR_PER_KWH', 'CUR_PER_HOUR', 'CUR_PER_INTERVENTION', 'CUR_PER_EVENT', 'CUR_PER_UNIT', 'CUR_PER_KG', 'L_PER_RECOVERED_MWH', 'STRATEGY', 'RULE', 'WORKFLOW', 'LEXICOGRAPHIC', 'STATUS_VALUE', 'DATE_TIME', 'MODEL_SCORE_SET');
 -- Currency: 12 platform value(s), 0 alias(es)
 select aip.create_ref_table('currency', 'Currency', 'minor_units integer', false);
 insert into aip.ref_currency (code, label, sort_order, minor_units) values
@@ -240,7 +256,8 @@ insert into aip.ref_currency (code, label, sort_order, minor_units) values
   ('CNY', 'Chinese yuan', 10, 2),
   ('ZAR', 'South African rand', 11, 2),
   ('BRL', 'Brazilian real', 12, 2)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, minor_units = excluded.minor_units;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, minor_units = excluded.minor_units, is_active = true;
+update aip.ref_currency set is_active = false where tenant_id is null and is_active and code not in ('INR', 'USD', 'EUR', 'GBP', 'AED', 'SAR', 'SGD', 'AUD', 'JPY', 'CNY', 'ZAR', 'BRL');
 -- Region: 20 platform value(s), 0 alias(es)
 select aip.create_ref_table('region', 'Region', 'kind text, parent_code text, tax_regime text, currency_code text, timezone text', false);
 insert into aip.ref_region (code, label, sort_order, kind, parent_code, tax_regime, currency_code, timezone) values
@@ -264,8 +281,9 @@ insert into aip.ref_region (code, label, sort_order, kind, parent_code, tax_regi
   ('IN-TN', 'Tamil Nadu', 18, 'subdivision', 'IN', 'GST', 'INR', 'Asia/Kolkata'),
   ('IN-TG', 'Telangana', 19, 'subdivision', 'IN', 'GST', 'INR', 'Asia/Kolkata'),
   ('IN-UP', 'Uttar Pradesh', 20, 'subdivision', 'IN', 'GST', 'INR', 'Asia/Kolkata')
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, kind = excluded.kind, parent_code = excluded.parent_code, tax_regime = excluded.tax_regime, currency_code = excluded.currency_code, timezone = excluded.timezone;
--- Failure mode: 32 platform value(s), 0 alias(es)
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, kind = excluded.kind, parent_code = excluded.parent_code, tax_regime = excluded.tax_regime, currency_code = excluded.currency_code, timezone = excluded.timezone, is_active = true;
+update aip.ref_region set is_active = false where tenant_id is null and is_active and code not in ('IN', 'AE', 'SA', 'SG', 'AU', 'GB', 'DE', 'US', 'IN-AP', 'IN-GJ', 'IN-HR', 'IN-KA', 'IN-MP', 'IN-MH', 'IN-OD', 'IN-PB', 'IN-RJ', 'IN-TN', 'IN-TG', 'IN-UP');
+-- Failure mode: 29 platform value(s), 3 alias(es)
 select aip.create_ref_table('failure_mode', 'Failure mode', '', false);
 insert into aip.ref_failure_mode (code, label, sort_order) values
   ('BREAKER_MECHANISM_FAILURE', 'Breaker mechanism failure', 1),
@@ -286,22 +304,20 @@ insert into aip.ref_failure_mode (code, label, sort_order) values
   ('INVERTER_PREVENTIVE_DEGRADATION_CONTROL', 'Inverter preventive degradation control', 16),
   ('IRRADIANCE_SENSOR_DRIFT', 'Irradiance sensor drift', 17),
   ('JUNCTION_BOX_FAILURE', 'Junction box failure', 18),
-  ('POWER_STAGE_THERMAL_DEGRADATION', 'Power-stage thermal degradation', 19),
-  ('SOILING_AND_DEGRADATION', 'Soiling and degradation', 20),
-  ('STRING_OPEN_CIRCUIT', 'String open circuit', 21),
-  ('SWITCHGEAR_CONTACT_DEGRADATION', 'Switchgear contact degradation', 22),
-  ('SWITCHGEAR_PREVENTIVE_INSPECTION', 'Switchgear preventive inspection', 23),
-  ('TRACKER_DRIVE_FAULT', 'Tracker drive fault', 24),
-  ('TRACKER_DRIVE_MECHANISM_FAULT', 'Tracker drive mechanism fault', 25),
-  ('TRACKER_DRIVE_MISALIGNMENT', 'Tracker drive misalignment', 26),
-  ('TRACKER_GEARBOX_WEAR', 'Tracker gearbox wear', 27),
-  ('TRACKER_POSITION_SENSOR_DRIFT', 'Tracker position sensor drift', 28),
-  ('TRANSFORMER_COOLING_SYSTEM_DEGRADATION', 'Transformer cooling system degradation', 29),
-  ('TRANSFORMER_DEFECT_RESPONSE', 'Transformer defect response', 30),
-  ('TRANSFORMER_INSULATION_CONNECTION_DEFECT', 'Transformer insulation / connection defect', 31),
-  ('TRANSFORMER_INSULATION_DEGRADATION', 'Transformer insulation degradation', 32)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order;
--- Defect and finding type: 22 platform value(s), 17 alias(es)
+  ('SOILING_AND_DEGRADATION', 'Soiling and degradation', 19),
+  ('STRING_OPEN_CIRCUIT', 'String open circuit', 20),
+  ('SWITCHGEAR_CONTACT_DEGRADATION', 'Switchgear contact degradation', 21),
+  ('SWITCHGEAR_PREVENTIVE_INSPECTION', 'Switchgear preventive inspection', 22),
+  ('TRACKER_DRIVE_FAULT', 'Tracker drive fault', 23),
+  ('TRACKER_DRIVE_MISALIGNMENT', 'Tracker drive misalignment', 24),
+  ('TRACKER_GEARBOX_WEAR', 'Tracker gearbox wear', 25),
+  ('TRACKER_POSITION_SENSOR_DRIFT', 'Tracker position sensor drift', 26),
+  ('TRANSFORMER_COOLING_SYSTEM_DEGRADATION', 'Transformer cooling system degradation', 27),
+  ('TRANSFORMER_DEFECT_RESPONSE', 'Transformer defect response', 28),
+  ('TRANSFORMER_INSULATION_CONNECTION_DEFECT', 'Transformer insulation / connection defect', 29)
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, is_active = true;
+update aip.ref_failure_mode set is_active = false where tenant_id is null and is_active and code not in ('BREAKER_MECHANISM_FAILURE', 'BYPASS_DIODE_FAILURE', 'BYPASS_DIODE_OR_CONNECTION_ANOMALY', 'CELL_INTERCONNECT_FAILURE', 'CONFIRMED_MODULE_FUNCTIONAL_FAILURE', 'COOLING_FAN_DEGRADATION', 'COOLING_FAN_FAILURE', 'DC_LINK_THERMAL_DEGRADATION', 'DRIVE_MOTOR_OR_GEARBOX_WEAR', 'FUSE_TERMINAL_OVERHEATING', 'GENERAL_CORRECTIVE_FAILURE', 'GRID_OVERVOLTAGE_PROTECTION_TRIP', 'IGBT_THERMAL_DEGRADATION', 'INSULATION_DETERIORATION', 'INSULATION_FAILURE', 'INVERTER_PREVENTIVE_DEGRADATION_CONTROL', 'IRRADIANCE_SENSOR_DRIFT', 'JUNCTION_BOX_FAILURE', 'SOILING_AND_DEGRADATION', 'STRING_OPEN_CIRCUIT', 'SWITCHGEAR_CONTACT_DEGRADATION', 'SWITCHGEAR_PREVENTIVE_INSPECTION', 'TRACKER_DRIVE_FAULT', 'TRACKER_DRIVE_MISALIGNMENT', 'TRACKER_GEARBOX_WEAR', 'TRACKER_POSITION_SENSOR_DRIFT', 'TRANSFORMER_COOLING_SYSTEM_DEGRADATION', 'TRANSFORMER_DEFECT_RESPONSE', 'TRANSFORMER_INSULATION_CONNECTION_DEFECT');
+-- Defect and finding type: 22 platform value(s), 18 alias(es)
 select aip.create_ref_table('defect_code', 'Defect and finding type', 'category text, component text, asset_class_code text', false);
 insert into aip.ref_defect_code (code, label, sort_order, category, component, asset_class_code) values
   ('SOILING', 'Soiling / bird deposits', 1, 'Condition', 'Surface', 'PV_MODULE'),
@@ -326,7 +342,8 @@ insert into aip.ref_defect_code (code, label, sort_order, category, component, a
   ('FIRE_SMOKE', 'Fire or smoke indication', 20, 'Observation', null, 'PV_ARRAY'),
   ('LOOSE_CONNECTOR', 'Loose connector (suspected)', 21, 'Observation', null, 'PV_MODULE'),
   ('STRING_CURRENT_IMBALANCE', 'String current imbalance', 22, 'Observation', null, 'SCB')
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, component = excluded.component, asset_class_code = excluded.asset_class_code;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, component = excluded.component, asset_class_code = excluded.asset_class_code, is_active = true;
+update aip.ref_defect_code set is_active = false where tenant_id is null and is_active and code not in ('SOILING', 'SHADING', 'HOTSPOT', 'LOW_OUTPUT', 'CELL_CRACK', 'GLASS_DAMAGE', 'DELAMINATION', 'BACKSHEET', 'CORROSION', 'JUNCTION_BOX', 'BYPASS_DIODE', 'PID', 'LID_LETID', 'WEATHER_DAMAGE', 'TRACKER_MISALIGNMENT', 'COMBINER_THERMAL_ANOMALY', 'VEGETATION_ENCROACHMENT', 'CABLE_INSULATION_DAMAGE', 'WATERLOGGING', 'FIRE_SMOKE', 'LOOSE_CONNECTOR', 'STRING_CURRENT_IMBALANCE');
 -- Skill: 7 platform value(s), 0 alias(es)
 select aip.create_ref_table('skill', 'Skill', '', false);
 insert into aip.ref_skill (code, label, sort_order) values
@@ -337,8 +354,9 @@ insert into aip.ref_skill (code, label, sort_order) values
   ('INSTRUMENTATION', 'Instrumentation', 5),
   ('SCADA', 'SCADA', 6),
   ('PV_ELECTRICAL_INSPECTION', 'PV electrical inspection', 7)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order;
--- Event type: 31 platform value(s), 0 alias(es)
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, is_active = true;
+update aip.ref_skill set is_active = false where tenant_id is null and is_active and code not in ('POWER_ELECTRONICS', 'HIGH_VOLTAGE', 'ELECTRICAL', 'MECHANICAL', 'INSTRUMENTATION', 'SCADA', 'PV_ELECTRICAL_INSPECTION');
+-- Event type: 36 platform value(s), 1 alias(es)
 select aip.create_ref_table('event_type', 'Event type', '', true);
 insert into aip.ref_event_type (scope, code, label, sort_order) values
   ('operational', 'EARLY_PRECURSOR', 'Early precursor', 1),
@@ -371,8 +389,14 @@ insert into aip.ref_event_type (scope, code, label, sort_order) values
   ('calendar', 'CALIBRATION', 'Calibration', 9),
   ('calendar', 'ASSIGNED', 'Assigned', 10),
   ('calendar', 'SERVICE', 'Service', 11),
-  ('resource_calendar', 'SHIFT_ASSIGNMENT', 'Shift / Assignment', 1)
-on conflict (tenant_id, scope, code) do update set label = excluded.label, sort_order = excluded.sort_order;
+  ('resource_calendar', 'SHIFT_ASSIGNMENT', 'Shift / Assignment', 1),
+  ('operational', 'COOLING_SUBSYSTEM_DEGRADATION', 'Cooling subsystem degradation', 13),
+  ('operational', 'GRID_VOLTAGE_EXCURSION', 'Grid voltage excursion', 14),
+  ('operational', 'INSULATION_DETERIORATION', 'Insulation deterioration', 15),
+  ('operational', 'POSITION_SENSOR_DRIFT', 'Position-sensor drift', 16),
+  ('operational', 'DRIVE_MECHANISM_FAULT', 'Drive mechanism fault', 17)
+on conflict (tenant_id, scope, code) do update set label = excluded.label, sort_order = excluded.sort_order, is_active = true;
+update aip.ref_event_type set is_active = false where tenant_id is null and is_active and (scope, code) not in (('operational', 'EARLY_PRECURSOR'), ('operational', 'CONDITION_DEVIATION'), ('operational', 'WARNING_THRESHOLD_CROSSED'), ('operational', 'OPERATIONAL_IMPACT_CONFIRMED'), ('operational', 'RESTORATION_VERIFIED'), ('operational', 'INVERTER_COOLING_FAILURE'), ('operational', 'TRANSFORMER_INSULATION_DEGRADATION'), ('operational', 'COMBINER_CONNECTOR_HOTSPOT'), ('operational', 'TRACKER_DRIVE_FAILURE'), ('operational', 'SCADA_COMMUNICATION_LOSS'), ('operational', 'SWITCHGEAR_RELAY_TRIP'), ('operational', 'MODULE_THERMAL_ANOMALY'), ('hse', 'OBSERVATION'), ('hse', 'NEAR_MISS'), ('hse', 'FIRST_AID'), ('hse', 'RECORDABLE'), ('reliability', 'FAILURE'), ('reliability', 'CONFIRMED_FUNCTIONAL_FAILURE'), ('reliability', 'RIGHT_CENSORED'), ('calendar', 'SITE_MAINTENANCE_WINDOW'), ('calendar', 'GRID_OUTAGE_WINDOW'), ('calendar', 'ACCESS_RESTRICTION'), ('calendar', 'TRAINING'), ('calendar', 'LEAVE'), ('calendar', 'PUBLIC_HOLIDAY'), ('calendar', 'REGIONAL_HOLIDAY'), ('calendar', 'OT_RESTRICTION'), ('calendar', 'CALIBRATION'), ('calendar', 'ASSIGNED'), ('calendar', 'SERVICE'), ('resource_calendar', 'SHIFT_ASSIGNMENT'), ('operational', 'COOLING_SUBSYSTEM_DEGRADATION'), ('operational', 'GRID_VOLTAGE_EXCURSION'), ('operational', 'INSULATION_DETERIORATION'), ('operational', 'POSITION_SENSOR_DRIFT'), ('operational', 'DRIVE_MECHANISM_FAULT'));
 -- Source system: 27 platform value(s), 41 alias(es)
 select aip.create_ref_table('source_system', 'Source system', '', false);
 insert into aip.ref_source_system (code, label, sort_order) values
@@ -403,7 +427,8 @@ insert into aip.ref_source_system (code, label, sort_order) values
   ('INSPECTION', 'Field inspection', 25),
   ('MAINTENANCE_LOG', 'Maintenance log', 26),
   ('FUEL_LOG', 'Fuel log', 27)
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, is_active = true;
+update aip.ref_source_system set is_active = false where tenant_id is null and is_active and code not in ('SCADA', 'REVENUE_METER', 'HISTORIAN', 'CONDITION_MONITORING', 'EAM', 'ERP', 'WFM', 'FSM', 'DMS', 'FLEET', 'OPTIMIZER', 'WEATHER_SERVICE', 'AI_VISION', 'CAMERA', 'ANALYTICS_ENGINE', 'AIP_CORE', 'HSE', 'TIMESHEET', 'COMMERCIAL_PPA', 'CLIMATE_RISK', 'REGULATORY_RATES', 'LOGISTICS_RATES', 'WORKFORCE_COST', 'PLANNING_PROFILE', 'INSPECTION', 'MAINTENANCE_LOG', 'FUEL_LOG');
 -- Reporting framework: 7 platform value(s), 4 alias(es)
 select aip.create_ref_table('framework', 'Reporting framework', 'jurisdiction text', false);
 insert into aip.ref_framework (code, label, sort_order, jurisdiction) values
@@ -414,7 +439,8 @@ insert into aip.ref_framework (code, label, sort_order, jurisdiction) values
   ('TCFD', 'TCFD', 5, 'global'),
   ('CSRD_ESRS', 'CSRD / ESRS', 6, 'EU'),
   ('CDP', 'CDP', 7, 'global')
-on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, jurisdiction = excluded.jurisdiction;
+on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, jurisdiction = excluded.jurisdiction, is_active = true;
+update aip.ref_framework set is_active = false where tenant_id is null and is_active and code not in ('BRSR', 'SASB_IF_EU', 'GRI', 'ISSB', 'TCFD', 'CSRD_ESRS', 'CDP');
 -- Emission factor: 0 platform value(s), 0 alias(es)
 select aip.create_ref_table('emission_factor', 'Emission factor', 'value numeric(24,10), unit_code text, region_code text, authority text, effective_from date, effective_to date, factor_status text', false);
 
@@ -509,6 +535,19 @@ insert into aip.ref_alias (ref_table, scope, alias, code, currency, provenance) 
   ('unit', null, 'INR/event', 'CUR_PER_EVENT', 'INR', null),
   ('unit', null, 'INR/unit', 'CUR_PER_UNIT', 'INR', null),
   ('unit', null, 'INR/kg', 'CUR_PER_KG', 'INR', null),
+  ('unit', null, 'L/recovered MWh', 'L_PER_RECOVERED_MWH', null, null),
+  ('unit', null, 'strategies', 'STRATEGY', null, null),
+  ('unit', null, 'strategy', 'STRATEGY', null, null),
+  ('unit', null, 'rule', 'RULE', null, null),
+  ('unit', null, 'workflow', 'WORKFLOW', null, null),
+  ('unit', null, 'lexicographic', 'LEXICOGRAPHIC', null, null),
+  ('unit', null, 'status', 'STATUS_VALUE', null, null),
+  ('unit', null, 'date/time', 'DATE_TIME', null, null),
+  ('unit', null, 'RUL/Condition/Readiness/Replacement/Regulatory', 'MODEL_SCORE_SET', null, null),
+  ('unit', null, 'assets/cohorts', 'COUNT', null, null),
+  ('failure_mode', null, 'Tracker drive mechanism fault', 'TRACKER_DRIVE_FAULT', null, null),
+  ('failure_mode', null, 'Transformer insulation degradation', 'INSULATION_DETERIORATION', null, null),
+  ('failure_mode', null, 'Power-stage thermal degradation', 'IGBT_THERMAL_DEGRADATION', null, null),
   ('defect_code', null, 'Thermal Hotspot', 'HOTSPOT', null, null),
   ('defect_code', null, 'Soiling Accumulation', 'SOILING', null, null),
   ('defect_code', null, 'Bird Dropping Accumulation', 'SOILING', null, null),
@@ -526,6 +565,8 @@ insert into aip.ref_alias (ref_table, scope, alias, code, currency, provenance) 
   ('defect_code', null, 'Fire/Smoke Indication', 'FIRE_SMOKE', null, null),
   ('defect_code', null, 'Loose MC4 Connector Suspected', 'LOOSE_CONNECTOR', null, null),
   ('defect_code', null, 'String Current Imbalance', 'STRING_CURRENT_IMBALANCE', null, null),
+  ('defect_code', null, 'Cracked Module', 'GLASS_DAMAGE', null, null),
+  ('event_type', 'operational', 'Cooling-system deterioration', 'COOLING_SUBSYSTEM_DEGRADATION', null, null),
   ('source_system', null, 'SYS-EAM', 'EAM', null, null),
   ('source_system', null, 'AIP Core', 'AIP_CORE', null, null),
   ('source_system', null, 'SYS-WFM', 'WFM', null, null),
@@ -604,6 +645,7 @@ insert into aip.ref_binding (table_name, column_name, ref_table, scope, wildcard
   ('event_log', 'severity', 'severity', null, null, null),
   ('event_log', 'source_system', 'source_system', null, null, null),
   ('event_root_cause_cases', 'asset_class', 'asset_class', null, null, null),
+  ('event_root_cause_cases', 'event_type', 'event_type', 'operational', null, null),
   ('event_root_cause_cases', 'severity', 'severity', null, null, null),
   ('event_root_cause_cases', 'validation_status', 'status', 'rca', null, null),
   ('event_root_cause_evidence', 'source_system', 'source_system', null, null, null),
@@ -663,11 +705,10 @@ insert into aip.ref_binding (table_name, column_name, ref_table, scope, wildcard
   ('pno_materials', 'criticality', 'severity', null, null, null),
   ('pno_materials', 'material_status', 'status', 'readiness', null, null),
   ('pno_materials', 'unit', 'unit', null, null, null),
-  ('pno_optimization_interface', 'status', 'status', 'connector', null, null),
   ('pno_optimization', 'priority', 'priority', null, null, null),
+  ('pno_optimization_interface', 'status', 'status', 'connector', null, null),
   ('pno_plan_status_config', 'plan_status', 'status', 'plan', null, null),
   ('pno_policy', 'unit', 'unit', null, null, null),
-  ('pno_resources', 'primary_skill_or_type', 'skill', null, null, null),
   ('pno_rolling_window_config', 'unit', 'unit', null, null, null),
   ('pno_scheduling_rules', 'unit', 'unit', null, null, null),
   ('pno_site_mobilization', 'state', 'region', null, null, null),

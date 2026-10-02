@@ -5,8 +5,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { withCorrections } from "./conformance.ts";
-import { correctionLogInsert, deriveCorrections, loadCorrections, type CorrectionSet } from "./corrections.ts";
+import { applyCorrections, correctionLogInsert, loadCorrections, type CorrectionSet } from "./corrections.ts";
 import { loadVocabulary, tenantReferenceRows, type Vocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
@@ -28,8 +27,7 @@ export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; n
   if (!/^[A-Z]{3}$/.test(tenant.currency)) throw new Error("currency must be ISO-4217");
   const raw = readSheets(workbook);
   // Governed corrections add the records the workbook references but lacks; each is logged per row below.
-  const derived = corrections ? deriveCorrections(reg, raw, corrections) : [];
-  const sheets = withCorrections(reg, raw, derived);
+  const { sheets, entries: derived } = corrections ? applyCorrections(reg, raw, corrections) : { sheets: raw, entries: [] };
   const out: string[] = [
     `-- Sustantix AIP seed · ${reg.source} → tenant ${tenant.id}`,
     "begin;",

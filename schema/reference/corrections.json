@@ -1,6 +1,6 @@
 {
  "version": 1,
- "description": "Governed data corrections, decided by the data owner on 2026-10-01. Each correction derives the missing master or register records from the rows that reference them, so every value is traceable to a source row. Corrections are applied when data is loaded into the system of record (Supabase seed, Dataverse provisioning) and logged per row; the governed workbook and the v9.15 runtime datasets are left unchanged.",
+ "description": "Governed data corrections, decided by the data owner on 2026-10-01. Derive corrections add the master or register records the workbook references but lacks, built from the rows that reference them; remap corrections change values in place. Every derived record and every changed cell is traceable to a source row. Corrections apply in order. Corrections are applied when data is loaded into the system of record (Supabase seed, Dataverse provisioning) and logged per row; the governed workbook and the v9.15 runtime datasets are left unchanged.",
  "corrections": [
   {
    "id": "C1",
@@ -8,16 +8,29 @@
    "decision": "The AST-H series (tags such as SP-01-INV-H01) numbers assets with one portfolio-wide sequence and its own tag codes (TRA, WEA, SWI), so it cannot be matched to existing assets. Each historical asset is added to the master from its intervention record.",
    "target": "asset_master",
    "key": "asset_id",
-   "source": { "table": "pno_interventions", "where": { "asset_id": "^AST-H" } },
+   "source": {
+    "table": "pno_interventions",
+    "where": {
+     "asset_id": "^AST-H"
+    }
+   },
    "map": {
     "asset_id": "asset_id",
     "plant_id": "plant_id",
     "asset_tag": "asset_tag",
     "asset_class": "asset_class",
-    "description": { "template": "Historical {asset_class} asset (data hardening history)" },
-    "asset_granularity": { "const": "Historical record" },
-    "data_basis": { "template": "Added by data correction C1 from intervention {intervention_id} / work order {work_order_id}" },
-    "source": { "const": "Data hardening history" }
+    "description": {
+     "template": "Historical {asset_class} asset (data hardening history)"
+    },
+    "asset_granularity": {
+     "const": "Historical record"
+    },
+    "data_basis": {
+     "template": "Added by data correction C1 from intervention {intervention_id} / work order {work_order_id}"
+    },
+    "source": {
+     "const": "Data hardening history"
+    }
    }
   },
   {
@@ -26,15 +39,26 @@
    "decision": "CBM and RCA cases use a per-plant asset naming (SP01-INV-A01, ARV-INV-204, DEC-INV-411, VIN-TRF-709). Plant, tag and class agree across all four sheets that use them, so each is added to the master under its own ID.",
    "target": "asset_master",
    "key": "asset_id",
-   "source": { "table": "cbm_assessments", "where": { "asset_id": "^(SP\\d\\d|ARV|DEC|VIN)-" } },
+   "source": {
+    "table": "cbm_assessments",
+    "where": {
+     "asset_id": "^(SP\\d\\d|ARV|DEC|VIN)-"
+    }
+   },
    "map": {
     "asset_id": "asset_id",
     "plant_id": "plant_id",
     "asset_tag": "asset_tag",
     "asset_class": "asset_class",
-    "description": { "template": "{asset_tag} (condition-based maintenance and RCA case asset)" },
-    "data_basis": { "template": "Added by data correction C2 from CBM assessment {cbm_assessment_id}" },
-    "source": { "const": "CBM / RCA cases" }
+    "description": {
+     "template": "{asset_tag} (condition-based maintenance and RCA case asset)"
+    },
+    "data_basis": {
+     "template": "Added by data correction C2 from CBM assessment {cbm_assessment_id}"
+    },
+    "source": {
+     "const": "CBM / RCA cases"
+    }
    }
   },
   {
@@ -43,22 +67,238 @@
    "decision": "Work orders WO-20xxx and WO-40xxx are referenced by five planning sheets but missing from the register. Each is created as a scheduled work order from its intervention: same asset, plant, type and priority; created at the planning date, due at the required-by date.",
    "target": "work_orders",
    "key": "work_order_id",
-   "source": { "table": "pno_interventions", "where": { "work_order_id": "^WO-[24]0\\d{3}$" } },
+   "source": {
+    "table": "pno_interventions",
+    "where": {
+     "work_order_id": "^WO-[24]0\\d{3}$"
+    }
+   },
    "map": {
     "work_order_id": "work_order_id",
     "maintenance_type": "maintenance_type",
     "asset_id": "asset_id",
     "plant_id": "plant_id",
     "asset_tag": "asset_tag",
-    "description": { "column": "intervention_description", "default": "Planned {maintenance_type} intervention {intervention_id}" },
+    "description": {
+     "column": "intervention_description",
+     "default": "Planned {maintenance_type} intervention {intervention_id}"
+    },
     "priority": "priority",
-    "status": { "const": "Scheduled" },
-    "created_date": { "column": "planning_as_of", "transform": "dmy_to_iso" },
-    "sla_due": { "column": "required_by", "transform": "dmy_to_iso" },
-    "source": { "template": "Planning {intervention_id}" },
+    "status": {
+     "const": "Scheduled"
+    },
+    "created_date": {
+     "column": "planning_as_of",
+     "transform": "dmy_to_iso"
+    },
+    "sla_due": {
+     "column": "required_by",
+     "transform": "dmy_to_iso"
+    },
+    "source": {
+     "template": "Planning {intervention_id}"
+    },
     "required_part_id": "required_part_id",
     "required_part_qty": "required_part_qty",
-    "data_basis": { "template": "Created by data correction C3 from intervention {intervention_id} (planning status {planning_status})" }
+    "data_basis": {
+     "template": "Created by data correction C3 from intervention {intervention_id} (planning status {planning_status})"
+    }
+   }
+  },
+  {
+   "id": "C4",
+   "title": "Create the work orders cited by HSE incidents",
+   "decision": "HSE incidents cite work orders WO-7001…WO-7024 that are missing from the register. Each incident names one work order on an existing asset, so the work order is created from the incident: same asset, plant and maintenance activity, dated on the incident date, completed.",
+   "target": "work_orders",
+   "key": "work_order_id",
+   "source": {
+    "table": "sus_hse_events",
+    "where": {
+     "work_order_id": "^WO-7"
+    }
+   },
+   "map": {
+    "work_order_id": "work_order_id",
+    "asset_id": "asset_id",
+    "plant_id": "plant_id",
+    "description": "maintenance_activity",
+    "status": {
+     "const": "Completed"
+    },
+    "created_date": "date",
+    "source": {
+     "template": "HSE incident {event_id}"
+    },
+    "data_basis": {
+     "template": "Created by data correction C4 from HSE incident {event_id}"
+    }
+   }
+  },
+  {
+   "id": "C5",
+   "kind": "remap",
+   "title": "Re-point the event log's legacy plant and asset codes",
+   "decision": "Six incidents in the event log use plant codes SOL-nn that follow the same numbering as Sites (SP-nn) and short asset codes. Plants are re-pointed SOL-nn → SP-nn. INV-001 and TRF-004 match existing tags exactly (SP-01-INV-001, SP-04-TRF-004) and are re-pointed to those assets; the other four codes have no matching tag and are added as assets by C6.",
+   "target": "event_log",
+   "where": {
+    "plant_id": "^SOL-"
+   },
+   "map": {
+    "plant_id": {
+     "column": "plant_id",
+     "map": {
+      "SOL-01": "SP-01",
+      "SOL-02": "SP-02",
+      "SOL-04": "SP-04",
+      "SOL-07": "SP-07",
+      "SOL-09": "SP-09",
+      "SOL-12": "SP-12"
+     }
+    },
+    "asset_id": {
+     "column": "asset_id",
+     "map": {
+      "INV-001": "AST-00001",
+      "TRF-004": "AST-00160"
+     }
+    }
+   }
+  },
+  {
+   "id": "C6",
+   "title": "Add the event log's unmatched assets to the asset master",
+   "decision": "CMB-017, TRK-118, SCADA-009 and SWG-012 have no matching asset tag at their plant, so each is added under its own code with the class its code names.",
+   "target": "asset_master",
+   "key": "asset_id",
+   "source": {
+    "table": "event_log",
+    "where": {
+     "asset_id": "^(CMB|TRK|SCADA|SWG)-"
+    }
+   },
+   "map": {
+    "asset_id": "asset_id",
+    "plant_id": "plant_id",
+    "asset_tag": {
+     "template": "{plant_id}-{asset_id}"
+    },
+    "asset_class": {
+     "column": "asset_id",
+     "map": {
+      "CMB-017": "SCB",
+      "TRK-118": "Tracker",
+      "SCADA-009": "SCADA",
+      "SWG-012": "Switchgear"
+     }
+    },
+    "description": {
+     "template": "Event-log asset {asset_id} (incident {incident_id})"
+    },
+    "data_basis": {
+     "template": "Added by data correction C6 from event {event_id}"
+    },
+    "source": {
+     "const": "Event log"
+    }
+   }
+  },
+  {
+   "id": "C7",
+   "title": "Create the events behind the RCA cases",
+   "decision": "RCA cases cite events ERC-001… that are missing from the event log. Each case records its event's plant, asset, time, type and severity, so the event is created from the case; it is resolved when the RCA is validated and open while under review.",
+   "target": "event_log",
+   "key": "event_id",
+   "source": {
+    "table": "event_root_cause_cases",
+    "where": {
+     "event_id": "^ERC-"
+    }
+   },
+   "map": {
+    "event_id": "event_id",
+    "plant_id": "plant_id",
+    "asset_id": "asset_id",
+    "asset_tag": "asset_tag",
+    "event_date_time": "event_time",
+    "event_timestamp": "event_time",
+    "event_type": "event_type",
+    "severity": "severity",
+    "event_status": {
+     "column": "validation_status",
+     "map": {
+      "Validated": "Resolved",
+      "Under review": "Open"
+     }
+    },
+    "alarm_code": "reference_id"
+   }
+  },
+  {
+   "id": "C8",
+   "kind": "remap",
+   "title": "Detach the spares forecast's placeholder references",
+   "decision": "Spares requirements from the hardened maintenance plan cite AST-F…, WO-F… and INT-F… IDs. One AST-F ID appears at two plants, so these are plan-line placeholders, not assets, work orders or interventions. The links are detached (set empty) and the original IDs are kept in the correction log; the requirement keeps its plant, part, quantity and dates, and its source record still names the plan line.",
+   "target": "msi_spare_requirements",
+   "where": {
+    "asset_id": "^AST-F"
+   },
+   "map": {
+    "asset_id": {
+     "const": null
+    },
+    "work_order_id": {
+     "const": null
+    },
+    "intervention_id": {
+     "const": null
+    }
+   }
+  },
+  {
+   "id": "C9",
+   "title": "Register the optimisation candidates as interventions",
+   "decision": "Optimisation and governance rows cite INT-00001…INT-00040. Stripping the padding finds a different asset in 148 of 160 rows, and matching by asset finds none or several interventions, so these are a separate list of 40 candidates evaluated across the four scenarios. Each is registered as an intervention under review, with its plant, asset and priority.",
+   "target": "pno_interventions",
+   "key": "intervention_id",
+   "source": {
+    "table": "pno_optimization",
+    "where": {
+     "intervention_id": "^INT-\\d{5}$"
+    }
+   },
+   "map": {
+    "intervention_id": "intervention_id",
+    "plant_id": "plant_id",
+    "asset_id": "asset_id",
+    "priority": "priority",
+    "planning_status": {
+     "const": "Under Review"
+    },
+    "source_sheet": {
+     "const": "PNO_Optimization"
+    },
+    "calculation_basis": {
+     "const": "Optimisation candidate evaluated across scenarios; registered by data correction C9"
+    }
+   }
+  },
+  {
+   "id": "C10",
+   "kind": "remap",
+   "title": "Move the 'Demo - unverified' flag from operating status to provenance",
+   "decision": "'Demo - unverified' describes data provenance, not an operating state. The operating status is cleared (unknown) and the flag moves to data basis where that is empty.",
+   "target": "asset_master",
+   "where": {
+    "operating_status": "^Demo - unverified$"
+   },
+   "map": {
+    "operating_status": {
+     "const": null
+    },
+    "data_basis": {
+     "column": "data_basis",
+     "default": "Demo - unverified (inventory verification required)"
+    }
    }
   }
  ]

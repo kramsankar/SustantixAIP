@@ -1,14 +1,13 @@
 import {
+  applyCorrections,
   correctionLogPlan,
   correctionLogRecords,
   dataModelPlan,
   dataverseRecord,
-  deriveCorrections,
   platformPlan,
   readSheets,
   referencePlan,
   referenceRecords,
-  withCorrections,
   type CorrectionSet,
   type Registry,
   type Vocabulary,
@@ -117,8 +116,7 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   let correctedRecords = 0;
   if (o.seedWorkbook && o.dataModel) {
     const raw = readSheets(o.seedWorkbook);
-    const derived = o.corrections ? deriveCorrections(o.registry, raw, o.corrections) : [];
-    const sheets = withCorrections(o.registry, raw, derived);
+    const { sheets, entries: derived } = o.corrections ? applyCorrections(o.registry, raw, o.corrections) : { sheets: raw, entries: [] };
     if (o.corrections && derived.length) {
       const set = await entitySetName(api, "sus_datacorrection");
       const records = correctionLogRecords(o.corrections, derived);

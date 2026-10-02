@@ -214,6 +214,11 @@
      "code": "INSPECTION",
      "label": "Inspection",
      "strategy_family": "planned"
+    },
+    {
+     "code": "INVENTORY_LED",
+     "label": "Inventory-led",
+     "strategy_family": "planned"
     }
    ],
    "aliases": []
@@ -298,7 +303,7 @@
   {
    "name": "risk_band",
    "label": "Risk band",
-   "description": "Composite asset risk band. The position of Watch is provisional pending owner confirmation.",
+   "description": "Composite asset risk band; rank 1 is the most severe. Watch sits between Medium and Low.",
    "attributes": [
     {
      "name": "rank",
@@ -897,7 +902,7 @@
   {
    "name": "unit",
    "label": "Unit of measure",
-   "description": "Units with a dimension and a factor to the dimension's base unit (null where no fixed factor exists). CUR_* units take their currency from the row.",
+   "description": "Units with a dimension and a factor to the dimension's base unit (null where no fixed factor exists). CUR_* units take their currency from the row. Dimension parameter_type holds non-measurement parameter types until phase 2 moves them to the policy parameter type.",
    "attributes": [
     {
      "name": "symbol",
@@ -1171,6 +1176,62 @@
      "symbol": "¤/kg",
      "dimension": "money_rate",
      "base_factor": null
+    },
+    {
+     "code": "L_PER_RECOVERED_MWH",
+     "label": "Litre per recovered MWh",
+     "symbol": "L/recovered MWh",
+     "dimension": "water_intensity",
+     "base_factor": 1
+    },
+    {
+     "code": "STRATEGY",
+     "label": "Strategy",
+     "symbol": "strategy",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "RULE",
+     "label": "Rule",
+     "symbol": "rule",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "WORKFLOW",
+     "label": "Workflow",
+     "symbol": "workflow",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "LEXICOGRAPHIC",
+     "label": "Lexicographic order",
+     "symbol": "lexicographic",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "STATUS_VALUE",
+     "label": "Status value",
+     "symbol": "status",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "DATE_TIME",
+     "label": "Date / time",
+     "symbol": "date/time",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "MODEL_SCORE_SET",
+     "label": "Model score set",
+     "symbol": "RUL/Condition/Readiness/Replacement/Regulatory",
+     "dimension": "parameter_type",
+     "base_factor": null
     }
    ],
    "aliases": [
@@ -1341,6 +1402,46 @@
      "alias": "INR/kg",
      "code": "CUR_PER_KG",
      "currency": "INR"
+    },
+    {
+     "alias": "L/recovered MWh",
+     "code": "L_PER_RECOVERED_MWH"
+    },
+    {
+     "alias": "strategies",
+     "code": "STRATEGY"
+    },
+    {
+     "alias": "strategy",
+     "code": "STRATEGY"
+    },
+    {
+     "alias": "rule",
+     "code": "RULE"
+    },
+    {
+     "alias": "workflow",
+     "code": "WORKFLOW"
+    },
+    {
+     "alias": "lexicographic",
+     "code": "LEXICOGRAPHIC"
+    },
+    {
+     "alias": "status",
+     "code": "STATUS_VALUE"
+    },
+    {
+     "alias": "date/time",
+     "code": "DATE_TIME"
+    },
+    {
+     "alias": "RUL/Condition/Readiness/Replacement/Regulatory",
+     "code": "MODEL_SCORE_SET"
+    },
+    {
+     "alias": "assets/cohorts",
+     "code": "COUNT"
     }
    ]
   },
@@ -1699,10 +1800,6 @@
      "label": "Junction box failure"
     },
     {
-     "code": "POWER_STAGE_THERMAL_DEGRADATION",
-     "label": "Power-stage thermal degradation"
-    },
-    {
      "code": "SOILING_AND_DEGRADATION",
      "label": "Soiling and degradation"
     },
@@ -1721,10 +1818,6 @@
     {
      "code": "TRACKER_DRIVE_FAULT",
      "label": "Tracker drive fault"
-    },
-    {
-     "code": "TRACKER_DRIVE_MECHANISM_FAULT",
-     "label": "Tracker drive mechanism fault"
     },
     {
      "code": "TRACKER_DRIVE_MISALIGNMENT",
@@ -1749,13 +1842,22 @@
     {
      "code": "TRANSFORMER_INSULATION_CONNECTION_DEFECT",
      "label": "Transformer insulation / connection defect"
-    },
-    {
-     "code": "TRANSFORMER_INSULATION_DEGRADATION",
-     "label": "Transformer insulation degradation"
     }
    ],
-   "aliases": []
+   "aliases": [
+    {
+     "alias": "Tracker drive mechanism fault",
+     "code": "TRACKER_DRIVE_FAULT"
+    },
+    {
+     "alias": "Transformer insulation degradation",
+     "code": "INSULATION_DETERIORATION"
+    },
+    {
+     "alias": "Power-stage thermal degradation",
+     "code": "IGBT_THERMAL_DEGRADATION"
+    }
+   ]
   },
   {
    "name": "defect_code",
@@ -1991,6 +2093,10 @@
     {
      "alias": "String Current Imbalance",
      "code": "STRING_CURRENT_IMBALANCE"
+    },
+    {
+     "alias": "Cracked Module",
+     "code": "GLASS_DAMAGE"
     }
    ]
   },
@@ -2231,9 +2337,45 @@
      "label": "Shift / Assignment",
      "scope": "resource_calendar",
      "sort_order": 1
+    },
+    {
+     "code": "COOLING_SUBSYSTEM_DEGRADATION",
+     "label": "Cooling subsystem degradation",
+     "scope": "operational",
+     "sort_order": 13
+    },
+    {
+     "code": "GRID_VOLTAGE_EXCURSION",
+     "label": "Grid voltage excursion",
+     "scope": "operational",
+     "sort_order": 14
+    },
+    {
+     "code": "INSULATION_DETERIORATION",
+     "label": "Insulation deterioration",
+     "scope": "operational",
+     "sort_order": 15
+    },
+    {
+     "code": "POSITION_SENSOR_DRIFT",
+     "label": "Position-sensor drift",
+     "scope": "operational",
+     "sort_order": 16
+    },
+    {
+     "code": "DRIVE_MECHANISM_FAULT",
+     "label": "Drive mechanism fault",
+     "scope": "operational",
+     "sort_order": 17
     }
    ],
-   "aliases": []
+   "aliases": [
+    {
+     "alias": "Cooling-system deterioration",
+     "code": "COOLING_SUBSYSTEM_DEGRADATION",
+     "scope": "operational"
+    }
+   ]
   },
   {
    "name": "source_system",
@@ -2730,6 +2872,11 @@
    "ref": "asset_class"
   },
   {
+   "column": "event_root_cause_cases.event_type",
+   "ref": "event_type",
+   "scope": "operational"
+  },
+  {
    "column": "event_root_cause_cases.severity",
    "ref": "severity"
   },
@@ -2993,13 +3140,13 @@
    "ref": "unit"
   },
   {
+   "column": "pno_optimization.priority",
+   "ref": "priority"
+  },
+  {
    "column": "pno_optimization_interface.status",
    "ref": "status",
    "scope": "connector"
-  },
-  {
-   "column": "pno_optimization.priority",
-   "ref": "priority"
   },
   {
    "column": "pno_plan_status_config.plan_status",
@@ -3009,10 +3156,6 @@
   {
    "column": "pno_policy.unit",
    "ref": "unit"
-  },
-  {
-   "column": "pno_resources.primary_skill_or_type",
-   "ref": "skill"
   },
   {
    "column": "pno_rolling_window_config.unit",
@@ -3330,176 +3473,7 @@
    "scope": "work_order"
   }
  ],
- "openDecisions": [
-  {
-   "ref": "maintenance_type",
-   "columns": [
-    "msi_spare_requirements.maintenance_type"
-   ],
-   "values": [
-    "Inventory-led"
-   ],
-   "question": "Is an inventory-led requirement a maintenance type, or a requirement driver to record separately?"
-  },
-  {
-   "ref": "risk_band",
-   "columns": [
-    "asset_master.risk_band"
-   ],
-   "values": [
-    "Watch"
-   ],
-   "question": "Confirm that Watch ranks between Medium and Low.",
-   "kind": "confirm"
-  },
-  {
-   "ref": "status",
-   "columns": [
-    "asset_master.operating_status"
-   ],
-   "values": [
-    "Demo - unverified"
-   ],
-   "question": "This flags data provenance, not an operating state. Move it to the provenance attribute and set the true operating state?"
-  },
-  {
-   "ref": "status",
-   "columns": [
-    "pno_interventions.erp_execution_status",
-    "pno_fleet_schedule.erp_execution_status",
-    "plan_interventions.erp_execution_status",
-    "plan_schedule.erp_execution_status"
-   ],
-   "values": [
-    "(composite values)"
-   ],
-   "question": "Execution status combines status, start timeliness and finish timeliness in one text. Phase 3 splits it into three coded columns; confirm the split.",
-   "kind": "decompose"
-  },
-  {
-   "ref": "unit",
-   "columns": [
-    "pno_policy.unit",
-    "plan_optimization_config.unit",
-    "pno_rolling_window_config.unit",
-    "sus_model_governance.unit",
-    "sus_eol_assumptions.unit",
-    "sus_eol_kpi_basis.unit",
-    "sus_metric_catalogue.unit"
-   ],
-   "values": [
-    "strategies",
-    "strategy",
-    "rule",
-    "workflow",
-    "lexicographic",
-    "status",
-    "RUL/Condition/Readiness/Replacement/Regulatory",
-    "date/time",
-    "assets/cohorts",
-    "L/recovered MWh"
-   ],
-   "question": "These describe a parameter's type, not a unit of measure. Phase 2 moves them to the policy parameter type; confirm, and confirm whether L/recovered MWh is a separate basis from L/MWh.",
-   "kind": "reclassify"
-  },
-  {
-   "ref": "failure_mode",
-   "columns": [
-    "rcm_strategy.failure_mode",
-    "rcm_policy_governance.failure_mode",
-    "rcm_functions_and_failures.failure_mode",
-    "rcm_consequence_assessment.failure_mode",
-    "rcm_decision_logic.failure_mode",
-    "rcm_task_triggers.failure_mode",
-    "rcm_climate_applicability.failure_mode",
-    "rcm_source_linkage.failure_mode",
-    "reliability_life_history.failure_mode",
-    "plan_rcm_context.failure_mode",
-    "cbm_assessments.failure_mode"
-   ],
-   "values": [
-    "Cooling fan failure / Cooling fan degradation",
-    "Insulation deterioration / Insulation failure / Transformer insulation degradation",
-    "Tracker drive fault / Tracker drive mechanism fault",
-    "IGBT thermal degradation / Power-stage thermal degradation"
-   ],
-   "question": "Merge these near-duplicate failure modes into one code each, or keep them distinct?",
-   "kind": "merge"
-  },
-  {
-   "ref": "failure_mode",
-   "columns": [
-    "operational_reliability.failure_mode"
-   ],
-   "values": [
-    "Thermal degradation intervention",
-    "Predictive inverter intervention",
-    "High-risk inverter intervention",
-    "SCB protection intervention",
-    "Switchgear access / permit delay"
-   ],
-   "question": "This column mixes failure modes with intervention reasons. Split it before binding?",
-   "kind": "reclassify",
-   "unbound": true
-  },
-  {
-   "ref": "defect_code",
-   "columns": [
-    "vision_findings.defect_type",
-    "cbm_assessments.failure_mode"
-   ],
-   "values": [
-    "Cracked Module"
-   ],
-   "question": "Is a cracked module cell cracking (CELL_CRACK) or glass damage (GLASS_DAMAGE)?"
-  },
-  {
-   "ref": "skill",
-   "columns": [
-    "pno_resources.primary_skill_or_type"
-   ],
-   "values": [
-    "Electrical HV",
-    "PV Field",
-    "Diagnostic",
-    "Field service vehicle"
-   ],
-   "question": "Map Electrical HV to High Voltage? Are PV Field and Diagnostic skills? Field service vehicle is a resource type and moves to the resource record.",
-   "kind": "reclassify"
-  },
-  {
-   "ref": "event_type",
-   "columns": [
-    "event_root_cause_cases.event_type"
-   ],
-   "values": [
-    "Cooling subsystem degradation",
-    "Grid voltage excursion",
-    "Insulation deterioration",
-    "Cooling-system deterioration",
-    "Position-sensor drift",
-    "Drive mechanism fault",
-    "Module thermal anomaly"
-   ],
-   "question": "RCA event types describe failure mechanisms. Bind them to failure modes in phase 3?",
-   "kind": "reclassify",
-   "unbound": true
-  },
-  {
-   "ref": "failure_mode",
-   "columns": [
-    "plan_rcm_context.failure_mode",
-    "reliability_life_history.failure_mode"
-   ],
-   "values": [
-    "Inverter preventive degradation control",
-    "Switchgear preventive inspection",
-    "Transformer defect response"
-   ],
-   "question": "These read as maintenance responses rather than failure modes. Retire them as failure-mode codes in phase 2?",
-   "kind": "reclassify"
-  }
- ],
+ "openDecisions": [],
  "decisionsMade": [
   {
    "date": "2026-10-01",
@@ -3516,6 +3490,107 @@
     "pno_interventions.asset_class"
    ],
    "decision": "Electrical, Instrumentation, SCADA and Safety become asset classes (electrical balance of plant, instrumentation, SCADA system, safety system); Weather maps to Weather Station; Cleaning maps to PV Array, the asset cleaned. Delegated by the data owner."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "maintenance_type",
+   "columns": [
+    "msi_spare_requirements.maintenance_type"
+   ],
+   "decision": "Inventory-led is kept as a maintenance type (planned family): stock-driven replenishment work."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "risk_band",
+   "columns": [
+    "asset_master.risk_band"
+   ],
+   "decision": "Watch ranks between Medium and Low."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "status",
+   "columns": [
+    "asset_master.operating_status"
+   ],
+   "decision": "'Demo - unverified' is provenance, not an operating state: correction C10 clears the status and records the flag in data basis."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "status",
+   "columns": [
+    "pno_interventions.erp_execution_status",
+    "pno_fleet_schedule.erp_execution_status",
+    "plan_interventions.erp_execution_status",
+    "plan_schedule.erp_execution_status"
+   ],
+   "decision": "Execution status is split in phase 3 into status, start timeliness and finish timeliness; the columns stay unbound until then."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "unit",
+   "columns": [
+    "pno_policy.unit",
+    "plan_optimization_config.unit",
+    "pno_rolling_window_config.unit",
+    "sus_model_governance.unit",
+    "sus_eol_assumptions.unit",
+    "sus_eol_kpi_basis.unit"
+   ],
+   "decision": "Non-measurement values are coded as parameter types (dimension parameter_type) until phase 2 moves them to the policy parameter type; assets/cohorts counts as Count; L/recovered MWh is a separate basis from L/MWh."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "rcm_strategy.failure_mode",
+    "reliability_life_history.failure_mode",
+    "cbm_assessments.failure_mode",
+    "plan_rcm_context.failure_mode"
+   ],
+   "decision": "True synonyms merged: Tracker drive mechanism fault → Tracker drive fault; Transformer insulation degradation → Insulation deterioration; Power-stage thermal degradation → IGBT thermal degradation. Degradation and failure stay distinct (Cooling fan degradation vs failure; Insulation deterioration vs failure) because they are different stages."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "operational_reliability.failure_mode"
+   ],
+   "decision": "The column is a reliability reporting category, not a failure mode; it stays unbound and is renamed reliability_category in phase 2."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "defect_code",
+   "columns": [
+    "vision_findings.defect_type",
+    "cbm_assessments.failure_mode"
+   ],
+   "decision": "Cracked Module is glass damage; cell microcracks are recorded separately as cell cracking."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "skill",
+   "columns": [
+    "pno_resources.primary_skill_or_type"
+   ],
+   "decision": "The column holds a skill for technicians, a tool category for tools and a vehicle type for vehicles; it stays unbound and is split by resource type in phase 2."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "event_type",
+   "columns": [
+    "event_root_cause_cases.event_type"
+   ],
+   "decision": "RCA event types are operational event types; five are added and Cooling-system deterioration is an alias of Cooling subsystem degradation."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "plan_rcm_context.failure_mode",
+    "reliability_life_history.failure_mode"
+   ],
+   "decision": "Inverter preventive degradation control, Switchgear preventive inspection and Transformer defect response are kept as failure-mode codes: each names the failure the work addresses."
   }
  ]
 }

@@ -1456,7 +1456,7 @@
     "LocalizedLabels": [
      {
       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
-      "Label": "Composite asset risk band. The position of Watch is provisional pending owner confirmation.",
+      "Label": "Composite asset risk band; rank 1 is the most severe. Watch sits between Medium and Low.",
       "LanguageCode": 1033
      }
     ]
@@ -2252,7 +2252,7 @@
     "LocalizedLabels": [
      {
       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
-      "Label": "Units with a dimension and a factor to the dimension's base unit (null where no fixed factor exists). CUR_* units take their currency from the row.",
+      "Label": "Units with a dimension and a factor to the dimension's base unit (null where no fixed factor exists). CUR_* units take their currency from the row. Dimension parameter_type holds non-measurement parameter types until phase 2 moves them to the policy ",
       "LanguageCode": 1033
      }
     ]
@@ -6460,7 +6460,7 @@
     "LocalizedLabels": [
      {
       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
-      "Label": "Records derived by governed data corrections (schema/reference/corrections.json).",
+      "Label": "Records derived and values changed by governed data corrections (schema/reference/corrections.json).",
       "LanguageCode": 1033
      }
     ]
@@ -6545,6 +6545,43 @@
      "Value": "StringType"
     },
     "MaxLength": 20,
+    "FormatName": {
+     "Value": "Text"
+    }
+   },
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+    "SchemaName": "sus_kind",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Kind",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Kind",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    },
+    "AttributeType": "String",
+    "AttributeTypeName": {
+     "Value": "StringType"
+    },
+    "MaxLength": 10,
     "FormatName": {
      "Value": "Text"
     }
@@ -6733,6 +6770,41 @@
     "FormatName": {
      "Value": "Text"
     }
+   },
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+    "SchemaName": "sus_changes",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Changed cells (JSON)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Changed cells (JSON)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    },
+    "AttributeType": "Memo",
+    "AttributeTypeName": {
+     "Value": "MemoType"
+    },
+    "Format": "TextArea",
+    "MaxLength": 10000
    }
   ],
   "keys": [

@@ -197,60 +197,6 @@
    "class": "merge",
    "match": "^HSE-",
    "note": "HSE incidents have their own ID space; phase 2 moves them to hse_incident."
-  },
-  {
-   "from": "sus_hse_events.work_order_id",
-   "class": "owner",
-   "match": "^WO-7",
-   "question": "HSE incidents cite work orders WO-7001…WO-7024 that are not in the work-order register. Add them, or drop the link?"
-  },
-  {
-   "from": "event_log.plant_id",
-   "class": "owner",
-   "match": "^SOL-",
-   "question": "The event log uses plant codes SOL-01… that do not exist in Sites. Map them to SP-xx plants?"
-  },
-  {
-   "from": "event_log.asset_id",
-   "class": "owner",
-   "match": "^(INV|TRF|CMB|TRK|SCD|SWG|SCADA)-",
-   "question": "The event log uses short asset codes (INV-001, TRF-004). Map them to asset-master IDs?"
-  },
-  {
-   "from": "*.event_id",
-   "class": "owner",
-   "match": "^ERC-",
-   "question": "RCA cases cite events ERC-001… that are not in the event log. Add the originating events, or treat ERC IDs as the case's own event reference?"
-  },
-  {
-   "from": "msi_spare_requirements.asset_id",
-   "class": "owner",
-   "match": "^AST-F",
-   "question": "Spares requirements cite a forecast asset series AST-F… with no asset records. Are these planned assets?"
-  },
-  {
-   "from": "msi_spare_requirements.work_order_id",
-   "class": "owner",
-   "match": "^WO-F",
-   "question": "Spares requirements cite forecast work orders WO-F… Are they planned work orders to create?"
-  },
-  {
-   "from": "msi_spare_requirements.intervention_id",
-   "class": "owner",
-   "match": "^INT-F",
-   "question": "Spares requirements cite forecast interventions INT-F… Are they planned interventions to create?"
-  },
-  {
-   "from": "pno_optimization.intervention_id",
-   "class": "owner",
-   "match": "^INT-\\d{5}$",
-   "question": "Optimization rows cite INT-00001… Stripping the padding finds INT-001…, but 148 of 160 rows then point to a different asset, so they are not the same interventions. Which register do these IDs belong to?"
-  },
-  {
-   "from": "pno_governance.intervention_id",
-   "class": "owner",
-   "match": "^INT-\\d{5}$",
-   "question": "Governance rows cite the same INT-00001 series as optimization. Same decision applies."
   }
  ]
 }

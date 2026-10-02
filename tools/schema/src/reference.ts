@@ -245,7 +245,10 @@ function platformRowsSql(t: RefTable): string {
   );
   const conflict = isScoped(t) ? "(tenant_id, scope, code)" : "(tenant_id, code)";
   const updates = cols.filter((c) => c !== "code" && c !== "scope").map((c) => `${c} = excluded.${c}`);
-  return `insert into aip.${REF_PREFIX}${t.name} (${cols.join(", ")}) values\n  ${rows.join(",\n  ")}\non conflict ${conflict} do update set ${updates.join(", ")};`;
+  const current = isScoped(t) ? t.values.map((x) => `(${lit(x.scope!)}, ${lit(x.code)})`) : t.values.map((x) => lit(x.code));
+  // Platform codes no longer in the vocabulary (merged or withdrawn) are retired, never deleted: rows may cite them.
+  const retire = `update aip.${REF_PREFIX}${t.name} set is_active = false where tenant_id is null and is_active and ${isScoped(t) ? "(scope, code)" : "code"} not in (${current.join(", ")});`;
+  return `insert into aip.${REF_PREFIX}${t.name} (${cols.join(", ")}) values\n  ${rows.join(",\n  ")}\non conflict ${conflict} do update set ${updates.join(", ")}, is_active = true;\n${retire}`;
 }
 
 /** Supabase migration for the reference layer: tables, platform defaults, aliases and bindings. */

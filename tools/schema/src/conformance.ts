@@ -5,7 +5,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { DerivedRecord } from "./corrections.ts";
+import type { CorrectionEntry } from "./corrections.ts";
 import { Resolver, type Binding, type OpenDecision, type Vocabulary } from "./reference.ts";
 import type { Registry, TableDef } from "./registry.ts";
 import type { SourceRow } from "./rows.ts";
@@ -103,20 +103,21 @@ function ruleApplies(rule: IntegrityRule, from: string, value: string): boolean 
   return rule.match ? new RegExp(rule.match).test(value) : true;
 }
 
-/** The workbook rows plus every record derived by a governed correction. */
-export function withCorrections(reg: Registry, sheets: Rows, derived: DerivedRecord[]): Rows {
-  const out: Rows = Object.fromEntries(Object.entries(sheets).map(([k, rows]) => [k, [...rows]]));
-  for (const d of derived) (out[reg.tables.find((t) => t.name === d.target)!.sheet] ??= []).push(d.row);
-  return out;
-}
-
 /**
- * Checks every declared reference. Pass the corrected rows (see withCorrections) together with the derived
- * records to see which references a correction resolved; without them the check runs on the raw workbook.
+ * Checks every declared reference. Pass the corrected rows and the correction entries (see applyCorrections)
+ * to see which references a correction resolved; without them the check runs on the raw workbook.
  */
-export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules, derived: DerivedRecord[] = []): ReferenceCheck[] {
+export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules, corrections: CorrectionEntry[] = []): ReferenceCheck[] {
   const derivedKeys = new Map<string, Map<string, string>>();
-  for (const d of derived) {
+  // Cells a remap changed: a reference that resolves through one counts as resolved by that correction.
+  const remapped = new Map<SourceRow, Map<string, string>>();
+  for (const e of corrections.filter((x) => x.kind === "remap")) {
+    const t = reg.tables.find((x) => x.name === e.target)!;
+    const cells = remapped.get(e.row) ?? new Map<string, string>();
+    for (const ch of e.changes ?? []) cells.set(t.columns.find((c) => c.name === ch.column)!.source, e.correction);
+    remapped.set(e.row, cells);
+  }
+  for (const d of corrections.filter((x) => x.kind === "derive")) {
     const t = reg.tables.find((x) => x.name === d.target)!;
     for (const [col, v] of Object.entries(d.row)) {
       const c = t.columns.find((x) => x.source === col);
@@ -148,7 +149,7 @@ export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules, de
         const value = String(raw).trim();
         check.values++;
         if (keys.has(value)) {
-          const by = viaCorrection.get(value);
+          const by = remapped.get(row)?.get(source) ?? viaCorrection.get(value);
           if (by) {
             check.corrected++;
             check.correctedBy.set(by, (check.correctedBy.get(by) ?? 0) + 1);
@@ -220,7 +221,7 @@ export function summarize(c: ColumnConformance[], ic: ReferenceCheck[]): Phase1S
 const n = (x: number) => x.toLocaleString("en-US");
 
 /** Markdown report committed to docs/data so reviewers see exactly what phase 1 found. */
-export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules, c: ColumnConformance[], ic: ReferenceCheck[], corrections: { id: string; title: string; decision: string; target: string; records: number }[] = []): string {
+export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules, c: ColumnConformance[], ic: ReferenceCheck[], corrections: { id: string; title: string; decision: string; target: string; records: number; kind: string }[] = []): string {
   const s = summarize(c, ic);
   const lines: string[] = [
     "# Phase 1 — reference data and integrity report",
@@ -246,11 +247,11 @@ export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules
     "",
     "## Data corrections applied",
     "",
-    "Records derived from the rows that reference them (schema/reference/corrections.json). They are loaded into the system of record and logged per row in `aip.data_correction`; the governed workbook is unchanged.",
+    "Governed corrections (schema/reference/corrections.json): derived records are built from the rows that reference them; remaps change values in place. Both are applied when data is loaded into the system of record and logged per row, with the changed cells, in `aip.data_correction`; the governed workbook is unchanged.",
     "",
-    "| ID | Correction | Records added | Decision |",
+    "| ID | Correction | Rows | Decision |",
     "| --- | --- | --- | --- |",
-    ...corrections.map((x) => `| ${x.id} | ${x.title} (\`${x.target}\`) | ${n(x.records)} | ${x.decision} |`),
+    ...corrections.map((x) => `| ${x.id} | ${x.title} (\`${x.target}\`) | ${n(x.records)} ${x.kind === "remap" ? "changed" : "added"} | ${x.decision} |`),
     ...(v.decisionsMade?.length
       ? ["", "### Vocabulary decisions", "", "| Date | Reference | Decision |", "| --- | --- | --- |", ...v.decisionsMade.map((d) => `| ${d.date} | ${d.ref} | ${d.decision} |`)]
       : []),
