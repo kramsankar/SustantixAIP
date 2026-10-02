@@ -1,0 +1,1 @@
+window.AIP_V597_LABEL_AUDIT={release:'v597',baseline:'v596',scope:'Asset-to-Value tab label only',change:'Business Flow → Value Pathway',visualizationChanged:false,navigationChanged:false,dataChanged:false,excelChanged:false};window.AIP_CURRENT_BUILD='v597';

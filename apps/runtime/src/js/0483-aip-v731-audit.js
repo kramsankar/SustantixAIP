@@ -1,0 +1,1 @@
+window.AIP_V731_AUDIT={release:'v731',baseline:'v730',scope:'Data Quality & Observability KPI cards only',tamsReference:'Portfolio Intelligence',valueFont:'11px/15px Arial',cardHeight:'92px',initialCalculatedCommentRemoved:true,mainHeadingChanged:false,businessDataChanged:false};window.AIP_CURRENT_BUILD='v731';

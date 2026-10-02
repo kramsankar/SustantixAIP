@@ -1,0 +1,1 @@
+window.AIP_V845_AUDIT={release:'v845',baseline:'v844',scope:'Reliability Analytics TAM evidence KPIs, annual exposure semantics, historical validation clarity and governed round-trip handoffs',excelBusinessDataChanged:false};window.AIP_CURRENT_BUILD='v848';

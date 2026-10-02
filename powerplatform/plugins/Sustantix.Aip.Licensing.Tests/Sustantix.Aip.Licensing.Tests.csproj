@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>disable</Nullable>
+    <!-- Core verifier is platform-neutral; it is compiled here so tests run on any OS. -->
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Sustantix.Aip.Licensing\Core\*.cs" Link="Core\%(Filename)%(Extension)" />
+    <None Include="fixtures\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,1 @@
+window.AIP_V226_META={version:'v226',change:'Reliability Engineering KPI renderer alignment',operationalReliability:'Inline units + one colored five-bar indicator per KPI',rcmFramework:'One explicit five-bar indicator per KPI; renderer-owned to prevent first-load/duplicate-render inconsistency'};

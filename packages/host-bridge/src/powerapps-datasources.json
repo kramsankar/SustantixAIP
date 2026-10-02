@@ -1,0 +1,9 @@
+{
+  "sus_runtimestates": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "sus_runtimestateid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  }
+}

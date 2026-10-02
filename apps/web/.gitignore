@@ -1,0 +1,6 @@
+# Assembled by scripts/prebuild.mjs from apps/runtime
+/public/aip/
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo

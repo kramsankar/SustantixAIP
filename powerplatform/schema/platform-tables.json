@@ -1,0 +1,326 @@
+[
+ {
+  "logicalName": "sus_runtimestate",
+  "entity": {
+   "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
+   "SchemaName": "sus_runtimestate",
+   "DisplayName": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "AIP Runtime State",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "DisplayCollectionName": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "AIP Runtime States",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "Description": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "Workbook-import snapshot used by the AIP runtime (gzip JSON file).",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "OwnershipType": "OrganizationOwned",
+   "IsActivity": false,
+   "HasActivities": false,
+   "HasNotes": false,
+   "ChangeTrackingEnabled": true,
+   "Attributes": [
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_name",
+     "IsPrimaryName": true,
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 100,
+     "FormatName": {
+      "Value": "Text"
+     },
+     "RequiredLevel": {
+      "Value": "ApplicationRequired",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "State name",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "State name",
+        "LanguageCode": 1033
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "attributes": [
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.FileAttributeMetadata",
+    "SchemaName": "sus_payload",
+    "AttributeType": "Virtual",
+    "AttributeTypeName": {
+     "Value": "FileType"
+    },
+    "MaxSizeInKB": 131072,
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Payload",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "gzip-compressed JSON snapshot",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    }
+   }
+  ],
+  "keys": [
+   {
+    "SchemaName": "sus_runtimestate_bk",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Business key",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "KeyAttributes": [
+     "sus_name"
+    ]
+   }
+  ]
+ },
+ {
+  "logicalName": "sus_licensestate",
+  "entity": {
+   "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
+   "SchemaName": "sus_licensestate",
+   "DisplayName": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "AIP License State",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "DisplayCollectionName": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "AIP License States",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "Description": {
+    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+    "LocalizedLabels": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+      "Label": "License anti-rollback memory. Written only by the Sustantix license plug-in.",
+      "LanguageCode": 1033
+     }
+    ]
+   },
+   "OwnershipType": "OrganizationOwned",
+   "IsActivity": false,
+   "HasActivities": false,
+   "HasNotes": false,
+   "ChangeTrackingEnabled": true,
+   "Attributes": [
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_name",
+     "IsPrimaryName": true,
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 100,
+     "FormatName": {
+      "Value": "Text"
+     },
+     "RequiredLevel": {
+      "Value": "ApplicationRequired",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "License id",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "License id",
+        "LanguageCode": 1033
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "attributes": [
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.BigIntAttributeMetadata",
+    "SchemaName": "sus_firstseen",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "First seen (epoch s)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "First seen (epoch s)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    },
+    "AttributeType": "BigInt",
+    "AttributeTypeName": {
+     "Value": "BigIntType"
+    }
+   },
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.BigIntAttributeMetadata",
+    "SchemaName": "sus_lastseen",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Last seen (epoch s)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Last seen (epoch s)",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    },
+    "AttributeType": "BigInt",
+    "AttributeTypeName": {
+     "Value": "BigIntType"
+    }
+   },
+   {
+    "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+    "SchemaName": "sus_verdict",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Last verdict",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Last verdict",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "RequiredLevel": {
+     "Value": "None",
+     "CanBeChanged": true,
+     "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+    },
+    "AttributeType": "String",
+    "AttributeTypeName": {
+     "Value": "StringType"
+    },
+    "MaxLength": 50,
+    "FormatName": {
+     "Value": "Text"
+    }
+   }
+  ],
+  "keys": []
+ }
+]

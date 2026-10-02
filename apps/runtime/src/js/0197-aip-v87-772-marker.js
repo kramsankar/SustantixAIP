@@ -1,0 +1,1 @@
+window.__AIP_V772_RISK_BASED_REDESIGN__=true;

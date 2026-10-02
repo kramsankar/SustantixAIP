@@ -1,0 +1,1 @@
+window.AIP_CURRENT_BUILD='v840';window.AIP_V839_AUDIT={release:'v839',baseline:'v838',scope:'Home/Workspace Sustantix lockup rendered-coordinate parity only',excelBusinessDataChanged:false};

@@ -1,0 +1,1 @@
+window.AIP_CURRENT_BUILD='v840';window.AIP_V840_AUDIT={release:'v840',baseline:'v839',scope:'Workspace Asset Intelligence Platform optical Y parity only',excelBusinessDataChanged:false};

@@ -1,0 +1,1 @@
+window.AIP_V730_AUDIT={release:'v730',baseline:'v729',scope:'Targeted KPI geometry and Work Order Constraint compactness only; no Home screen',dataQualityTams:true,controlKpiVerticalAlignment:true,workOrderConstraintFurtherCompacted:true,standardHeadingFontsChanged:false,businessDataChanged:false};window.AIP_CURRENT_BUILD='v730';

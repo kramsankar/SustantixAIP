@@ -1,0 +1,2 @@
+
+window.__AIP_V759_STRATEGY_REASONING_COMPACT__=true;

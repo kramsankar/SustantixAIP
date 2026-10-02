@@ -1,0 +1,3 @@
+
+window.AIP_CURRENT_BUILD='v87_825';
+window.AIP_V825_AUDIT={release:'v87_825',baseline:'v87_824',area:'Condition-Based Maintenance',uiOnly:true,excelBusinessDataChanged:false,syntheticBusinessEvidenceChanged:false,changes:['Remove duplicate Evidence Fusion & Sufficiency panel','Remove duplicate CBM Decision Reasoning chain','Keep evidence sufficiency only as the CBM evidence gate','Move Engineering / Physics Fit and applicable governed source confidence into Synchronized Condition Evidence','Make governed action show unique automation boundary, ERP/EAM handoff and control','Show exact navigation only where an exact linked source/work-order relationship exists']};

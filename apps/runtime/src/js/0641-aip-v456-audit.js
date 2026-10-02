@@ -1,0 +1,1 @@
+window.AIP_V456_AUDIT={release:'v456',baseline:'AIP v455',area:'Sustainability Performance > Energy, Carbon & Water > CO2 Avoided Calculation & Lineage',uiOnly:true,excelBusinessDataChanged:false,syntheticBusinessDataChanged:false};
