@@ -7,7 +7,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { conformance, integrity, loadIntegrityRules, phase1Report, summarize } from "./conformance.ts";
+import { conformance, integrity, loadIntegrityRules, phase1Report, summarize, withCorrections } from "./conformance.ts";
+import { deriveCorrections, loadCorrections } from "./corrections.ts";
 import { loadVocabulary, validateVocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { readSheets } from "./rows.ts";
@@ -22,21 +23,25 @@ const sheets = readSheets(readFileSync(flag("workbook") ?? join(root, "reference
 const vocab = loadVocabulary(root);
 const rules = loadIntegrityRules(root);
 
+const corrections = loadCorrections(root);
+const derived = deriveCorrections(reg, sheets, corrections);
+const corrected = withCorrections(reg, sheets, derived);
 const problems = validateVocabulary(vocab, reg);
-const c = conformance(reg, sheets, vocab);
-const ic = integrity(reg, sheets, rules);
+const c = conformance(reg, corrected, vocab);
+const ic = integrity(reg, corrected, rules, derived);
 const s = summarize(c, ic);
 
 if (!process.argv.includes("--no-write")) {
   mkdirSync(join(root, "docs/data"), { recursive: true });
-  writeFileSync(join(root, "docs/data/phase1-reference-report.md"), phase1Report(reg, vocab, rules, c, ic));
+  writeFileSync(join(root, "docs/data/phase1-reference-report.md"), phase1Report(reg, vocab, rules, c, ic, corrections.corrections.map((x) => ({ ...x, records: derived.filter((d) => d.correction === x.id).length }))));
 }
 
 console.log(
   `vocabulary: ${vocab.tables.length} tables · ${s.bindings} governed columns · ${s.conformingValues} conforming values · ${s.declaredGaps} awaiting decision · ${s.undeclaredGaps} undeclared`,
 );
+console.log(`corrections: ${corrections.corrections.map((x) => `${x.id} +${derived.filter((d) => d.correction === x.id).length} ${x.target}`).join(" · ")}`);
 console.log(
-  `references: ${s.referenceValues} values · ${s.resolvedDirect} direct · ${s.resolvedMechanical} mechanical · ${s.awaitingMerge} phase-2 merge · ${s.awaitingOwner} owner · ${s.unclassified + s.failedMechanical} unclassified`,
+  `references: ${s.referenceValues} values · ${s.resolvedDirect} direct · ${s.resolvedByCorrection} corrected · ${s.resolvedMechanical} mechanical · ${s.awaitingMerge} phase-2 merge · ${s.awaitingOwner} owner · ${s.unclassified + s.failedMechanical} unclassified`,
 );
 for (const p of problems) console.error(`vocabulary: ${p}`);
 for (const x of c) for (const u of x.undeclared) console.error(`undeclared: ${x.column} "${u.value}" ×${u.count}`);

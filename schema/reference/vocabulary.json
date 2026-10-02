@@ -113,6 +113,26 @@
      "code": "PLANT_AUXILIARIES",
      "label": "Plant auxiliaries",
      "category": "auxiliary"
+    },
+    {
+     "code": "ELECTRICAL_BOP",
+     "label": "Electrical balance of plant",
+     "category": "collection"
+    },
+    {
+     "code": "INSTRUMENTATION",
+     "label": "Instrumentation",
+     "category": "monitoring"
+    },
+    {
+     "code": "SCADA_SYSTEM",
+     "label": "SCADA system",
+     "category": "monitoring"
+    },
+    {
+     "code": "SAFETY_SYSTEM",
+     "label": "Safety system",
+     "category": "protection"
     }
    ],
    "aliases": [
@@ -131,6 +151,26 @@
     {
      "alias": "HV switchgear",
      "code": "HV_SWITCHGEAR"
+    },
+    {
+     "alias": "Electrical",
+     "code": "ELECTRICAL_BOP"
+    },
+    {
+     "alias": "SCADA",
+     "code": "SCADA_SYSTEM"
+    },
+    {
+     "alias": "Safety",
+     "code": "SAFETY_SYSTEM"
+    },
+    {
+     "alias": "Weather",
+     "code": "WEATHER_STATION"
+    },
+    {
+     "alias": "Cleaning",
+     "code": "PV_ARRAY"
     }
    ]
   },
@@ -210,7 +250,16 @@
      "rank": 4
     }
    ],
-   "aliases": []
+   "aliases": [
+    {
+     "alias": "P1",
+     "code": "CRITICAL"
+    },
+    {
+     "alias": "P2",
+     "code": "HIGH"
+    }
+   ]
   },
   {
    "name": "severity",
@@ -3283,21 +3332,6 @@
  ],
  "openDecisions": [
   {
-   "ref": "asset_class",
-   "columns": [
-    "pno_interventions.asset_class"
-   ],
-   "values": [
-    "Electrical",
-    "Instrumentation",
-    "Cleaning",
-    "SCADA",
-    "Safety",
-    "Weather"
-   ],
-   "question": "These values describe a work discipline or system rather than an asset class. Should they become skills/work categories, or map to classes (for example Weather to Weather Station)?"
-  },
-  {
    "ref": "maintenance_type",
    "columns": [
     "msi_spare_requirements.maintenance_type"
@@ -3306,17 +3340,6 @@
     "Inventory-led"
    ],
    "question": "Is an inventory-led requirement a maintenance type, or a requirement driver to record separately?"
-  },
-  {
-   "ref": "priority",
-   "columns": [
-    "cbm_assessments.priority"
-   ],
-   "values": [
-    "P1",
-    "P2"
-   ],
-   "question": "CBM uses P1/P2. Do P1 and P2 equal Critical and High, or High and Medium?"
   },
   {
    "ref": "risk_band",
@@ -3475,6 +3498,24 @@
    ],
    "question": "These read as maintenance responses rather than failure modes. Retire them as failure-mode codes in phase 2?",
    "kind": "reclassify"
+  }
+ ],
+ "decisionsMade": [
+  {
+   "date": "2026-10-01",
+   "ref": "priority",
+   "columns": [
+    "cbm_assessments.priority"
+   ],
+   "decision": "P1 = Critical, P2 = High (data owner)."
+  },
+  {
+   "date": "2026-10-01",
+   "ref": "asset_class",
+   "columns": [
+    "pno_interventions.asset_class"
+   ],
+   "decision": "Electrical, Instrumentation, SCADA and Safety become asset classes (electrical balance of plant, instrumentation, SCADA system, safety system); Weather maps to Weather Station; Cleaning maps to PV Array, the asset cleaned. Delegated by the data owner."
   }
  ]
 }

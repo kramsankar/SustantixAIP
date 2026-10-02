@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { conformance, integrity, loadIntegrityRules, summarize } from "../src/conformance.ts";
+import { conformance, integrity, loadIntegrityRules, summarize, withCorrections } from "../src/conformance.ts";
+import { correctionLogInsert, deriveCorrections, dmyToIso, loadCorrections, type CorrectionSet } from "../src/corrections.ts";
 import {
   REF_PREFIX,
   Resolver,
@@ -24,6 +25,7 @@ const reg = JSON.parse(readFileSync(new URL("../../../schema/aip-data-model.json
 const sheets = readSheets(wb);
 const vocab = loadVocabulary(root);
 const rules = loadIntegrityRules(root);
+const corrections = loadCorrections(root);
 const resolver = new Resolver(vocab);
 const clone = (): Vocabulary => JSON.parse(JSON.stringify(vocab)) as Vocabulary;
 
@@ -75,6 +77,13 @@ describe("resolver", () => {
     expect(resolver.resolve(b("status", { scope: "readiness" }), "Constraint")).toMatchObject({ code: "CONSTRAINED", via: "alias" });
     expect(resolver.resolve(b("status", { scope: "alert" }), "Completed")).toEqual({ status: "unmapped" });
   });
+  it("applies the owner's decisions: CBM P1/P2 and discipline asset classes", () => {
+    expect(resolver.resolve(b("priority"), "P1")).toMatchObject({ code: "CRITICAL", via: "alias" });
+    expect(resolver.resolve(b("priority"), "P2")).toMatchObject({ code: "HIGH", via: "alias" });
+    expect(resolver.resolve(b("asset_class"), "Electrical")).toMatchObject({ code: "ELECTRICAL_BOP" });
+    expect(resolver.resolve(b("asset_class"), "Weather")).toMatchObject({ code: "WEATHER_STATION" });
+    expect(resolver.resolve(b("asset_class"), "Cleaning")).toMatchObject({ code: "PV_ARRAY" });
+  });
   it("handles null tokens, wildcards and fallbacks", () => {
     expect(resolver.resolve(b("priority"), "N/A")).toEqual({ status: "null" });
     expect(resolver.resolve(b("priority"), "  ")).toEqual({ status: "null" });
@@ -85,8 +94,10 @@ describe("resolver", () => {
 });
 
 describe("phase-1 gate on the governed workbook", () => {
-  const c = conformance(reg, sheets, vocab);
-  const ic = integrity(reg, sheets, rules);
+  const derived = deriveCorrections(reg, sheets, corrections);
+  const corrected = withCorrections(reg, sheets, derived);
+  const c = conformance(reg, corrected, vocab);
+  const ic = integrity(reg, corrected, rules, derived);
   const s = summarize(c, ic);
 
   it("every governed value conforms or awaits a declared owner decision", () => {
@@ -108,6 +119,25 @@ describe("phase-1 gate on the governed workbook", () => {
     expect(rl.byClass.crosswalk?.values).toBe(6000);
   });
 
+  it("resolves the corrected references and leaves no owner decision on them", () => {
+    const wo = ic.find((x) => x.from === "work_orders.asset_id")!;
+    expect(wo.correctedBy.get("C1")).toBe(220);
+    expect(wo.byClass.owner).toBeUndefined();
+    for (const t of ["cbm_assessments", "cbm_evidence", "event_root_cause_cases", "event_root_cause_evidence"]) {
+      const x = ic.find((r) => r.from === `${t}.asset_id`)!;
+      expect(x.correctedBy.get("C2"), t).toBeGreaterThan(0);
+      expect(x.byClass.owner, t).toBeUndefined();
+    }
+    for (const t of ["pno_interventions", "pno_fleet_schedule", "pno_intervention_cost_basis", "plan_interventions", "plan_field_packs"]) {
+      const x = ic.find((r) => r.from === `${t}.work_order_id`)!;
+      expect(x.correctedBy.get("C3"), t).toBeGreaterThan(0);
+      expect(x.byClass.owner, t).toBeUndefined();
+    }
+    // the derived records' own references resolve too (a planned work order cites a real asset and plant)
+    const own = ic.find((x) => x.from === "asset_master.plant_id")!;
+    expect(own.unclassified).toEqual([]);
+  });
+
   it("does not treat zero-padding drift as the same intervention", () => {
     const opt = ic.find((x) => x.from === "pno_optimization.intervention_id")!;
     expect(opt.byClass.owner?.values).toBe(160);
@@ -116,9 +146,9 @@ describe("phase-1 gate on the governed workbook", () => {
 
   it("flags a value outside the vocabulary when it is not declared", () => {
     const v = clone();
-    v.openDecisions = v.openDecisions.filter((d) => d.ref !== "priority");
-    const gaps = conformance(reg, sheets, v).find((x) => x.column === "cbm_assessments.priority")!;
-    expect(gaps.undeclared.map((u) => u.value).sort()).toEqual(["P1", "P2"]);
+    v.openDecisions = v.openDecisions.filter((d) => d.ref !== "maintenance_type");
+    const gaps = conformance(reg, sheets, v).find((x) => x.column === "msi_spare_requirements.maintenance_type")!;
+    expect(gaps.undeclared.map((u) => u.value)).toEqual(["Inventory-led"]);
   });
 });
 
@@ -174,3 +204,57 @@ describe("Dataverse reference layer", () => {
     expect(total).toBe(vocab.tables.reduce((n, t) => n + t.values.length + t.aliases.length, 0));
   });
 });
+
+describe("governed data corrections", () => {
+  const derived = deriveCorrections(reg, sheets, corrections);
+  const by = (id: string) => derived.filter((d) => d.correction === id);
+
+  it("derives exactly the missing records and nothing that already exists", () => {
+    expect(by("C1")).toHaveLength(220);
+    expect(by("C2")).toHaveLength(12);
+    expect(by("C3")).toHaveLength(46);
+    const existingAssets = new Set(sheets[reg.tables.find((t) => t.name === "asset_master")!.sheet]!.map((r) => r.Asset_ID));
+    const existingWos = new Set(sheets[reg.tables.find((t) => t.name === "work_orders")!.sheet]!.map((r) => r.Work_Order_ID));
+    for (const d of [...by("C1"), ...by("C2")]) expect(existingAssets.has(d.key)).toBe(false);
+    for (const d of by("C3")) expect(existingWos.has(d.key)).toBe(false);
+  });
+
+  it("builds planned work orders in the register's own formats, traceable to their intervention", () => {
+    const wo = by("C3").find((d) => d.key === "WO-20001")!;
+    expect(wo.row).toMatchObject({ Asset_ID: "AST-00001", Plant_ID: "SP-01", Status: "Scheduled", Priority: "High", Created_Date: "2027-01-07 08:00", SLA_Due: "2027-01-08 16:00", Source: "Planning INT-024" });
+    expect(wo.sourceTable).toBe("pno_interventions");
+    expect(String(wo.row.Data_Basis)).toContain("C3");
+  });
+
+  it("keeps the case assets' identity from the CBM sheet", () => {
+    expect(by("C2").find((d) => d.key === "DEC-INV-411")!.row).toMatchObject({ Plant_ID: "SP-04", Asset_Tag: "Deccan Inverter 411", Asset_Class: "Inverter" });
+  });
+
+  it("refuses conflicting or empty corrections", () => {
+    const conflicting: CorrectionSet = JSON.parse(JSON.stringify(corrections));
+    conflicting.corrections = [{ ...conflicting.corrections[1]!, map: { ...conflicting.corrections[1]!.map, asset_tag: "cbm_assessment_id" } }];
+    expect(() => deriveCorrections(reg, sheets, conflicting)).toThrow(/conflicting asset_tag/);
+    const empty: CorrectionSet = JSON.parse(JSON.stringify(corrections));
+    empty.corrections = [{ ...empty.corrections[0]!, source: { table: "pno_interventions", where: { asset_id: "^NOPE" } } }];
+    expect(() => deriveCorrections(reg, sheets, empty)).toThrow(/derives no records/);
+    const twice: CorrectionSet = JSON.parse(JSON.stringify(corrections));
+    twice.corrections = [twice.corrections[0]!, { ...twice.corrections[0]!, id: "C9" }];
+    expect(() => deriveCorrections(reg, sheets, twice)).toThrow(/already derived by C1/);
+  });
+
+  it("converts dd-mm-yyyy planning dates and rejects anything else", () => {
+    expect(dmyToIso("07-01-2027 08:00")).toBe("2027-01-07 08:00");
+    expect(dmyToIso("07-01-2027")).toBe("2027-01-07");
+    expect(dmyToIso(null)).toBeNull();
+    expect(() => dmyToIso("2027-01-07")).toThrow();
+  });
+
+  it("loads corrected records with the seed and logs each one", () => {
+    const sql = seedSql(reg, wb, { id: "00000000-0000-0000-0000-0000000000c1", name: "t", region: "IN", currency: "INR" }, vocab, corrections);
+    expect(sql).toContain("'WO-20001'");
+    expect(sql).toContain("'AST-H01001'");
+    expect(sql).toContain("insert into aip.data_correction (tenant_id, correction_id, target_table, row_key, source_table, source_key, title) values");
+    expect(correctionLogInsert(corrections, derived, "00000000-0000-0000-0000-0000000000c1").match(/^\('/gm)).toHaveLength(278);
+  });
+});
+

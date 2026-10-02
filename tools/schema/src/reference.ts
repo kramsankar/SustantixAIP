@@ -79,6 +79,8 @@ export interface Vocabulary {
   tables: RefTable[];
   bindings: Binding[];
   openDecisions: OpenDecision[];
+  /** Decisions already taken, kept for the audit trail. */
+  decisionsMade?: Array<{ date: string; ref: string; columns: string[]; decision: string }>;
 }
 
 export const REF_PREFIX = "ref_";

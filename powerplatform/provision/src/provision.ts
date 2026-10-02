@@ -1,4 +1,18 @@
-import { dataModelPlan, dataverseRecord, platformPlan, readSheets, referencePlan, referenceRecords, type Registry, type Vocabulary } from "@sustantix/schema";
+import {
+  correctionLogPlan,
+  correctionLogRecords,
+  dataModelPlan,
+  dataverseRecord,
+  deriveCorrections,
+  platformPlan,
+  readSheets,
+  referencePlan,
+  referenceRecords,
+  withCorrections,
+  type CorrectionSet,
+  type Registry,
+  type Vocabulary,
+} from "@sustantix/schema";
 import {
   GUARD_TYPE,
   ROLES,
@@ -34,6 +48,8 @@ export interface ProvisionOptions {
   seedWorkbook?: Buffer;
   /** Controlled vocabulary: creates the reference tables and upserts the platform codes and aliases. */
   vocabulary?: Vocabulary;
+  /** Governed data corrections applied to the seed, with a per-record log (sus_datacorrection). */
+  corrections?: CorrectionSet;
   fx: Record<string, number>;
 }
 
@@ -45,6 +61,7 @@ export interface ProvisionReport {
   guardStepsCreated: number;
   seeded: Record<string, number>;
   referenceRecords: number;
+  correctedRecords: number;
   seedFailures: Array<{ table: string; key: string; status: number; message: string }>;
 }
 
@@ -60,7 +77,7 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
 
   const platform = platformPlan();
   const model = o.dataModel ? dataModelPlan(o.registry) : [];
-  const reference = o.vocabulary ? referencePlan(o.vocabulary) : [];
+  const reference = [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...(o.corrections ? [correctionLogPlan()] : [])];
   for (const p of [...platform, ...reference, ...model]) await ensureTable(api, p, log);
 
   await ensureEnvironmentVariables(api, log);
@@ -97,8 +114,21 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
 
   const seeded: Record<string, number> = {};
   const seedFailures: ProvisionReport["seedFailures"] = [];
+  let correctedRecords = 0;
   if (o.seedWorkbook && o.dataModel) {
-    const sheets = readSheets(o.seedWorkbook);
+    const raw = readSheets(o.seedWorkbook);
+    const derived = o.corrections ? deriveCorrections(o.registry, raw, o.corrections) : [];
+    const sheets = withCorrections(o.registry, raw, derived);
+    if (o.corrections && derived.length) {
+      const set = await entitySetName(api, "sus_datacorrection");
+      const records = correctionLogRecords(o.corrections, derived);
+      for (let i = 0; i < records.length; i += 200) {
+        const failures = await api.batchUpsert(set, "sus_name", records.slice(i, i + 200));
+        seedFailures.push(...failures.map((f) => ({ table: "sus_datacorrection", ...f })));
+      }
+      correctedRecords = derived.length;
+      log(`  ⇪ ${derived.length} corrected record(s) logged`);
+    }
     for (const p of model) {
       const t = p.source!;
       const rows = sheets[t.sheet] ?? [];
@@ -122,6 +152,7 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
     guardStepsCreated,
     seeded,
     referenceRecords: referenceCount,
+    correctedRecords,
     seedFailures,
   };
 }

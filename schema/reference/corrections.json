@@ -1,0 +1,65 @@
+{
+ "version": 1,
+ "description": "Governed data corrections, decided by the data owner on 2026-10-01. Each correction derives the missing master or register records from the rows that reference them, so every value is traceable to a source row. Corrections are applied when data is loaded into the system of record (Supabase seed, Dataverse provisioning) and logged per row; the governed workbook and the v9.15 runtime datasets are left unchanged.",
+ "corrections": [
+  {
+   "id": "C1",
+   "title": "Add the historical asset series to the asset master",
+   "decision": "The AST-H series (tags such as SP-01-INV-H01) numbers assets with one portfolio-wide sequence and its own tag codes (TRA, WEA, SWI), so it cannot be matched to existing assets. Each historical asset is added to the master from its intervention record.",
+   "target": "asset_master",
+   "key": "asset_id",
+   "source": { "table": "pno_interventions", "where": { "asset_id": "^AST-H" } },
+   "map": {
+    "asset_id": "asset_id",
+    "plant_id": "plant_id",
+    "asset_tag": "asset_tag",
+    "asset_class": "asset_class",
+    "description": { "template": "Historical {asset_class} asset (data hardening history)" },
+    "asset_granularity": { "const": "Historical record" },
+    "data_basis": { "template": "Added by data correction C1 from intervention {intervention_id} / work order {work_order_id}" },
+    "source": { "const": "Data hardening history" }
+   }
+  },
+  {
+   "id": "C2",
+   "title": "Add the CBM and RCA case assets to the asset master",
+   "decision": "CBM and RCA cases use a per-plant asset naming (SP01-INV-A01, ARV-INV-204, DEC-INV-411, VIN-TRF-709). Plant, tag and class agree across all four sheets that use them, so each is added to the master under its own ID.",
+   "target": "asset_master",
+   "key": "asset_id",
+   "source": { "table": "cbm_assessments", "where": { "asset_id": "^(SP\\d\\d|ARV|DEC|VIN)-" } },
+   "map": {
+    "asset_id": "asset_id",
+    "plant_id": "plant_id",
+    "asset_tag": "asset_tag",
+    "asset_class": "asset_class",
+    "description": { "template": "{asset_tag} (condition-based maintenance and RCA case asset)" },
+    "data_basis": { "template": "Added by data correction C2 from CBM assessment {cbm_assessment_id}" },
+    "source": { "const": "CBM / RCA cases" }
+   }
+  },
+  {
+   "id": "C3",
+   "title": "Create the planned work orders referenced by planning",
+   "decision": "Work orders WO-20xxx and WO-40xxx are referenced by five planning sheets but missing from the register. Each is created as a scheduled work order from its intervention: same asset, plant, type and priority; created at the planning date, due at the required-by date.",
+   "target": "work_orders",
+   "key": "work_order_id",
+   "source": { "table": "pno_interventions", "where": { "work_order_id": "^WO-[24]0\\d{3}$" } },
+   "map": {
+    "work_order_id": "work_order_id",
+    "maintenance_type": "maintenance_type",
+    "asset_id": "asset_id",
+    "plant_id": "plant_id",
+    "asset_tag": "asset_tag",
+    "description": { "column": "intervention_description", "default": "Planned {maintenance_type} intervention {intervention_id}" },
+    "priority": "priority",
+    "status": { "const": "Scheduled" },
+    "created_date": { "column": "planning_as_of", "transform": "dmy_to_iso" },
+    "sla_due": { "column": "required_by", "transform": "dmy_to_iso" },
+    "source": { "template": "Planning {intervention_id}" },
+    "required_part_id": "required_part_id",
+    "required_part_qty": "required_part_qty",
+    "data_basis": { "template": "Created by data correction C3 from intervention {intervention_id} (planning status {planning_status})" }
+   }
+  }
+ ]
+}

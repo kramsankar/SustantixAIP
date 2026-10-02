@@ -13,7 +13,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadVocabulary, type Registry } from "@sustantix/schema";
+import { loadCorrections, loadVocabulary, type Registry } from "@sustantix/schema";
 import { tokenProvider } from "./auth.ts";
 import { provision } from "./provision.ts";
 import { ENV_VARS, whoAmI } from "./steps.ts";
@@ -65,6 +65,7 @@ async function main() {
           version,
           registry: JSON.parse(readFileSync(join(root, "schema/aip-data-model.json"), "utf8")) as Registry,
           vocabulary: loadVocabulary(root),
+          corrections: loadCorrections(root),
           pluginDll: readFileSync(pluginPath),
           dataModel: flag("data-model") === "true" || !!seedArg,
           guardDataModel: flag("guard-data-model") === "true",

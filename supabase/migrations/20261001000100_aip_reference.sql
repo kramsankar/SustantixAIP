@@ -54,7 +54,7 @@ begin
 end $fn$;
 revoke all on function aip.create_ref_table(text, text, text, boolean) from public;
 
--- Asset class: 17 platform value(s), 4 alias(es)
+-- Asset class: 21 platform value(s), 9 alias(es)
 select aip.create_ref_table('asset_class', 'Asset class', 'category text, parent_code text', false);
 insert into aip.ref_asset_class (code, label, sort_order, category, parent_code) values
   ('PV_ARRAY', 'PV Array', 1, 'generation', null),
@@ -73,7 +73,11 @@ insert into aip.ref_asset_class (code, label, sort_order, category, parent_code)
   ('BESS_MV_TRANSFORMER', 'BESS MV Transformer', 14, 'storage', 'BESS_SYSTEM'),
   ('BESS_EMS', 'BESS EMS / Controller', 15, 'storage', 'BESS_SYSTEM'),
   ('BACKUP_DG', 'Backup DG', 16, 'auxiliary', null),
-  ('PLANT_AUXILIARIES', 'Plant auxiliaries', 17, 'auxiliary', null)
+  ('PLANT_AUXILIARIES', 'Plant auxiliaries', 17, 'auxiliary', null),
+  ('ELECTRICAL_BOP', 'Electrical balance of plant', 18, 'collection', null),
+  ('INSTRUMENTATION', 'Instrumentation', 19, 'monitoring', null),
+  ('SCADA_SYSTEM', 'SCADA system', 20, 'monitoring', null),
+  ('SAFETY_SYSTEM', 'Safety system', 21, 'protection', null)
 on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, category = excluded.category, parent_code = excluded.parent_code;
 -- Maintenance type: 6 platform value(s), 0 alias(es)
 select aip.create_ref_table('maintenance_type', 'Maintenance type', 'strategy_family text', false);
@@ -85,7 +89,7 @@ insert into aip.ref_maintenance_type (code, label, sort_order, strategy_family) 
   ('RISK_BASED', 'Risk-Based', 5, 'planned'),
   ('INSPECTION', 'Inspection', 6, 'planned')
 on conflict (tenant_id, code) do update set label = excluded.label, sort_order = excluded.sort_order, strategy_family = excluded.strategy_family;
--- Priority: 4 platform value(s), 0 alias(es)
+-- Priority: 4 platform value(s), 2 alias(es)
 select aip.create_ref_table('priority', 'Priority', 'rank integer', false);
 insert into aip.ref_priority (code, label, sort_order, rank) values
   ('CRITICAL', 'Critical', 1, 1),
@@ -457,6 +461,13 @@ insert into aip.ref_alias (ref_table, scope, alias, code, currency, provenance) 
   ('asset_class', null, 'String/Combiner', 'SCB', null, null),
   ('asset_class', null, 'Module', 'PV_MODULE', null, null),
   ('asset_class', null, 'HV switchgear', 'HV_SWITCHGEAR', null, null),
+  ('asset_class', null, 'Electrical', 'ELECTRICAL_BOP', null, null),
+  ('asset_class', null, 'SCADA', 'SCADA_SYSTEM', null, null),
+  ('asset_class', null, 'Safety', 'SAFETY_SYSTEM', null, null),
+  ('asset_class', null, 'Weather', 'WEATHER_STATION', null, null),
+  ('asset_class', null, 'Cleaning', 'PV_ARRAY', null, null),
+  ('priority', null, 'P1', 'CRITICAL', null, null),
+  ('priority', null, 'P2', 'HIGH', null, null),
   ('status', 'readiness', 'Constraint', 'CONSTRAINED', null, null),
   ('unit', null, '%', 'PERCENT', null, null),
   ('unit', null, '% of exposure', 'PERCENT', null, null),

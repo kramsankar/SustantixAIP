@@ -5,6 +5,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { withCorrections } from "./conformance.ts";
+import { correctionLogInsert, deriveCorrections, loadCorrections, type CorrectionSet } from "./corrections.ts";
 import { loadVocabulary, tenantReferenceRows, type Vocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
@@ -21,10 +23,13 @@ export function literal(v: unknown): string {
   return `'${String(v).replace(/'/g, "''")}'`;
 }
 
-export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }, vocab?: Vocabulary): string {
+export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }, vocab?: Vocabulary, corrections?: CorrectionSet): string {
   if (!GUID.test(tenant.id)) throw new Error("tenant id must be a GUID");
   if (!/^[A-Z]{3}$/.test(tenant.currency)) throw new Error("currency must be ISO-4217");
-  const sheets = readSheets(workbook);
+  const raw = readSheets(workbook);
+  // Governed corrections add the records the workbook references but lacks; each is logged per row below.
+  const derived = corrections ? deriveCorrections(reg, raw, corrections) : [];
+  const sheets = withCorrections(reg, raw, derived);
   const out: string[] = [
     `-- Sustantix AIP seed · ${reg.source} → tenant ${tenant.id}`,
     "begin;",
@@ -51,6 +56,7 @@ export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; n
     const updates = cols.filter((c) => c !== "tenant_id" && c !== "code").map((c) => `"${c}" = excluded."${c}"`);
     out.push(`insert into aip."${table}" (${cols.map((c) => `"${c}"`).join(",")}) values\n${values.join(",\n")}\non conflict (tenant_id, code) do update set ${updates.join(", ")};`);
   }
+  if (corrections && derived.length) out.push(correctionLogInsert(corrections, derived, tenant.id));
   out.push("commit;");
   return out.join("\n") + "\n";
 }
@@ -71,6 +77,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       name: flag("name", "Seed tenant")!,
       region: flag("region", "IN")!,
       currency: flag("currency", reg.defaultCurrency)!,
-    }, loadVocabulary(root)),
+    }, loadVocabulary(root), loadCorrections(root)),
   );
 }

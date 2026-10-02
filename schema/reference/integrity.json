@@ -205,30 +205,6 @@
    "question": "HSE incidents cite work orders WO-7001…WO-7024 that are not in the work-order register. Add them, or drop the link?"
   },
   {
-   "from": "work_orders.asset_id",
-   "class": "owner",
-   "match": "^AST-H",
-   "question": "220 work orders cite an AST-H asset series (tags such as SP-01-INV-H01) that the asset master lacks. Add these assets, or remap the work orders to existing assets?"
-  },
-  {
-   "from": "pno_interventions.asset_id",
-   "class": "owner",
-   "match": "^AST-H",
-   "question": "Interventions cite the same AST-H asset series as the work orders. Same decision applies."
-  },
-  {
-   "from": "*.work_order_id",
-   "class": "owner",
-   "match": "^WO-[24]0\\d{3}$",
-   "question": "Planned work orders WO-20xxx and WO-40xxx are referenced by planning sheets but absent from the work-order register. Create them as planned work orders, or treat them as not yet released?"
-  },
-  {
-   "from": "*.asset_id",
-   "class": "owner",
-   "match": "^(SP\\d\\d|ARV|DEC|VIN)-",
-   "question": "CBM and RCA cases use an alternate asset naming per plant (SP01-INV-A01, ARV-INV-204, DEC-INV-411, VIN-TRF-709). Provide the mapping to asset-master IDs, or add these as assets?"
-  },
-  {
    "from": "event_log.plant_id",
    "class": "owner",
    "match": "^SOL-",

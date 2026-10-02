@@ -5,6 +5,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { DerivedRecord } from "./corrections.ts";
 import { Resolver, type Binding, type OpenDecision, type Vocabulary } from "./reference.ts";
 import type { Registry, TableDef } from "./registry.ts";
 import type { SourceRow } from "./rows.ts";
@@ -47,6 +48,9 @@ export interface ReferenceCheck {
   to: string;
   values: number;
   resolved: number;
+  /** Values that resolve only because a governed correction derived the referenced record. */
+  corrected: number;
+  correctedBy: Map<string, number>;
   byClass: Partial<Record<IntegrityRule["class"], { values: number; distinct: number; rules: Set<IntegrityRule> }>>;
   unclassified: Array<{ value: string; count: number }>;
   /** Values matched by a mechanical rule that the rule failed to resolve. */
@@ -99,7 +103,28 @@ function ruleApplies(rule: IntegrityRule, from: string, value: string): boolean 
   return rule.match ? new RegExp(rule.match).test(value) : true;
 }
 
-export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules): ReferenceCheck[] {
+/** The workbook rows plus every record derived by a governed correction. */
+export function withCorrections(reg: Registry, sheets: Rows, derived: DerivedRecord[]): Rows {
+  const out: Rows = Object.fromEntries(Object.entries(sheets).map(([k, rows]) => [k, [...rows]]));
+  for (const d of derived) (out[reg.tables.find((t) => t.name === d.target)!.sheet] ??= []).push(d.row);
+  return out;
+}
+
+/**
+ * Checks every declared reference. Pass the corrected rows (see withCorrections) together with the derived
+ * records to see which references a correction resolved; without them the check runs on the raw workbook.
+ */
+export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules, derived: DerivedRecord[] = []): ReferenceCheck[] {
+  const derivedKeys = new Map<string, Map<string, string>>();
+  for (const d of derived) {
+    const t = reg.tables.find((x) => x.name === d.target)!;
+    for (const [col, v] of Object.entries(d.row)) {
+      const c = t.columns.find((x) => x.source === col);
+      if (!c || v === null || v === undefined) continue;
+      const k = `${d.target}.${c.name}`;
+      (derivedKeys.get(k) ?? derivedKeys.set(k, new Map()).get(k)!).set(String(v), d.correction);
+    }
+  }
   const keysOf = (ref: string) => {
     const { source, rows } = columnValues(reg, sheets, ref);
     return new Set(rows.map((r) => r[source]).filter((x) => x !== null && x !== undefined && x !== "").map(String));
@@ -110,9 +135,10 @@ export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules): R
     const target = rel.to.split(".")[0];
     const sources = ft === "*" ? reg.tables.filter((t) => t.name !== target && !rel.except?.includes(t.name) && t.columns.some((c) => c.name === fc)).map((t) => `${t.name}.${fc}`) : [rel.from];
     const keys = keysOf(rel.to);
+    const viaCorrection = derivedKeys.get(rel.to) ?? new Map<string, string>();
     for (const from of sources) {
       const { table, source, rows } = columnValues(reg, sheets, from);
-      const check: ReferenceCheck = { from, to: rel.to, values: 0, resolved: 0, byClass: {}, unclassified: [], failedMechanical: [], byRule: new Map() };
+      const check: ReferenceCheck = { from, to: rel.to, values: 0, resolved: 0, corrected: 0, correctedBy: new Map(), byClass: {}, unclassified: [], failedMechanical: [], byRule: new Map() };
       const unclassified = new Map<string, number>();
       const failed = new Map<string, number>();
       const distinct = new Map<IntegrityRule["class"], Set<string>>();
@@ -121,7 +147,14 @@ export function integrity(reg: Registry, sheets: Rows, rules: IntegrityRules): R
         if (raw === null || raw === undefined || raw === "") continue;
         const value = String(raw).trim();
         check.values++;
-        if (keys.has(value)) { check.resolved++; continue; }
+        if (keys.has(value)) {
+          const by = viaCorrection.get(value);
+          if (by) {
+            check.corrected++;
+            check.correctedBy.set(by, (check.correctedBy.get(by) ?? 0) + 1);
+          } else check.resolved++;
+          continue;
+        }
         const rule = rules.rules.find((r) => ruleApplies(r, from, value));
         if (!rule) { unclassified.set(value, (unclassified.get(value) ?? 0) + 1); continue; }
         if (rule.class === "crosswalk") {
@@ -155,6 +188,7 @@ export interface Phase1Summary {
   references: number;
   referenceValues: number;
   resolvedDirect: number;
+  resolvedByCorrection: number;
   resolvedMechanical: number;
   awaitingMerge: number;
   awaitingOwner: number;
@@ -174,6 +208,7 @@ export function summarize(c: ColumnConformance[], ic: ReferenceCheck[]): Phase1S
     references: ic.length,
     referenceValues: sum(ic, (x) => x.values),
     resolvedDirect: sum(ic, (x) => x.resolved),
+    resolvedByCorrection: sum(ic, (x) => x.corrected),
     resolvedMechanical: cls("crosswalk") + cls("null-token") + cls("aggregate"),
     awaitingMerge: cls("merge"),
     awaitingOwner: cls("owner"),
@@ -185,7 +220,7 @@ export function summarize(c: ColumnConformance[], ic: ReferenceCheck[]): Phase1S
 const n = (x: number) => x.toLocaleString("en-US");
 
 /** Markdown report committed to docs/data so reviewers see exactly what phase 1 found. */
-export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules, c: ColumnConformance[], ic: ReferenceCheck[]): string {
+export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules, c: ColumnConformance[], ic: ReferenceCheck[], corrections: { id: string; title: string; decision: string; target: string; records: number }[] = []): string {
   const s = summarize(c, ic);
   const lines: string[] = [
     "# Phase 1 — reference data and integrity report",
@@ -203,10 +238,22 @@ export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules
     `| Values outside the vocabulary and undeclared | ${n(s.undeclaredGaps)} |`,
     `| Cross-sheet references checked | ${s.references} columns, ${n(s.referenceValues)} values |`,
     `| Resolved directly | ${n(s.resolvedDirect)} |`,
+    `| Resolved by a governed data correction | ${n(s.resolvedByCorrection)} |`,
     `| Resolved by a mechanical rule | ${n(s.resolvedMechanical)} |`,
     `| Resolve in the phase 2 merges | ${n(s.awaitingMerge)} |`,
     `| Awaiting an owner decision | ${n(s.awaitingOwner)} |`,
     `| Unclassified | ${n(s.unclassified + s.failedMechanical)} |`,
+    "",
+    "## Data corrections applied",
+    "",
+    "Records derived from the rows that reference them (schema/reference/corrections.json). They are loaded into the system of record and logged per row in `aip.data_correction`; the governed workbook is unchanged.",
+    "",
+    "| ID | Correction | Records added | Decision |",
+    "| --- | --- | --- | --- |",
+    ...corrections.map((x) => `| ${x.id} | ${x.title} (\`${x.target}\`) | ${n(x.records)} | ${x.decision} |`),
+    ...(v.decisionsMade?.length
+      ? ["", "### Vocabulary decisions", "", "| Date | Reference | Decision |", "| --- | --- | --- |", ...v.decisionsMade.map((d) => `| ${d.date} | ${d.ref} | ${d.decision} |`)]
+      : []),
     "",
     "## Owner decisions",
     "",
@@ -226,11 +273,11 @@ export function phase1Report(reg: Registry, v: Vocabulary, rules: IntegrityRules
     const other = x.fallback + x.wildcard;
     lines.push(`| \`${x.column}\` | ${x.ref}${x.scope ? ` / ${x.scope}` : ""} | ${n(x.values)} | ${n(x.byCode)} | ${n(x.byLabel)} | ${n(x.byAlias)} | ${other ? n(other) : ""} | ${x.declared.map((d) => `${d.value} (${d.count})`).join("; ")}${x.undeclared.length ? ` **UNDECLARED: ${x.undeclared.map((d) => `${d.value} (${d.count})`).join("; ")}**` : ""} |`);
   }
-  lines.push("", "## Reference integrity", "", "| Reference | Target | Values | Direct | Mechanical | Merge | Owner | Unclassified |", "| --- | --- | --- | --- | --- | --- | --- | --- |");
+  lines.push("", "## Reference integrity", "", "| Reference | Target | Values | Direct | Corrected | Mechanical | Merge | Owner | Unclassified |", "| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
   for (const x of ic) {
     const mech = (x.byClass.crosswalk?.values ?? 0) + (x.byClass["null-token"]?.values ?? 0) + (x.byClass.aggregate?.values ?? 0);
     const bad = [...x.unclassified, ...x.failedMechanical];
-    lines.push(`| \`${x.from}\` | \`${x.to}\` | ${n(x.values)} | ${n(x.resolved)} | ${mech ? n(mech) : ""} | ${x.byClass.merge ? n(x.byClass.merge.values) : ""} | ${x.byClass.owner ? n(x.byClass.owner.values) : ""} | ${bad.length ? `**${bad.map((u) => `${u.value} (${u.count})`).slice(0, 5).join("; ")}**` : ""} |`);
+    lines.push(`| \`${x.from}\` | \`${x.to}\` | ${n(x.values)} | ${n(x.resolved)} | ${x.corrected ? `${n(x.corrected)} (${[...x.correctedBy.keys()].join(", ")})` : ""} | ${mech ? n(mech) : ""} | ${x.byClass.merge ? n(x.byClass.merge.values) : ""} | ${x.byClass.owner ? n(x.byClass.owner.values) : ""} | ${bad.length ? `**${bad.map((u) => `${u.value} (${u.count})`).slice(0, 5).join("; ")}**` : ""} |`);
   }
   lines.push("", "## Mechanical rules", "");
   for (const rule of rules.rules.filter((r) => r.class !== "owner")) lines.push(`- **${rule.class}** \`${rule.from}\`${rule.match ? ` ~ \`${rule.match}\`` : ""}: ${rule.note ?? ""}`);

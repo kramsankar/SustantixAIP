@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { fileURLToPath } from "node:url";
-import { loadVocabulary, type Registry } from "@sustantix/schema";
+import { loadCorrections, loadVocabulary, type Registry } from "@sustantix/schema";
 import { provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
@@ -146,6 +146,19 @@ describe("provision", () => {
     await provision(api, { version: "9.15.0.0", registry, vocabulary, pluginDll: dll, dataModel: false, guardDataModel: true, fx: {} }, () => {});
     const creates = dv.calls.slice(before).filter((c) => c.method === "POST" && !["PublishAllXml", "$batch"].includes(c.path) && !c.path.endsWith("AddPrivilegesRole"));
     expect(creates).toEqual([]);
+  });
+
+  it("seeds the governed corrections and logs each corrected record", async () => {
+    const corrections = loadCorrections(fileURLToPath(new URL("../../../", import.meta.url)));
+    const dv = mockDataverse();
+    const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
+    const r = await provision(api, { version: "9.15.0.0", registry, corrections, pluginDll: dll, dataModel: true, guardDataModel: false, seedWorkbook: wb, fx: {} }, () => {});
+    expect(r.correctedRecords).toBe(278);
+    expect(dv.entities.has("sus_datacorrection")).toBe(true);
+    expect(dv.upserts.sus_datacorrections).toBe(278);
+    expect(r.seeded.sus_work_orders).toBe(383 + 46);
+    expect(r.seeded.sus_asset_master).toBe(969 + 232);
+    expect(r.seedFailures).toEqual([]);
   });
 
   it("refuses to invent a currency without an FX rate", async () => {

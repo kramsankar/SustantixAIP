@@ -5,3 +5,4 @@ export * from "./postgres.ts";
 export * from "./rows.ts";
 export * from "./reference.ts";
 export * from "./conformance.ts";
+export * from "./corrections.ts";
