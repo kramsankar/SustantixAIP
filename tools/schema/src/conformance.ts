@@ -34,6 +34,8 @@ export interface IntegrityRule {
   to?: string;
   note?: string;
   question?: string;
+  /** merge: the phase 2 master whose consolidated codes contain every value the rule matches. */
+  resolvedBy?: string;
 }
 
 export interface IntegrityRules {

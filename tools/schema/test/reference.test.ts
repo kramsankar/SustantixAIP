@@ -303,7 +303,7 @@ describe("governed data corrections", () => {
     expect(sql).toContain("'WO-20001'");
     expect(sql).toContain("'AST-H01001'");
     expect(sql).toContain("insert into aip.data_correction (tenant_id, correction_id, kind, target_table, row_key, source_table, source_key, title, changes) values");
-    expect(correctionLogInsert(corrections, entries, "00000000-0000-0000-0000-0000000000c1").match(/^\('/gm)).toHaveLength(493);
+    expect(correctionLogInsert(corrections, entries, "00000000-0000-0000-0000-0000000000c1").match(/^\('/gm)).toHaveLength(515);
   });
 });
 

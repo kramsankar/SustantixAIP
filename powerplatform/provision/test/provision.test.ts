@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { fileURLToPath } from "node:url";
-import { loadCorrections, loadVocabulary, type Registry } from "@sustantix/schema";
+import { buildMasters, loadCorrections, loadVocabulary, masterDefs, readSheets, type Registry } from "@sustantix/schema";
 import { provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
@@ -22,6 +22,8 @@ function mockDataverse() {
   const entities = new Map<string, { attrs: Set<string>; keys: Set<string>; set: string }>();
   const calls: Array<{ method: string; path: string; solution?: string }> = [];
   const upserts: Record<string, number> = {};
+  const relationships = new Map<string, Record<string, unknown>>();
+  const batchBodies: string[] = [];
   const idField: Record<string, string> = {
     publishers: "publisherid", solutions: "solutionid", pluginassemblies: "pluginassemblyid", plugintypes: "plugintypeid",
     customapis: "customapiid", sdkmessageprocessingsteps: "sdkmessageprocessingstepid", roles: "roleid",
@@ -47,12 +49,23 @@ function mockDataverse() {
     if (path === "WhoAmI") return json({ OrganizationId: ORG, BusinessUnitId: BU, UserId: guid() });
     if (path === "PublishAllXml" || path.endsWith("AddPrivilegesRole")) return new Response(null, { status: 204 });
     if (path === "$batch") {
+      batchBodies.push(String(body));
       const parts = String(body).split(/--batch_\w+/).filter((p) => p.includes("PATCH"));
       for (const p of parts) {
         const set = /PATCH \S+\/v9\.2\/(\w+)\(/.exec(p)?.[1] ?? "?";
         upserts[set] = (upserts[set] ?? 0) + 1;
       }
       return new Response(parts.map(() => "--r\r\nContent-Type: application/http\r\n\r\nHTTP/1.1 204 No Content\r\n\r\n\r\n").join("") + "--r--", { status: 200 });
+    }
+    let r = /^RelationshipDefinitions\(SchemaName='(\w+)'\)/.exec(path);
+    if (r) return relationships.has(r[1]!) ? json({ SchemaName: r[1] }) : json({ error: { code: "0x80040217", message: "not found" } }, 404);
+    if (path === "RelationshipDefinitions" && method === "POST") {
+      const referencing = entities.get(String(body.ReferencingEntity));
+      const referenced = entities.get(String(body.ReferencedEntity));
+      if (!referencing || !referenced) return json({ error: { code: "mock", message: `relationship ${String(body.SchemaName)} names a missing table` } }, 400);
+      relationships.set(String(body.SchemaName), body);
+      referencing.attrs.add(String((body.Lookup as { SchemaName: string }).SchemaName).toLowerCase());
+      return created("RelationshipDefinitions", guid());
     }
     let m = /^EntityDefinitions\(LogicalName='(\w+)'\)(\/(Attributes|Keys))?(\?.*)?$/.exec(path);
     if (m) {
@@ -89,7 +102,7 @@ function mockDataverse() {
     if (m && method === "PATCH") return new Response(null, { status: 204 });
     return json({ error: { code: "mock", message: `unhandled ${method} ${path}` } }, 400);
   };
-  return { fetcher, calls, upserts, entities, sets };
+  return { fetcher, calls, upserts, entities, sets, relationships, batchBodies };
 }
 
 const dll = Buffer.from("MZ-plugin-bytes");
@@ -153,9 +166,9 @@ describe("provision", () => {
     const dv = mockDataverse();
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
     const r = await provision(api, { version: "9.15.0.0", registry, corrections, pluginDll: dll, dataModel: true, guardDataModel: false, seedWorkbook: wb, fx: {} }, () => {});
-    expect(r.correctedRecords).toBe(493);
+    expect(r.correctedRecords).toBe(515);
     expect(dv.entities.has("sus_datacorrection")).toBe(true);
-    expect(dv.upserts.sus_datacorrections).toBe(493);
+    expect(dv.upserts.sus_datacorrections).toBe(515);
     expect(r.seeded.sus_work_orders).toBe(383 + 46 + 24);
     expect(r.seeded.sus_asset_master).toBe(969 + 232 + 4);
     expect(r.seedFailures).toEqual([]);
@@ -190,5 +203,34 @@ describe("provision", () => {
 
   it("rejects non-https environments", () => {
     expect(() => new WebApi({ envUrl: "http://contoso.crm.dynamics.com", token: async () => "t" })).toThrow(/https/);
+  });
+
+  it("provisions the phase 2 masters with lookups by business code, self-references second, idempotently", async () => {
+    const root = fileURLToPath(new URL("../../../", import.meta.url));
+    const vocabulary = loadVocabulary(root);
+    const corrections = loadCorrections(root);
+    const defs = masterDefs(registry);
+    const built = buildMasters(registry, readSheets(wb), vocabulary, corrections);
+    const dv = mockDataverse();
+    const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
+    const r = await provision(api, { version: "9.15.0.0", registry, vocabulary, corrections, masters: true, seedWorkbook: wb, pluginDll: dll, dataModel: false, guardDataModel: false, fx: {} }, () => {});
+    const lookups = defs.reduce((n, d) => n + d.columns.filter((c) => c.kind === "fk" || c.kind === "ref").length, 0);
+    expect(r.relationshipsCreated).toBe(lookups);
+    expect(dv.entities.get("sus_asset")?.keys.has("sus_asset_bk")).toBe(true);
+    expect(dv.entities.get("sus_asset")?.attrs.has("sus_parentid")).toBe(true);
+    expect(r.masterRecords).toBe(built.masters.reduce((n, m) => n + m.rows.length, 0));
+    expect(r.seedFailures).toEqual([]);
+    const assetRows = dv.upserts["sus_assets"] ?? 0;
+    expect(assetRows).toBe(1205 + 260); // every asset, then the 260 parent links
+    const body = dv.batchBodies.join("\n");
+    expect(body).toContain(`"sus_siteid@odata.bind":"/sus_sites(sus_name='SP-01')"`);
+    expect(body).toMatch(/"sus_operatingstatusid@odata.bind":"\/sus_ref_statuss\(sus_name='asset_operating\/[A-Z_]+'\)"/);
+    expect(body).toMatch(/"sus_parentid@odata.bind":"\/sus_assets\(sus_name='[^']+'\)"/);
+    expect(dv.upserts["sus_masterlineages"]).toBe(built.masters.reduce((n, m) => n + m.rows.reduce((k, x) => k + x.lineage.length, 0), 0));
+
+    const before = dv.calls.length;
+    const again = await provision(api, { version: "9.15.0.0", registry, vocabulary, corrections, masters: true, pluginDll: dll, dataModel: false, guardDataModel: false, fx: {} }, () => {});
+    expect(again.relationshipsCreated).toBe(0);
+    expect(dv.calls.slice(before).filter((c) => c.method === "POST" && c.path.startsWith("RelationshipDefinitions"))).toEqual([]);
   });
 });

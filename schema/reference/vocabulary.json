@@ -851,6 +851,14 @@
      "sort_order": 2
     },
     {
+     "code": "ACTIVE",
+     "label": "Active",
+     "scope": "scenario",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
      "code": "NOT_CONFIGURED",
      "label": "Not configured",
      "scope": "connector",
@@ -3591,6 +3599,11 @@
     "reliability_life_history.failure_mode"
    ],
    "decision": "Inverter preventive degradation control, Switchgear preventive inspection and Transformer defect response are kept as failure-mode codes: each names the failure the work addresses."
+  },
+  {
+   "date": "2026-10-05",
+   "ref": "status/scenario",
+   "decision": "Portfolio scenarios marked Active in the optimiser register (the baseline) get scenario status ACTIVE; what-if scenarios are DRAFT."
   }
  ]
 }

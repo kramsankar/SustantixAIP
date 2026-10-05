@@ -6,6 +6,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { applyCorrections, correctionLogInsert, loadCorrections, type CorrectionSet } from "./corrections.ts";
+import { masterSeedSql } from "./master-sql.ts";
+import { buildMasters } from "./masters.ts";
 import { loadVocabulary, tenantReferenceRows, type Vocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
@@ -55,6 +57,12 @@ export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; n
     out.push(`insert into aip."${table}" (${cols.map((c) => `"${c}"`).join(",")}) values\n${values.join(",\n")}\non conflict (tenant_id, code) do update set ${updates.join(", ")};`);
   }
   if (corrections && derived.length) out.push(correctionLogInsert(corrections, derived, tenant.id));
+  // Phase 2 masters and consolidated registers, built from the same corrected rows (they need the corrections).
+  if (vocab && corrections) {
+    const built = buildMasters(reg, raw, vocab, corrections);
+    if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
+    out.push(masterSeedSql(built.masters, tenant.id, reg.defaultCurrency));
+  }
   out.push("commit;");
   return out.join("\n") + "\n";
 }

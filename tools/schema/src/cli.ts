@@ -4,6 +4,7 @@
  *   supabase/migrations/*_aip_platform.sql   tenancy, RLS helpers, audit, FX, license memory
  *   supabase/migrations/*_aip_data_model.sql one RLS-protected table per sheet
  *   supabase/migrations/*_aip_reference.sql  controlled vocabulary (schema/reference/vocabulary.json)
+ *   supabase/migrations/*_aip_masters.sql    phase 2 masters and consolidated registers (src/masters.ts)
  *   powerplatform/schema/*.json              Dataverse metadata payloads
  * Usage: tsx src/cli.ts [workbook.xlsx]
  */
@@ -15,6 +16,9 @@ import { inferRegistry, runtimeDeclaredKeys } from "./infer.ts";
 import { dataModelSql, platformSql } from "./postgres.ts";
 import { correctionLogPlan, correctionLogSql, applyCorrections, loadCorrections } from "./corrections.ts";
 import { loadVocabulary, referencePlan, referenceSql, validateVocabulary } from "./reference.ts";
+import { masterPlan, masterRelationships } from "./master-dataverse.ts";
+import { mastersSql } from "./master-sql.ts";
+import { buildMasters, masterDefs } from "./masters.ts";
 import { readSheets } from "./rows.ts";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -35,14 +39,20 @@ writeFileSync(join(root, "supabase/migrations/20261001000100_aip_reference.sql")
 // Corrections must derive cleanly from the current workbook before the log table is (re)generated.
 const derived = applyCorrections(reg, readSheets(readFileSync(workbook)), loadCorrections(root)).entries;
 writeFileSync(join(root, "supabase/migrations/20261001000200_aip_data_correction.sql"), correctionLogSql());
+// Masters must build cleanly before their tables are (re)generated.
+const built = buildMasters(reg, readSheets(readFileSync(workbook)), vocab, loadCorrections(root));
+if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
+writeFileSync(join(root, "supabase/migrations/20261005000100_aip_masters.sql"), mastersSql(masterDefs(reg), reg.defaultCurrency));
 
 mkdirSync(join(root, "powerplatform/schema"), { recursive: true });
 writeFileSync(join(root, "powerplatform/schema/platform-tables.json"), JSON.stringify(platformPlan(), null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/reference-tables.json"), JSON.stringify([...referencePlan(vocab), correctionLogPlan()], null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: masterPlan(masterDefs(reg)), relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/data-model-tables.json"), JSON.stringify(dataModelPlan(reg).map(({ source, ...p }) => ({ ...p, sheet: source?.sheet })), null, 1) + "\n");
 
 const cols = reg.tables.reduce((n, t) => n + t.columns.length, 0);
 const rows = reg.tables.reduce((n, t) => n + t.rowCount, 0);
 console.log(`corrections: ${derived.length} corrected row(s)`);
+console.log(`masters: ${built.masters.length} tables · ${built.masters.reduce((n, m) => n + m.rows.length, 0)} rows`);
 console.log(`reference: ${vocab.tables.length} tables · ${vocab.tables.reduce((n, t) => n + t.values.length, 0)} codes · ${vocab.bindings.length} governed columns`);
 console.log(`schema: ${reg.tables.length} tables · ${cols} columns · ${rows} seed rows · money columns ${reg.tables.flatMap((t) => t.columns).filter((c) => c.kind === "money").length}`);

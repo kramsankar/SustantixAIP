@@ -125,6 +125,15 @@ export async function ensureTable(api: WebApi, plan: EntityPlan, log: Log): Prom
   }
 }
 
+/** Creates (idempotently) a one-to-many relationship with its lookup column, inside the solution. */
+export async function ensureRelationship(api: WebApi, rel: { schemaName: string; payload: Record<string, unknown> }, log: Log): Promise<boolean> {
+  const existing = await api.find<{ SchemaName: string }>(`RelationshipDefinitions(SchemaName='${rel.schemaName}')?$select=SchemaName`);
+  if (existing) return false;
+  await api.create("RelationshipDefinitions", rel.payload);
+  log(`  + relationship ${rel.schemaName}`);
+  return true;
+}
+
 export async function entitySetName(api: WebApi, logicalName: string): Promise<string> {
   const r = await api.get<{ EntitySetName: string }>(`EntityDefinitions(LogicalName='${logicalName}')?$select=EntitySetName`);
   if (!r?.EntitySetName) throw new Error(`no entity set for ${logicalName}`);

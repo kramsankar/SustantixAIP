@@ -1,6 +1,6 @@
 {
  "version": 1,
- "description": "Cross-sheet references in the governed workbook and how each unresolved value is classified. crosswalk and null-token rules are mechanical and must resolve every value they match; merge rules resolve when phase 2 consolidates the named entities; owner rules wait on a data-owner decision.",
+ "description": "Cross-sheet references in the governed workbook and how each unresolved value is classified. crosswalk and null-token rules are mechanical and must resolve every value they match; merge rules name the phase 2 master (resolvedBy) whose consolidated codes must contain every value they match; owner rules wait on a data-owner decision.",
  "relationships": [
   {
    "from": "*.plant_id",
@@ -47,7 +47,7 @@
   },
   {
    "from": "*.material_id",
-   "to": "pno_material_cost_logistics.material_id"
+   "to": "msi_part_master.part_id"
   },
   {
    "from": "*.vehicle_id",
@@ -168,35 +168,41 @@
    "from": "plan_interventions.intervention_id",
    "class": "merge",
    "match": "^INT-PV-",
-   "note": "PV module interventions exist only in the plan register; resolved by the phase 2 intervention merge."
+   "note": "PV module interventions exist only in the plan register; resolved by the phase 2 intervention merge.",
+   "resolvedBy": "intervention"
   },
   {
    "from": "plan_requirements.intervention_id",
    "class": "merge",
    "match": "^INT-PV-",
-   "note": "Requirements of the PV module interventions; resolved by the phase 2 intervention merge."
+   "note": "Requirements of the PV module interventions; resolved by the phase 2 intervention merge.",
+   "resolvedBy": "intervention"
   },
   {
    "from": "msi_spare_requirements.intervention_id",
    "class": "merge",
    "match": "^INT-PV-",
-   "note": "Spares for the PV module interventions; resolved by the phase 2 intervention merge."
+   "note": "Spares for the PV module interventions; resolved by the phase 2 intervention merge.",
+   "resolvedBy": "intervention"
   },
   {
    "from": "plan_scenarios.scenario_id",
    "class": "merge",
-   "note": "Plan scenarios are a second scenario register; resolved by the phase 2 scenario merge."
+   "note": "Plan scenarios are a second scenario register; resolved by the phase 2 scenario merge.",
+   "resolvedBy": "scenario"
   },
   {
    "from": "spare_parts_master.part_id",
    "class": "merge",
-   "note": "Second part master; resolved by the phase 2 part merge."
+   "note": "Second part master; resolved by the phase 2 part merge.",
+   "resolvedBy": "part"
   },
   {
    "from": "sus_hse_events.event_id",
    "class": "merge",
    "match": "^HSE-",
-   "note": "HSE incidents have their own ID space; phase 2 moves them to hse_incident."
+   "note": "HSE incidents have their own ID space; phase 2 moves them to hse_incident.",
+   "resolvedBy": "hse_incident"
   }
  ]
 }

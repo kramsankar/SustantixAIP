@@ -4,7 +4,7 @@
  *   whoami     --env https://<org>.crm.dynamics.com
  *              Prints the organisation id to bind a license to.
  *   provision  --env <url> --version 9.15.0.0 --plugin <Sustantix.Aip.Licensing.dll>
- *              [--data-model] [--guard-data-model] [--seed [workbook.xlsx]] [--fx INR=83.2 ...]
+ *              [--data-model] [--guard-data-model] [--masters false] [--seed [workbook.xlsx]] [--fx INR=83.2 ...]
  *              [--report out/provision-report.json]
  *   set-license --env <url> --token <SXL1...>   (writes the environment variable value)
  *
@@ -68,6 +68,7 @@ async function main() {
           corrections: loadCorrections(root),
           pluginDll: readFileSync(pluginPath),
           dataModel: flag("data-model") === "true" || !!seedArg,
+          masters: flag("masters") !== "false",
           guardDataModel: flag("guard-data-model") === "true",
           seedWorkbook: seedArg ? (seedArg === "true" ? workbook : readFileSync(seedArg)) : undefined,
           fx,

@@ -300,6 +300,68 @@
      "default": "Demo - unverified (inventory verification required)"
     }
    }
+  },
+  {
+   "id": "C11",
+   "kind": "remap",
+   "title": "Re-key the planning cost list onto the part master",
+   "decision": "The planning cost and logistics list numbers its items PRT-001…PRT-018 in its own sequence, so the same code names a different item than the part master (PRT-001 is a DC string fuse there and an IGBT module in the part master). Ten items are the same part under another name and are re-keyed to it (for example DC string fuse 20A → PRT-019 String fuse 20A, Inverter control board → PRT-017 Inverter control PCB); the eight with no counterpart get the next free part codes PRT-029…PRT-036 and are added to the part master by C12.",
+   "target": "pno_material_cost_logistics",
+   "where": {
+    "material_id": "^PRT-0(0\\d|1[0-8])$"
+   },
+   "map": {
+    "material_id": {
+     "column": "material_id",
+     "map": {
+      "PRT-001": "PRT-019",
+      "PRT-002": "PRT-002",
+      "PRT-003": "PRT-020",
+      "PRT-004": "PRT-017",
+      "PRT-005": "PRT-005",
+      "PRT-006": "PRT-006",
+      "PRT-007": "PRT-007",
+      "PRT-008": "PRT-014",
+      "PRT-009": "PRT-029",
+      "PRT-010": "PRT-024",
+      "PRT-011": "PRT-030",
+      "PRT-012": "PRT-027",
+      "PRT-013": "PRT-031",
+      "PRT-014": "PRT-032",
+      "PRT-015": "PRT-033",
+      "PRT-016": "PRT-034",
+      "PRT-017": "PRT-035",
+      "PRT-018": "PRT-036"
+     }
+    }
+   }
+  },
+  {
+   "id": "C12",
+   "title": "Add the planning-only materials to the part master",
+   "decision": "Eight planning materials (module clamp set, SCADA switch, combiner fuse kit, transformer breather kit, 33 kV termination kit, inverter AC contactor, slew bearing kit, fibre patch kit) have no part-master record. Each is added from its cost and logistics row: same description, unit cost, lead time, supplier and storage location.",
+   "target": "msi_part_master",
+   "key": "part_id",
+   "source": {
+    "table": "pno_material_cost_logistics",
+    "where": {
+     "material_id": "^PRT-0(29|3[0-6])$"
+    }
+   },
+   "map": {
+    "part_id": "material_id",
+    "part_name": "material_description",
+    "unit_cost": "unit_cost",
+    "lead_time_days": "lead_time_days",
+    "preferred_supplier": "preferred_supplier",
+    "storage_location": "storage_location",
+    "replenishment_mode": {
+     "const": "Reorder point"
+    },
+    "source": {
+     "template": "Planning cost list (data correction C12; basis: {basis})"
+    }
+   }
   }
  ]
 }

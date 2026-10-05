@@ -1,9 +1,15 @@
 import {
   applyCorrections,
+  buildMasters,
   correctionLogPlan,
   correctionLogRecords,
   dataModelPlan,
   dataverseRecord,
+  masterDefs,
+  masterLineageRecords,
+  masterPlan,
+  masterRecords,
+  masterRelationships,
   platformPlan,
   readSheets,
   referencePlan,
@@ -23,6 +29,7 @@ import {
   ensurePluginAssembly,
   ensurePluginType,
   ensurePublisher,
+  ensureRelationship,
   ensureRole,
   ensureSolution,
   ensureTable,
@@ -49,6 +56,8 @@ export interface ProvisionOptions {
   vocabulary?: Vocabulary;
   /** Governed data corrections applied to the seed, with a per-record log (sus_datacorrection). */
   corrections?: CorrectionSet;
+  /** Phase 2 masters and consolidated registers (needs the vocabulary): tables, lookups and, with a seed, their rows. */
+  masters?: boolean;
   fx: Record<string, number>;
 }
 
@@ -61,6 +70,8 @@ export interface ProvisionReport {
   seeded: Record<string, number>;
   referenceRecords: number;
   correctedRecords: number;
+  relationshipsCreated: number;
+  masterRecords: number;
   seedFailures: Array<{ table: string; key: string; status: number; message: string }>;
 }
 
@@ -71,13 +82,18 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const publisherId = await ensurePublisher(api, log);
   await ensureSolution(api, publisherId, o.version, log);
 
-  const moneyCodes = o.dataModel ? o.registry.tables.flatMap((t) => t.columns).filter((c) => c.kind === "money").map((c) => c.currency ?? o.registry.defaultCurrency) : [];
+  if (o.masters && (!o.vocabulary || !o.corrections)) throw new Error("masters need the vocabulary and the corrections");
+  const moneyCodes = o.dataModel || o.masters ? o.registry.tables.flatMap((t) => t.columns).filter((c) => c.kind === "money").map((c) => c.currency ?? o.registry.defaultCurrency) : [];
   const currencies = moneyCodes.length ? await ensureCurrencies(api, moneyCodes, o.fx, log) : {};
 
   const platform = platformPlan();
   const model = o.dataModel ? dataModelPlan(o.registry) : [];
   const reference = [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...(o.corrections ? [correctionLogPlan()] : [])];
-  for (const p of [...platform, ...reference, ...model]) await ensureTable(api, p, log);
+  const masters = o.masters ? masterPlan(masterDefs(o.registry)) : [];
+  for (const p of [...platform, ...reference, ...masters, ...model]) await ensureTable(api, p, log);
+  let relationshipsCreated = 0;
+  // Lookups after every table exists: masters reference each other and the reference tables.
+  for (const rel of o.masters ? masterRelationships(masterDefs(o.registry)) : []) if (await ensureRelationship(api, rel, log)) relationshipsCreated++;
 
   await ensureEnvironmentVariables(api, log);
 
@@ -86,10 +102,10 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const statusId = await ensurePluginType(api, assemblyId, STATUS_TYPE, log);
   await ensureLicenseApi(api, statusId, log);
 
-  const guarded = ["sus_runtimestate", ...(o.guardDataModel ? [...reference, ...model].map((m) => m.logicalName) : [])];
+  const guarded = ["sus_runtimestate", ...(o.guardDataModel ? [...reference, ...masters, ...model].map((m) => m.logicalName) : [])];
   const guardStepsCreated = await ensureGuardSteps(api, guardId, guarded, log);
 
-  const privileges = rolePrivileges([...reference, ...model].map((m) => m.logicalName));
+  const privileges = rolePrivileges([...reference, ...masters, ...model].map((m) => m.logicalName));
   const userRole = await ensureRole(api, ROLES.user, me.BusinessUnitId, log);
   await grantPrivileges(api, userRole, me.BusinessUnitId, privileges.user, log);
   const adminRole = await ensureRole(api, ROLES.admin, me.BusinessUnitId, log);
@@ -142,15 +158,46 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
     }
   }
 
+  let masterCount = 0;
+  if (o.masters && o.seedWorkbook) {
+    const built = buildMasters(o.registry, readSheets(o.seedWorkbook), o.vocabulary!, o.corrections);
+    if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
+    const sets = new Map<string, string>();
+    const setOf = async (ln: string) => sets.get(ln) ?? sets.set(ln, await entitySetName(api, ln)).get(ln)!;
+    for (const p of [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...masters]) await setOf(p.logicalName);
+    const currencyId = currencies[o.registry.defaultCurrency];
+    const recordSets = masterRecords(built.masters, o.vocabulary!, (ln) => sets.get(ln) ?? (() => { throw new Error(`no entity set for ${ln}`); })(), currencyId);
+    // Rows in dependency order, then self-references (an asset's parent) once every row exists.
+    for (const pass of ["records", "links"] as const) {
+      for (const rs of recordSets) {
+        const rows = rs[pass];
+        for (let i = 0; i < rows.length; i += 200) {
+          const failures = await api.batchUpsert(sets.get(rs.logicalName)!, "sus_name", rows.slice(i, i + 200));
+          seedFailures.push(...failures.map((f) => ({ table: rs.logicalName, ...f })));
+        }
+        if (pass === "records") masterCount += rows.length;
+      }
+    }
+    const lineage = masterLineageRecords(built.masters);
+    const lset = await setOf("sus_masterlineage");
+    for (let i = 0; i < lineage.length; i += 200) {
+      const failures = await api.batchUpsert(lset, "sus_name", lineage.slice(i, i + 200));
+      seedFailures.push(...failures.map((f) => ({ table: "sus_masterlineage", ...f })));
+    }
+    log(`  ⇪ ${masterCount} master row(s), ${lineage.length} lineage row(s)`);
+  }
+
   return {
     organizationId: me.OrganizationId,
     solution: "SustantixAIP",
     version: o.version,
-    tables: platform.length + reference.length + model.length,
+    tables: platform.length + reference.length + masters.length + model.length,
     guardStepsCreated,
     seeded,
     referenceRecords: referenceCount,
     correctedRecords,
+    relationshipsCreated,
+    masterRecords: masterCount,
     seedFailures,
   };
 }
