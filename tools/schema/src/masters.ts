@@ -8,6 +8,7 @@
  * two intervention registers, two scenario tables) merge into one, and every master row records which sheet rows
  * it came from (lineage), so phase 3 can rebuild each sheet as a compatibility view.
  */
+import { readFileSync } from "node:fs";
 import type { IntegrityRule, IntegrityRules } from "./conformance.ts";
 import { applyCorrections, dmyToIso, type CorrectionEntry, type CorrectionSet } from "./corrections.ts";
 import { Resolver, type Binding, type Vocabulary } from "./reference.ts";
@@ -740,9 +741,17 @@ export function masterDefs(reg: Registry): MasterDef[] {
       description: "A governed forecasting or predictive model: algorithm, training window, validation and approval. AIP's own engines register here too.",
       replaces: ["fcst_model_governance"], owns: ["fcst_model_governance.model_id"],
       columns: [col("name", "Name"), ...mirror(tc, "fcst_model_governance", ["model_type", "version", "owner_foundation", "training_start", "training_end", "training_record_count", "feature_set", "algorithm", "validation_method", "primary_metric", "validation_result", "champion_challenger", "approval_status", "last_trained", "next_review", "production_note"]), col("engine", "AIP engine")],
-      build: (ctx) => ctx.rows("fcst_model_governance").map((r) => ({
-        code: String(r.model_id), values: { name: r.model_name, ...take(r, ["model_type", "version", "owner_foundation", "training_start", "training_end", "training_record_count", "feature_set", "algorithm", "validation_method", "primary_metric", "validation_result", "champion_challenger", "approval_status", "last_trained", "next_review", "production_note"]) }, lineage: [one("fcst_model_governance", r.__key)],
-      })),
+      build: (ctx) => [
+        ...ctx.rows("fcst_model_governance").map((r) => ({
+          code: String(r.model_id), values: { name: r.model_name, ...take(r, ["model_type", "version", "owner_foundation", "training_start", "training_end", "training_record_count", "feature_set", "algorithm", "validation_method", "primary_metric", "validation_result", "champion_challenger", "approval_status", "last_trained", "next_review", "production_note"]) }, lineage: [one("fcst_model_governance", r.__key)],
+        })),
+        // AIP's own engines (schema/analytics/models.json): registered so every run links to a governed model.
+        ...analyticsModels().map((m) => ({
+          code: m.code,
+          values: { name: m.name, model_type: m.model_type, version: m.version, owner_foundation: m.owner_foundation, feature_set: m.feature_set, algorithm: m.algorithm, validation_method: m.validation_method, primary_metric: m.primary_metric, champion_challenger: "Champion", approval_status: "Approved", engine: m.engine },
+          lineage: [{ table: "analytics_models", key: m.code, role: "derived" as const }],
+        })),
+      ],
     },
 
     // Contracts
@@ -921,6 +930,24 @@ export function masterDefs(reg: Registry): MasterDef[] {
       })),
     },
   ];
+}
+
+/** AIP's own analytical models (schema/analytics/models.json). */
+export interface AnalyticsModelCard {
+  code: string;
+  name: string;
+  model_type: string;
+  engine: string;
+  version: string;
+  algorithm: string;
+  feature_set: string;
+  validation_method: string;
+  primary_metric: string;
+  owner_foundation: string;
+}
+
+export function analyticsModels(): AnalyticsModelCard[] {
+  return (JSON.parse(readFileSync(new URL("../../../schema/analytics/models.json", import.meta.url), "utf8")) as { models: AnalyticsModelCard[] }).models;
 }
 
 // ── Build + gate ────────────────────────────────────────────────────────────

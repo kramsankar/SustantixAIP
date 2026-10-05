@@ -9,3 +9,4 @@ export * from "./corrections.ts";
 export * from "./masters.ts";
 export * from "./master-sql.ts";
 export * from "./master-dataverse.ts";
+export * from "./analytics-sql.ts";

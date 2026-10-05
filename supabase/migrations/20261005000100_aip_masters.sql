@@ -730,3 +730,238 @@ select aip.ensure_master_fk('scenario_intervention', 'scenario_id', 'scenario', 
 select aip.ensure_master_fk('scenario_intervention', 'intervention_id', 'intervention', false);
 select aip.ensure_master_fk('hse_incident', 'site_id', 'site', false);
 select aip.ensure_master_fk('hse_incident', 'asset_id', 'asset', false);
+
+-- Code views: references as business codes (security_invoker, so RLS applies to the caller).
+drop view if exists aip."v_site";
+create view aip."v_site" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", r1.code as "region", m."timezone", m."capacity_mw", m."inverter_count", m."tracker_rows", m."string_count", m."commission_year", m."grid_connection_k_v", m."grid_connection_type", m."export_limit_mw", m."import_limit_mw", m.is_active, m.row_version, m.updated_at
+from aip."site" m
+left join aip."ref_region" r1 on r1.id = m."region_id";
+grant select on aip."v_site" to authenticated, service_role;
+drop view if exists aip."v_party";
+create view aip."v_party" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m.is_active, m.row_version, m.updated_at
+from aip."party" m
+;
+grant select on aip."v_party" to authenticated, service_role;
+drop view if exists aip."v_party_role";
+create view aip."v_party_role" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "party", m."role", m.is_active, m.row_version, m.updated_at
+from aip."party_role" m
+left join aip."party" r0 on r0.id = m."party_id";
+grant select on aip."v_party_role" to authenticated, service_role;
+drop view if exists aip."v_equipment_model";
+create view aip."v_equipment_model" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", r1.code as "manufacturer", r2.code as "asset_class", m."technology", m."rated_power_w", m."efficiency_pct", m."temperature_coefficient_pmax_pct_c", m."product_warranty_years", m."performance_warranty_years", m."planning_service_life_years", m."document_reference", m.is_active, m.row_version, m.updated_at
+from aip."equipment_model" m
+left join aip."party" r1 on r1.id = m."manufacturer_id"
+left join aip."ref_asset_class" r2 on r2.id = m."asset_class_id";
+grant select on aip."v_equipment_model" to authenticated, service_role;
+drop view if exists aip."v_asset";
+create view aip."v_asset" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "site", r1.code as "parent", m."tag", m."name", r4.code as "asset_class", r5.code as "equipment_model", r6.code as "manufacturer", r7.code as "operating_status", m."install_year", m."rated_capacity_mw", m."module_quantity", m."granularity", m."cost_centre", m."health_score", r14.code as "risk_band", m."last_maintenance_date", m."capacity_basis", m."data_basis", m."evidence_reference", m."source_record", m.is_active, m.row_version, m.updated_at
+from aip."asset" m
+left join aip."site" r0 on r0.id = m."site_id"
+left join aip."asset" r1 on r1.id = m."parent_id"
+left join aip."ref_asset_class" r4 on r4.id = m."asset_class_id"
+left join aip."equipment_model" r5 on r5.id = m."equipment_model_id"
+left join aip."party" r6 on r6.id = m."manufacturer_id"
+left join aip."ref_status" r7 on r7.id = m."operating_status_id"
+left join aip."ref_risk_band" r14 on r14.id = m."risk_band_id";
+grant select on aip."v_asset" to authenticated, service_role;
+drop view if exists aip."v_asset_inverter";
+create view aip."v_asset_inverter" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "asset", r1.code as "tracker", m."block_id", m."ac_rating_mw", m."dc_capacity_mwp", m."dc_ac_ratio", m."strings", m."modules_per_string", m."module_wp", m."mppt_count", m."scb_count", m."nominal_efficiency_pct", m."dc_voltage_nominal_v", m."data_provenance", m.is_active, m.row_version, m.updated_at
+from aip."asset_inverter" m
+left join aip."asset" r0 on r0.id = m."asset_id"
+left join aip."asset" r1 on r1.id = m."tracker_id";
+grant select on aip."v_asset_inverter" to authenticated, service_role;
+drop view if exists aip."v_asset_bess";
+create view aip."v_asset_bess" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "asset", r1.code as "cell_manufacturer", r2.code as "pcs_manufacturer", r3.code as "ems_vendor", r4.code as "bms_vendor", r5.code as "ltsa_provider", m."bess_name", m."configuration", m."rated_power_mw", m."contracted_energy_mwh", m."nameplate_energy_mwh_bol", m."duration_h", m."usable_so_c_min_pct", m."usable_so_c_max_pct", m."commissioning_date", m."design_life_years", m."container_count", m."pcs_count", m."mv_transformer_count", m."point_of_interconnection", m."charging_source", m."commercial_model", m."chemistry", m."cell_format", m."cell_nominal_voltage_v", m."cell_capacity_ah", m."cells_per_module", m."modules_per_rack", m."racks_per_container", m."container_energy_mwh", m."container_type", m."rack_nominal_voltage_v", m."dc_voltage_min_v", m."dc_voltage_max_v", m."pcs_unit_rating_mw", m."pcs_nominal_efficiency_pct", m."mv_transformer_mva", m."mv_transformer_efficiency_pct", m."battery_dc_rte_pct", m."self_discharge_pct_per_day", m."aux_base_k_w_per_container", m."aux_hvac_k_w_per_container_per_10_c", m."aux_throughput_coeff_pct", m."thermal_management", m."rated_c_rate", m."so_c_operating_min_pct", m."so_c_operating_max_pct", m."so_c_bms_hard_min_pct", m."so_c_bms_hard_max_pct", m."cell_temp_operating_min_c", m."cell_temp_operating_max_c", m."cell_temp_alarm_c", m."cell_temp_trip_c", m."cell_voltage_min_v", m."cell_voltage_max_v", m."max_charge_mw", m."max_discharge_mw", m."max_c_rate", m."ramp_rate_pct_per_min", m."max_cycles_per_day", m."residual_tolerance_pct", m."so_c_drift_tolerance_pct", m."source_document", m."visual_inspection_interval_days", m."thermography_interval_days", m."coolant_hvac_service_interval_days", m."capacity_test_interval_days", m."fire_system_inspection_interval_days", m."last_visual_inspection", m."last_thermography", m."last_hvac_service", m."ltsa_availability_guarantee_pct", m."applicable_regulation", m."system_voltage_class", m."containers_with_auto_suppression", m."suppression_agent", m."gas_smoke_heat_flame_detection", m."explosion_venting_deflagration_panels", m."forced_ventilation_auto_louvers", m."two_fault_tolerance_design_review", m."last_third_party_fire_audit", m."fire_audit_due_by", m."perimeter_fence_m", m."cctv_motion_detection", m."emergency_stop_auto_and_manual", m."fire_brigade_noc", m."evidence_document_id", m."ems_id", m."ppc_id", m."scada_protocol", m."bms_to_ems_protocol", m."telemetry_resolution_s", m."historian_aggregation", m."tag_prefix", m."tag_map", m."integration_status", m."data_provenance", m.is_active, m.row_version, m.updated_at
+from aip."asset_bess" m
+left join aip."asset" r0 on r0.id = m."asset_id"
+left join aip."party" r1 on r1.id = m."cell_manufacturer_id"
+left join aip."party" r2 on r2.id = m."pcs_manufacturer_id"
+left join aip."party" r3 on r3.id = m."ems_vendor_id"
+left join aip."party" r4 on r4.id = m."bms_vendor_id"
+left join aip."party" r5 on r5.id = m."ltsa_provider_id";
+grant select on aip."v_asset_bess" to authenticated, service_role;
+drop view if exists aip."v_pv_array";
+create view aip."v_pv_array" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "asset", m."name", m."module_quantity", m."commission_year", m."data_status", m.is_active, m.row_version, m.updated_at
+from aip."pv_array" m
+left join aip."asset" r0 on r0.id = m."asset_id";
+grant select on aip."v_pv_array" to authenticated, service_role;
+drop view if exists aip."v_pv_module_group";
+create view aip."v_pv_module_group" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "asset", m."name", m."block", m."status", m."data_basis", m."reported_quantity", m."commission_year", m."notes", m.is_active, m.row_version, m.updated_at
+from aip."pv_module_group" m
+left join aip."asset" r0 on r0.id = m."asset_id";
+grant select on aip."v_pv_module_group" to authenticated, service_role;
+drop view if exists aip."v_pv_population_segment";
+create view aip."v_pv_population_segment" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "module_group", r1.code as "equipment_model", m."batch_id", m."installation_date", m."balance_as_of", m."opening_quantity", m."evidence_reference", m.is_active, m.row_version, m.updated_at
+from aip."pv_population_segment" m
+left join aip."pv_module_group" r0 on r0.id = m."module_group_id"
+left join aip."equipment_model" r1 on r1.id = m."equipment_model_id";
+grant select on aip."v_pv_population_segment" to authenticated, service_role;
+drop view if exists aip."v_pv_module";
+create view aip."v_pv_module" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "segment", m."serial_number", m."position", m."installed_date", m."removed_date", m."removal_status", m."evidence_reference", m.is_active, m.row_version, m.updated_at
+from aip."pv_module" m
+left join aip."pv_population_segment" r0 on r0.id = m."segment_id";
+grant select on aip."v_pv_module" to authenticated, service_role;
+drop view if exists aip."v_part";
+create view aip."v_part" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m."category", r2.code as "criticality", r3.code as "preferred_supplier", m."unit_cost", m."lead_time_days", m."reorder_point", m."max_level", m."storage_location", m."replenishment_mode", m."shelf_life_control", r11.code as "compatible_model", m."compatibility_notes", m."source_record", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."part" m
+left join aip."ref_severity" r2 on r2.id = m."criticality_id"
+left join aip."party" r3 on r3.id = m."preferred_supplier_id"
+left join aip."equipment_model" r11 on r11.id = m."compatible_model_id";
+grant select on aip."v_part" to authenticated, service_role;
+drop view if exists aip."v_part_stock";
+create view aip."v_part_stock" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "part", r1.code as "site", m."on_hand_qty", m."reserved_qty", m."quality_hold_qty", m."in_transit_qty", m."available_qty", m."reorder_point_qty", m."safety_stock_qty", m."lead_time_days", m."supplier_status", m."erp_source", m."source_record_id", m."snapshot_at", m."opening_qty", m."receipts_30_d", m."issues_30_d", m."closing_qty", m."avg_daily_consumption", m."days_of_inventory", m."as_of_date", r21.code as "stock_status", m.is_active, m.row_version, m.updated_at
+from aip."part_stock" m
+left join aip."part" r0 on r0.id = m."part_id"
+left join aip."site" r1 on r1.id = m."site_id"
+left join aip."ref_status" r21 on r21.id = m."stock_status_id";
+grant select on aip."v_part_stock" to authenticated, service_role;
+drop view if exists aip."v_rate_card";
+create view aip."v_rate_card" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."rate_type", m."subject_type", m."subject", m."component", m."amount", m."per", m."value", r7.code as "unit", m."valid_from", m."valid_to", m."previous_value", m."basis", r12.code as "source_system", m."source_object", m."source_url", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."rate_card" m
+left join aip."ref_unit" r7 on r7.id = m."unit_id"
+left join aip."ref_source_system" r12 on r12.id = m."source_system_id";
+grant select on aip."v_rate_card" to authenticated, service_role;
+drop view if exists aip."v_crew";
+create view aip."v_crew" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."crew_size", m."standard_hours_day", m."ot_multiplier", m."holiday_multiplier", m."night_shift_multiplier", m."weekly_hours_cap", m."ot_approval_required", m."holiday_work_approval", m."rate_effective_from", m.is_active, m.row_version, m.updated_at
+from aip."crew" m
+;
+grant select on aip."v_crew" to authenticated, service_role;
+drop view if exists aip."v_technician";
+create view aip."v_technician" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", r1.code as "crew", r2.code as "home_site", m."role", r4.code as "primary_skill", m."skill_level", m."certification_or_control", m."valid_to", m."standard_hours_day", m."productivity_factor", m."default_shift", m."work_days", m."ot_eligible", m."max_ot_hours_day", m."max_ot_hours_week", m."holiday_work_eligible", m."travel_eligible", m."availability_status", m.is_active, m.row_version, m.updated_at
+from aip."technician" m
+left join aip."crew" r1 on r1.id = m."crew_id"
+left join aip."site" r2 on r2.id = m."home_site_id"
+left join aip."ref_skill" r4 on r4.id = m."primary_skill_id";
+grant select on aip."v_technician" to authenticated, service_role;
+drop view if exists aip."v_resource";
+create view aip."v_resource" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."resource_type", m."name", r2.code as "crew", m."home", m."primary_skill_or_type", m."skill_level", m."certification_or_control", m."valid_to", m."availability", m."capacity_or_payload", m."fuel_type", m."ghg_boundary", m.is_active, m.row_version, m.updated_at
+from aip."resource" m
+left join aip."crew" r2 on r2.id = m."crew_id";
+grant select on aip."v_resource" to authenticated, service_role;
+drop view if exists aip."v_vehicle";
+create view aip."v_vehicle" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "home_site", m."home_pool", m."vehicle_type", m."fuel_type", m."payload_kg", m."availability", m."maintenance_status", m."odometer_km", m."ghg_boundary_status", m."vehicle_use", m."fuel_efficiency_km_per_l", m."last_service_date", m."next_service_due_km", m.is_active, m.row_version, m.updated_at
+from aip."vehicle" m
+left join aip."site" r0 on r0.id = m."home_site_id";
+grant select on aip."v_vehicle" to authenticated, service_role;
+drop view if exists aip."v_tool";
+create view aip."v_tool" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m."tool_type", m."home_region", m."calibration_status", m."calibration_expiry", m."availability", m."applicable_asset_class", m."control_requirement", m."safety_category", m."storage_location", m.is_active, m.row_version, m.updated_at
+from aip."tool" m
+;
+grant select on aip."v_tool" to authenticated, service_role;
+drop view if exists aip."v_system";
+create view aip."v_system" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m."system_type", m."connection_method", m."environment", r4.code as "status", m.is_active, m.row_version, m.updated_at
+from aip."system" m
+left join aip."ref_status" r4 on r4.id = m."status_id";
+grant select on aip."v_system" to authenticated, service_role;
+drop view if exists aip."v_connector";
+create view aip."v_connector" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."domain", r1.code as "source_system", m."source_name", m."connector_type", m."content", m."target", m."pattern", m."status", m."cadence", m."authority", m."control", m."lineage_key", m.is_active, m.row_version, m.updated_at
+from aip."connector" m
+left join aip."ref_source_system" r1 on r1.id = m."source_system_id";
+grant select on aip."v_connector" to authenticated, service_role;
+drop view if exists aip."v_interface";
+create view aip."v_interface" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", r1.code as "source_system", m."target_system", m."direction", m."data_object", m."frequency", m."last_validated", m."validation_rule", r8.code as "status", m.is_active, m.row_version, m.updated_at
+from aip."interface" m
+left join aip."ref_source_system" r1 on r1.id = m."source_system_id"
+left join aip."ref_status" r8 on r8.id = m."status_id";
+grant select on aip."v_interface" to authenticated, service_role;
+drop view if exists aip."v_source_document";
+create view aip."v_source_document" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."title", m."source_type", m."authority", m."country", m."region", m."version", m."published", m."effective_from", m."effective_to", m."status", m."use_in_model", m."notes", m."url", m.is_active, m.row_version, m.updated_at
+from aip."source_document" m
+;
+grant select on aip."v_source_document" to authenticated, service_role;
+drop view if exists aip."v_metric";
+create view aip."v_metric" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", r1.code as "unit", m."definition", m."formula", m."asset_relevance", m."applicable_asset_scope", m."frequency", m."aip_applicability", m.is_active, m.row_version, m.updated_at
+from aip."metric" m
+left join aip."ref_unit" r1 on r1.id = m."unit_id";
+grant select on aip."v_metric" to authenticated, service_role;
+drop view if exists aip."v_metric_framework_map";
+create view aip."v_metric_framework_map" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "metric", r1.code as "framework", m."disclosure_id", m."applicable", m."requirement_or_link", m."version", m."effective_from", m."mapping_status", m.is_active, m.row_version, m.updated_at
+from aip."metric_framework_map" m
+left join aip."metric" r0 on r0.id = m."metric_id"
+left join aip."ref_framework" r1 on r1.id = m."framework_id";
+grant select on aip."v_metric_framework_map" to authenticated, service_role;
+drop view if exists aip."v_ml_model";
+create view aip."v_ml_model" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m."model_type", m."version", m."owner_foundation", m."training_start", m."training_end", m."training_record_count", m."feature_set", m."algorithm", m."validation_method", m."primary_metric", m."validation_result", m."champion_challenger", m."approval_status", m."last_trained", m."next_review", m."production_note", m."engine", m.is_active, m.row_version, m.updated_at
+from aip."ml_model" m
+;
+grant select on aip."v_ml_model" to authenticated, service_role;
+drop view if exists aip."v_warranty_contract";
+create view aip."v_warranty_contract" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "asset", r1.code as "provider", r2.code as "equipment_model", m."batch_id", m."warranty_type", m."coverage_type", m."start_date", m."end_date", m."claim_notice_days", m."remaining_coverage_value", m."rca_required", m."work_order_required", m."invoice_required", r13.code as "status", m."performance_guarantee", m."retention_pct_year10", m."retention_pct_eol", m."cycle_limit", m."throughput_limit_mwh", m."guaranteed_rte_pct", m."conditions", m."data_basis", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."warranty_contract" m
+left join aip."asset" r0 on r0.id = m."asset_id"
+left join aip."party" r1 on r1.id = m."provider_id"
+left join aip."equipment_model" r2 on r2.id = m."equipment_model_id"
+left join aip."ref_status" r13 on r13.id = m."status_id";
+grant select on aip."v_warranty_contract" to authenticated, service_role;
+drop view if exists aip."v_offtake_contract";
+create view aip."v_offtake_contract" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "site", r1.code as "asset", r2.code as "offtaker", m."contract_type", m."commercial_model", m."tariff_per_kwh", m."charging_tariff_per_kwh", m."capacity_charge_per_mw_month", m."vgf_per_mwh", m."contracted_capacity_mw", m."contracted_energy_mwh", m."start_date", m."end_date", m."tenure_years", m."availability_obligation_pct", m."min_rte_pct", m."cycles_per_day", m."obligations", m."status", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."offtake_contract" m
+left join aip."site" r0 on r0.id = m."site_id"
+left join aip."asset" r1 on r1.id = m."asset_id"
+left join aip."party" r2 on r2.id = m."offtaker_id";
+grant select on aip."v_offtake_contract" to authenticated, service_role;
+drop view if exists aip."v_intervention";
+create view aip."v_intervention" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."work_order_code", r1.code as "site", r2.code as "asset", r3.code as "maintenance_type", m."description", r5.code as "priority", m."risk_score_pct", m."value_exposure", m."planning_as_of", m."required_by", m."planned_start", m."planned_finish", m."duration_hours", r13.code as "required_skill", m."required_crew_qty", r15.code as "required_part", m."required_part_qty", r17.code as "required_tool", m."vehicle_class", m."permit_required", m."outage_required", r21.code as "planning_status", m."actual_start", m."actual_completion", m."actual_duration_hours", m."erp_execution_status", m."calculation_basis", m."source_record", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."intervention" m
+left join aip."site" r1 on r1.id = m."site_id"
+left join aip."asset" r2 on r2.id = m."asset_id"
+left join aip."ref_maintenance_type" r3 on r3.id = m."maintenance_type_id"
+left join aip."ref_priority" r5 on r5.id = m."priority_id"
+left join aip."ref_skill" r13 on r13.id = m."required_skill_id"
+left join aip."part" r15 on r15.id = m."required_part_id"
+left join aip."tool" r17 on r17.id = m."required_tool_id"
+left join aip."ref_status" r21 on r21.id = m."planning_status_id";
+grant select on aip."v_intervention" to authenticated, service_role;
+drop view if exists aip."v_scenario";
+create view aip."v_scenario" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."name", m."scenario_type", m."description", m."crew_capacity_multiplier", m."cost_weight_multiplier", m."weather_threshold_pct", m."cost_cap", r7.code as "status", m."created_by", m."source_record", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."scenario" m
+left join aip."ref_status" r7 on r7.id = m."status_id";
+grant select on aip."v_scenario" to authenticated, service_role;
+drop view if exists aip."v_scenario_intervention";
+create view aip."v_scenario_intervention" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, r0.code as "scenario", r1.code as "intervention", m."criticality_score", m."value_score", m."readiness_pct", m."estimated_cost", m."optimization_score", m."rank", m."proposed_start", m."proposed_end", m."calculation_basis", m.currency, m.is_active, m.row_version, m.updated_at
+from aip."scenario_intervention" m
+left join aip."scenario" r0 on r0.id = m."scenario_id"
+left join aip."intervention" r1 on r1.id = m."intervention_id";
+grant select on aip."v_scenario_intervention" to authenticated, service_role;
+drop view if exists aip."v_hse_incident";
+create view aip."v_hse_incident" with (security_invoker = true) as
+select m.id, m.tenant_id, m.code, m."occurred_on", r1.code as "site", r2.code as "asset", m."work_order_code", m."activity", m."worker_type", r6.code as "incident_type", r7.code as "severity", r8.code as "status", r9.code as "source_system", m."data_status", m."asset_reference_basis", m.is_active, m.row_version, m.updated_at
+from aip."hse_incident" m
+left join aip."site" r1 on r1.id = m."site_id"
+left join aip."asset" r2 on r2.id = m."asset_id"
+left join aip."ref_event_type" r6 on r6.id = m."incident_type_id"
+left join aip."ref_severity" r7 on r7.id = m."severity_id"
+left join aip."ref_status" r8 on r8.id = m."status_id"
+left join aip."ref_source_system" r9 on r9.id = m."source_system_id";
+grant select on aip."v_hse_incident" to authenticated, service_role;

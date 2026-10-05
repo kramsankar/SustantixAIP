@@ -5,6 +5,7 @@
  *   supabase/migrations/*_aip_data_model.sql one RLS-protected table per sheet
  *   supabase/migrations/*_aip_reference.sql  controlled vocabulary (schema/reference/vocabulary.json)
  *   supabase/migrations/*_aip_masters.sql    phase 2 masters and consolidated registers (src/masters.ts)
+ *   supabase/migrations/*_aip_analytics.sql  model runs and outputs of the AIP analytics engines
  *   powerplatform/schema/*.json              Dataverse metadata payloads
  * Usage: tsx src/cli.ts [workbook.xlsx]
  */
@@ -17,6 +18,7 @@ import { dataModelSql, platformSql } from "./postgres.ts";
 import { correctionLogPlan, correctionLogSql, applyCorrections, loadCorrections } from "./corrections.ts";
 import { loadVocabulary, referencePlan, referenceSql, validateVocabulary } from "./reference.ts";
 import { masterPlan, masterRelationships } from "./master-dataverse.ts";
+import { analyticsPlan, analyticsSql } from "./analytics-sql.ts";
 import { mastersSql } from "./master-sql.ts";
 import { buildMasters, masterDefs } from "./masters.ts";
 import { readSheets } from "./rows.ts";
@@ -43,11 +45,12 @@ writeFileSync(join(root, "supabase/migrations/20261001000200_aip_data_correction
 const built = buildMasters(reg, readSheets(readFileSync(workbook)), vocab, loadCorrections(root));
 if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
 writeFileSync(join(root, "supabase/migrations/20261005000100_aip_masters.sql"), mastersSql(masterDefs(reg), reg.defaultCurrency));
+writeFileSync(join(root, "supabase/migrations/20261005000200_aip_analytics.sql"), analyticsSql());
 
 mkdirSync(join(root, "powerplatform/schema"), { recursive: true });
 writeFileSync(join(root, "powerplatform/schema/platform-tables.json"), JSON.stringify(platformPlan(), null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/reference-tables.json"), JSON.stringify([...referencePlan(vocab), correctionLogPlan()], null, 1) + "\n");
-writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: masterPlan(masterDefs(reg)), relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/data-model-tables.json"), JSON.stringify(dataModelPlan(reg).map(({ source, ...p }) => ({ ...p, sheet: source?.sheet })), null, 1) + "\n");
 
 const cols = reg.tables.reduce((n, t) => n + t.columns.length, 0);

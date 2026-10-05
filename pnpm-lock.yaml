@@ -41,6 +41,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.117.1
         version: 2.117.1
+      '@sustantix/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@sustantix/license':
         specifier: workspace:*
         version: link:../../packages/license
@@ -72,6 +75,24 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.0
         version: 19.3.0(@types/react@19.3.0)
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.4)(happy-dom@15.11.7)
+
+  packages/analytics:
+    devDependencies:
+      '@sustantix/schema':
+        specifier: workspace:*
+        version: link:../../tools/schema
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.4
+      tsx:
+        specifier: ^4.19.2
+        version: 4.23.15
       typescript:
         specifier: ^5.6.3
         version: 5.9.3

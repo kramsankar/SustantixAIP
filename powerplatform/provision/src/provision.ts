@@ -1,4 +1,5 @@
 import {
+  analyticsPlan,
   applyCorrections,
   buildMasters,
   correctionLogPlan,
@@ -89,7 +90,7 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const platform = platformPlan();
   const model = o.dataModel ? dataModelPlan(o.registry) : [];
   const reference = [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...(o.corrections ? [correctionLogPlan()] : [])];
-  const masters = o.masters ? masterPlan(masterDefs(o.registry)) : [];
+  const masters = o.masters ? [...masterPlan(masterDefs(o.registry)), ...analyticsPlan()] : [];
   for (const p of [...platform, ...reference, ...masters, ...model]) await ensureTable(api, p, log);
   let relationshipsCreated = 0;
   // Lookups after every table exists: masters reference each other and the reference tables.

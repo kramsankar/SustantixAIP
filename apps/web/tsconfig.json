@@ -11,6 +11,7 @@
     "sourceMap": false,
     "incremental": true,
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "types": ["node"],
     "baseUrl": ".",
     "paths": { "@/*": ["./*"] },

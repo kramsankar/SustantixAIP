@@ -42,6 +42,8 @@ const REVALIDATE = [{ key: "Cache-Control", value: "public, max-age=0, must-reva
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // The analytics engines ship as TypeScript source from the workspace.
+  transpilePackages: ["@sustantix/analytics"],
   poweredByHeader: false,
   // Trace workspace packages (pnpm symlinks) from the monorepo root.
   outputFileTracingRoot: join(here, "../.."),

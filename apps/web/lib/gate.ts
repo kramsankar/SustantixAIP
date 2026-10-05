@@ -22,6 +22,8 @@ export function requirementFor(pathname: string, method: string): Requirement {
   if (OPEN_ENDPOINTS.has(endpoint)) return "open";
   const m = method.toUpperCase();
   if (endpoint === "state" && (m === "PUT" || m === "DELETE" || m === "POST" || m === "PATCH")) return "writable";
+  // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
+  if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals")) && m !== "GET" && m !== "HEAD") return "writable";
   return "readable";
 }
 

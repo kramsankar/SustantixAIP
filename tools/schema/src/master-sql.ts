@@ -164,6 +164,7 @@ grant all on aip.master_lineage to service_role;
   }
   out.push("", "-- Foreign keys (after every table exists).");
   for (const d of ordered) for (const c of d.columns.filter((x) => x.kind === "fk")) out.push(`select aip.ensure_master_fk(${lit(d.name)}, ${lit(dbColumn(c))}, ${lit(c.fk!)}, ${c.unique ? "true" : "false"});`);
+  out.push("", masterViewsSql(ordered));
   return out.join("\n") + "\n";
 }
 
@@ -227,4 +228,32 @@ export function masterSeedSql(masters: BuiltMaster[], tenantId: string, currency
     out.push(`insert into aip.master_lineage(tenant_id, master, code, source_table, source_key, role) values\n${lineage.slice(i, i + chunk * 2).join(",\n")}\non conflict do nothing;`);
   }
   return out.join("\n") + "\n";
+}
+
+/**
+ * One read view per master (aip.v_<master>) with every reference shown as the target's business code, under the
+ * master column's own name. security_invoker makes the caller's row-level security apply; grids, analytics and
+ * agents read these instead of joining ids themselves.
+ */
+export function masterViewsSql(defs: MasterDef[]): string {
+  const out = ["-- Code views: references as business codes (security_invoker, so RLS applies to the caller)."];
+  for (const d of defs) {
+    const joins: string[] = [];
+    const cols = ["m.id", "m.tenant_id", "m.code"];
+    d.columns.forEach((c, i) => {
+      if (c.kind === "fk" || c.kind === "ref") {
+        const target = c.kind === "fk" ? c.fk! : `ref_${c.ref}`;
+        joins.push(`left join aip.${q(target)} r${i} on r${i}.id = m.${q(dbColumn(c))}`);
+        cols.push(`r${i}.code as ${q(c.name)}`);
+      } else cols.push(`m.${q(c.name)}`);
+    });
+    if (d.columns.some((c) => c.kind === "money")) cols.push("m.currency");
+    cols.push("m.is_active", "m.row_version", "m.updated_at");
+    out.push(
+      `drop view if exists aip.${q(`v_${d.name}`)};`,
+      `create view aip.${q(`v_${d.name}`)} with (security_invoker = true) as\nselect ${cols.join(", ")}\nfrom aip.${q(d.name)} m\n${joins.join("\n")};`,
+      `grant select on aip.${q(`v_${d.name}`)} to authenticated, service_role;`,
+    );
+  }
+  return out.join("\n");
 }

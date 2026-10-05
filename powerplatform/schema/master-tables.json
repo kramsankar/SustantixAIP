@@ -18485,6 +18485,936 @@
      ]
     }
    ]
+  },
+  {
+   "logicalName": "sus_modelrun",
+   "entity": {
+    "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
+    "SchemaName": "sus_modelrun",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Model run",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "DisplayCollectionName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Model runs",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "One execution of an AIP analytical engine.",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "OwnershipType": "OrganizationOwned",
+    "IsActivity": false,
+    "HasActivities": false,
+    "HasNotes": false,
+    "ChangeTrackingEnabled": true,
+    "Attributes": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "SchemaName": "sus_name",
+      "IsPrimaryName": true,
+      "AttributeType": "String",
+      "AttributeTypeName": {
+       "Value": "StringType"
+      },
+      "MaxLength": 400,
+      "FormatName": {
+       "Value": "Text"
+      },
+      "RequiredLevel": {
+       "Value": "ApplicationRequired",
+       "CanBeChanged": true,
+       "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+      },
+      "DisplayName": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Run code",
+         "LanguageCode": 1033
+        }
+       ]
+      },
+      "Description": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Run code",
+         "LanguageCode": 1033
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "attributes": [
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_model",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Model",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Model",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 100,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_status",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Status",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Status",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 20,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+     "SchemaName": "sus_asof",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "As of",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "As of",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "DateTime",
+     "AttributeTypeName": {
+      "Value": "DateTimeType"
+     },
+     "Format": "DateAndTime",
+     "DateTimeBehavior": {
+      "Value": "TimeZoneIndependent"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+     "SchemaName": "sus_finishedat",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Finished",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Finished",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "DateTime",
+     "AttributeTypeName": {
+      "Value": "DateTimeType"
+     },
+     "Format": "DateAndTime",
+     "DateTimeBehavior": {
+      "Value": "TimeZoneIndependent"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+     "SchemaName": "sus_metrics",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Metrics (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Metrics (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Memo",
+     "AttributeTypeName": {
+      "Value": "MemoType"
+     },
+     "Format": "TextArea",
+     "MaxLength": 100000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+     "SchemaName": "sus_params",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Parameters (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Parameters (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Memo",
+     "AttributeTypeName": {
+      "Value": "MemoType"
+     },
+     "Format": "TextArea",
+     "MaxLength": 20000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+     "SchemaName": "sus_message",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Message",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Message",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Memo",
+     "AttributeTypeName": {
+      "Value": "MemoType"
+     },
+     "Format": "TextArea",
+     "MaxLength": 4000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+     "SchemaName": "sus_outputcount",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Outputs",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Outputs",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Integer",
+     "AttributeTypeName": {
+      "Value": "IntegerType"
+     },
+     "Format": "None",
+     "MinValue": -2147483648,
+     "MaxValue": 2147483647
+    }
+   ],
+   "keys": [
+    {
+     "SchemaName": "sus_modelrun_bk",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Run code",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "KeyAttributes": [
+      "sus_name"
+     ]
+    }
+   ]
+  },
+  {
+   "logicalName": "sus_modeloutput",
+   "entity": {
+    "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
+    "SchemaName": "sus_modeloutput",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Model output",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "DisplayCollectionName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Model outputs",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "A result of a model run: subject, measure, value or quantiles.",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "OwnershipType": "OrganizationOwned",
+    "IsActivity": false,
+    "HasActivities": false,
+    "HasNotes": false,
+    "ChangeTrackingEnabled": true,
+    "Attributes": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "SchemaName": "sus_name",
+      "IsPrimaryName": true,
+      "AttributeType": "String",
+      "AttributeTypeName": {
+       "Value": "StringType"
+      },
+      "MaxLength": 400,
+      "FormatName": {
+       "Value": "Text"
+      },
+      "RequiredLevel": {
+       "Value": "ApplicationRequired",
+       "CanBeChanged": true,
+       "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+      },
+      "DisplayName": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Output key",
+         "LanguageCode": 1033
+        }
+       ]
+      },
+      "Description": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Output key",
+         "LanguageCode": 1033
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "attributes": [
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_run",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Run code",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Run code",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 200,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_subjecttype",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Subject type",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Subject type",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 20,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_subjectcode",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Subject",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Subject",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 200,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_measure",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Measure",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Measure",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 100,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata",
+     "SchemaName": "sus_at",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "At",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "At",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "DateTime",
+     "AttributeTypeName": {
+      "Value": "DateTimeType"
+     },
+     "Format": "DateAndTime",
+     "DateTimeBehavior": {
+      "Value": "TimeZoneIndependent"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+     "SchemaName": "sus_horizonhours",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Horizon (h)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Horizon (h)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Decimal",
+     "AttributeTypeName": {
+      "Value": "DecimalType"
+     },
+     "Precision": 2,
+     "MinValue": -100000000000,
+     "MaxValue": 100000000000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+     "SchemaName": "sus_value",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Value",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Value",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Decimal",
+     "AttributeTypeName": {
+      "Value": "DecimalType"
+     },
+     "Precision": 6,
+     "MinValue": -100000000000,
+     "MaxValue": 100000000000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+     "SchemaName": "sus_q10",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q10",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q10",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Decimal",
+     "AttributeTypeName": {
+      "Value": "DecimalType"
+     },
+     "Precision": 6,
+     "MinValue": -100000000000,
+     "MaxValue": 100000000000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+     "SchemaName": "sus_q50",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q50",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q50",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Decimal",
+     "AttributeTypeName": {
+      "Value": "DecimalType"
+     },
+     "Precision": 6,
+     "MinValue": -100000000000,
+     "MaxValue": 100000000000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata",
+     "SchemaName": "sus_q90",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q90",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "q90",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Decimal",
+     "AttributeTypeName": {
+      "Value": "DecimalType"
+     },
+     "Precision": 6,
+     "MinValue": -100000000000,
+     "MaxValue": 100000000000
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_unit",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Unit",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Unit",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 40,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+     "SchemaName": "sus_detail",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Detail (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Detail (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Memo",
+     "AttributeTypeName": {
+      "Value": "MemoType"
+     },
+     "Format": "TextArea",
+     "MaxLength": 20000
+    }
+   ],
+   "keys": [
+    {
+     "SchemaName": "sus_modeloutput_bk",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Output key",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "KeyAttributes": [
+      "sus_name"
+     ]
+    }
+   ]
   }
  ],
  "relationships": [

@@ -1,0 +1,20 @@
+{
+  "name": "@sustantix/analytics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "backtest": "tsx src/cli/backtest.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@sustantix/schema": "workspace:*",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
