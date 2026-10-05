@@ -1,0 +1,30 @@
+{
+  "name": "@sustantix/grid",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Sustantix Enterprise Grid: one grid component and one contract for every governed data surface (confidential, proprietary).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./contract": "./src/contract.ts"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:browser": "node build.mjs && node test/browser.mjs"
+  },
+  "dependencies": {
+    "@tanstack/table-core": "^8.21.3",
+    "@tanstack/virtual-core": "^3.13.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "esbuild": "^0.24.0",
+    "happy-dom": "^15.11.7",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8",
+    "playwright": "^1.49.0"
+  }
+}

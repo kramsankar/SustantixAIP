@@ -43,7 +43,7 @@ const REVALIDATE = [{ key: "Cache-Control", value: "public, max-age=0, must-reva
 const config: NextConfig = {
   reactStrictMode: true,
   // The analytics engines ship as TypeScript source from the workspace.
-  transpilePackages: ["@sustantix/analytics", "@sustantix/agents", "@sustantix/schema"],
+  transpilePackages: ["@sustantix/analytics", "@sustantix/agents", "@sustantix/schema", "@sustantix/grid"],
   poweredByHeader: false,
   // Trace workspace packages (pnpm symlinks) from the monorepo root.
   outputFileTracingRoot: join(here, "../.."),
@@ -61,6 +61,8 @@ const config: NextConfig = {
     return [
       { source: "/", destination: "/aip/index.html", permanent: false },
       { source: "/aip", destination: "/aip/index.html", permanent: false },
+      // The Sustantix Enterprise Grid workspace (phase 4).
+      { source: "/grids", destination: "/aip/grid/index.html", permanent: false },
     ];
   },
   async headers() {
@@ -72,6 +74,7 @@ const config: NextConfig = {
       { source: "/aip/vendor/:path*", headers: IMMUTABLE },
       // Not content-addressed: revalidate on every load so a deploy is picked up immediately.
       { source: "/aip/host/:path*", headers: REVALIDATE },
+      { source: "/aip/grid/:path*", headers: REVALIDATE },
       { source: "/aip/build-info.json", headers: REVALIDATE },
       { source: "/aip/index.html", headers: NO_STORE },
       { source: "/api/:path*", headers: NO_STORE },

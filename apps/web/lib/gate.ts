@@ -28,6 +28,8 @@ export function requirementFor(path: string, method: string): Requirement {
   if (endpoint === "state" && (m === "PUT" || m === "DELETE" || m === "POST" || m === "PATCH")) return "writable";
   // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
   if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals")) && m !== "GET" && m !== "HEAD") return "writable";
+  // Change sets and saved views write; grid reads and exports (POST bodies carrying a query) only read.
+  if ((endpoint === "changes" || /^grid\/[^/]+\/views(\/|$)/.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
   return "readable";
 }
 

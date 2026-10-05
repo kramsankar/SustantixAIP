@@ -57,6 +57,26 @@ missing or invalid, the API answers `503 server_misconfigured` and the log names
   conversation turn; `GET /api/aip/agents/proposals` and `POST /api/aip/agents/proposals/{code}` (approve or reject)
   handle what agents propose. The runtime's Assistant screen calls `/api/assistant`, which the AIP Copilot answers.
 
+## Enterprise Grid and change sets (phase 4)
+
+The Sustantix Enterprise Grid workspace is served at `/grids` (static bundle `public/aip/grid/`, built from
+`packages/grid`). It calls these endpoints with the signed-in user's session; row-level security decides every row:
+
+| Endpoint | Purpose | License gate |
+| --- | --- | --- |
+| `GET /api/aip/grid` | The grid catalogue, editability narrowed to the caller's role | readable |
+| `POST /api/aip/grid/{id}/rows` | One page: `{offset, limit, sort, filters, search}`, evaluated in the database | readable |
+| `POST /api/aip/grid/{id}/export` | `{format, query}`: every filtered row (≤ 50,000), audited | readable |
+| `GET /api/aip/grid/options?kind=ref\|fk&name=&scope=&q=` | Dropdown values for an editable cell | readable |
+| `GET / POST /api/aip/grid/{id}/views`, `PUT / DELETE …/views/{view}` | Saved views (admins share) | writes: `full` |
+| `POST /api/aip/changes` | One change set `{id, source, items[]}`, applied atomically | `full` |
+
+A change set item is `{entity, op: insert|update|delete, code, baseVersion, values}`. References travel as business
+codes, amounts as decimal strings. A stale `baseVersion` answers `409 conflict` with the current row; a repeated `id`
+returns the stored result without applying twice. Viewers cannot write; planners write registers and transactions;
+administrators also write masters; time series are never written cell by cell. The Reference Data grid reads
+`aip.v_reference`; no extra schema needs exposing.
+
 ## Deploying to Vercel
 
 1. **Project**: import the repository and set **Root Directory** to `apps/web`. `vercel.json` sets the framework

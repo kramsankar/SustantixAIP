@@ -6,6 +6,7 @@
  *   supabase/migrations/*_aip_reference.sql  controlled vocabulary (schema/reference/vocabulary.json)
  *   supabase/migrations/*_aip_masters.sql    phase 2 masters and consolidated registers (src/masters.ts)
  *   supabase/migrations/*_aip_analytics.sql  model runs and outputs of the AIP analytics engines
+ *   supabase/migrations/*_aip_changes.sql    phase 4 change sets, saved grid views, audited exports
  *   powerplatform/schema/*.json              Dataverse metadata payloads
  * Usage: tsx src/cli.ts [workbook.xlsx]
  */
@@ -23,6 +24,7 @@ import { analyticsPlan, analyticsSql } from "./analytics-sql.ts";
 import { mastersSql } from "./master-sql.ts";
 import { buildMasters, masterDefs, masterManifest } from "./masters.ts";
 import { compatSql, compatTestSql, rebuildSheets } from "./compat.ts";
+import { changeModel, changesSql } from "./changes-sql.ts";
 import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
 
@@ -57,6 +59,9 @@ writeFileSync(join(root, "supabase/migrations/20261006000200_aip_compat.sql"), c
 writeFileSync(join(root, "schema/aip-compat.json"), JSON.stringify({ version: 1, sheets: SHEET_SPECS.map((x) => x.sheet) }, null, 1) + "\n");
 const trips = rebuildSheets(reg, readSheets(readFileSync(workbook)), built, vocab, loadCorrections(root));
 writeFileSync(join(root, "supabase/tests/95_compat_equivalence.sql"), compatTestSql(reg, trips, "00000000-0000-0000-0000-0000000000c1"));
+// Phase 4: the change-set write path over every master, register and transaction, and the model the hosts validate against.
+writeFileSync(join(root, "supabase/migrations/20261007000100_aip_changes.sql"), changesSql([...masterDefs(reg), ...transactionDefs(reg)], vocab));
+writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
 

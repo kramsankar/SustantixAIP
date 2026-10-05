@@ -29,6 +29,7 @@ jobs:
           pnpm --filter @sustantix/schema typecheck
           pnpm --filter @sustantix/analytics typecheck
           pnpm --filter @sustantix/agents typecheck
+          pnpm --filter @sustantix/grid typecheck
           pnpm --filter @sustantix/pp-provision typecheck
           pnpm --filter @sustantix/license-cli typecheck
           pnpm --filter @sustantix/aip-web typecheck
@@ -39,6 +40,7 @@ jobs:
           pnpm --filter @sustantix/schema test
           pnpm --filter @sustantix/analytics test
           pnpm --filter @sustantix/agents test
+          pnpm --filter @sustantix/grid test
           pnpm --filter @sustantix/pp-provision test
           pnpm --filter @sustantix/aip-powerapp test
           pnpm --filter @sustantix/aip-web test
@@ -105,7 +107,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Apply migrations and prove tenant isolation
         run: |
-          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql; do
+          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql supabase/tests/97_changes.sql; do
             psql -v ON_ERROR_STOP=1 -q -f "$f"
           done
       - name: Seed loads idempotently
@@ -138,6 +140,10 @@ jobs:
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261005000300_aip_agents.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261006000100_aip_transactions.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261006000200_aip_compat.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261007000100_aip_changes.sql
+          # Change sets, saved views and their audit trail survive a re-apply.
+          test "$(psql -At -c "select count(*) from aip.change_set")" = "4"
+          test "$(psql -At -c "select count(*) from aip.grid_view")" = "2"
 
   parity:
     name: reference screen parity + license gate
@@ -158,6 +164,8 @@ jobs:
         run: pnpm --filter @sustantix/aip-runtime test:governed
         env:
           AIP_PARITY_OUT: ${{ runner.temp }}/governed
+      - name: Enterprise Grid in a real browser (workspace bundle against a mocked grid API)
+        run: pnpm --filter @sustantix/grid test:browser
       - if: failure()
         uses: actions/upload-artifact@v4
         with:

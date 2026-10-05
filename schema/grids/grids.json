@@ -1,0 +1,203 @@
+{
+ "version": 1,
+ "description": "Sustantix Enterprise Grid catalogue. Each grid names its governed source and the columns it shows, in order. Column metadata (type, vocabulary, references, editability) comes from schema/aip-change-model.json for entity sources and from schema/aip-data-model.json for sheet sources. Confidential — Sustantix.",
+ "grids": [
+  {
+   "id": "work-orders",
+   "title": "Work orders",
+   "screen": "Work Order Intelligence",
+   "source": { "kind": "entity", "name": "work_order" },
+   "columns": ["code", "status", "priority", "maintenance_type", "site", "asset", "description", "created_date", "sla_due", "sla_hours", "sla_result", "technician", "assigned_crew", "required_part", "required_part_qty", "estimated_cost", "currency", "pm_due_date"],
+   "defaultSort": [{ "field": "created_date", "dir": "desc" }],
+   "bulkEdit": ["status", "priority", "technician", "assigned_crew"]
+  },
+  {
+   "id": "action-priority",
+   "title": "Portfolio action priority",
+   "screen": "Portfolio Action Prioritization",
+   "source": { "kind": "view", "name": "v_model_output_latest", "fixed": [{ "field": "model", "op": "eq", "value": "AIP-RISK-1" }] },
+   "columns": [
+    { "field": "subject_type", "label": "Subject type", "kind": "text" },
+    { "field": "subject_code", "label": "Subject", "kind": "text" },
+    { "field": "measure", "label": "Measure", "kind": "text" },
+    { "field": "value", "label": "Score", "kind": "decimal" },
+    { "field": "q10", "label": "P10", "kind": "decimal" },
+    { "field": "q90", "label": "P90", "kind": "decimal" },
+    { "field": "unit", "label": "Unit", "kind": "text" },
+    { "field": "as_of", "label": "As of", "kind": "datetime" },
+    { "field": "run", "label": "Model run", "kind": "text" }
+   ],
+   "key": "subject_code",
+   "defaultSort": [{ "field": "value", "dir": "desc" }],
+   "groupBy": ["subject_type"]
+  },
+  {
+   "id": "esg-activity",
+   "title": "ESG activity",
+   "screen": "Sustainability Performance",
+   "source": { "kind": "entity", "name": "ghg_activity" },
+   "columns": ["code", "period", "site", "asset", "ghg_scope", "emission_source", "activity_value", "activity_unit", "factor_id", "factor_value", "factor_unit", "source_system", "data_status"],
+   "defaultSort": [{ "field": "period", "dir": "desc" }],
+   "groupBy": ["ghg_scope"]
+  },
+  {
+   "id": "pm-plans",
+   "title": "Preventive maintenance plans",
+   "screen": "Maintenance Strategy",
+   "source": { "kind": "entity", "name": "pm_plan" },
+   "columns": ["code", "asset", "site", "task", "frequency_days", "last_done", "next_due", "overdue_days", "standard_labour_hours", "primary_part", "required_skill"],
+   "defaultSort": [{ "field": "next_due", "dir": "asc" }]
+  },
+  {
+   "id": "recommendations",
+   "title": "Recommendations",
+   "screen": "Decision Intelligence",
+   "source": { "kind": "entity", "name": "recommendation" },
+   "columns": ["code", "status", "asset", "site", "alert", "recommended_action", "risk_score", "rul_days", "confidence_pct", "cost_now", "cost_if_deferred", "cost_avoided", "currency", "rationale"],
+   "defaultSort": [{ "field": "risk_score", "dir": "desc" }],
+   "bulkEdit": ["status"]
+  },
+  {
+   "id": "interventions",
+   "title": "Interventions",
+   "screen": "Planning & Optimization",
+   "source": { "kind": "entity", "name": "intervention" },
+   "columns": ["code", "planning_status", "priority", "site", "asset", "maintenance_type", "description", "risk_score_pct", "value_exposure", "currency", "required_by", "planned_start", "planned_finish", "duration_hours", "required_skill", "required_crew_qty", "required_part", "permit_required", "outage_required"],
+   "defaultSort": [{ "field": "required_by", "dir": "asc" }],
+   "bulkEdit": ["planning_status", "planned_start", "planned_finish"]
+  },
+  {
+   "id": "sites",
+   "title": "Sites",
+   "screen": "Portfolio Intelligence",
+   "source": { "kind": "entity", "name": "site" },
+   "columns": ["code", "name", "region", "timezone", "capacity_mw", "inverter_count", "string_count", "commission_year", "grid_connection_k_v", "grid_connection_type", "export_limit_mw"],
+   "defaultSort": [{ "field": "code", "dir": "asc" }]
+  },
+  {
+   "id": "ppa-settlements",
+   "title": "PPA settlements",
+   "screen": "Revenue & Commercial Intelligence",
+   "source": { "kind": "entity", "name": "ppa_settlement" },
+   "columns": ["code", "contract", "site", "scheduled_energy_mwh", "delivered_energy_mwh", "deemed_generation_mwh", "shortfall_energy_mwh", "availability_penalty", "curtailment_compensation", "invoice_amount", "amount_received", "receivable_balance", "currency", "days_outstanding"],
+   "defaultSort": [{ "field": "receivable_balance", "dir": "desc" }]
+  },
+  {
+   "id": "offtake-contracts",
+   "title": "Offtake contracts",
+   "screen": "Revenue & Commercial Intelligence",
+   "source": { "kind": "entity", "name": "offtake_contract" },
+   "columns": ["code", "site", "asset", "offtaker", "contract_type", "commercial_model", "tariff_per_kwh", "contracted_capacity_mw", "start_date", "end_date", "tenure_years", "availability_obligation_pct", "currency", "status"],
+   "defaultSort": [{ "field": "end_date", "dir": "asc" }]
+  },
+  {
+   "id": "integration-interfaces",
+   "title": "Integration interfaces",
+   "screen": "Enterprise Integration",
+   "source": { "kind": "entity", "name": "interface" },
+   "columns": ["code", "name", "source_system", "target_system", "direction", "data_object", "frequency", "last_validated", "validation_rule", "status"],
+   "defaultSort": [{ "field": "code", "dir": "asc" }]
+  },
+  {
+   "id": "ai-guardrails",
+   "title": "AI guardrail policies",
+   "screen": "AI Guardrails",
+   "source": { "kind": "sheet", "name": "ai_guardrail_policies" },
+   "columns": ["control_id", "control", "domain", "initial_state", "target_state", "evidence_source", "runtime_behaviour", "gap_or_qualification", "dynamic_status_rule"],
+   "defaultSort": [{ "field": "control_id", "dir": "asc" }]
+  },
+  {
+   "id": "data-quality-rules",
+   "title": "Data quality rules",
+   "screen": "Data Quality & Observability",
+   "source": { "kind": "sheet", "name": "data_quality_checks" },
+   "columns": ["rule_id", "check", "domain", "population", "required_fields", "rule_type", "threshold", "kpi_use", "runtime_basis", "governance_status"],
+   "defaultSort": [{ "field": "rule_id", "dir": "asc" }]
+  },
+  {
+   "id": "twin-parameters",
+   "title": "Twin engineering parameters",
+   "screen": "Twin Model & Physics",
+   "source": { "kind": "sheet", "name": "twin_engineering_parameters" },
+   "columns": ["plant_id", "plant_name", "state", "ac_capacity_mw", "dc_ac_ratio", "module_temp_coeff_pct_per_c", "noct_c", "base_dc_loss_pct", "base_ac_loss_pct", "transformer_efficiency_pct", "inverter_efficiency_pct", "annual_degradation_pct"],
+   "defaultSort": [{ "field": "plant_id", "dir": "asc" }]
+  },
+  {
+   "id": "assets",
+   "title": "Asset hierarchy",
+   "screen": "Asset Explorer",
+   "source": { "kind": "entity", "name": "asset" },
+   "columns": ["code", "tag", "name", "site", "parent", "asset_class", "operating_status", "equipment_model", "manufacturer", "install_year", "rated_capacity_mw", "health_score", "risk_band", "last_maintenance_date", "cost_centre"],
+   "defaultSort": [{ "field": "code", "dir": "asc" }],
+   "tree": { "parent": "parent" }
+  },
+  {
+   "id": "parts-stock",
+   "title": "Parts and stock",
+   "screen": "New: Parts & Stock",
+   "source": { "kind": "entity", "name": "part_stock" },
+   "columns": ["code", "part", "site", "stock_status", "on_hand_qty", "reserved_qty", "quality_hold_qty", "in_transit_qty", "available_qty", "reorder_point_qty", "safety_stock_qty", "lead_time_days", "days_of_inventory", "supplier_status", "as_of_date"],
+   "defaultSort": [{ "field": "days_of_inventory", "dir": "asc" }],
+   "groupBy": ["site"]
+  },
+  {
+   "id": "warranty-contracts",
+   "title": "Warranty contracts",
+   "screen": "New: Warranty",
+   "source": { "kind": "entity", "name": "warranty_contract" },
+   "columns": ["code", "status", "asset", "provider", "equipment_model", "warranty_type", "coverage_type", "start_date", "end_date", "claim_notice_days", "remaining_coverage_value", "currency", "rca_required", "work_order_required"],
+   "defaultSort": [{ "field": "end_date", "dir": "asc" }]
+  },
+  {
+   "id": "warranty-claims",
+   "title": "Warranty claims",
+   "screen": "New: Warranty",
+   "source": { "kind": "entity", "name": "warranty_claim" },
+   "columns": ["code", "status", "warranty", "asset", "site", "claim_date", "notice_deadline", "claimed_amount", "approved_amount", "currency", "days_open", "evidence_completeness_pct", "next_action", "work_order"],
+   "defaultSort": [{ "field": "notice_deadline", "dir": "asc" }],
+   "bulkEdit": ["status", "next_action"]
+  },
+  {
+   "id": "pv-modules",
+   "title": "PV module register",
+   "screen": "New: PV Module Register",
+   "source": { "kind": "entity", "name": "pv_module" },
+   "columns": ["code", "segment", "serial_number", "position", "installed_date", "removed_date", "removal_status", "evidence_reference"],
+   "defaultSort": [{ "field": "code", "dir": "asc" }]
+  },
+  {
+   "id": "reference-data",
+   "title": "Reference data",
+   "screen": "New: Reference Data",
+   "source": { "kind": "view", "name": "v_reference", "platformRows": true },
+   "columns": [
+    { "field": "ref_table", "label": "Code table", "kind": "text" },
+    { "field": "scope", "label": "Scope", "kind": "text" },
+    { "field": "code", "label": "Code", "kind": "text" },
+    { "field": "label", "label": "Label", "kind": "text" },
+    { "field": "description", "label": "Description", "kind": "text" },
+    { "field": "sort_order", "label": "Order", "kind": "integer" },
+    { "field": "is_active", "label": "Active", "kind": "boolean" }
+   ],
+   "key": "code",
+   "defaultSort": [{ "field": "ref_table", "dir": "asc" }, { "field": "sort_order", "dir": "asc" }],
+   "groupBy": ["ref_table"]
+  },
+  {
+   "id": "data-dictionary",
+   "title": "Data dictionary",
+   "screen": "Data Management",
+   "source": { "kind": "registry" },
+   "columns": [
+    { "field": "sheet", "label": "Sheet", "kind": "text" },
+    { "field": "column", "label": "Field", "kind": "text" },
+    { "field": "type", "label": "Type", "kind": "text" },
+    { "field": "currency", "label": "Currency", "kind": "text" },
+    { "field": "governed_by", "label": "Governed by", "kind": "text" }
+   ],
+   "key": "id",
+   "defaultSort": [{ "field": "sheet", "dir": "asc" }],
+   "groupBy": ["sheet"]
+  }
+ ]
+}

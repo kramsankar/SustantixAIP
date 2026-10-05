@@ -21,6 +21,13 @@ mkdirSync(join(out, "data"), { recursive: true });
 for (const dir of ["assets"]) cpSync(join(src, dir), join(out, dir), { recursive: true });
 cpSync(join(here, "static"), out, { recursive: true });
 cpSync(bridge, join(out, "host", "aip-host-bridge.js"));
+// The Enterprise Grid workspace (phase 4) ships beside the runtime on hosts that serve the grid API.
+if (target === "vercel") {
+  const grid = join(here, "../../packages/grid/dist");
+  if (!existsSync(join(grid, "aip-grid.js"))) throw new Error("grid not built — run `pnpm --filter @sustantix/grid build`");
+  mkdirSync(join(out, "grid"), { recursive: true });
+  for (const f of ["index.html", "aip-grid.js"]) cpSync(join(grid, f), join(out, "grid", f));
+}
 mkdirSync(join(out, "vendor"), { recursive: true });
 const require = createRequire(import.meta.url);
 cpSync(join(dirname(require.resolve("xlsx/package.json")), "dist", "xlsx.full.min.js"), join(out, "vendor", "xlsx.full.min.js"));

@@ -23,7 +23,8 @@
     "zod": "^4.6.5",
     "@sustantix/analytics": "workspace:*",
     "@sustantix/agents": "workspace:*",
-    "@sustantix/schema": "workspace:*"
+    "@sustantix/schema": "workspace:*",
+    "@sustantix/grid": "workspace:*"
   },
   "devDependencies": {
     "@sustantix/aip-runtime": "workspace:*",

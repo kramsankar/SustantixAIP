@@ -20,10 +20,11 @@ const run = (cmd, args, cwd = root) =>
 
 run("pnpm", ["--filter", "@sustantix/license", "run", "build"]);
 run("pnpm", ["--filter", "@sustantix/host-bridge", "run", "build"]);
+run("pnpm", ["--filter", "@sustantix/grid", "run", "build"]);
 // build.mjs resolves --out relative to apps/runtime.
 run(process.execPath, ["build.mjs", "--target", "vercel", "--out", relative(runtime, target)], runtime);
 
-for (const required of ["index.html", "host/aip-host-bridge.js", "vendor/xlsx.full.min.js", "build-info.json"]) {
+for (const required of ["index.html", "host/aip-host-bridge.js", "vendor/xlsx.full.min.js", "build-info.json", "grid/index.html", "grid/aip-grid.js"]) {
   if (!existsSync(join(target, required))) throw new Error(`prebuild: runtime bundle is missing ${required}`);
 }
 const info = JSON.parse(readFileSync(join(target, "build-info.json"), "utf8"));
