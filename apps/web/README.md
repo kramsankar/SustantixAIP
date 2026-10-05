@@ -47,6 +47,16 @@ pnpm --filter @sustantix/aip-web build         # prebuild + next build
 `next build` does not need secrets: the environment is validated when the first request arrives. If a variable is
 missing or invalid, the API answers `503 server_misconfigured` and the log names the variable (never its value).
 
+## Analytics and agents
+
+- `POST /api/aip/analytics/run` (planner or admin) runs the AIP engines on the tenant's own data and records each run
+  and its outputs (`aip.model_run`, `aip.model_output`). `GET /api/aip/analytics/latest?model=&measure=&subject=` reads
+  the latest successful results. A full run on the demo portfolio takes tens of seconds (`maxDuration` 300 s needs a
+  Vercel plan that allows it).
+- `GET /api/aip/agents` lists the agents and which the caller's role may use; `POST /api/aip/agents/{agent}` runs one
+  conversation turn; `GET /api/aip/agents/proposals` and `POST /api/aip/agents/proposals/{code}` (approve or reject)
+  handle what agents propose. The runtime's Assistant screen calls `/api/assistant`, which the AIP Copilot answers.
+
 ## Deploying to Vercel
 
 1. **Project**: import the repository and set **Root Directory** to `apps/web`. `vercel.json` sets the framework
@@ -59,6 +69,9 @@ missing or invalid, the API answers `503 server_misconfigured` and the log names
      `aip.audit_log` appends.
    - `AIP_LICENSE_KEY`: the SXL1 token for this deployment's domain (step 5).
    - `AIP_LICENSE_REVOCATION`: optional signed SXR1 list.
+   - `ANTHROPIC_API_KEY`: optional, server only, mark it *Sensitive*. Enables the AIP agents and the Assistant
+     screen's online mode. Without it the agent endpoints answer `503 agents_not_configured`.
+   - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
 3. **Supabase schema**: from the monorepo root, `supabase link --project-ref <ref>` and then `supabase db push`.
    This applies `supabase/migrations/*`. Then in the Supabase dashboard go to **Settings → API → Exposed schemas**
    and add `aip`, because the API reads `aip.*` through PostgREST.

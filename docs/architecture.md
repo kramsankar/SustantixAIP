@@ -53,11 +53,12 @@ Money is never a float. Postgres uses `numeric(24,p)` with a `currency char(3)` 
 
 ## Reference data (phase 1 of the normalized model)
 
-`schema/reference/vocabulary.json` is the curated controlled vocabulary. It holds 16 code tables (asset class, status by entity, priority, severity, risk band, unit, currency, region, failure mode, defect, skill, event type, source system, framework, emission factor, maintenance type), the aliases observed in the workbook, which data-model column each table governs, and the questions still owed by the data owner. `schema/reference/integrity.json` declares the cross-sheet references and classifies every unresolved value:
+`schema/reference/vocabulary.json` is the curated controlled vocabulary. It holds 16 code tables (asset class, status by entity, priority, severity, risk band, unit, currency, region, failure mode, defect, skill, event type, source system, framework, emission factor, maintenance type), the aliases observed in the workbook, which data-model column each table governs, and the record of every vocabulary decision. `schema/reference/integrity.json` declares the cross-sheet references and classifies every unresolved value:
 
 - mechanical rules (crosswalk, null token, aggregate row), each of which must resolve everything it matches;
-- phase 2 merges;
-- owner decisions.
+- phase 2 merges, each naming the master whose consolidated codes must contain every value it matches.
+
+Every owner decision has been taken and recorded as a governed correction or a vocabulary decision.
 
 From these, `tools/schema` generates:
 
@@ -68,11 +69,97 @@ From these, `tools/schema` generates:
 
 `pnpm --filter @sustantix/schema check:data` is the phase 1 gate. It fails CI on any vocabulary value that is neither mapped nor declared, any unclassified reference, or any mechanical rule that does not resolve. It writes `docs/data/phase1-reference-report.md`.
 
+## Master data (phase 2 of the normalized model)
+
+`tools/schema/src/masters.ts` defines 32 masters and consolidated registers. They are built from the corrected workbook and replace 52 sheets:
+- **Organisation:** site, party, party role.
+- **Assets:** equipment model, asset, the inverter, BESS and PV array extensions, PV module group, population segment, PV module.
+- **Supply:** part, part stock, rate card.
+- **Workforce:** crew, technician, planning resource, vehicle, tool.
+- **Integration:** system, connector, interface, source document.
+- **Sustainability:** ESG metric, metric disclosure mapping.
+- **Analytics:** analytical model (`ml_model`, which also registers AIP's own engines).
+- **Contracts:** warranty, offtake contract.
+- **Registers:** intervention, scenario, scenario line, HSE incident.
+
+Each master holds its own attributes only. References to other masters are foreign keys, and controlled values are references into the phase 1 vocabulary. Attributes copied from a parent are dropped. Duplicate registers merge on their business code (two part masters, two intervention registers, two scenario tables), and every row keeps lineage to the sheet rows it replaced (`aip.master_lineage`).
+
+- **Supabase:**
+  - Each master has a `uuid` identity and a business code unique per tenant.
+  - Foreign keys are composite `(tenant_id, id)`, so no row can reference another tenant's row.
+  - Vocabulary references are foreign keys guarded so that a tenant uses only platform values or its own.
+  - Every row carries `row_version`; every change is audited.
+  - Administrators write masters; planners also write registers.
+  - Each master has a read view `aip.v_<master>` that shows references as business codes (`security_invoker`, so the caller's RLS applies). Grids, analytics and agents read these views.
+- **Dataverse:** each master is a table keyed on its code, with restricted lookups bound by alternate key; self-references load in a second pass.
+
+The data gate (`check:data`) builds every master and fails on duplicate codes, unmapped vocabulary, unresolved references, broken 1:1 extensions or an unresolved merge. Its report is `docs/data/phase2-master-report.md`.
+
+## Analytics (`packages/analytics`)
+
+The reference app displayed model results (forecast bands, remaining life, risk, state of health) that were precomputed in the workbook. `@sustantix/analytics` computes them from each tenant's own data, deterministically (seeded):
+
+| Model | Method |
+| --- | --- |
+| `AIP-GEN-HYBRID-1` hybrid solar forecast | Physics baseline + gradient-boosted residual trees (q50) and quantile trees (q10/q90), split-conformal calibrated |
+| `AIP-ANOM-INV-1` inverter anomalies | Isolation Forest on fleet-relative daily features, robust-z explanations |
+| `AIP-DRIFT-CUSUM-1` plant drift | Two-sided CUSUM on daily performance, change point by likelihood |
+| `AIP-LIFE-1` life models | Right-censored Weibull / lognormal / exponential MLE, AICc selection, bootstrap |
+| `AIP-RUL-1` remaining life | Conditional reliability with a health proportional-hazards multiplier |
+| `AIP-MAINT-1` MTBF / MTTR | Life-history exposure, corrective work-order repair times |
+| `AIP-RISK-1` composite risk | Expected loss (lost generation × tariff + repair) × safety weight; governed bands |
+| `AIP-BESS-SOH-1` battery health | Fade relative to the OEM plan from capacity tests, shrunk to the fleet |
+| `AIP-RAR-MC-1` revenue at risk | Monte Carlo over the forecast distribution and asset outages |
+| `AIP-SPARES-1` spares | Croston / SBA / TSB on a holdout; reorder points by criticality service level |
+
+The model cards are governed in `schema/analytics/models.json`. A back-test on the governed workbook (`pnpm --filter @sustantix/analytics backtest`, report `docs/analytics/model-report.md`) is a CI gate. Results persist as `aip.model_run` and `aip.model_output`:
+- outputs are append-only and audited once per batch;
+- quantiles are kept ordered;
+- `v_model_output_latest` serves each model's latest successful run.
+
+Hosts build the dataset through one interface (`TenantSource`). The workbook supplies it for the back-test; the database supplies it through the code views on Vercel.
+
+## Agents (`packages/agents`)
+
+Ten agents are defined in `schema/agents/agents.json`:
+- AIP Copilot
+- Reliability
+- Forecast
+- Maintenance Planning
+- Spares
+- Battery Storage
+- Warranty Recovery
+- Sustainability Reporting
+- Data Quality Steward
+- Commercial
+
+Each agent has a minimum role, the screens it serves, an allow-list of tools and the proposal types it may raise. Claude (Messages API, tool use) plans; AIP's tools act:
+- `query_master` and `get_record` read the code views and lineage.
+- `latest_model_outputs`, `top_risks` and `model_catalogue` read the analytics results.
+- `create_proposal` is the only tool that writes. It writes a **pending** proposal.
+
+Guardrails:
+- **Permissions:** agents run with the caller's own permissions, so RLS applies. Proposals need a planner or administrator, and each one is validated against its type's schema and its subject's existence. Duplicate pending proposals are refused, and proposals are capped per request.
+- **Bounds and untrusted data:** tool rounds are capped. Tool results are wrapped as data and truncated. The system rules state that data is never instructions, and client context (such as the Assistant screen's data summary) is passed only as data.
+- **Logging:** every run and step is logged (`aip.agent_run`, `aip.agent_step`).
+- **Decisions:**
+  - People decide every proposal: pending → approved or rejected, then applied or failed. Each decision is one-way and recorded by the deciding user.
+  - Approval applies with the decider's own rights (`aip.apply_agent_proposal`). An intervention or inspection proposal adds an intervention under review; a reschedule updates the intervention it names. Other types stay approved, for downstream systems to act on.
+- **Configuration:** the model key (`ANTHROPIC_API_KEY`) stays on the server. Without it the agent endpoints answer 503.
+
+The Dataverse edition provisions the same run, output, agent-run and proposal tables. Its agent runtime (Copilot Studio or an Azure Function host over the same catalogue) is the next step.
+
 ## Multi-region
 
 - **Currency:** stored per row. The tenant default currency is configurable (`aip.tenants.default_currency`); FX conversion comes from the stored daily rate table.
 - **Region:** `aip.tenants.region` identifies the jurisdiction. The seed tenant is India (INR, BRSR), and nothing in the platform layer assumes India.
 - **Sustainability frameworks:** framework selection (BRSR / ISSB / GRI / CSRD) is data in `SUS_Framework_Mapping`, not code.
+
+## Roadmap
+
+- **Phase 3:** transactions (work orders, events, telemetry), `record_link`, and compatibility views so the runtime reads the database instead of its embedded datasets. The parity crawl is re-baselined there.
+- **Phase 4:** change-set API with `row_version` and the Sustantix Enterprise Grid on the governed views.
+- **Phase 5:** staging and data-quality quarantine, outbox (approved proposals to ERP/EAM), realtime, Dataverse sync, and scheduled agent runs.
 
 ## Evolution path
 

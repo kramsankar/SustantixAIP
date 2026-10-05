@@ -88,3 +88,11 @@ describe("gate", () => {
     expect(requirementFor("/api/aip/agents/proposals/abc", "POST")).toBe("writable");
   });
 });
+
+describe("gate aliases", () => {
+  it("gates the runtime's /api/assistant alias like the canonical endpoint", () => {
+    expect(requirementFor("/api/assistant", "POST")).toBe("readable");
+    expect(requirementFor("/api/assistant/", "POST")).toBe("readable");
+    expect(requirementFor("/api/aip/assistant", "POST")).toBe("readable");
+  });
+});

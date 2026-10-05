@@ -18,9 +18,10 @@ import { dataModelSql, platformSql } from "./postgres.ts";
 import { correctionLogPlan, correctionLogSql, applyCorrections, loadCorrections } from "./corrections.ts";
 import { loadVocabulary, referencePlan, referenceSql, validateVocabulary } from "./reference.ts";
 import { masterPlan, masterRelationships } from "./master-dataverse.ts";
+import { agentsPlan, agentsSql } from "./agents-sql.ts";
 import { analyticsPlan, analyticsSql } from "./analytics-sql.ts";
 import { mastersSql } from "./master-sql.ts";
-import { buildMasters, masterDefs } from "./masters.ts";
+import { buildMasters, masterDefs, masterManifest } from "./masters.ts";
 import { readSheets } from "./rows.ts";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -46,11 +47,14 @@ const built = buildMasters(reg, readSheets(readFileSync(workbook)), vocab, loadC
 if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
 writeFileSync(join(root, "supabase/migrations/20261005000100_aip_masters.sql"), mastersSql(masterDefs(reg), reg.defaultCurrency));
 writeFileSync(join(root, "supabase/migrations/20261005000200_aip_analytics.sql"), analyticsSql());
+writeFileSync(join(root, "supabase/migrations/20261005000300_aip_agents.sql"), agentsSql());
+// Master manifest: what each master holds, for hosts and agents that read the code views without this package.
+writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest(masterDefs(reg)), null, 1) + "\n");
 
 mkdirSync(join(root, "powerplatform/schema"), { recursive: true });
 writeFileSync(join(root, "powerplatform/schema/platform-tables.json"), JSON.stringify(platformPlan(), null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/reference-tables.json"), JSON.stringify([...referencePlan(vocab), correctionLogPlan()], null, 1) + "\n");
-writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan(), ...agentsPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/data-model-tables.json"), JSON.stringify(dataModelPlan(reg).map(({ source, ...p }) => ({ ...p, sheet: source?.sheet })), null, 1) + "\n");
 
 const cols = reg.tables.reduce((n, t) => n + t.columns.length, 0);

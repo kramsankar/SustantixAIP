@@ -1112,3 +1112,30 @@ export function phase2Report(reg: Registry, b: MasterBuild, merges: MergeResolut
   }
   return lines.join("\n") + "\n";
 }
+
+/** Serializable description of every master (no build logic): read by hosts and agents. */
+export interface MasterManifestEntry {
+  name: string;
+  label: string;
+  layer: MasterLayer;
+  description: string;
+  view: string;
+  columns: Array<{ name: string; label: string; kind: MasterColumn["kind"]; ref?: string; scope?: string; fk?: string }>;
+}
+
+export function masterManifest(defs: MasterDef[]): { version: 1; masters: MasterManifestEntry[] } {
+  return {
+    version: 1,
+    masters: topoOrder(defs).map((d) => ({
+      name: d.name,
+      label: d.label,
+      layer: d.layer,
+      description: d.description,
+      view: `v_${d.name}`,
+      columns: [
+        { name: "code", label: "Code", kind: "text" as const },
+        ...d.columns.map((c) => ({ name: c.name, label: c.label, kind: c.kind, ...(c.ref ? { ref: c.ref } : {}), ...(c.scope ? { scope: c.scope } : {}), ...(c.fk ? { fk: c.fk } : {}) })),
+      ],
+    })),
+  };
+}

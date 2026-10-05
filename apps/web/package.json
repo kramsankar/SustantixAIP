@@ -21,7 +21,8 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "zod": "^4.6.5",
-    "@sustantix/analytics": "workspace:*"
+    "@sustantix/analytics": "workspace:*",
+    "@sustantix/agents": "workspace:*"
   },
   "devDependencies": {
     "@sustantix/aip-runtime": "workspace:*",

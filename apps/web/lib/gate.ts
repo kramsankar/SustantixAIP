@@ -16,7 +16,11 @@ export type Requirement = "open" | "readable" | "writable";
 
 const OPEN_ENDPOINTS = new Set(["license", "time", "session", "sign-out"]);
 
-export function requirementFor(pathname: string, method: string): Requirement {
+/** Public aliases of gated endpoints (rewritten to their canonical path). */
+const ALIASES: Record<string, string> = { "/api/assistant": "/api/aip/assistant" };
+
+export function requirementFor(path: string, method: string): Requirement {
+  const pathname = ALIASES[path.replace(/\/+$/, "")] ?? path;
   if (!pathname.startsWith(API_PREFIX)) return "open";
   const endpoint = pathname.slice(API_PREFIX.length).replace(/\/+$/, "");
   if (OPEN_ENDPOINTS.has(endpoint)) return "open";

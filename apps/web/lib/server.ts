@@ -28,9 +28,10 @@ export async function serverLicenseVerdict(hostname: string, refresh = false): P
 }
 
 /** Route-level copy of the middleware gate (defence in depth if the matcher is ever bypassed). */
-export async function guard(req: Request): Promise<Response | null> {
+export async function guard(req: Request, pathname?: string): Promise<Response | null> {
   return guardRequest(
-    { pathname: new URL(req.url).pathname, method: req.method, headers: req.headers, host: currentHost(req) },
+    // A route reached through a rewrite passes its canonical path, so the gate never sees the alias.
+    { pathname: pathname ?? new URL(req.url).pathname, method: req.method, headers: req.headers, host: currentHost(req) },
     { verdict: (h) => serverLicenseVerdict(h) },
   );
 }
