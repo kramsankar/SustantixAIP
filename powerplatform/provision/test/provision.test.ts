@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { fileURLToPath } from "node:url";
-import { buildMasters, loadCorrections, loadVocabulary, masterDefs, readSheets, type Registry } from "@sustantix/schema";
+import { buildMasters, loadCorrections, loadVocabulary, masterDefs, readSheets, transactionDefs, type Registry } from "@sustantix/schema";
 import { provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
@@ -214,7 +214,7 @@ describe("provision", () => {
     const dv = mockDataverse();
     const api = new WebApi({ envUrl: "https://contoso.crm.dynamics.com", token: async () => "t", solution: "SustantixAIP", fetcher: dv.fetcher, sleep: async () => {} });
     const r = await provision(api, { version: "9.15.0.0", registry, vocabulary, corrections, masters: true, seedWorkbook: wb, pluginDll: dll, dataModel: false, guardDataModel: false, fx: {} }, () => {});
-    const lookups = defs.reduce((n, d) => n + d.columns.filter((c) => c.kind === "fk" || c.kind === "ref").length, 0);
+    const lookups = [...defs, ...transactionDefs(registry)].reduce((n, d) => n + d.columns.filter((c) => c.kind === "fk" || c.kind === "ref").length, 0);
     expect(r.relationshipsCreated).toBe(lookups);
     expect(dv.entities.get("sus_asset")?.keys.has("sus_asset_bk")).toBe(true);
     expect(dv.entities.get("sus_asset")?.attrs.has("sus_parentid")).toBe(true);

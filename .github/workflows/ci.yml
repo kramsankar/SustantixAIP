@@ -46,7 +46,7 @@ jobs:
         run: |
           pnpm --filter @sustantix/schema generate
           git diff --exit-code -- schema supabase/migrations powerplatform/schema
-      - name: Data-quality gate (vocabulary, reference integrity, phase 2 masters)
+      - name: Data-quality gate (vocabulary, integrity, masters, transactions round trip)
         run: |
           pnpm --filter @sustantix/schema check:data
           git diff --exit-code -- docs/data
@@ -105,7 +105,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Apply migrations and prove tenant isolation
         run: |
-          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql; do
+          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql; do
             psql -v ON_ERROR_STOP=1 -q -f "$f"
           done
       - name: Seed loads idempotently
@@ -123,15 +123,21 @@ jobs:
           test "$(psql -At -c "select count(*) from aip.part where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "44"
           test "$(psql -At -c "select count(*) from aip.intervention where tenant_id='00000000-0000-0000-0000-0000000000c1' and site_id is not null")" = "335"
           test "$(psql -At -c "select count(*) from aip.pv_module where tenant_id='00000000-0000-0000-0000-0000000000c1' and segment_id is not null")" = "6000"
-          test "$(psql -At -c "select count(*) from aip.master_lineage where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "9809"
+          test "$(psql -At -c "select count(*) from aip.master_lineage where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "11916"
+          # Phase 3: transactions and time series, the link ledger, and every compatibility view rebuilding its sheet
+          test "$(psql -At -c "select count(*) from aip.plant_telemetry where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "19944"
+          test "$(psql -At -c "select count(*) from aip.record_link where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "350"
+          psql -v ON_ERROR_STOP=1 -q -f supabase/tests/95_compat_equivalence.sql
           # 4 workbook forecasting models + the 10 AIP engines (schema/analytics/models.json)
           test "$(psql -At -c "select count(*) || '/' || count(engine) from aip.ml_model where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "14/10"
-      - name: Reference, master, analytics and agent migrations are idempotent
+      - name: Governed-model migrations are idempotent
         run: |
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261001000100_aip_reference.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261005000100_aip_masters.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261005000200_aip_analytics.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261005000300_aip_agents.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261006000100_aip_transactions.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261006000200_aip_compat.sql
 
   parity:
     name: reference screen parity + license gate

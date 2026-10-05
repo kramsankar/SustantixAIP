@@ -11,3 +11,5 @@ export * from "./master-sql.ts";
 export * from "./master-dataverse.ts";
 export * from "./analytics-sql.ts";
 export * from "./agents-sql.ts";
+export * from "./sheet-model.ts";
+export * from "./compat.ts";

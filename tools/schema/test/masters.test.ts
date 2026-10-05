@@ -23,7 +23,9 @@ const row = (b: MasterBuild, name: string, code: string) => master(b, name).rows
 describe("phase 2 masters", () => {
   it("build every master and register without a single problem", () => {
     expect(built.issues).toEqual([]);
-    expect(built.masters).toHaveLength(32);
+    // 32 masters and registers; phase 3 adds 35 transaction, time-series and link tables to the same build.
+    expect(built.masters.filter((m) => m.def.layer !== "transaction" && m.def.layer !== "series")).toHaveLength(32);
+    expect(built.masters).toHaveLength(67);
     const counts = Object.fromEntries(built.masters.map((m) => [m.def.name, m.rows.length]));
     expect(counts).toMatchObject({ site: 12, asset: 1205, asset_inverter: 323, asset_bess: 5, pv_module: 6000, part: 44, part_stock: 342, intervention: 335, scenario: 10, scenario_intervention: 166, hse_incident: 24, warranty_contract: 45, offtake_contract: 17 });
   });

@@ -47,14 +47,14 @@ function entity(name: string, label: string, plural: string, description: string
   };
 }
 
-export function masterPlan(defs: MasterDef[]): EntityPlan[] {
-  const plans: EntityPlan[] = topoOrder(defs).map((d) => ({
+export function masterPlan(defs: MasterDef[], opts: { lineage?: boolean; external?: string[] } = {}): EntityPlan[] {
+  const plans: EntityPlan[] = topoOrder(defs, new Set(opts.external ?? [])).map((d) => ({
     logicalName: logical(d.name),
     entity: entity(d.name, d.label, d.plural, d.description),
     attributes: d.columns.filter((c) => c.kind !== "fk" && c.kind !== "ref").map((c) => attributeMetadata({ name: c.name.replace(/_/g, ""), label: c.label, kind: c.kind as Exclude<MasterColumn["kind"], "fk" | "ref">, maxLength: c.maxLength ?? 300, precision: c.precision }, c.label)),
     keys: [{ SchemaName: logical(`${d.name}_bk`), DisplayName: lbl("Business code"), KeyAttributes: [PRIMARY] }],
   }));
-  plans.push(masterLineagePlan());
+  if (opts.lineage !== false) plans.push(masterLineagePlan());
   return plans;
 }
 
@@ -74,8 +74,8 @@ export function masterLineagePlan(): EntityPlan {
 }
 
 /** One-to-many relationship payloads (lookup + delete restricted) for every reference column. */
-export function masterRelationships(defs: MasterDef[]): Array<{ schemaName: string; payload: Json }> {
-  return topoOrder(defs).flatMap((d) =>
+export function masterRelationships(defs: MasterDef[], external: string[] = []): Array<{ schemaName: string; payload: Json }> {
+  return topoOrder(defs, new Set(external)).flatMap((d) =>
     d.columns
       .filter((c) => c.kind === "fk" || c.kind === "ref")
       .map((c) => {

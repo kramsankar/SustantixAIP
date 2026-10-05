@@ -138,6 +138,11 @@
      "kind": "text"
     },
     {
+     "name": "model_number",
+     "label": "Model number",
+     "kind": "text"
+    },
+    {
      "name": "manufacturer",
      "label": "Manufacturer",
      "kind": "fk",
@@ -2883,6 +2888,3459 @@
      "name": "asset_reference_basis",
      "label": "Asset reference basis",
      "kind": "text"
+    }
+   ]
+  },
+  {
+   "name": "alert",
+   "label": "Predictive alert",
+   "layer": "transaction",
+   "description": "A predictive-maintenance alert on an asset: risk score, remaining life and the evidence behind it.",
+   "view": "v_alert",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "component",
+     "label": "Component",
+     "kind": "text"
+    },
+    {
+     "name": "alert_timestamp",
+     "label": "Alert Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "model",
+     "label": "Model",
+     "kind": "text"
+    },
+    {
+     "name": "risk_score",
+     "label": "Risk Score",
+     "kind": "decimal"
+    },
+    {
+     "name": "rul_days",
+     "label": "RUL Days",
+     "kind": "integer"
+    },
+    {
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "risk_tier",
+     "label": "Risk Tier",
+     "kind": "text"
+    },
+    {
+     "name": "status",
+     "label": "Alert Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "alert"
+    },
+    {
+     "name": "evidence_summary",
+     "label": "Evidence Summary",
+     "kind": "text"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "recommendation",
+   "label": "Recommendation",
+   "layer": "transaction",
+   "description": "A prescriptive action raised from an alert, with the cost of acting now against deferring.",
+   "view": "v_recommendation",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "alert",
+     "label": "Alert ID",
+     "kind": "fk",
+     "fk": "alert"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "risk_score",
+     "label": "Risk Score",
+     "kind": "decimal"
+    },
+    {
+     "name": "rul_days",
+     "label": "RUL Days",
+     "kind": "integer"
+    },
+    {
+     "name": "recommended_action",
+     "label": "Recommended Action",
+     "kind": "text"
+    },
+    {
+     "name": "cost_now",
+     "label": "Cost Now",
+     "kind": "money"
+    },
+    {
+     "name": "cost_if_deferred",
+     "label": "Cost If Deferred",
+     "kind": "money"
+    },
+    {
+     "name": "cost_avoided",
+     "label": "Cost Avoided",
+     "kind": "money"
+    },
+    {
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "status",
+     "label": "Decision Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "recommendation"
+    },
+    {
+     "name": "rationale",
+     "label": "Rationale",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "work_order",
+   "label": "Work order",
+   "layer": "transaction",
+   "description": "A unit of maintenance work on an asset, with its SLA, cost, assignment and preventive-maintenance compliance.",
+   "view": "v_work_order",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "maintenance_type",
+     "label": "Maintenance Type",
+     "kind": "ref",
+     "ref": "maintenance_type"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text"
+    },
+    {
+     "name": "priority",
+     "label": "Priority",
+     "kind": "ref",
+     "ref": "priority"
+    },
+    {
+     "name": "status",
+     "label": "Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "work_order"
+    },
+    {
+     "name": "created_date",
+     "label": "Created Date",
+     "kind": "datetime"
+    },
+    {
+     "name": "sla_due",
+     "label": "SLA Due",
+     "kind": "datetime"
+    },
+    {
+     "name": "sla_hours",
+     "label": "SLA Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "actual_resolution_hours",
+     "label": "Actual Resolution Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "sla_result",
+     "label": "SLA Result",
+     "kind": "text"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "estimated_cost",
+     "label": "Estimated Cost",
+     "kind": "money"
+    },
+    {
+     "name": "technician",
+     "label": "Assigned Technician ID",
+     "kind": "fk",
+     "fk": "technician"
+    },
+    {
+     "name": "assigned_crew",
+     "label": "Assigned Crew",
+     "kind": "text"
+    },
+    {
+     "name": "pm_frequency_days",
+     "label": "PM Frequency Days",
+     "kind": "integer"
+    },
+    {
+     "name": "pm_due_date",
+     "label": "PM Due Date",
+     "kind": "date"
+    },
+    {
+     "name": "actual_pm_completion_date",
+     "label": "Actual PM Completion Date",
+     "kind": "date"
+    },
+    {
+     "name": "pm_compliance_tolerance_days",
+     "label": "PM Compliance Tolerance Days",
+     "kind": "integer"
+    },
+    {
+     "name": "pm_compliance_result",
+     "label": "PM Compliance Result",
+     "kind": "text"
+    },
+    {
+     "name": "pm_overdue_days",
+     "label": "PM Overdue Days",
+     "kind": "integer"
+    },
+    {
+     "name": "alert",
+     "label": "Linked Alert ID",
+     "kind": "fk",
+     "fk": "alert"
+    },
+    {
+     "name": "required_part",
+     "label": "Required Part ID",
+     "kind": "fk",
+     "fk": "part"
+    },
+    {
+     "name": "required_part_qty",
+     "label": "Required Part Qty",
+     "kind": "integer"
+    },
+    {
+     "name": "pv_module",
+     "label": "Module ID",
+     "kind": "fk",
+     "fk": "pv_module"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "event",
+   "label": "Operational event",
+   "layer": "transaction",
+   "description": "An operational incident: what happened, where, how severe, and its generation and revenue impact.",
+   "view": "v_event",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "incident_id",
+     "label": "Incident ID",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "event_date_time",
+     "label": "Event Date Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "ref",
+     "ref": "event_type",
+     "scope": "operational"
+    },
+    {
+     "name": "severity",
+     "label": "Severity",
+     "kind": "ref",
+     "ref": "severity"
+    },
+    {
+     "name": "alarm_code",
+     "label": "Alarm Code",
+     "kind": "text"
+    },
+    {
+     "name": "weather_context",
+     "label": "Weather Context",
+     "kind": "text"
+    },
+    {
+     "name": "generation_loss_mwh",
+     "label": "Generation Loss MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "revenue_impact",
+     "label": "Revenue Impact",
+     "kind": "money"
+    },
+    {
+     "name": "status",
+     "label": "Event Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "event"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "event_timestamp",
+     "label": "Event Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "pv_module",
+     "label": "Module ID",
+     "kind": "fk",
+     "fk": "pv_module"
+    },
+    {
+     "name": "classified_failure",
+     "label": "Classified Failure",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "rca_case",
+   "label": "Root-cause case",
+   "layer": "transaction",
+   "description": "A root-cause analysis of an event: the cause found, how it was verified, and its validation.",
+   "view": "v_rca_case",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "event",
+     "label": "Event ID",
+     "kind": "fk",
+     "fk": "event"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "ref",
+     "ref": "event_type",
+     "scope": "operational"
+    },
+    {
+     "name": "severity",
+     "label": "Severity",
+     "kind": "ref",
+     "ref": "severity"
+    },
+    {
+     "name": "event_time",
+     "label": "Event Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "cause_name",
+     "label": "Cause Name",
+     "kind": "text"
+    },
+    {
+     "name": "reference_id",
+     "label": "Reference ID",
+     "kind": "text"
+    },
+    {
+     "name": "verification_method",
+     "label": "Verification Method",
+     "kind": "text"
+    },
+    {
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "status",
+     "label": "Validation Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "rca"
+    },
+    {
+     "name": "engineer_approval",
+     "label": "Engineer Approval",
+     "kind": "text"
+    },
+    {
+     "name": "oem_recorded",
+     "label": "OEM",
+     "kind": "text"
+    },
+    {
+     "name": "model_recorded",
+     "label": "Model",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "rca_evidence",
+   "label": "Root-cause evidence",
+   "layer": "transaction",
+   "description": "A signal observed during a root-cause analysis, compared with its peer baseline.",
+   "view": "v_rca_evidence",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "event",
+     "label": "Event ID",
+     "kind": "fk",
+     "fk": "event"
+    },
+    {
+     "name": "rca_case",
+     "label": "RCA ID",
+     "kind": "fk",
+     "fk": "rca_case"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "signal",
+     "label": "Signal",
+     "kind": "text"
+    },
+    {
+     "name": "actual_value",
+     "label": "Actual Value",
+     "kind": "decimal"
+    },
+    {
+     "name": "peer_baseline",
+     "label": "Peer Baseline",
+     "kind": "decimal"
+    },
+    {
+     "name": "unit",
+     "label": "Unit",
+     "kind": "ref",
+     "ref": "unit"
+    },
+    {
+     "name": "deviation_pct",
+     "label": "Deviation %",
+     "kind": "decimal"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "evidence_role",
+     "label": "Evidence Role",
+     "kind": "text"
+    },
+    {
+     "name": "engineering_interpretation",
+     "label": "Engineering Interpretation",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "vision_inspection",
+   "label": "Vision inspection",
+   "layer": "transaction",
+   "description": "A drone or camera inspection run: coverage, conditions and status.",
+   "view": "v_vision_inspection",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "inspection_date_time",
+     "label": "Inspection Date Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "inspection_type",
+     "label": "Inspection Type",
+     "kind": "text"
+    },
+    {
+     "name": "device_id",
+     "label": "Device ID",
+     "kind": "text"
+    },
+    {
+     "name": "panels_inspected",
+     "label": "Panels Inspected",
+     "kind": "integer"
+    },
+    {
+     "name": "images_captured",
+     "label": "Images Captured",
+     "kind": "integer"
+    },
+    {
+     "name": "coverage_pct",
+     "label": "Coverage %",
+     "kind": "decimal"
+    },
+    {
+     "name": "weather",
+     "label": "Weather",
+     "kind": "text"
+    },
+    {
+     "name": "flight_altitude_m",
+     "label": "Flight Altitude m",
+     "kind": "integer"
+    },
+    {
+     "name": "inspection_status",
+     "label": "Inspection Status",
+     "kind": "text"
+    },
+    {
+     "name": "inspector",
+     "label": "Inspector",
+     "kind": "text"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "vision_finding",
+   "label": "Vision finding",
+   "layer": "transaction",
+   "description": "A defect detected by an inspection, with its confidence, severity and estimated loss.",
+   "view": "v_vision_finding",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "inspection",
+     "label": "Inspection ID",
+     "kind": "fk",
+     "fk": "vision_inspection"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "defect_type",
+     "label": "Defect Type",
+     "kind": "ref",
+     "ref": "defect_code"
+    },
+    {
+     "name": "detection_mode",
+     "label": "Detection Mode",
+     "kind": "text"
+    },
+    {
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "severity",
+     "label": "Severity",
+     "kind": "ref",
+     "ref": "severity"
+    },
+    {
+     "name": "status",
+     "label": "Finding Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "finding"
+    },
+    {
+     "name": "estimated_loss_k_wh_day",
+     "label": "Estimated Loss kWh Day",
+     "kind": "decimal"
+    },
+    {
+     "name": "annual_revenue_risk",
+     "label": "Annual Revenue Risk",
+     "kind": "money"
+    },
+    {
+     "name": "recommended_action",
+     "label": "Recommended Action",
+     "kind": "text"
+    },
+    {
+     "name": "work_order",
+     "label": "Work Order ID",
+     "kind": "fk",
+     "fk": "work_order"
+    },
+    {
+     "name": "affected_area_sqm",
+     "label": "Affected Area sqm",
+     "kind": "decimal"
+    },
+    {
+     "name": "physical_location",
+     "label": "Physical Location",
+     "kind": "text"
+    },
+    {
+     "name": "inspection_date",
+     "label": "Inspection Date",
+     "kind": "date"
+    },
+    {
+     "name": "inspector",
+     "label": "Inspector",
+     "kind": "text"
+    },
+    {
+     "name": "pv_module",
+     "label": "Module ID",
+     "kind": "fk",
+     "fk": "pv_module"
+    },
+    {
+     "name": "classified_failure",
+     "label": "Classified Failure",
+     "kind": "text"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "warranty_claim",
+   "label": "Warranty claim",
+   "layer": "transaction",
+   "description": "A claim against a warranty: amounts claimed and approved, evidence, deadlines and the OEM's response.",
+   "view": "v_warranty_claim",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "warranty",
+     "label": "Warranty ID",
+     "kind": "fk",
+     "fk": "warranty_contract"
+    },
+    {
+     "name": "incident_id",
+     "label": "Incident ID",
+     "kind": "text"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "claim_date",
+     "label": "Claim Date",
+     "kind": "date"
+    },
+    {
+     "name": "failure_event_id",
+     "label": "Failure Event ID",
+     "kind": "text"
+    },
+    {
+     "name": "status",
+     "label": "Claim Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "warranty_claim"
+    },
+    {
+     "name": "claimed_amount",
+     "label": "Claimed Amount",
+     "kind": "money"
+    },
+    {
+     "name": "approved_amount",
+     "label": "Approved Amount",
+     "kind": "money"
+    },
+    {
+     "name": "days_open",
+     "label": "Days Open",
+     "kind": "integer"
+    },
+    {
+     "name": "evidence_completeness_pct",
+     "label": "Evidence Completeness %",
+     "kind": "integer"
+    },
+    {
+     "name": "notice_deadline",
+     "label": "Notice Deadline",
+     "kind": "date"
+    },
+    {
+     "name": "oem_response_date",
+     "label": "OEM Response Date",
+     "kind": "date"
+    },
+    {
+     "name": "rejection_reason",
+     "label": "Rejection Reason",
+     "kind": "text"
+    },
+    {
+     "name": "next_action",
+     "label": "Next Action",
+     "kind": "text"
+    },
+    {
+     "name": "work_order",
+     "label": "Work Order ID",
+     "kind": "fk",
+     "fk": "work_order"
+    },
+    {
+     "name": "pv_module",
+     "label": "Module ID",
+     "kind": "fk",
+     "fk": "pv_module"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "pm_plan",
+   "label": "Preventive maintenance plan",
+   "layer": "transaction",
+   "description": "A recurring maintenance task on an asset with its frequency, last and next dates.",
+   "view": "v_pm_plan",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "task",
+     "label": "Task",
+     "kind": "text"
+    },
+    {
+     "name": "frequency_days",
+     "label": "Frequency Days",
+     "kind": "integer"
+    },
+    {
+     "name": "last_done",
+     "label": "Last Done",
+     "kind": "date"
+    },
+    {
+     "name": "next_due",
+     "label": "Next Due",
+     "kind": "date"
+    },
+    {
+     "name": "overdue_days",
+     "label": "Overdue Days",
+     "kind": "integer"
+    },
+    {
+     "name": "standard_labour_hours",
+     "label": "Standard Labour Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "primary_part",
+     "label": "Primary Part ID",
+     "kind": "fk",
+     "fk": "part"
+    },
+    {
+     "name": "required_skill",
+     "label": "Required Skill",
+     "kind": "ref",
+     "ref": "skill"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "cbm_assessment",
+   "label": "Condition assessment",
+   "layer": "transaction",
+   "description": "A condition-based maintenance assessment fusing evidence into a condition, priority and recommended action.",
+   "view": "v_cbm_assessment",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "ref",
+     "ref": "failure_mode"
+    },
+    {
+     "name": "observed_defect",
+     "label": "Failure Mode",
+     "kind": "ref",
+     "ref": "defect_code"
+    },
+    {
+     "name": "primary_condition",
+     "label": "Primary Condition",
+     "kind": "text"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "latest_evidence_time",
+     "label": "Latest Evidence Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "freshness_class",
+     "label": "Freshness Class",
+     "kind": "text"
+    },
+    {
+     "name": "max_deviation_pct",
+     "label": "Max Deviation %",
+     "kind": "decimal"
+    },
+    {
+     "name": "evidence_count",
+     "label": "Evidence Count",
+     "kind": "integer"
+    },
+    {
+     "name": "corroboration_count",
+     "label": "Corroboration Count",
+     "kind": "integer"
+    },
+    {
+     "name": "condition_severity",
+     "label": "Condition Severity",
+     "kind": "text"
+    },
+    {
+     "name": "risk_context",
+     "label": "Risk Context",
+     "kind": "text"
+    },
+    {
+     "name": "evidence_sufficiency_pct",
+     "label": "Evidence Sufficiency %",
+     "kind": "decimal"
+    },
+    {
+     "name": "engineering_physics_fit_pct",
+     "label": "Engineering Physics Fit %",
+     "kind": "decimal"
+    },
+    {
+     "name": "confidence_pct",
+     "label": "Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "priority",
+     "label": "Priority",
+     "kind": "ref",
+     "ref": "priority"
+    },
+    {
+     "name": "condition_state",
+     "label": "Condition State",
+     "kind": "text"
+    },
+    {
+     "name": "recommended_action",
+     "label": "Recommended Action",
+     "kind": "text"
+    },
+    {
+     "name": "governance_class",
+     "label": "Governance Class",
+     "kind": "text"
+    },
+    {
+     "name": "approval_role",
+     "label": "Approval Role",
+     "kind": "text"
+    },
+    {
+     "name": "source_module",
+     "label": "Source Module",
+     "kind": "text"
+    },
+    {
+     "name": "source_record_id",
+     "label": "Source Record ID",
+     "kind": "text"
+    },
+    {
+     "name": "target_view",
+     "label": "Target View",
+     "kind": "text"
+    },
+    {
+     "name": "work_order_code",
+     "label": "Work Order ID",
+     "kind": "text"
+    },
+    {
+     "name": "reference_id",
+     "label": "Reference ID",
+     "kind": "text"
+    },
+    {
+     "name": "verification_method",
+     "label": "Verification Method",
+     "kind": "text"
+    },
+    {
+     "name": "decision_basis",
+     "label": "Decision Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "condition_evidence",
+   "label": "Condition evidence",
+   "layer": "transaction",
+   "description": "One piece of condition evidence (signal, deviation, quality) behind an assessment.",
+   "view": "v_condition_evidence",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "assessment",
+     "label": "CBM Assessment ID",
+     "kind": "fk",
+     "fk": "cbm_assessment"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "evidence_source",
+     "label": "Evidence Source",
+     "kind": "text"
+    },
+    {
+     "name": "arrival_mode",
+     "label": "Arrival Mode",
+     "kind": "text"
+    },
+    {
+     "name": "source_module",
+     "label": "Source Module",
+     "kind": "text"
+    },
+    {
+     "name": "target_view",
+     "label": "Target View",
+     "kind": "text"
+    },
+    {
+     "name": "source_record_id",
+     "label": "Source Record ID",
+     "kind": "text"
+    },
+    {
+     "name": "observed_time",
+     "label": "Observed Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "signal_name",
+     "label": "Signal Name",
+     "kind": "text"
+    },
+    {
+     "name": "observed_value",
+     "label": "Observed Value",
+     "kind": "decimal"
+    },
+    {
+     "name": "baseline_or_peer",
+     "label": "Baseline or Peer",
+     "kind": "decimal"
+    },
+    {
+     "name": "unit",
+     "label": "Unit",
+     "kind": "ref",
+     "ref": "unit"
+    },
+    {
+     "name": "deviation_pct",
+     "label": "Deviation %",
+     "kind": "decimal"
+    },
+    {
+     "name": "evidence_role",
+     "label": "Evidence Role",
+     "kind": "text"
+    },
+    {
+     "name": "quality_pct",
+     "label": "Quality %",
+     "kind": "decimal"
+    },
+    {
+     "name": "engineering_interpretation",
+     "label": "Engineering Interpretation",
+     "kind": "text"
+    },
+    {
+     "name": "freshness_label",
+     "label": "Freshness Label",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "part_requirement",
+   "label": "Part requirement",
+   "layer": "transaction",
+   "description": "Parts a planned intervention or work order needs, by when.",
+   "view": "v_part_requirement",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "intervention",
+     "label": "Intervention ID",
+     "kind": "fk",
+     "fk": "intervention"
+    },
+    {
+     "name": "work_order",
+     "label": "Work Order ID",
+     "kind": "fk",
+     "fk": "work_order"
+    },
+    {
+     "name": "decision_id",
+     "label": "Decision ID",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "maintenance_type",
+     "label": "Maintenance Type",
+     "kind": "ref",
+     "ref": "maintenance_type"
+    },
+    {
+     "name": "part",
+     "label": "Part ID",
+     "kind": "fk",
+     "fk": "part"
+    },
+    {
+     "name": "required_qty",
+     "label": "Required Qty",
+     "kind": "integer"
+    },
+    {
+     "name": "required_by",
+     "label": "Required By",
+     "kind": "datetime"
+    },
+    {
+     "name": "status",
+     "label": "Requirement Status",
+     "kind": "text"
+    },
+    {
+     "name": "requirement_source",
+     "label": "Requirement Source",
+     "kind": "text"
+    },
+    {
+     "name": "source_record_id",
+     "label": "Source Record ID",
+     "kind": "text"
+    },
+    {
+     "name": "as_of",
+     "label": "As Of",
+     "kind": "datetime"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "intervention_requirement",
+   "label": "Intervention requirement",
+   "layer": "transaction",
+   "description": "A crew, part, tool, vehicle or permit an intervention needs before it can be scheduled.",
+   "view": "v_intervention_requirement",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "intervention",
+     "label": "Intervention ID",
+     "kind": "fk",
+     "fk": "intervention"
+    },
+    {
+     "name": "requirement_type",
+     "label": "Requirement Type",
+     "kind": "text"
+    },
+    {
+     "name": "requirement_ref",
+     "label": "Requirement Ref",
+     "kind": "text"
+    },
+    {
+     "name": "quantity",
+     "label": "Quantity",
+     "kind": "integer"
+    },
+    {
+     "name": "mandatory",
+     "label": "Mandatory",
+     "kind": "boolean"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "planned_outage",
+   "label": "Planned outage",
+   "layer": "transaction",
+   "description": "A scheduled reduction of plant capacity.",
+   "view": "v_planned_outage",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset_scope",
+     "label": "Asset Scope",
+     "kind": "text"
+    },
+    {
+     "name": "capacity_out_mw",
+     "label": "Capacity Out MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "start_at",
+     "label": "Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "end_at",
+     "label": "End",
+     "kind": "datetime"
+    },
+    {
+     "name": "reason",
+     "label": "Reason",
+     "kind": "text"
+    },
+    {
+     "name": "status",
+     "label": "Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "outage"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "capacity_test",
+   "label": "Capacity test",
+   "layer": "transaction",
+   "description": "A battery capacity and round-trip efficiency test.",
+   "view": "v_capacity_test",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "bess",
+     "label": "BESS ID",
+     "kind": "fk",
+     "fk": "asset_bess"
+    },
+    {
+     "name": "test_date",
+     "label": "Test Date",
+     "kind": "date"
+    },
+    {
+     "name": "test_type",
+     "label": "Test Type",
+     "kind": "text"
+    },
+    {
+     "name": "test_standard",
+     "label": "Test Standard",
+     "kind": "text"
+    },
+    {
+     "name": "rated_power_during_test_mw",
+     "label": "Rated Power During Test MW",
+     "kind": "integer"
+    },
+    {
+     "name": "discharged_energy_poi_mwh",
+     "label": "Discharged Energy POI MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "charged_energy_poi_mwh",
+     "label": "Charged Energy POI MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "ac_rte_pct",
+     "label": "AC RTE %",
+     "kind": "decimal"
+    },
+    {
+     "name": "soh_energy_pct",
+     "label": "SOH Energy %",
+     "kind": "decimal"
+    },
+    {
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "witness",
+     "label": "Witness",
+     "kind": "text"
+    },
+    {
+     "name": "result",
+     "label": "Result",
+     "kind": "text"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "hse_hours",
+   "label": "Hours worked",
+   "layer": "transaction",
+   "description": "Hours worked per site, period and worker type: the denominator of safety rates.",
+   "view": "v_hse_hours",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "period",
+     "label": "Period",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "worker_type",
+     "label": "Worker Type",
+     "kind": "text"
+    },
+    {
+     "name": "hours_worked",
+     "label": "Hours Worked",
+     "kind": "integer"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "data_status",
+     "label": "Data Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "ghg_activity",
+   "label": "GHG activity",
+   "layer": "transaction",
+   "description": "An emissions activity record (scope, source, quantity) with the factor applied.",
+   "view": "v_ghg_activity",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "period",
+     "label": "Period",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "ghg_scope",
+     "label": "GHG Scope",
+     "kind": "text"
+    },
+    {
+     "name": "emission_source",
+     "label": "Emission Source",
+     "kind": "text"
+    },
+    {
+     "name": "activity_value",
+     "label": "Activity Value",
+     "kind": "decimal"
+    },
+    {
+     "name": "activity_unit",
+     "label": "Activity Unit",
+     "kind": "text"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "data_status",
+     "label": "Data Status",
+     "kind": "text"
+    },
+    {
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
+     "kind": "text"
+    },
+    {
+     "name": "factor_id",
+     "label": "Factor ID",
+     "kind": "text"
+    },
+    {
+     "name": "factor_value",
+     "label": "Factor Value",
+     "kind": "decimal"
+    },
+    {
+     "name": "factor_unit",
+     "label": "Factor Unit",
+     "kind": "text"
+    },
+    {
+     "name": "factor_resolution",
+     "label": "Factor Resolution",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "water_cleaning",
+   "label": "Module cleaning",
+   "layer": "transaction",
+   "description": "A module-cleaning event: water used, soiling before and after, energy recovered.",
+   "view": "v_water_cleaning",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "event_date",
+     "label": "Date",
+     "kind": "date"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "array_designation",
+     "label": "PV Array ID",
+     "kind": "text"
+    },
+    {
+     "name": "array_name",
+     "label": "PV Array Name",
+     "kind": "text"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "cleaning_type",
+     "label": "Cleaning Type",
+     "kind": "text"
+    },
+    {
+     "name": "water_m3",
+     "label": "Water m3",
+     "kind": "decimal"
+    },
+    {
+     "name": "soiling_before_pct",
+     "label": "Soiling Before %",
+     "kind": "decimal"
+    },
+    {
+     "name": "soiling_after_pct",
+     "label": "Soiling After %",
+     "kind": "decimal"
+    },
+    {
+     "name": "mwh_recovered",
+     "label": "MWh Recovered",
+     "kind": "decimal"
+    },
+    {
+     "name": "water_per_recovered_mwh_l",
+     "label": "Water per Recovered MWh L",
+     "kind": "decimal"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "data_status",
+     "label": "Data Status",
+     "kind": "text"
+    },
+    {
+     "name": "asset_reference_basis",
+     "label": "Asset Reference Basis",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "execution_feedback",
+   "label": "Execution feedback",
+   "layer": "transaction",
+   "description": "How executed work compared with its plan: timing and duration variance, conformance and outcome.",
+   "view": "v_execution_feedback",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "work_order",
+     "label": "Work Order ID",
+     "kind": "fk",
+     "fk": "work_order"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "planned_start",
+     "label": "Planned Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "actual_start",
+     "label": "Actual Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "planned_duration_hours",
+     "label": "Planned Duration Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_duration_hours",
+     "label": "Actual Duration Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "date_variance_hours",
+     "label": "Date Variance Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "duration_variance_pct",
+     "label": "Duration Variance %",
+     "kind": "decimal"
+    },
+    {
+     "name": "conformance_status",
+     "label": "Conformance Status",
+     "kind": "text"
+    },
+    {
+     "name": "outcome_status",
+     "label": "Outcome Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "forecast_run",
+   "label": "Forecast run",
+   "layer": "transaction",
+   "description": "One generation-forecast run per plant and horizon, with its energy totals and quality measures.",
+   "view": "v_forecast_run",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "horizon_hours",
+     "label": "Horizon Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "forecast_start",
+     "label": "Forecast Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "forecast_end",
+     "label": "Forecast End",
+     "kind": "datetime"
+    },
+    {
+     "name": "resolution_minutes",
+     "label": "Resolution Minutes",
+     "kind": "integer"
+    },
+    {
+     "name": "physics_forecast_mwh",
+     "label": "Physics Forecast MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "hybrid_forecast_mwh",
+     "label": "Hybrid Forecast MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "operational_energy_at_risk_mwh",
+     "label": "Operational Energy At Risk MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "calibrated_band_pct",
+     "label": "Calibrated Band %",
+     "kind": "decimal"
+    },
+    {
+     "name": "data_trust_pct",
+     "label": "Data Trust %",
+     "kind": "decimal"
+    },
+    {
+     "name": "model_reliability_n_mae_pct",
+     "label": "Model Reliability nMAE %",
+     "kind": "decimal"
+    },
+    {
+     "name": "physics_model",
+     "label": "Physics Model ID",
+     "kind": "fk",
+     "fk": "ml_model"
+    },
+    {
+     "name": "residual_model",
+     "label": "Residual Model ID",
+     "kind": "fk",
+     "fk": "ml_model"
+    },
+    {
+     "name": "uncertainty_model",
+     "label": "Uncertainty Model ID",
+     "kind": "fk",
+     "fk": "ml_model"
+    },
+    {
+     "name": "run_status",
+     "label": "Run Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "outcome_validation",
+   "label": "Outcome validation",
+   "layer": "transaction",
+   "description": "The value a completed intervention actually realised, against what was predicted.",
+   "view": "v_outcome_validation",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "execution_feedback",
+     "label": "Execution Feedback ID",
+     "kind": "fk",
+     "fk": "execution_feedback"
+    },
+    {
+     "name": "work_order",
+     "label": "Work Order ID",
+     "kind": "fk",
+     "fk": "work_order"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "forecast_run_id",
+     "label": "Forecast Run ID",
+     "kind": "text"
+    },
+    {
+     "name": "predicted_avoided_loss_mwh",
+     "label": "Predicted Avoided Loss MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "predicted_value_protected",
+     "label": "Predicted Value Protected",
+     "kind": "money"
+    },
+    {
+     "name": "actual_validated_recovery_mwh",
+     "label": "Actual Validated Recovery MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_value_realized",
+     "label": "Actual Value Realized",
+     "kind": "money"
+    },
+    {
+     "name": "execution_cost",
+     "label": "Execution Cost",
+     "kind": "money"
+    },
+    {
+     "name": "net_realized_value",
+     "label": "Net Realized Value",
+     "kind": "money"
+    },
+    {
+     "name": "realization_pct",
+     "label": "Realization %",
+     "kind": "decimal"
+    },
+    {
+     "name": "outcome_confidence_pct",
+     "label": "Outcome Confidence %",
+     "kind": "decimal"
+    },
+    {
+     "name": "variance_driver",
+     "label": "Variance Driver",
+     "kind": "text"
+    },
+    {
+     "name": "validation_status",
+     "label": "Validation Status",
+     "kind": "text"
+    },
+    {
+     "name": "learning_feedback_status",
+     "label": "Learning Feedback Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "ppa_settlement",
+   "label": "PPA settlement",
+   "layer": "transaction",
+   "description": "The current settlement position of an offtake contract: energy scheduled and delivered, penalties, invoices and receivables.",
+   "view": "v_ppa_settlement",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "contract",
+     "label": "PPA ID",
+     "kind": "fk",
+     "fk": "offtake_contract"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "scheduled_energy_mwh",
+     "label": "Scheduled Energy MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "delivered_energy_mwh",
+     "label": "Delivered Energy MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "deemed_generation_mwh",
+     "label": "Deemed Generation MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "shortfall_energy_mwh",
+     "label": "Shortfall Energy MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "availability_penalty",
+     "label": "Availability Penalty",
+     "kind": "money"
+    },
+    {
+     "name": "curtailment_compensation",
+     "label": "Curtailment Compensation",
+     "kind": "money"
+    },
+    {
+     "name": "invoice_amount",
+     "label": "Invoice Amount",
+     "kind": "money"
+    },
+    {
+     "name": "amount_received",
+     "label": "Amount Received",
+     "kind": "money"
+    },
+    {
+     "name": "receivable_balance",
+     "label": "Receivable Balance",
+     "kind": "money"
+    },
+    {
+     "name": "days_outstanding",
+     "label": "Days Outstanding",
+     "kind": "integer"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "plant_telemetry",
+   "label": "Plant telemetry",
+   "layer": "series",
+   "description": "15-minute plant measurements: irradiance, temperatures, expected and actual output, losses.",
+   "view": "v_plant_telemetry",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "at",
+     "label": "Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "poa_wm2",
+     "label": "POA Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "ghi_wm2",
+     "label": "GHI Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "module_temp_c",
+     "label": "Module Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal"
+    },
+    {
+     "name": "soiling_ratio",
+     "label": "Soiling Ratio",
+     "kind": "decimal"
+    },
+    {
+     "name": "expected_dc_mw",
+     "label": "Expected DC MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "expected_ac_mw",
+     "label": "Expected AC MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_ac_mw",
+     "label": "Actual AC MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "pr_pct",
+     "label": "PR %",
+     "kind": "decimal"
+    },
+    {
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal"
+    },
+    {
+     "name": "inverter_efficiency_pct",
+     "label": "Inverter Efficiency %",
+     "kind": "decimal"
+    },
+    {
+     "name": "grid_frequency_hz",
+     "label": "Grid Frequency Hz",
+     "kind": "decimal"
+    },
+    {
+     "name": "power_factor",
+     "label": "Power Factor",
+     "kind": "decimal"
+    },
+    {
+     "name": "data_quality_pct",
+     "label": "Data Quality %",
+     "kind": "decimal"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "clear_sky_poa_wm2",
+     "label": "ClearSky POA Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "cloud_cover_pct",
+     "label": "Cloud Cover %",
+     "kind": "decimal"
+    },
+    {
+     "name": "cloud_transmittance_pct",
+     "label": "Cloud Transmittance %",
+     "kind": "decimal"
+    },
+    {
+     "name": "clear_sky_ac_potential_mw",
+     "label": "ClearSky AC Potential MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "weather_adjusted_expected_ac_mw",
+     "label": "Weather Adjusted Expected AC MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "weather_loss_mw",
+     "label": "Weather Loss MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "plant_operational_loss_mw",
+     "label": "Plant Operational Loss MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "curtailment_pct",
+     "label": "Curtailment %",
+     "kind": "decimal"
+    },
+    {
+     "name": "asset_health_score",
+     "label": "Asset Health Score",
+     "kind": "integer"
+    },
+    {
+     "name": "weather_source",
+     "label": "Weather Source",
+     "kind": "text"
+    },
+    {
+     "name": "weather_mode",
+     "label": "Weather Mode",
+     "kind": "text"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "inverter_reading",
+   "label": "Inverter telemetry",
+   "layer": "series",
+   "description": "Per-inverter measurements: DC and AC power, voltage, current, temperature, status and alarms.",
+   "view": "v_inverter_reading",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "at",
+     "label": "Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "asset",
+     "label": "Asset ID",
+     "kind": "fk",
+     "fk": "asset"
+    },
+    {
+     "name": "dc_power_mw",
+     "label": "DC Power MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "ac_power_mw",
+     "label": "AC Power MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "dc_voltage_v",
+     "label": "DC Voltage V",
+     "kind": "decimal"
+    },
+    {
+     "name": "dc_current_a",
+     "label": "DC Current A",
+     "kind": "decimal"
+    },
+    {
+     "name": "inverter_temp_c",
+     "label": "Inverter Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "status",
+     "label": "Status",
+     "kind": "ref",
+     "ref": "status",
+     "scope": "telemetry_state"
+    },
+    {
+     "name": "alarm_code",
+     "label": "Alarm Code",
+     "kind": "text"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "bess_reading",
+   "label": "BESS telemetry",
+   "layer": "series",
+   "description": "Battery measurements at the point of interconnection: power, state of charge, temperatures, mode.",
+   "view": "v_bess_reading",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "at",
+     "label": "Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "bess",
+     "label": "BESS ID",
+     "kind": "fk",
+     "fk": "asset_bess"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "charge_mw_poi",
+     "label": "Charge MW POI",
+     "kind": "decimal"
+    },
+    {
+     "name": "discharge_mw_poi",
+     "label": "Discharge MW POI",
+     "kind": "decimal"
+    },
+    {
+     "name": "charge_source",
+     "label": "Charge Source",
+     "kind": "text"
+    },
+    {
+     "name": "dispatch_schedule_mw",
+     "label": "Dispatch Schedule MW",
+     "kind": "integer"
+    },
+    {
+     "name": "available_mw",
+     "label": "Available MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "so_c_pct",
+     "label": "SoC %",
+     "kind": "decimal"
+    },
+    {
+     "name": "aux_load_mw",
+     "label": "Aux Load MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "cell_temp_max_c",
+     "label": "Cell Temp Max C",
+     "kind": "decimal"
+    },
+    {
+     "name": "cell_temp_avg_c",
+     "label": "Cell Temp Avg C",
+     "kind": "decimal"
+    },
+    {
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "co_located_pv_mw",
+     "label": "Co located PV MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "operating_mode",
+     "label": "Operating Mode",
+     "kind": "text"
+    },
+    {
+     "name": "data_quality_pct",
+     "label": "Data Quality %",
+     "kind": "decimal"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "bess_day",
+   "label": "BESS daily operations",
+   "layer": "series",
+   "description": "Daily battery energy balance, cycles, availability and temperatures.",
+   "view": "v_bess_day",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "day",
+     "label": "Date",
+     "kind": "date"
+    },
+    {
+     "name": "bess",
+     "label": "BESS ID",
+     "kind": "fk",
+     "fk": "asset_bess"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "charge_mwh_poi",
+     "label": "Charge MWh POI",
+     "kind": "decimal"
+    },
+    {
+     "name": "discharge_mwh_poi",
+     "label": "Discharge MWh POI",
+     "kind": "decimal"
+    },
+    {
+     "name": "aux_mwh",
+     "label": "Aux MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "start_so_c_pct",
+     "label": "Start SoC %",
+     "kind": "decimal"
+    },
+    {
+     "name": "end_so_c_pct",
+     "label": "End SoC %",
+     "kind": "decimal"
+    },
+    {
+     "name": "equivalent_full_cycles",
+     "label": "Equivalent Full Cycles",
+     "kind": "decimal"
+    },
+    {
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal"
+    },
+    {
+     "name": "scheduled_discharge_mwh",
+     "label": "Scheduled Discharge MWh",
+     "kind": "integer"
+    },
+    {
+     "name": "max_cell_temp_c",
+     "label": "Max Cell Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "cumulative_discharge_mwh_since_cod",
+     "label": "Cumulative Discharge MWh Since COD",
+     "kind": "decimal"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "weather_forecast",
+   "label": "Weather forecast",
+   "layer": "series",
+   "description": "Numerical weather prediction per plant and interval feeding the generation forecast.",
+   "view": "v_weather_forecast",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "interval_start",
+     "label": "Interval Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "lead_hours",
+     "label": "Lead Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "clear_sky_index",
+     "label": "Clear Sky Index",
+     "kind": "decimal"
+    },
+    {
+     "name": "cloud_cover_pct",
+     "label": "Cloud Cover %",
+     "kind": "decimal"
+    },
+    {
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal"
+    },
+    {
+     "name": "forecast_curtailment_pct",
+     "label": "Forecast Curtailment %",
+     "kind": "decimal"
+    },
+    {
+     "name": "nwp_source",
+     "label": "NWP Source",
+     "kind": "text"
+    },
+    {
+     "name": "data_provenance",
+     "label": "Data Provenance",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "forecast_interval",
+   "label": "Forecast interval",
+   "layer": "series",
+   "description": "The generation forecast per plant and 15-minute interval, step by step through the physics chain.",
+   "view": "v_forecast_interval",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "forecast_run_timestamp",
+     "label": "Forecast Run Timestamp",
+     "kind": "datetime"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "interval_start",
+     "label": "Interval Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "interval_minutes",
+     "label": "Interval Minutes",
+     "kind": "integer"
+    },
+    {
+     "name": "lead_hours",
+     "label": "Lead Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "clear_sky_poa_wm2",
+     "label": "ClearSky POA Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "forecast_poa_wm2",
+     "label": "Forecast POA Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "cloud_cover_pct",
+     "label": "Cloud Cover %",
+     "kind": "decimal"
+    },
+    {
+     "name": "ambient_temp_c",
+     "label": "Ambient Temp C",
+     "kind": "decimal"
+    },
+    {
+     "name": "wind_speed_ms",
+     "label": "Wind Speed ms",
+     "kind": "decimal"
+    },
+    {
+     "name": "soiling_pct",
+     "label": "Soiling %",
+     "kind": "decimal"
+    },
+    {
+     "name": "availability_pct",
+     "label": "Availability %",
+     "kind": "decimal"
+    },
+    {
+     "name": "curtailment_pct",
+     "label": "Curtailment %",
+     "kind": "decimal"
+    },
+    {
+     "name": "asset_health_score",
+     "label": "Asset Health Score",
+     "kind": "integer"
+    },
+    {
+     "name": "clear_sky_ac_potential_mw",
+     "label": "ClearSky AC Potential MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "weather_adjusted_physics_mw",
+     "label": "Weather Adjusted Physics MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "after_availability_mw",
+     "label": "After Availability MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "after_curtailment_mw",
+     "label": "After Curtailment MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "after_asset_state_mw",
+     "label": "After Asset State MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "ml_residual_pct",
+     "label": "ML Residual %",
+     "kind": "decimal"
+    },
+    {
+     "name": "ml_residual_correction_mw",
+     "label": "ML Residual Correction MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "forecast_delivered_mw",
+     "label": "Forecast Delivered MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "uncertainty_pct",
+     "label": "Uncertainty %",
+     "kind": "decimal"
+    },
+    {
+     "name": "forecast_lower_mw",
+     "label": "Forecast Lower MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "forecast_upper_mw",
+     "label": "Forecast Upper MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "model",
+     "label": "Model ID",
+     "kind": "fk",
+     "fk": "ml_model"
+    },
+    {
+     "name": "physics_model_version",
+     "label": "Physics Model Version",
+     "kind": "text"
+    },
+    {
+     "name": "residual_model_version",
+     "label": "Residual Model Version",
+     "kind": "text"
+    },
+    {
+     "name": "data_source",
+     "label": "Data Source",
+     "kind": "text"
+    },
+    {
+     "name": "uncertainty_method",
+     "label": "Uncertainty Method",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "plant_actual",
+   "label": "Metered output",
+   "layer": "series",
+   "description": "Metered plant output per interval, with observed irradiance, availability and curtailment.",
+   "view": "v_plant_actual",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "interval_start",
+     "label": "Interval Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "actual_ac_mw",
+     "label": "Actual AC MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_energy_mwh",
+     "label": "Actual Energy MWh",
+     "kind": "decimal"
+    },
+    {
+     "name": "observed_poa_wm2",
+     "label": "Observed POA Wm2",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_availability_pct",
+     "label": "Actual Availability %",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_curtailment_pct",
+     "label": "Actual Curtailment %",
+     "kind": "decimal"
+    },
+    {
+     "name": "data_quality_status",
+     "label": "Data Quality Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "forecast_validation",
+   "label": "Forecast validation",
+   "layer": "series",
+   "description": "Physics and hybrid forecasts against the metered outcome, per run and interval.",
+   "view": "v_forecast_validation",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "forecast_run_code",
+     "label": "Forecast Run ID",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "interval_start",
+     "label": "Interval Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "lead_hours",
+     "label": "Lead Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "physics_forecast_mw",
+     "label": "Physics Forecast MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "hybrid_forecast_mw",
+     "label": "Hybrid Forecast MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "actual_mw",
+     "label": "Actual MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "physics_error_mw",
+     "label": "Physics Error MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "hybrid_error_mw",
+     "label": "Hybrid Error MW",
+     "kind": "decimal"
+    },
+    {
+     "name": "physics_abs_error_pct",
+     "label": "Physics Abs Error %",
+     "kind": "decimal"
+    },
+    {
+     "name": "hybrid_abs_error_pct",
+     "label": "Hybrid Abs Error %",
+     "kind": "decimal"
+    },
+    {
+     "name": "inside_80_pct_band",
+     "label": "Inside 80 % Band",
+     "kind": "text"
+    },
+    {
+     "name": "horizon_bucket_hours",
+     "label": "Horizon Bucket Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "validation_mode",
+     "label": "Validation Mode",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "life_observation",
+   "label": "Life observation",
+   "layer": "series",
+   "description": "One life record (failure or survival to date) of an asset or a serialised PV module, for reliability models.",
+   "view": "v_life_observation",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "asset_code",
+     "label": "Asset ID",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "failure_mode",
+     "label": "Failure Mode",
+     "kind": "ref",
+     "ref": "failure_mode"
+    },
+    {
+     "name": "commissioned_date",
+     "label": "Commissioned Date",
+     "kind": "date"
+    },
+    {
+     "name": "observation_date",
+     "label": "Observation Date",
+     "kind": "date"
+    },
+    {
+     "name": "operating_hours",
+     "label": "Operating Hours",
+     "kind": "decimal"
+    },
+    {
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "ref",
+     "ref": "event_type",
+     "scope": "reliability"
+    },
+    {
+     "name": "failed_surviving",
+     "label": "Failed Surviving",
+     "kind": "text"
+    },
+    {
+     "name": "right_censored",
+     "label": "Right Censored",
+     "kind": "text"
+    },
+    {
+     "name": "replacement_reset",
+     "label": "Replacement Reset",
+     "kind": "text"
+    },
+    {
+     "name": "evidence_source",
+     "label": "Evidence Source",
+     "kind": "text"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "data_quality_status",
+     "label": "Data Quality Status",
+     "kind": "text"
+    },
+    {
+     "name": "module_group",
+     "label": "Group ID",
+     "kind": "fk",
+     "fk": "pv_module_group"
+    },
+    {
+     "name": "pv_module",
+     "label": "Module ID",
+     "kind": "fk",
+     "fk": "pv_module"
+    },
+    {
+     "name": "observation_basis",
+     "label": "Observation Basis",
+     "kind": "text"
+    },
+    {
+     "name": "calendar_exposure_hours",
+     "label": "Calendar Exposure Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "equipment_model",
+     "label": "Model ID",
+     "kind": "fk",
+     "fk": "equipment_model"
+    },
+    {
+     "name": "batch_id",
+     "label": "Batch ID",
+     "kind": "text"
+    },
+    {
+     "name": "evidence_reference",
+     "label": "Evidence Reference",
+     "kind": "text"
+    },
+    {
+     "name": "failure_criterion",
+     "label": "Failure Criterion",
+     "kind": "text"
+    },
+    {
+     "name": "data_basis",
+     "label": "Data Basis",
+     "kind": "text"
+    },
+    {
+     "name": "asset_tag",
+     "label": "Asset Tag",
+     "kind": "text"
+    },
+    {
+     "name": "asset_class",
+     "label": "Asset Class",
+     "kind": "ref",
+     "ref": "asset_class"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "resource_event",
+   "label": "Resource calendar event",
+   "layer": "series",
+   "description": "Availability and commitments of technicians, vehicles and tools by day.",
+   "view": "v_resource_event",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "resource_type",
+     "label": "Resource Type",
+     "kind": "text"
+    },
+    {
+     "name": "resource_code",
+     "label": "Resource ID",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "start_at",
+     "label": "Start",
+     "kind": "datetime"
+    },
+    {
+     "name": "end_at",
+     "label": "End",
+     "kind": "datetime"
+    },
+    {
+     "name": "event_type",
+     "label": "Event Type",
+     "kind": "ref",
+     "ref": "event_type",
+     "scope": "resource_calendar"
+    },
+    {
+     "name": "availability",
+     "label": "Availability",
+     "kind": "text"
+    },
+    {
+     "name": "available_hours",
+     "label": "Available Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "committed_hours",
+     "label": "Committed Hours",
+     "kind": "integer"
+    },
+    {
+     "name": "capacity_pct",
+     "label": "Capacity %",
+     "kind": "integer"
+    },
+    {
+     "name": "skill_or_certification",
+     "label": "Skill or Certification",
+     "kind": "text"
+    },
+    {
+     "name": "location",
+     "label": "Location",
+     "kind": "text"
+    },
+    {
+     "name": "reason",
+     "label": "Reason",
+     "kind": "text"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "site_weather",
+   "label": "Site work-weather forecast",
+   "layer": "series",
+   "description": "Hourly site weather for planning: rain, wind, lightning and the work permissions they allow.",
+   "view": "v_site_weather",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "site",
+     "label": "Plant ID",
+     "kind": "fk",
+     "fk": "site"
+    },
+    {
+     "name": "forecast_time",
+     "label": "Forecast Time",
+     "kind": "datetime"
+    },
+    {
+     "name": "valid_from",
+     "label": "Valid From",
+     "kind": "datetime"
+    },
+    {
+     "name": "valid_to",
+     "label": "Valid To",
+     "kind": "datetime"
+    },
+    {
+     "name": "rain_probability_pct",
+     "label": "Rain Probability %",
+     "kind": "integer"
+    },
+    {
+     "name": "rainfall_mm",
+     "label": "Rainfall mm",
+     "kind": "decimal"
+    },
+    {
+     "name": "wind_kmh",
+     "label": "Wind kmh",
+     "kind": "integer"
+    },
+    {
+     "name": "gust_kmh",
+     "label": "Gust kmh",
+     "kind": "integer"
+    },
+    {
+     "name": "lightning_risk",
+     "label": "Lightning Risk",
+     "kind": "text"
+    },
+    {
+     "name": "temperature_c",
+     "label": "Temperature C",
+     "kind": "integer"
+    },
+    {
+     "name": "visibility_km",
+     "label": "Visibility km",
+     "kind": "integer"
+    },
+    {
+     "name": "work_at_height_status",
+     "label": "Work At Height Status",
+     "kind": "text"
+    },
+    {
+     "name": "outdoor_electrical_status",
+     "label": "Outdoor Electrical Status",
+     "kind": "text"
+    },
+    {
+     "name": "access_status",
+     "label": "Access Status",
+     "kind": "text"
+    },
+    {
+     "name": "freshness_status",
+     "label": "Freshness Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_system",
+     "label": "Source System",
+     "kind": "ref",
+     "ref": "source_system"
+    },
+    {
+     "name": "source_mode",
+     "label": "Source Mode",
+     "kind": "text"
+    },
+    {
+     "name": "evidence_id",
+     "label": "Evidence ID",
+     "kind": "text"
+    },
+    {
+     "name": "source_ordinal",
+     "label": "Source row",
+     "kind": "integer"
+    }
+   ]
+  },
+  {
+   "name": "record_link",
+   "label": "Record link",
+   "layer": "transaction",
+   "description": "One hop of the decision loop between records of different modules (finding → work order, intervention → work order, …).",
+   "view": "v_record_link",
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text"
+    },
+    {
+     "name": "from_entity",
+     "label": "From",
+     "kind": "text"
+    },
+    {
+     "name": "from_code",
+     "label": "From code",
+     "kind": "text"
+    },
+    {
+     "name": "link_type",
+     "label": "Link",
+     "kind": "text"
+    },
+    {
+     "name": "to_entity",
+     "label": "To",
+     "kind": "text"
+    },
+    {
+     "name": "to_code",
+     "label": "To code",
+     "kind": "text"
+    },
+    {
+     "name": "linked_at",
+     "label": "Linked at",
+     "kind": "datetime"
+    },
+    {
+     "name": "status",
+     "label": "Status",
+     "kind": "text"
+    },
+    {
+     "name": "source_record",
+     "label": "Source",
+     "kind": "text"
+    },
+    {
+     "name": "response_time_hours",
+     "label": "Response time (h)",
+     "kind": "decimal"
     }
    ]
   }

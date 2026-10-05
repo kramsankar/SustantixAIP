@@ -11,6 +11,7 @@
 import { readFileSync } from "node:fs";
 import type { IntegrityRule, IntegrityRules } from "./conformance.ts";
 import { applyCorrections, dmyToIso, type CorrectionEntry, type CorrectionSet } from "./corrections.ts";
+import { transactionDefs } from "./sheet-model.ts";
 import { Resolver, type Binding, type Vocabulary } from "./reference.ts";
 import type { ColumnDef, Registry, TableDef } from "./registry.ts";
 import { coerce, rowKey, type SourceRow } from "./rows.ts";
@@ -28,13 +29,15 @@ export interface MasterColumn {
   nullTokens?: string[];
   /** fk: the master this column points to (by business code). */
   fk?: string;
+  /** ref: leave empty (no problem reported) when the value is not in this vocabulary — a column split by vocabulary. */
+  optionalRef?: boolean;
   /** fk: at most one row may point to the same parent (1:1 extensions). */
   unique?: boolean;
   maxLength?: number;
   precision?: number;
 }
 
-export type MasterLayer = "organisation" | "asset" | "supply" | "workforce" | "integration" | "sustainability" | "analytics" | "contract" | "register";
+export type MasterLayer = "organisation" | "asset" | "supply" | "workforce" | "integration" | "sustainability" | "analytics" | "contract" | "register" | "transaction" | "series";
 
 export interface Lineage {
   table: string;
@@ -61,6 +64,8 @@ export interface MasterDef {
   columns: MasterColumn[];
   /** Columns dropped from the replaced sheets and why (shown in the phase 2 report). */
   dropped?: string;
+  /** Time series carry no per-row lineage (each row comes from exactly one sheet row of one sheet). */
+  noLineage?: boolean;
   build(ctx: MasterContext): MasterRow[];
 }
 
@@ -356,14 +361,14 @@ export function masterDefs(reg: Registry): MasterDef[] {
       description: "A manufacturer's product model. Ends the model_id collision: product models live here, forecasting models in ml_model.",
       replaces: ["pv_module_models"], owns: ["pv_module_models.model_id"],
       columns: [
-        col("name", "Name"), fk("manufacturer", "Manufacturer", "party"), ref("asset_class", "Asset class", "asset_class"), col("technology", "Technology"),
+        col("name", "Name"), col("model_number", "Model number"), fk("manufacturer", "Manufacturer", "party"), ref("asset_class", "Asset class", "asset_class"), col("technology", "Technology"),
         col("rated_power_w", "Rated power (W)", "decimal", { precision: 2 }),
         ...mirror(tc, "pv_module_models", ["efficiency_pct", "temperature_coefficient_pmax_pct_c", "product_warranty_years", "performance_warranty_years", "planning_service_life_years", "document_reference"]),
       ],
       build: (ctx) => {
         const out: MasterRow[] = ctx.rows("pv_module_models").map((r) => ({
           code: String(r.model_id),
-          values: { name: r.model_name, manufacturer: partyCode(r.manufacturer), asset_class: "PV_MODULE", technology: r.technology, rated_power_w: r.rated_wp, ...take(r, ["efficiency_pct", "temperature_coefficient_pmax_pct_c", "product_warranty_years", "performance_warranty_years", "planning_service_life_years", "document_reference"]) },
+          values: { name: r.model_name, model_number: r.model_name, manufacturer: partyCode(r.manufacturer), asset_class: "PV_MODULE", technology: r.technology, rated_power_w: r.rated_wp, ...take(r, ["efficiency_pct", "temperature_coefficient_pmax_pct_c", "product_warranty_years", "performance_warranty_years", "planning_service_life_years", "document_reference"]) },
           lineage: [one("pv_module_models", r.__key)],
         }));
         const seen = new Map<string, MasterRow>();
@@ -375,7 +380,7 @@ export function masterDefs(reg: Registry): MasterDef[] {
             if (hit.values.asset_class !== r.asset_class) hit.values.asset_class = null; // a model used across classes keeps no class
             continue;
           }
-          seen.set(code, { code, values: { name: `${str(r.oem)} ${str(r.model)}`, manufacturer: partyCode(r.oem), asset_class: r.asset_class }, lineage: [{ table: "asset_master", key: "oem + model", role: "derived" }] });
+          seen.set(code, { code, values: { name: `${str(r.oem)} ${str(r.model)}`, model_number: str(r.model), manufacturer: partyCode(r.oem), asset_class: r.asset_class }, lineage: [{ table: "asset_master", key: "oem + model", role: "derived" }] });
         }
         return [...out, ...[...seen.values()].sort((a, b) => a.code.localeCompare(b.code))];
       },
@@ -953,7 +958,7 @@ export function analyticsModels(): AnalyticsModelCard[] {
 // ── Build + gate ────────────────────────────────────────────────────────────
 
 /** Masters in dependency order (a master after every master it references, self-references aside). */
-export function topoOrder(defs: MasterDef[]): MasterDef[] {
+export function topoOrder(defs: MasterDef[], external: ReadonlySet<string> = new Set()): MasterDef[] {
   const byName = new Map(defs.map((d) => [d.name, d]));
   const out: MasterDef[] = [];
   const state = new Map<string, "visiting" | "done">();
@@ -961,7 +966,7 @@ export function topoOrder(defs: MasterDef[]): MasterDef[] {
     if (state.get(d.name) === "done") return;
     if (state.get(d.name) === "visiting") throw new Error(`master reference cycle at ${d.name}`);
     state.set(d.name, "visiting");
-    for (const c of d.columns) if (c.kind === "fk" && c.fk !== d.name) {
+    for (const c of d.columns) if (c.kind === "fk" && c.fk !== d.name && !external.has(c.fk!)) {
       const t = byName.get(c.fk!);
       if (!t) throw new Error(`${d.name}.${c.name} references unknown master ${c.fk}`);
       visit(t);
@@ -973,7 +978,7 @@ export function topoOrder(defs: MasterDef[]): MasterDef[] {
   return out;
 }
 
-export const CODE_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 ._:@\/|+-]{0,199}$/;
+export const CODE_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 ._:@\/|+>-]{0,199}$/;
 
 export interface MasterBuild {
   masters: BuiltMaster[];
@@ -989,7 +994,7 @@ export function buildMasters(reg: Registry, raw: Record<string, SourceRow[]>, vo
   const { sheets, entries } = corrections ? applyCorrections(reg, raw, corrections) : { sheets: raw, entries: [] as CorrectionEntry[] };
   const ctx = new MasterContext(reg, sheets);
   const resolver = new Resolver(vocab);
-  const defs = topoOrder(masterDefs(reg));
+  const defs = topoOrder([...masterDefs(reg), ...transactionDefs(reg)]);
   const issues: MasterIssue[] = [];
   const masters: BuiltMaster[] = [];
   const codes = new Map<string, Set<string>>();
@@ -1008,7 +1013,10 @@ export function buildMasters(reg: Registry, raw: Record<string, SourceRow[]>, vo
         const res = resolver.resolve(binding, v);
         if (res.status === "null") row.values[c.name] = null;
         else if (res.status === "code") row.values[c.name] = res.code;
-        else { issues.push({ master: def.name, code: row.code, column: c.name, value: String(v), problem: "unmapped reference" }); row.values[c.name] = null; }
+        else {
+          if (!c.optionalRef) issues.push({ master: def.name, code: row.code, column: c.name, value: String(v), problem: "unmapped reference" });
+          row.values[c.name] = null;
+        }
       }
       for (const k of Object.keys(row.values)) if (!def.columns.some((c) => c.name === k)) throw new Error(`${def.name} row ${row.code} sets unknown column ${k}`);
     }
@@ -1086,7 +1094,7 @@ export function phase2Report(reg: Registry, b: MasterBuild, merges: MergeResolut
     "",
     "| Measure | Value |",
     "| --- | --- |",
-    `| Masters and registers | ${b.masters.length} tables, ${fmt(total)} rows |`,
+    `| Masters and registers | ${b.masters.filter((m) => m.def.layer !== "transaction" && m.def.layer !== "series").length} tables, ${fmt(b.masters.filter((m) => m.def.layer !== "transaction" && m.def.layer !== "series").reduce((n, m) => n + m.rows.length, 0))} rows (phase 3 adds ${b.masters.filter((m) => m.def.layer === "transaction" || m.def.layer === "series").length} transaction and time-series tables, ${fmt(total)} rows in all) |`,
     `| Workbook tables consolidated | ${new Set(b.masters.flatMap((m) => m.def.replaces)).size} |`,
     `| Foreign keys | ${b.masters.reduce((n, m) => n + m.def.columns.filter((c) => c.kind === "fk").length, 0)} (all composite with tenant) |`,
     `| Controlled-value references | ${b.masters.reduce((n, m) => n + m.def.columns.filter((c) => c.kind === "ref").length, 0)} |`,
@@ -1098,7 +1106,7 @@ export function phase2Report(reg: Registry, b: MasterBuild, merges: MergeResolut
     "| Master | Layer | Rows | Replaces | Merged rows | Keys to | Dropped (copies) |",
     "| --- | --- | --- | --- | --- | --- | --- |",
   ];
-  for (const { def, rows } of b.masters) {
+  for (const { def, rows } of b.masters.filter((m) => m.def.layer !== "transaction" && m.def.layer !== "series")) {
     const merged = rows.filter((r) => r.lineage.some((l) => l.role === "merged")).length;
     const fks = def.columns.filter((c) => c.kind === "fk").map((c) => `${c.name} → ${c.fk}`);
     const refs = def.columns.filter((c) => c.kind === "ref").map((c) => `${c.name} → ref_${c.ref}${c.scope ? `/${c.scope}` : ""}`);

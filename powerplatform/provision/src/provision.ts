@@ -14,6 +14,7 @@ import {
   masterRelationships,
   platformPlan,
   readSheets,
+  transactionDefs,
   referencePlan,
   referenceRecords,
   type CorrectionSet,
@@ -91,11 +92,14 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const platform = platformPlan();
   const model = o.dataModel ? dataModelPlan(o.registry) : [];
   const reference = [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...(o.corrections ? [correctionLogPlan()] : [])];
-  const masters = o.masters ? [...masterPlan(masterDefs(o.registry)), ...analyticsPlan(), ...agentsPlan()] : [];
+  const masterNames = masterDefs(o.registry).map((d) => d.name);
+  const masters = o.masters
+    ? [...masterPlan(masterDefs(o.registry)), ...masterPlan(transactionDefs(o.registry), { lineage: false, external: masterNames }), ...analyticsPlan(), ...agentsPlan()]
+    : [];
   for (const p of [...platform, ...reference, ...masters, ...model]) await ensureTable(api, p, log);
   let relationshipsCreated = 0;
   // Lookups after every table exists: masters reference each other and the reference tables.
-  for (const rel of o.masters ? masterRelationships(masterDefs(o.registry)) : []) if (await ensureRelationship(api, rel, log)) relationshipsCreated++;
+  for (const rel of o.masters ? [...masterRelationships(masterDefs(o.registry)), ...masterRelationships(transactionDefs(o.registry), masterNames)] : []) if (await ensureRelationship(api, rel, log)) relationshipsCreated++;
 
   await ensureEnvironmentVariables(api, log);
 

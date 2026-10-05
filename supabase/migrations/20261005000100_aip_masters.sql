@@ -128,8 +128,9 @@ alter table aip."party_role" add column if not exists "party_id" uuid;
 alter table aip."party_role" add column if not exists "role" text;
 drop trigger if exists t_ref_guard on aip."party_role";
 -- Equipment model: A manufacturer's product model. Ends the model_id collision: product models live here, forecasting models in ml_model.
-select aip.create_master_table('equipment_model', 'Equipment model', $cols$"name" text, "manufacturer_id" uuid, "asset_class_id" uuid references aip."ref_asset_class"(id), "technology" text, "rated_power_w" numeric(24,2), "efficiency_pct" numeric(24,2), "temperature_coefficient_pmax_pct_c" numeric(24,2), "product_warranty_years" integer, "performance_warranty_years" integer, "planning_service_life_years" integer, "document_reference" text$cols$, null, array['admin']);
+select aip.create_master_table('equipment_model', 'Equipment model', $cols$"name" text, "model_number" text, "manufacturer_id" uuid, "asset_class_id" uuid references aip."ref_asset_class"(id), "technology" text, "rated_power_w" numeric(24,2), "efficiency_pct" numeric(24,2), "temperature_coefficient_pmax_pct_c" numeric(24,2), "product_warranty_years" integer, "performance_warranty_years" integer, "planning_service_life_years" integer, "document_reference" text$cols$, null, array['admin']);
 alter table aip."equipment_model" add column if not exists "name" text;
+alter table aip."equipment_model" add column if not exists "model_number" text;
 alter table aip."equipment_model" add column if not exists "manufacturer_id" uuid;
 alter table aip."equipment_model" add column if not exists "asset_class_id" uuid references aip."ref_asset_class"(id);
 alter table aip."equipment_model" add column if not exists "technology" text;
@@ -752,10 +753,10 @@ left join aip."party" r0 on r0.id = m."party_id";
 grant select on aip."v_party_role" to authenticated, service_role;
 drop view if exists aip."v_equipment_model";
 create view aip."v_equipment_model" with (security_invoker = true) as
-select m.id, m.tenant_id, m.code, m."name", r1.code as "manufacturer", r2.code as "asset_class", m."technology", m."rated_power_w", m."efficiency_pct", m."temperature_coefficient_pmax_pct_c", m."product_warranty_years", m."performance_warranty_years", m."planning_service_life_years", m."document_reference", m.is_active, m.row_version, m.updated_at
+select m.id, m.tenant_id, m.code, m."name", m."model_number", r2.code as "manufacturer", r3.code as "asset_class", m."technology", m."rated_power_w", m."efficiency_pct", m."temperature_coefficient_pmax_pct_c", m."product_warranty_years", m."performance_warranty_years", m."planning_service_life_years", m."document_reference", m.is_active, m.row_version, m.updated_at
 from aip."equipment_model" m
-left join aip."party" r1 on r1.id = m."manufacturer_id"
-left join aip."ref_asset_class" r2 on r2.id = m."asset_class_id";
+left join aip."party" r2 on r2.id = m."manufacturer_id"
+left join aip."ref_asset_class" r3 on r3.id = m."asset_class_id";
 grant select on aip."v_equipment_model" to authenticated, service_role;
 drop view if exists aip."v_asset";
 create view aip."v_asset" with (security_invoker = true) as
