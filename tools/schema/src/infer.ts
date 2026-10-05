@@ -78,7 +78,7 @@ function decimals(v: number): number {
   return i < 0 ? 0 : Math.min(10, s.length - i - 1);
 }
 
-export function inferKind(header: string, values: unknown[]): Pick<ColumnDef, "kind" | "maxLength" | "precision" | "currency"> {
+export function inferKind(header: string, values: unknown[]): Pick<ColumnDef, "kind" | "maxLength" | "precision" | "currency" | "midnightAsDate"> {
   const present = values.filter((v) => v !== null && v !== undefined && v !== "");
   const currency = moneyCurrency(header);
   if (present.length === 0) return currency ? { kind: "money", precision: 2, currency } : { kind: "text", maxLength: 200 };
@@ -92,7 +92,11 @@ export function inferKind(header: string, values: unknown[]): Pick<ColumnDef, "k
   }
   const strs = present.map(String);
   if (strs.every((s) => DATE.test(s))) return { kind: "date" };
-  if (strs.every((s) => DATE.test(s) || DATETIME.test(s))) return { kind: "datetime" };
+  if (strs.every((s) => DATE.test(s) || DATETIME.test(s))) {
+    // Columns that write midnight as a bare date (and never as "… 00:00") keep that form when rebuilt.
+    const bare = strs.some((s) => DATE.test(s)) && !strs.some((s) => / 00:00(:00)?$/.test(s));
+    return bare ? { kind: "datetime", midnightAsDate: true } : { kind: "datetime" };
+  }
   const longest = Math.max(...strs.map((s) => s.length));
   if (/_URL$/i.test(header) || strs.every((s) => /^https?:\/\//.test(s))) return { kind: "url", maxLength: 1000 };
   if (longest > 1000) return { kind: "memo", maxLength: 100000 };

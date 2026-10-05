@@ -23,7 +23,7 @@ import { analyticsPlan, analyticsSql } from "./analytics-sql.ts";
 import { mastersSql } from "./master-sql.ts";
 import { buildMasters, masterDefs, masterManifest } from "./masters.ts";
 import { compatSql, compatTestSql, rebuildSheets } from "./compat.ts";
-import { transactionDefs } from "./sheet-model.ts";
+import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -54,6 +54,7 @@ writeFileSync(join(root, "supabase/migrations/20261005000300_aip_agents.sql"), a
 const masterNames = masterDefs(reg).map((d) => d.name);
 writeFileSync(join(root, "supabase/migrations/20261006000100_aip_transactions.sql"), mastersSql(transactionDefs(reg), reg.defaultCurrency, { header: false, external: masterNames, title: "phase 3: transactions, time series and record links" }));
 writeFileSync(join(root, "supabase/migrations/20261006000200_aip_compat.sql"), compatSql(reg, [...masterDefs(reg), ...transactionDefs(reg)]));
+writeFileSync(join(root, "schema/aip-compat.json"), JSON.stringify({ version: 1, sheets: SHEET_SPECS.map((x) => x.sheet) }, null, 1) + "\n");
 const trips = rebuildSheets(reg, readSheets(readFileSync(workbook)), built, vocab, loadCorrections(root));
 writeFileSync(join(root, "supabase/tests/95_compat_equivalence.sql"), compatTestSql(reg, trips, "00000000-0000-0000-0000-0000000000c1"));
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.

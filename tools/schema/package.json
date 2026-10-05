@@ -4,14 +4,25 @@
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./workbook-format": "./src/workbook-format.ts"
+  },
   "scripts": {
     "generate": "tsx src/cli.ts",
     "seed:sql": "tsx src/seed-sql.ts",
     "check:data": "tsx src/check-data.ts",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "governed:json": "tsx src/governed-cli.ts"
   },
-  "dependencies": { "xlsx": "0.18.5" },
-  "devDependencies": { "@types/node": "^22.10.0", "tsx": "^4.19.2", "typescript": "^5.6.3", "vitest": "^2.1.8" }
+  "dependencies": {
+    "xlsx": "0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
 }

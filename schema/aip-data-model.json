@@ -83,6 +83,7 @@
      "name": "created_date",
      "label": "Created Date",
      "kind": "datetime",
+     "midnightAsDate": true,
      "nullable": false
     },
     {
@@ -90,6 +91,7 @@
      "name": "sla_due",
      "label": "SLA Due",
      "kind": "datetime",
+     "midnightAsDate": true,
      "nullable": false
     },
     {
@@ -8010,6 +8012,7 @@
      "name": "latest_evidence_time",
      "label": "Latest Evidence Time",
      "kind": "datetime",
+     "midnightAsDate": true,
      "nullable": false
     },
     {
@@ -8268,6 +8271,7 @@
      "name": "observed_time",
      "label": "Observed Time",
      "kind": "datetime",
+     "midnightAsDate": true,
      "nullable": false
     },
     {
@@ -17432,6 +17436,7 @@
      "name": "alert_timestamp",
      "label": "Alert Timestamp",
      "kind": "datetime",
+     "midnightAsDate": true,
      "nullable": false
     },
     {

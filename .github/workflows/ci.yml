@@ -142,7 +142,7 @@ jobs:
   parity:
     name: reference screen parity + license gate
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -154,9 +154,15 @@ jobs:
       - run: pnpm --filter @sustantix/aip-runtime test
         env:
           AIP_PARITY_OUT: ${{ runner.temp }}/parity
+      - name: Governed-mode parity (runtime booted on the governed workbook, against its reviewed baseline)
+        run: pnpm --filter @sustantix/aip-runtime test:governed
+        env:
+          AIP_PARITY_OUT: ${{ runner.temp }}/governed
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: parity-crawl
-          path: ${{ runner.temp }}/parity/crawl.json
+          path: |
+            ${{ runner.temp }}/parity/crawl.json
+            ${{ runner.temp }}/governed/governed-crawl.json
           retention-days: 14

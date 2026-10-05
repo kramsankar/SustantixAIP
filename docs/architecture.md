@@ -95,6 +95,33 @@ Each master holds its own attributes only. References to other masters are forei
 
 The data gate (`check:data`) builds every master and fails on duplicate codes, unmapped vocabulary, unresolved references, broken 1:1 extensions or an unresolved merge. Its report is `docs/data/phase2-master-report.md`.
 
+## Transactions, time series and compatibility (phase 3)
+
+`tools/schema/src/sheet-model.ts` declares each transaction and time series once, as a mapping from the sheet it replaces. Every sheet column is accounted for: carried, a reference to a master, a controlled value, re-typed, or a copy of a master attribute that is rebuilt through the reference. A spec that leaves a column unaccounted fails the gate.
+
+There are 23 transaction tables and 11 time series (83,365 rows). They cover work orders, events, root-cause cases and evidence, alerts, recommendations, vision inspections and findings, warranty claims, PM plans, condition assessments, requirements, outages, capacity tests, ESG activity, execution and outcome feedback, forecast runs and PPA settlements. The time series are plant, inverter and BESS telemetry, BESS days, weather, forecast intervals, metered output, validation, life observations, the resource calendar and site weather.
+
+`aip.record_link` is the cross-module ledger. It records each process hop that one foreign key cannot express (intervention → work order, finding → work order, HSE incident → work order, assessment → work order), and both ends are checked.
+
+From the same declarations:
+- **`aip_compat.<sheet>`** views (security invoker) rebuild each replaced sheet with its columns, types and order.
+- **The round trip** (`rebuildSheets`) compares 1.6 million cells with the corrected workbook. Every difference is classified as one of:
+  - vocabulary (a canonical label);
+  - format (the same instant in the sheet's other date form);
+  - copy (an attribute the workbook repeated that disagreed with its master).
+
+  Unexplained differences fail CI, and `supabase/tests/95_compat_equivalence.sql` proves the views in Postgres.
+
+Planners write transactions; administrators and integrations write time series. Report: `docs/data/phase3-transactions-report.md`.
+
+**Runtime on governed data.** The runtime normally shows its bundled data. With `AIP_DATA_SOURCE=governed`:
+- The host bridge registers `window.__AIP_GOVERNED__`.
+- At boot, a host seam in the runtime loads the bundled baseline and then overlays the tenant's governed workbook. That workbook comes from `GET /api/aip/workbook`: compatibility views, then the remaining sheet tables, in workbook order, headers and value forms. The overlay is exactly what a workbook upload does.
+- Large time series stay with the bundle.
+- While governed data is active the runtime does not persist snapshots, because the database is the system of record. Runtime edits reach the database through the change-set API in phase 4.
+
+Screens that read the data change where governed data differs from the bundle: corrected records, canonical labels, and masters replacing stale copies. `pnpm --filter @sustantix/aip-runtime test:governed -- --rebase` writes the reviewed governed baseline (`docs/parity/governed-baseline.md`), and CI then holds governed mode to it exactly. The bundled-data parity crawl is unchanged.
+
 ## Analytics (`packages/analytics`)
 
 The reference app displayed model results (forecast bands, remaining life, risk, state of health) that were precomputed in the workbook. `@sustantix/analytics` computes them from each tenant's own data, deterministically (seeded):
@@ -157,7 +184,7 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 
 ## Roadmap
 
-- **Phase 3:** transactions (work orders, events, telemetry), `record_link`, and compatibility views so the runtime reads the database instead of its embedded datasets. The parity crawl is re-baselined there.
+- **Phase 3 (done):** transactions, time series, `record_link`, compatibility views and the governed-data boot seam. Next within it: rebuild the master-replaced sheets (sites, assets, parts…) through compatibility views too, and move the modules that still read only their bundled datasets onto the governed workbook.
 - **Phase 4:** change-set API with `row_version` and the Sustantix Enterprise Grid on the governed views.
 - **Phase 5:** staging and data-quality quarantine, outbox (approved proposals to ERP/EAM), realtime, Dataverse sync, and scheduled agent runs.
 

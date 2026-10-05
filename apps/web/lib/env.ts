@@ -12,6 +12,9 @@ const ServerEnvSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
   AIP_LICENSE_KEY: z.preprocess(blankToUndefined, z.string().trim().max(16384).optional()),
   AIP_LICENSE_REVOCATION: z.preprocess(blankToUndefined, z.string().trim().max(262144).optional()),
+  // Data source for the runtime: "embedded" (bundled demo data, the default) or "governed" (the tenant's data from
+  // the governed model through the phase 3 compatibility views).
+  AIP_DATA_SOURCE: z.preprocess(blankToUndefined, z.enum(["embedded", "governed"]).default("embedded")),
   // Agents (optional): without a key the agent endpoints answer 503 agents_not_configured.
   ANTHROPIC_API_KEY: z.preprocess(blankToUndefined, z.string().trim().min(20).optional()),
   AIP_AGENT_MODEL: z.preprocess(blankToUndefined, z.string().trim().regex(/^claude-[a-z0-9.-]+$/).default("claude-sonnet-5-5")),

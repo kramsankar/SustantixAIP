@@ -72,9 +72,13 @@ missing or invalid, the API answers `503 server_misconfigured` and the log names
    - `ANTHROPIC_API_KEY`: optional, server only, mark it *Sensitive*. Enables the AIP agents and the Assistant
      screen's online mode. Without it the agent endpoints answer `503 agents_not_configured`.
    - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
+   - `AIP_DATA_SOURCE`: `embedded` (default: the runtime shows its bundled data) or `governed` (the runtime boots
+     on the tenant's governed data through `GET /api/aip/workbook`). Governed mode needs the `aip_compat` schema
+     exposed (step 3) and the tenant loaded.
 3. **Supabase schema**: from the monorepo root, `supabase link --project-ref <ref>` and then `supabase db push`.
    This applies `supabase/migrations/*`. Then in the Supabase dashboard go to **Settings → API → Exposed schemas**
-   and add `aip`, because the API reads `aip.*` through PostgREST.
+   and add `aip` and `aip_compat`, because the API reads `aip.*` (and, in governed mode, the compatibility views in
+   `aip_compat.*`) through PostgREST.
    In **Authentication → Providers**, enable Email and disable public sign-ups if accounts are provisioned by an administrator.
 4. **First tenant and administrator**: create the user in **Authentication → Users**. Set `full_name` in the user
    metadata if you want a display name. Then run this in the SQL editor:

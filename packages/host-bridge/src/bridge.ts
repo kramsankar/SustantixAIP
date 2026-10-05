@@ -85,6 +85,10 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
     void current.then((lic) => applyLicense(lic, adapter));
   });
 
+  if (adapter.governed) {
+    // Boot seam (phase 3): the runtime overlays the tenant's governed workbook when the host serves one.
+    Object.defineProperty(window, "__AIP_GOVERNED__", { value: adapter.governed, writable: false, configurable: false });
+  }
   if (adapter.persistence) {
     // Consumed by the host seams in saveEamState / loadEamState / clearEamState.
     Object.defineProperty(window, "__AIP_PERSISTENCE__", { value: adapter.persistence, writable: false, configurable: false });

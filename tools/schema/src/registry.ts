@@ -12,6 +12,8 @@ export interface ColumnDef {
   maxLength?: number;
   /** Decimal places for decimal / money. */
   precision?: number;
+  /** datetime: the workbook writes midnight as a bare date ("2026-03-14"), never as "2026-03-14 00:00". */
+  midnightAsDate?: boolean;
   /** ISO-4217 code of the source values for money columns. */
   currency?: string;
   nullable: boolean;

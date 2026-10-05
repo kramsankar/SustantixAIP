@@ -57,7 +57,7 @@ export function coerce(c: ColumnDef, v: unknown): unknown {
 
 /** Postgres row for aip.<table>; tenant supplied by the caller. */
 export function pgRecord(t: TableDef, row: SourceRow, index: number, tenantId: string, currency: string): Record<string, unknown> {
-  const rec: Record<string, unknown> = { tenant_id: tenantId, row_key: rowKey(t, row, index) };
+  const rec: Record<string, unknown> = { tenant_id: tenantId, row_key: rowKey(t, row, index), source_ordinal: index + 1 };
   for (const c of t.columns) rec[c.name] = coerce(c, row[c.source]);
   if (t.columns.some((c) => c.kind === "money")) rec.currency = t.columns.find((c) => c.kind === "money")?.currency ?? currency;
   return rec;

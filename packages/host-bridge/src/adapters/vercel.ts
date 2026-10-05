@@ -1,5 +1,5 @@
 import type { LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
-import type { HostAdapter, Identity, RuntimeState } from "../types.js";
+import type { GovernedWorkbook, HostAdapter, Identity, RuntimeState } from "../types.js";
 
 export async function gzipJson(value: unknown): Promise<Uint8Array<ArrayBuffer>> {
   const stream = new Blob([JSON.stringify(value)]).stream().pipeThrough(new CompressionStream("gzip"));
@@ -62,5 +62,7 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
       },
       clear: () => call<void>("/state", { method: "DELETE" }),
     },
+    // 204 (bundled data) resolves to undefined → null: the runtime boots as before.
+    governed: { load: async () => (await call<GovernedWorkbook | undefined>("/workbook")) ?? null },
   };
 }

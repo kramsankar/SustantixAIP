@@ -7771,7 +7771,7 @@ function rowKey(row,fields){return fields.map(f=>s(row[f]).trim()).join("¦")}
 function replaceArray(target,rows){target.splice(0,target.length,...rows)}
 function mergeRows(existing,incoming,rule,mode){if(mode==="replace")return incoming.slice();const map=new Map(existing.map(r=>[rowKey(r,rule.key),r]));incoming.forEach(r=>{const k=rowKey(r,rule.key);if(mode==="add"&&!map.has(k))map.set(k,r);if(mode==="update")map.set(k,{...(map.get(k)||{}),...r})});return [...map.values()]}
 function openEamDb(){return new Promise((resolve,reject)=>{const q=indexedDB.open("APM_App",1);q.onupgradeneeded=()=>q.result.createObjectStore("state");q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
-async function saveEamState(){if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();return new Promise((resolve,reject)=>{const tx=db.transaction("state","readwrite");tx.objectStore("state").put({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE},"current");tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function saveEamState(){if(window.__AIP_GOVERNED_ACTIVE__)return;if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();return new Promise((resolve,reject)=>{const tx=db.transaction("state","readwrite");tx.objectStore("state").put({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE},"current");tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
 async function loadEamState(){if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.load();const db=await openEamDb();return new Promise((resolve,reject)=>{const q=db.transaction("state").objectStore("state").get("current");q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
 async function clearEamState(){if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.clear();const db=await openEamDb();return new Promise((resolve,reject)=>{const tx=db.transaction("state","readwrite");tx.objectStore("state").clear();tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
 function parseEamWorkbook(wb){window.AIP_PV864?.installRules();const data={};Object.keys(APM_SHEET_RULES).forEach(name=>{if(!wb.SheetNames.includes(name))return;const matrix=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:null,raw:true});const rule=APM_SHEET_RULES[name];let hi=matrix.findIndex(row=>rule.required.every(f=>row.includes(f)));if(hi<0)hi=matrix.findIndex(row=>rule.required.some(f=>row.includes(f)));if(hi<0)return;const headers=matrix[hi].map(s);data[name]=matrix.slice(hi+1).filter(row=>row.some(v=>v!==null&&v!=="")).map(row=>Object.fromEntries(headers.map((h,i)=>[h,row[i]??null]))) });return data}
@@ -13351,7 +13351,7 @@ function activate(view, force=false){
   const __bootSynthetic = localStorage.getItem("eam_boot_mode") === "synthetic";
   if(__bootSynthetic) localStorage.removeItem("eam_boot_mode");
 
-  loadEamState().then(saved=>{
+  loadEamState().then(async saved=>{
     if(__bootSynthetic){
       const v=localStorage.getItem("eam_restore_view");
       const y=parseInt(localStorage.getItem("eam_restore_scroll")||"0",10);
@@ -13360,6 +13360,7 @@ function activate(view, force=false){
       if(v) restoreDatasetScreen({view:v,scroll:y,crewTab,arTab},30);
       return; // hard stop: never auto-load Excel during a Synthetic reset
     }
+    if(window.__AIP_GOVERNED__&&await (async()=>{try{const g=await window.__AIP_GOVERNED__.load();if(!g||!g.sheets)return false;await loadExcelDemoData(true);window.__AIP_GOVERNED_ACTIVE__=true;Object.assign(APM_IMPORTED_DATA,g.sheets);APM_LAST_IMPORT=g.label||"Governed data";APM_DATA_MODE="Uploaded data";applyImportedData(APM_IMPORTED_DATA);window.refreshAllAPM?.();document.dispatchEvent(new CustomEvent("aip:data-source-changed",{detail:{mode:APM_DATA_MODE,source:"governed"}}));return true}catch(e){console.warn("Governed data unavailable",e);return false}})())return;
     const savedErps = JSON.parse(localStorage.getItem("eam_connected_erps")||"[]");
     if(saved?.mode==="Uploaded data" && saved?.data && Object.keys(saved.data).length){
       APM_IMPORTED_DATA=saved.data;

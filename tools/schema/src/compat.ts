@@ -10,6 +10,7 @@
  * fails the gate.
  */
 import { coerce } from "./rows.ts";
+import { GOVERNED_MAX_ROWS, workbookValue } from "./workbook-format.ts";
 import { isoDateTime, type BuiltMaster, type MasterBuild, type MasterDef, type MasterRow } from "./masters.ts";
 import { Resolver, isScoped, type Vocabulary } from "./reference.ts";
 import type { ColumnDef, Registry, TableDef } from "./registry.ts";
@@ -52,7 +53,7 @@ const same = (a: unknown, b: unknown, c: ColumnDef): boolean => {
   return String(a).trim() === String(b).trim();
 };
 
-export function rebuildSheets(reg: Registry, raw: Record<string, SourceRow[]>, b: MasterBuild, vocab: Vocabulary, corrections: CorrectionSet, specs = SHEET_SPECS): SheetRoundTrip[] {
+export function rebuildSheets(reg: Registry, raw: Record<string, SourceRow[]>, b: MasterBuild, vocab: Vocabulary, corrections: CorrectionSet, specs = SHEET_SPECS, collect?: Map<string, SourceRow[]>): SheetRoundTrip[] {
   const { sheets } = applyCorrections(reg, raw, corrections);
   const label = labels(vocab);
   const resolver = new Resolver(vocab);
@@ -83,9 +84,12 @@ export function rebuildSheets(reg: Registry, raw: Record<string, SourceRow[]>, b
     const original = new Map((sheets[t.sheet] ?? []).map((r, i) => [rowKey(t, r, i), r]));
     const code = t.key.length === 1 ? t.columns.find((c) => c.source === t.key[0])?.name : undefined;
     const out: SheetRoundTrip = { sheet: s.sheet, model: s.name, rows: built.rows.length, identicalRows: 0, cells: 0, diffs: { vocabulary: 0, format: 0, copy: 0, unexplained: 0 }, examples: [] };
+    const rebuilt: SourceRow[] = [];
     for (const row of built.rows) {
       const orig = original.get(row.code);
       let identical = true;
+      const rec: SourceRow = {};
+      rebuilt.push(rec);
       for (const c of t.columns) {
         out.cells++;
         const want = orig ? coerce(c, orig[c.source]) : undefined;
@@ -119,6 +123,7 @@ export function rebuildSheets(reg: Registry, raw: Record<string, SourceRow[]>, b
           const dtSrc = carried.find(([, src]) => typeof src !== "string" && "datetime" in src);
           if (dtSrc && want !== null && want !== undefined && isoDateTime(want) === row.values[dtSrc[0]]) cls = "format";
         } else continue; // omitted with a documented reason
+        rec[c.source] = workbookValue(c, got);
         if (!same(want, got, c)) {
           identical = false;
           out.diffs[cls]++;
@@ -127,8 +132,41 @@ export function rebuildSheets(reg: Registry, raw: Record<string, SourceRow[]>, b
       }
       if (identical) out.identicalRows++;
     }
+    collect?.set(t.sheet, rebuilt);
     return out;
   });
+}
+
+export { workbookValue } from "./workbook-format.ts";
+
+export interface GovernedWorkbook {
+  label: string;
+  /** Sheet name (as in the workbook) → rows keyed by the workbook's headers, in the workbook's order. */
+  sheets: Record<string, SourceRow[]>;
+  /** Sheets left out (too large for a boot payload); the runtime keeps its bundled copy of these. */
+  omitted: string[];
+}
+
+/**
+ * The tenant's governed data in the runtime's own shape: normalized sheets rebuilt through the compatibility
+ * mapping, the rest from the (corrected) sheet tables. The database endpoint produces the same thing from
+ * aip_compat and aip; this builder lets the parity crawl run without a database.
+ */
+export function governedWorkbook(reg: Registry, raw: Record<string, SourceRow[]>, b: MasterBuild, vocab: Vocabulary, corrections: CorrectionSet, opts: { maxRows?: number; label?: string } = {}): GovernedWorkbook {
+  const max = opts.maxRows ?? GOVERNED_MAX_ROWS;
+  const rebuilt = new Map<string, SourceRow[]>();
+  rebuildSheets(reg, raw, b, vocab, corrections, SHEET_SPECS, rebuilt);
+  const { sheets: corrected } = applyCorrections(reg, raw, corrections);
+  const out: GovernedWorkbook = { label: opts.label ?? "Governed data", sheets: {}, omitted: [] };
+  for (const t of reg.tables) {
+    const rows = rebuilt.get(t.sheet) ?? (corrected[t.sheet] ?? []).map((r) => Object.fromEntries(t.columns.map((c) => [c.source, workbookValue(c, coerce(c, r[c.source]))])));
+    if (rows.length > max) {
+      out.omitted.push(t.sheet);
+      continue;
+    }
+    out.sheets[t.sheet] = rows;
+  }
+  return out;
 }
 
 // ── SQL ─────────────────────────────────────────────────────────────────────

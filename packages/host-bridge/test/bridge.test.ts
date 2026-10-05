@@ -64,4 +64,23 @@ describe("Vercel adapter", () => {
       globalThis.fetch = orig;
     }
   });
+
+  it("offers the governed workbook when the deployment serves one, and nothing when it serves the bundle", async () => {
+    const { vercelAdapter } = await import("../src/adapters/vercel.js");
+    const orig = globalThis.fetch;
+    const urls: string[] = [];
+    let respond: Response = new Response(null, { status: 204 });
+    globalThis.fetch = (async (u: string) => {
+      urls.push(u);
+      return respond;
+    }) as typeof fetch;
+    try {
+      expect(await vercelAdapter().governed!.load()).toBeNull();
+      expect(urls[0]).toBe("/api/aip/workbook");
+      respond = new Response(JSON.stringify({ label: "Governed data", sheets: { Sites: [{ Plant_ID: "SP-01" }] } }), { status: 200 });
+      expect(await vercelAdapter().governed!.load()).toMatchObject({ sheets: { Sites: [{ Plant_ID: "SP-01" }] } });
+    } finally {
+      globalThis.fetch = orig;
+    }
+  });
 });

@@ -50,6 +50,9 @@ importers:
       '@sustantix/license':
         specifier: workspace:*
         version: link:../../packages/license
+      '@sustantix/schema':
+        specifier: workspace:*
+        version: link:../../tools/schema
       next:
         specifier: ^15.5.26
         version: 15.5.26(@types/node@22.20.4)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

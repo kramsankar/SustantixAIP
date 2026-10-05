@@ -128,6 +128,8 @@ begin
     'create table if not exists %s (tenant_id uuid not null references aip.tenants(id) on delete cascade, row_key text not null, %s%s, created_at timestamptz not null default now(), updated_at timestamptz not null default now(), primary key (tenant_id, row_key))',
     t, p_columns,
     case when p_currency is null then '' else format(', currency char(3) not null default %L check (currency ~ ''^[A-Z]{3}$'')', p_currency) end);
+  -- The sheet's own row order (screens list rows in workbook order).
+  execute format('alter table %s add column if not exists source_ordinal integer', t);
   execute format('comment on table %s is %L', t, 'Workbook sheet "' || p_sheet || '"');
   execute format('alter table %s enable row level security', t);
   execute format('drop policy if exists p_read on %s', t);

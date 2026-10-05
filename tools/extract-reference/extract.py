@@ -138,7 +138,8 @@ LOADER_NEW = (
 SEAMS = [
     (
         'async function saveEamState(){const db=await openEamDb();',
-        'async function saveEamState(){if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();',
+        # While governed data is active the database is the system of record: the runtime does not persist snapshots.
+        'async function saveEamState(){if(window.__AIP_GOVERNED_ACTIVE__)return;if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();',
     ),
     (
         'async function loadEamState(){const db=await openEamDb();',
@@ -147,6 +148,13 @@ SEAMS = [
     (
         'async function clearEamState(){const db=await openEamDb();',
         'async function clearEamState(){if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.clear();const db=await openEamDb();',
+    ),
+    # Governed data (phase 3): when the host offers the tenant's governed workbook (window.__AIP_GOVERNED__), boot
+    # loads the bundled baseline and overlays the governed sheets, exactly as a workbook upload would.
+    ('loadEamState().then(saved=>{', 'loadEamState().then(async saved=>{'),
+    (
+        'const savedErps = JSON.parse(localStorage.getItem("eam_connected_erps")||"[]");',
+        'if(window.__AIP_GOVERNED__&&await (async()=>{try{const g=await window.__AIP_GOVERNED__.load();if(!g||!g.sheets)return false;await loadExcelDemoData(true);window.__AIP_GOVERNED_ACTIVE__=true;Object.assign(APM_IMPORTED_DATA,g.sheets);APM_LAST_IMPORT=g.label||"Governed data";APM_DATA_MODE="Uploaded data";applyImportedData(APM_IMPORTED_DATA);window.refreshAllAPM?.();document.dispatchEvent(new CustomEvent("aip:data-source-changed",{detail:{mode:APM_DATA_MODE,source:"governed"}}));return true}catch(e){console.warn("Governed data unavailable",e);return false}})())return;\n    const savedErps = JSON.parse(localStorage.getItem("eam_connected_erps")||"[]");',
     ),
 ]
 

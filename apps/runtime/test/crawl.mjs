@@ -1,10 +1,10 @@
 // Screen-by-screen crawler used for reference parity. Logs in, visits every navigation view and
 // records visible headings, controls and text. Usage:
-//   node test/crawl.mjs <url> <out.json> [--user u --pass p] [--license <token>] [--clock <iso-instant>]
+//   node test/crawl.mjs <url> <out.json> [--user u --pass p] [--license <token>] [--clock <iso-instant>] [--governed <workbook.json>]
 // --clock starts the browser clock at that instant (time then flows normally). Screens print dates
 // relative to "today", so a reference crawl is only reproducible at the instant it was captured.
 import { chromium } from "playwright";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 const [url, out] = process.argv.slice(2);
 const flag = (k, d) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : d; };
@@ -18,6 +18,15 @@ const clock = flag("clock");
 if (clock) {
   await page.clock.install({ time: new Date(clock) });
   await page.clock.resume();
+}
+// Governed mode: the runtime boots on a tenant's governed workbook (the host seam window.__AIP_GOVERNED__).
+const governed = flag("governed");
+if (governed) {
+  const body = readFileSync(governed);
+  await page.route("**/__aip_governed.json", (route) => route.fulfill({ status: 200, contentType: "application/json", body }));
+  await page.addInitScript(() => {
+    window.__AIP_GOVERNED__ = { load: () => fetch("/__aip_governed.json").then((r) => r.json()) };
+  });
 }
 const license = flag("license");
 if (license) await page.addInitScript((t) => localStorage.setItem("sx_aip_license", t), license);

@@ -13,6 +13,18 @@ export interface StatePersistence {
   clear(): Promise<void>;
 }
 
+/** The tenant's governed data in the runtime's workbook shape (phase 3), offered at boot through a host seam. */
+export interface GovernedWorkbook {
+  label: string;
+  sheets: Record<string, unknown[]>;
+  omitted?: string[];
+}
+
+export interface GovernedSource {
+  /** Resolves null when this deployment serves the bundled data. */
+  load(): Promise<GovernedWorkbook | null>;
+}
+
 export interface Identity {
   displayName: string;
   login: string;
@@ -36,4 +48,5 @@ export interface HostAdapter {
   signIn(login: string, secret: string): Promise<boolean>;
   signOut?(): Promise<void>;
   persistence?: StatePersistence;
+  governed?: GovernedSource;
 }
