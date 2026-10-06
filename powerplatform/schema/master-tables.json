@@ -84,7 +84,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -585,7 +585,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -863,7 +863,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -1366,7 +1366,7 @@
     },
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -5858,7 +5858,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -6106,7 +6106,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -7075,7 +7075,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -9382,7 +9382,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -10072,7 +10072,7 @@
     },
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -11086,7 +11086,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -11558,7 +11558,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -12317,7 +12317,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -13261,7 +13261,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -13946,7 +13946,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [
@@ -17134,7 +17134,7 @@
    "attributes": [
     {
      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
-     "SchemaName": "sus_name",
+     "SchemaName": "sus_displayname",
      "DisplayName": {
       "@odata.type": "Microsoft.Dynamics.CRM.Label",
       "LocalizedLabels": [

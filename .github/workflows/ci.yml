@@ -30,6 +30,7 @@ jobs:
           pnpm --filter @sustantix/analytics typecheck
           pnpm --filter @sustantix/agents typecheck
           pnpm --filter @sustantix/grid typecheck
+          pnpm --filter @sustantix/bundle typecheck
           pnpm --filter @sustantix/pp-provision typecheck
           pnpm --filter @sustantix/license-cli typecheck
           pnpm --filter @sustantix/aip-web typecheck
@@ -41,6 +42,7 @@ jobs:
           pnpm --filter @sustantix/analytics test
           pnpm --filter @sustantix/agents test
           pnpm --filter @sustantix/grid test
+          pnpm --filter @sustantix/bundle test
           pnpm --filter @sustantix/pp-provision test
           pnpm --filter @sustantix/aip-powerapp test
           pnpm --filter @sustantix/aip-web test

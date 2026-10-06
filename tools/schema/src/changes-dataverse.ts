@@ -6,7 +6,7 @@
  */
 import { changeColumns, editableEntity, MAX_CHANGE_ITEMS, refEntities } from "./changes-sql.ts";
 import { attributeMetadata, lbl, logical, type EntityPlan } from "./dataverse.ts";
-import { lookupName, lookupTarget } from "./master-dataverse.ts";
+import { columnKey, lookupName, lookupTarget } from "./master-dataverse.ts";
 import { writers } from "./master-sql.ts";
 import type { MasterDef } from "./masters.ts";
 import { isScoped, REF_PREFIX, type Vocabulary } from "./reference.ts";
@@ -54,7 +54,7 @@ export function dataverseChangeModel(defs: MasterDef[], vocab: Vocabulary) {
         if (m && (m.kind === "fk" || m.kind === "ref")) {
           return { name: c.name, kind: m.kind, attribute: lookupName(m), target: lookupTarget(m), ...(m.kind === "ref" && m.scope ? { scope: m.scope } : {}), editable: c.editable };
         }
-        return { name: c.name, kind: c.kind, attribute: logical(c.name.replace(/_/g, "")), editable: c.editable };
+        return { name: c.name, kind: c.kind, attribute: logical(columnKey(c.name)), editable: c.editable };
       }),
     };
   });

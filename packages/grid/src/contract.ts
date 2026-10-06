@@ -163,6 +163,25 @@ export const DECIMAL_PATTERN = /^-?\d{1,15}(\.\d{1,6})?$/;
 export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 export const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?$/;
 
+/** Whether a value has the shape a column kind carries (filters also accept a number for an amount, a date for a datetime). */
+export function valueFits(kind: ColumnKind, v: unknown, forFilter = false): boolean {
+  switch (kind) {
+    case "integer":
+      return typeof v === "number" ? Number.isInteger(v) : forFilter && typeof v === "string" && /^-?\d{1,12}$/.test(v);
+    case "decimal":
+    case "money":
+      return typeof v === "string" ? DECIMAL_PATTERN.test(v) : forFilter && typeof v === "number" && Number.isFinite(v);
+    case "date":
+      return typeof v === "string" && DATE_PATTERN.test(v);
+    case "datetime":
+      return typeof v === "string" && (DATETIME_PATTERN.test(v) || (forFilter && DATE_PATTERN.test(v)));
+    case "boolean":
+      return typeof v === "boolean";
+    default:
+      return typeof v === "string" && v.length <= 4000;
+  }
+}
+
 /** A calendar date that exists (no 30 February). */
 function realDate(ymd: string): boolean {
   const [y, m, d] = ymd.split("-").map(Number) as [number, number, number];

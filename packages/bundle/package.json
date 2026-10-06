@@ -1,0 +1,29 @@
+{
+  "name": "@sustantix/bundle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Sustantix AIP data bundles: a tenant's governed data keyed on business codes, moved between editions (confidential, proprietary).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./merge": "./src/merge.ts"
+  },
+  "scripts": {
+    "sx-bundle": "tsx src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sustantix/grid": "workspace:*",
+    "@sustantix/host-bridge": "workspace:*",
+    "@sustantix/schema": "workspace:*",
+    "@sustantix/pp-provision": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

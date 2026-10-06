@@ -47,6 +47,9 @@ importers:
       '@sustantix/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
+      '@sustantix/bundle':
+        specifier: workspace:*
+        version: link:../../packages/bundle
       '@sustantix/grid':
         specifier: workspace:*
         version: link:../../packages/grid
@@ -115,6 +118,34 @@ importers:
       '@sustantix/schema':
         specifier: workspace:*
         version: link:../../tools/schema
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.4
+      tsx:
+        specifier: ^4.19.2
+        version: 4.23.15
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.4)(happy-dom@15.11.7)
+
+  packages/bundle:
+    dependencies:
+      '@sustantix/grid':
+        specifier: workspace:*
+        version: link:../grid
+      '@sustantix/host-bridge':
+        specifier: workspace:*
+        version: link:../host-bridge
+      '@sustantix/pp-provision':
+        specifier: workspace:*
+        version: link:../../powerplatform/provision
+      '@sustantix/schema':
+        specifier: workspace:*
+        version: link:../../tools/schema
+    devDependencies:
       '@types/node':
         specifier: ^22.10.0
         version: 22.20.4

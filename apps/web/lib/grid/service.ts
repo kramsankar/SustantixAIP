@@ -6,6 +6,7 @@ import {
   LIMITS,
   opsFor,
   queryRows,
+  valueFits,
   type ChangeModel,
   type ChangeSetRequest,
   type ChangeSetResult,
@@ -96,23 +97,6 @@ function checkFilterValue(col: GridColumn, f: GridFilter): void {
   }
 }
 
-export function valueFits(kind: ColumnKind, v: unknown, forFilter = false): boolean {
-  switch (kind) {
-    case "integer":
-      return typeof v === "number" ? Number.isInteger(v) : forFilter && typeof v === "string" && /^-?\d{1,12}$/.test(v);
-    case "decimal":
-    case "money":
-      return typeof v === "string" ? DECIMAL_PATTERN.test(v) : forFilter && typeof v === "number" && Number.isFinite(v);
-    case "date":
-      return typeof v === "string" && DATE_PATTERN.test(v);
-    case "datetime":
-      return typeof v === "string" && (DATETIME_PATTERN.test(v) || (forFilter && DATE_PATTERN.test(v)));
-    case "boolean":
-      return typeof v === "boolean";
-    default:
-      return typeof v === "string" && v.length <= 4000;
-  }
-}
 
 /** Parses a grid query and checks every field and filter against the grid's own columns. */
 export function parseQuery(def: GridDef, body: unknown, opts: { unpaged?: boolean } = {}): GridQuery {
@@ -295,3 +279,5 @@ export function parseView(body: unknown, m: Membership, update = false) {
   if (update && r.data.rowVersion === undefined) throw new ApiError(400, "invalid_view", "an update needs the view's row version");
   return r.data;
 }
+
+export { valueFits };

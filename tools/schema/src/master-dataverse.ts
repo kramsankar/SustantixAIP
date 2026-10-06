@@ -13,6 +13,15 @@ type Json = Record<string, unknown>;
 
 const PRIMARY = logical("name");
 
+/**
+ * Attribute key (without the publisher prefix) for a value column. sus_name is every table's business code (primary
+ * name and alternate key), so a column called "name" is stored as sus_displayname rather than overwriting the code.
+ */
+export const columnKey = (name: string) => {
+  const k = name.replace(/_/g, "");
+  return k === "name" ? "displayname" : k;
+};
+
 /** Lookup attribute (and navigation property) for a reference column. */
 export const lookupName = (c: MasterColumn) => logical(`${c.name.replace(/_/g, "")}id`);
 /** Entity a reference column points to. */
@@ -51,7 +60,7 @@ export function masterPlan(defs: MasterDef[], opts: { lineage?: boolean; externa
   const plans: EntityPlan[] = topoOrder(defs, new Set(opts.external ?? [])).map((d) => ({
     logicalName: logical(d.name),
     entity: entity(d.name, d.label, d.plural, d.description),
-    attributes: d.columns.filter((c) => c.kind !== "fk" && c.kind !== "ref").map((c) => attributeMetadata({ name: c.name.replace(/_/g, ""), label: c.label, kind: c.kind as Exclude<MasterColumn["kind"], "fk" | "ref">, maxLength: c.maxLength ?? 300, precision: c.precision }, c.label)),
+    attributes: d.columns.filter((c) => c.kind !== "fk" && c.kind !== "ref").map((c) => attributeMetadata({ name: columnKey(c.name), label: c.label, kind: c.kind as Exclude<MasterColumn["kind"], "fk" | "ref">, maxLength: c.maxLength ?? 300, precision: c.precision }, c.label)),
     keys: [{ SchemaName: logical(`${d.name}_bk`), DisplayName: lbl("Business code"), KeyAttributes: [PRIMARY] }],
   }));
   if (opts.lineage !== false) plans.push(masterLineagePlan());
@@ -136,8 +145,8 @@ export function masterRecords(masters: BuiltMaster[], vocab: Vocabulary, setName
         if (c.kind === "fk" || c.kind === "ref") {
           if (v === null || v === undefined) continue;
           (c.kind === "fk" && c.fk === def.name ? link : rec)[`${lookupName(c)}@odata.bind`] = bind(c, v);
-        } else if (c.kind === "datetime" && typeof v === "string") rec[logical(c.name.replace(/_/g, ""))] = v.endsWith("Z") ? v : `${v}Z`;
-        else rec[logical(c.name.replace(/_/g, ""))] = v ?? null;
+        } else if (c.kind === "datetime" && typeof v === "string") rec[logical(columnKey(c.name))] = v.endsWith("Z") ? v : `${v}Z`;
+        else rec[logical(columnKey(c.name))] = v ?? null;
       }
       if (money) rec["transactioncurrencyid@odata.bind"] = `/transactioncurrencies(${currencyId})`;
       records.push(rec);

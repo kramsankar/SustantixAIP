@@ -24,7 +24,8 @@
     "@sustantix/analytics": "workspace:*",
     "@sustantix/agents": "workspace:*",
     "@sustantix/schema": "workspace:*",
-    "@sustantix/grid": "workspace:*"
+    "@sustantix/grid": "workspace:*",
+    "@sustantix/bundle": "workspace:*"
   },
   "devDependencies": {
     "@sustantix/aip-runtime": "workspace:*",

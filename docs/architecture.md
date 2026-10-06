@@ -236,6 +236,22 @@ key and keep pending edits; a page's own change sets are ignored.
   pending proposals.
 - **Audit:** changes to configuration are audited; run bookkeeping is recorded in `agent_run` and `agent_step`.
 
+**Data bundles (edition export/import).** `packages/bundle` moves a tenant's governed data between editions, keyed
+only on business codes.
+
+- **Format:** a gzipped NDJSON file: a header, one line per record, and a trailer with each entity's count and
+  SHA-256, so a cut-off or altered file is refused.
+- **What it carries:** entities in dependency order (vocabulary first; a self-referencing entity such as `asset`
+  loads in two passes). It never carries platform vocabulary, secrets, users or history.
+- **Shared shape:** values are written in the shape both editions share (codes for references, decimals without
+  storage scale, dates, UTC instants). The same data therefore makes the same bytes whichever edition exported it.
+- **Import:** both editions import through the same merge pipeline (`@sustantix/bundle/merge`, formerly the Vercel
+  ingest pipeline): model check, quality rules, references, then change sets by business code. Re-importing a bundle
+  writes nothing.
+- **Vercel edition:** `/api/aip/bundle/{entity}` and `/api/aip/ingest`, with an administrator integration key.
+- **Dataverse edition:** the Enterprise Grid's Dataverse mapping and `sus_ApplyChangeSet`, via the Web API.
+- **Tool:** `sx-bundle export|import|verify`.
+
 **Power Apps edition.** Change sets are already recorded in `sus_changeset`, so outbound delivery there uses the
 platform's own webhook or Power Automate trigger on that table. Configure it per customer environment; no extra code
 is needed. Scheduled agent runs are part of the Vercel edition only for now. On Power Platform the equivalent is a
@@ -307,7 +323,7 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 - **Phase 4 (done):** the change-set write path on both editions, the Sustantix Enterprise Grid (20 governed grids plus
   16 Reference Data grids), screen grids in 14 runtime screens behind a switch, governed workbook imports, and
   administrator vocabulary maintenance.
-- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh on both editions (done); scheduled agent runs (done), and edition export/import.
+- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh on both editions (done); scheduled agent runs (done); edition export/import bundles (done), and edition export/import.
 
 ## Evolution path
 

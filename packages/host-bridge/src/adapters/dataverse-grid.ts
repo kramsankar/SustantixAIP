@@ -171,6 +171,8 @@ export function dataverseGridApi(client: DataverseGridClient, storage: Pick<Stor
 
   return {
     probe,
+    /** Every record of an entity, mapped (data bundles read and merge with these). */
+    records: (entity: string) => load(entity),
     async catalogue() {
       const r = (await probe()).role;
       return {

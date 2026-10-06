@@ -147,6 +147,21 @@ grid shows every event and its last error. Receivers should:
 - **Bookkeeping:** each slot is claimed once. The Agent schedules grid shows the next run and the last outcome.
 - **Requirements:** the worker needs `ANTHROPIC_API_KEY`. Hourly crons need a Vercel plan that allows them.
 
+**Data bundles.** `GET /api/aip/bundle/{entity}?offset=&limit=` is one page of a bundle export (administrators,
+or an administrator integration key with no entity restriction). It reads the tenant's own rows only. To move a
+tenant between editions, or into a fresh environment, use the bundle tool:
+
+```bash
+SX_INTEGRATION_KEY=sxi_… pnpm --filter @sustantix/bundle sx-bundle export --from vercel --url https://aip.customer.example --out tenant.aipbundle
+pnpm --filter @sustantix/bundle sx-bundle verify --in tenant.aipbundle
+PP_ACCESS_TOKEN=… pnpm --filter @sustantix/bundle sx-bundle import --to dataverse --env https://org.crm.dynamics.com --in tenant.aipbundle
+```
+
+- **Quarantine:** an import reports records the target refused, with the reason (for example a vocabulary code the
+  target does not have), and loads the rest. Re-importing after a fix writes only what changed.
+- **Confidentiality:** a bundle holds the tenant's data. Treat it as confidential, keep it off shared drives, and
+  delete it after the move.
+
 ## Deploying to Vercel
 
 1. **Project**: import the repository and set **Root Directory** to `apps/web`. `vercel.json` sets the framework

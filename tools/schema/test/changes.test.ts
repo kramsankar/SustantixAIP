@@ -54,3 +54,27 @@ describe("phase 4 change sets", () => {
     expect(sql.match(/union all/g)).toHaveLength(loadVocabulary(root).tables.length - 1);
   });
 });
+
+describe("Dataverse attribute naming", () => {
+  const root = fileURLToPath(new URL("../../../", import.meta.url));
+  const dv = JSON.parse(readFileSync(`${root}powerplatform/schema/change-model.json`, "utf8")) as { key: string; entities: Array<{ name: string; columns: Array<{ name: string; attribute: string }> }> };
+  const tables = JSON.parse(readFileSync(`${root}powerplatform/schema/master-tables.json`, "utf8")) as { tables: Array<{ logicalName: string; attributes: Array<{ SchemaName: string }> }> };
+
+  it("never stores a value column in the business-code attribute", () => {
+    // sus_name is each table's code and alternate key: a "name" column written there would rename the record.
+    expect(dv.entities.flatMap((e) => e.columns.filter((c) => c.attribute === dv.key).map((c) => `${e.name}.${c.name}`))).toEqual([]);
+    expect(dv.entities.find((e) => e.name === "site")!.columns.find((c) => c.name === "name")!.attribute).toBe("sus_displayname");
+  });
+
+  it("defines each attribute of a table once", () => {
+    for (const t of tables.tables) {
+      const names = t.attributes.map((a) => a.SchemaName);
+      expect(names.filter((n, i) => names.indexOf(n) !== i), t.logicalName).toEqual([]);
+      expect(names, t.logicalName).not.toContain("sus_name");
+    }
+    for (const e of dv.entities) {
+      const attrs = e.columns.map((c) => c.attribute);
+      expect(attrs.filter((a, i) => attrs.indexOf(a) !== i), e.name).toEqual([]);
+    }
+  });
+});

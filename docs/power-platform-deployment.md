@@ -60,6 +60,13 @@ Before exporting, set the plug-in steps and the Custom API as **not customisable
 
 **Upgrades:** import the newer managed package (`pac solution import --stage-and-upgrade`). The license stays valid, because it is bound to the organisation, not to the solution version.
 
+## D. Move a tenant's data in or out
+
+`sx-bundle` (in `packages/bundle`) exports a tenant's governed data from either edition and imports it into the
+other, keyed on business codes. It signs in to Dataverse as provisioning does: `PP_ACCESS_TOKEN`, a service
+principal, or device code. It writes through `sus_ApplyChangeSet` with the signed-in user's security roles, so use an
+account with the Sustantix AIP Administrator role. See `apps/web/README.md`, "Data bundles", for the commands.
+
 ## What was verified before handover
 
 - The plug-in builds for .NET Framework 4.6.2 and signs with a strong-name key. Its verifier passes the shared conformance suite.
