@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { figure, mountScreenGrids, readTable, type ScreenGrids } from "../src/ui/screen.ts";
+import { SustantixGrid } from "../src/ui/grid.ts";
 
 const flush = () => new Promise((r) => setTimeout(r, 0));
 let grids: ScreenGrids | null = null;
@@ -123,6 +124,33 @@ describe("screen grids", () => {
     vi.useRealTimers();
     await flush();
     expect(view.querySelectorAll(".sxg-screen")).toHaveLength(1);
+  });
+
+  it("re-reads only tables that changed, not every table on every page change", async () => {
+    vi.useFakeTimers();
+    const { t } = screen([["WO-1", "SP-01", "1"]]);
+    grids = mountScreenGrids(document, { screens: "all" });
+    await vi.advanceTimersByTimeAsync(300);
+    const load = vi.spyOn(SustantixGrid.prototype, "load");
+    // Reading a row's text is what makes a large table expensive to check; an unchanged table must not be read.
+    const tr = t.querySelector("tbody tr")!;
+    let proto = Object.getPrototypeOf(tr);
+    while (!Object.getOwnPropertyDescriptor(proto, "textContent")) proto = Object.getPrototypeOf(proto);
+    const own = Object.getOwnPropertyDescriptor(proto, "textContent")!;
+    let reads = 0;
+    Object.defineProperty(tr, "textContent", { configurable: true, get() { reads++; return own.get!.call(this); } });
+    const ticker = document.createElement("span");
+    document.body.append(ticker);
+    for (let i = 0; i < 4; i++) {
+      ticker.setAttribute("class", `t${i}`);
+      grids.scan();
+    }
+    expect(reads).toBe(0);
+    expect(load).not.toHaveBeenCalled();
+    addRow(t.querySelector("tbody")!, ["WO-9", "SP-03", "2"]);
+    grids.scan();
+    expect(load).toHaveBeenCalledTimes(1);
+    load.mockRestore();
   });
 
   it("leaves screens that are switched off, and tables it does not know, untouched", async () => {

@@ -12,7 +12,7 @@ On a changed screen the table is presented by the Enterprise Grid: its toolbar (
 | Portfolio Intelligence | **changed** | reventive · 50 Adaptive · 0 Predictive · 48 Site Registry SITE NAME STATE CAPACITY ASSETS PR AVAILABILITY HEALTH COMMISSIONED SP-01 Suryanagar Solar Park Rajasthan 120 MWac 151 95.5% 98.4% 89 2016 | reventive · 50 Adaptive · 0 Predictive · 48 Site Registry Filter No grouping Group by Site Group by Name Group by State Group by Capacity Group by Assets Group by PR Group by Availability Group by H |
 | Asset Explorer | unchanged | | |
 | Asset Relationships | unchanged | | |
-| Revenue & Commercial Intelligence | **changed** | .0% Unallocated / model residual (signed) -470.4 MWh -20.3% Site loss ranking PLANT TOTAL LOSS RECOVERABLE EXTERNAL LOSS SP-04 · Thoothukudi Coastal PV 1,225.5 MWh 383.5 MWh 262.5 MWh SP-02 · Kalyanpu | .0% Unallocated / model residual (signed) -470.4 MWh -20.3% Filter No grouping Group by Loss driver Group by Loss Group by Share Columns Reset layout Export CSV Export Excel Loss driver Loss Share Soi |
+| Revenue & Commercial Intelligence | **changed** | OTAL LOSS 2,317 MWh ATTAINMENT 98.7 % Portfolio loss bridge LOSS DRIVER LOSS SHARE Soiling 1,714.1 MWh 74.0% Curtailment 669.9 MWh 28.9% Unallocated availability 403.8 MWh 17.4% Equipment unavailabili | OTAL LOSS 2,317 MWh ATTAINMENT 98.7 % Portfolio loss bridge Filter No grouping Group by Loss driver Group by Loss Group by Share Columns Reset layout Export CSV Export Excel Loss driver Loss Share Soi |
 | Assistant | unchanged | | |
 | Operational Impact Graph | unchanged | | |
 | Operational Twin | unchanged | | |
