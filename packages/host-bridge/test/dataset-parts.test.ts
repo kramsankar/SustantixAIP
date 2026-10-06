@@ -5,7 +5,7 @@ import { PART_REF, joinDataset, splitDataset, type Json } from "../src/dataset-p
 
 const src = join(import.meta.dirname, "../../../apps/runtime/src");
 const manifest = JSON.parse(readFileSync(join(src, "manifest.json"), "utf8")) as { datasets: Record<string, unknown> };
-const classes = JSON.parse(readFileSync(join(src, "dataset-classes.json"), "utf8")) as { product: Record<string, string> };
+const classes = JSON.parse(readFileSync(join(src, "../dataset-classes.json"), "utf8")) as { product: Record<string, string> };
 
 /** What the database gives back: the frame and each row as stored text (json columns keep the text as written). */
 const throughStorage = (value: Json) => {

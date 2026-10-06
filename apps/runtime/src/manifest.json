@@ -85,7 +85,7 @@
    "file": "js/0012-aipdeferredloader.js",
    "id": "aipDeferredLoader",
    "deferred": false,
-   "bytes": 3933
+   "bytes": 4025
   },
   {
    "seq": 13,
@@ -99,7 +99,7 @@
    "file": "js/0014.js",
    "id": "",
    "deferred": true,
-   "bytes": 1236254
+   "bytes": 1236342
   },
   {
    "seq": 15,

@@ -1,7 +1,7 @@
 import { MODULES, grantedModules, type LicenseStatus, type TrustedKey } from "@sustantix/license";
 import { resolveLicense } from "./license-gate.js";
 import { installScreenGrids } from "./screen-switch.js";
-import type { HostAdapter } from "./types.js";
+import type { DatasetSource, HostAdapter } from "./types.js";
 
 const RECHECK_MS = 15 * 60 * 1000;
 
@@ -48,6 +48,7 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
   }
 
   let current: Promise<LicenseStatus> = adapter.init().then(() => resolveLicense(adapter, trustedKeys));
+  const datasets = adapter.datasets ? installDatabaseOnly(adapter.datasets) : null;
 
   const api: AIPHostApi = {
     platform: adapter.name,
@@ -58,13 +59,17 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
         const sso = await adapter.ssoIdentity();
         if (sso) {
           adapter.governed?.prefetch?.();
+          void datasets?.ready().catch(() => undefined);
           return true;
         }
       }
       if (!login || !secret) return false;
       const ok = await adapter.signIn(login, secret);
       // Signed in: start loading the governed workbook while the runtime builds its workspace.
-      if (ok) adapter.governed?.prefetch?.();
+      if (ok) {
+        adapter.governed?.prefetch?.();
+        void datasets?.ready().catch(() => undefined);
+      }
       return ok;
     },
     async signOut() {
@@ -110,6 +115,81 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
     if (lic.access === "none") lockApplication(lic);
     else renderBadge(lic);
   }, RECHECK_MS);
+}
+
+/**
+ * Database-only data: the runtime's tenant datasets come from the host's database after sign-in, and the runtime
+ * waits for them before running any module (seam in the deferred loader). Nothing loads data from a workbook or a
+ * built-in dataset: the Data Source choices that would are withdrawn, and the source reads as the database.
+ */
+function installDatabaseOnly(source: DatasetSource): { ready(): Promise<void> } {
+  const register = (window as unknown as { __AIP_REG?: (id: string, text: string) => void }).__AIP_REG;
+  let pending: Promise<void> | null = null;
+  const status = () => document.getElementById("loginStatus");
+  const ready = () =>
+    (pending ??= source
+      .load((done, total) => {
+        const el = status();
+        if (el && total) el.textContent = `Loading your data from the database… ${Math.round((100 * done) / total)}%`;
+      })
+      .then((sets) => {
+        const reg = register ?? (window as unknown as { __AIP_REG: (id: string, text: string) => void }).__AIP_REG;
+        for (const [id, text] of sets) reg(id, text);
+        const el = status();
+        if (el) el.textContent = "Loading Asset Intelligence Platform…";
+      })
+      .catch((e: unknown) => {
+        showDataUnavailable(e instanceof Error ? e.message : String(e));
+        throw e;
+      }));
+  Object.defineProperty(window, "__AIP_DB_ONLY__", { value: true, writable: false, configurable: false });
+  Object.defineProperty(window, "__AIP_DATASETS__", { value: Object.freeze({ ready }), writable: false, configurable: false });
+  try {
+    // The prototype's one-shot "boot on the built-in synthetic dataset" request has no meaning here.
+    localStorage.removeItem("eam_boot_mode");
+  } catch {
+    /* storage unavailable */
+  }
+  onReady(() => {
+    const style = document.createElement("style");
+    style.id = "sx-database-only";
+    style.textContent = `${WITHDRAWN.join(",")}{display:none!important}`;
+    document.head.appendChild(style);
+    // Withdrawn choices stay inert even if shown by a script.
+    document.addEventListener(
+      "click",
+      (e) => {
+        const t = e.target as Element | null;
+        if (t?.closest?.(WITHDRAWN.join(","))) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      },
+      true,
+    );
+  });
+  return { ready };
+}
+
+/** Data Source choices that load a workbook or a built-in dataset, and the workbook upload panel. */
+const WITHDRAWN = ["#loadExcelOption", "#uploadExcelOption", "#loadSyntheticOption", ".dm-panel:has(#dmFile)"];
+
+function showDataUnavailable(reason: string) {
+  const el = document.getElementById("loginStatus");
+  if (el) el.textContent = "Your data could not be loaded from the database.";
+  if (document.getElementById("sxDataUnavailable")) return;
+  const lock = document.createElement("div");
+  lock.id = "sxDataUnavailable";
+  lock.setAttribute("role", "alertdialog");
+  lock.style.cssText = "position:fixed;inset:0;z-index:2147483000;background:rgba(11,31,38,.72);display:flex;align-items:center;justify-content:center";
+  lock.innerHTML =
+    `<div style="max-width:460px;background:#fff;border-radius:14px;padding:26px 28px;font:14px/1.55 Arial,sans-serif;color:#0B1F26;box-shadow:0 20px 60px rgba(0,0,0,.3)">` +
+    `<b style="display:block;font-size:16px;margin-bottom:6px">Your data could not be loaded</b>` +
+    `The application reads all of its data from your organisation's database, and that did not complete (${escapeHtml(reason)}). ` +
+    `Nothing is shown in its place. Try again; if it persists, ask your administrator to check the data service.` +
+    `<div style="margin-top:14px;text-align:right"><button type="button" style="padding:8px 16px;border-radius:8px;border:0;background:#0E7C7B;color:#fff;font-weight:700;cursor:pointer">Try again</button></div></div>`;
+  lock.querySelector("button")!.addEventListener("click", () => location.reload());
+  document.body.appendChild(lock);
 }
 
 function applyLicense(lic: LicenseStatus, adapter: HostAdapter) {

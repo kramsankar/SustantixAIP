@@ -1,4 +1,6 @@
 import type { LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
+import { DatasetsChanged, loadDatasets, type DatasetManifest } from "../dataset-loader.js";
+import type { Json } from "../dataset-parts.js";
 import { governedSync, type ImportResult } from "../governed-sync.js";
 import { showNotice } from "../notice.js";
 import { parseScreens } from "../screen-switch.js";
@@ -78,6 +80,26 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
       recordExport: async (grid, format, rows) => {
         await call("/grid/export-audit", { method: "POST", body: JSON.stringify({ grid, format, rows }) });
       },
+    },
+    // Database-only data: the tenant's runtime datasets, loaded after sign-in (the deployment ships none).
+    datasets: {
+      load: (progress) =>
+        loadDatasets(
+          {
+            manifest: () => call<DatasetManifest>("/datasets"),
+            chunk: async (version, index) => {
+              // Same address for the same data: the browser keeps each answer, so an unchanged tenant loads from cache.
+              const res = await fetch(`${apiBase}/datasets/chunk?v=${encodeURIComponent(version)}&c=${index}`, { credentials: "same-origin", headers: { "x-aip-client": "runtime" } });
+              if (res.status === 409) throw new DatasetsChanged();
+              if (!res.ok) {
+                const body = (await res.json().catch(() => null)) as { message?: string } | null;
+                throw new Error(body?.message ?? `/datasets/chunk → ${res.status}`);
+              }
+              return (await res.json()) as { version: string; blocks: Json[][] };
+            },
+          },
+          progress,
+        ),
     },
     // Phase 4: a workbook import made on governed data is written back as one governed change.
     governed: governedSync({

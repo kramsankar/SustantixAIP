@@ -1,7 +1,8 @@
 /**
  * Emits an idempotent SQL seed that loads the governed workbook into one tenant.
  *   tsx src/seed-sql.ts --tenant <uuid> --name "Tenant name" [--region IN] [--currency INR] [--workbook file] [--no-datasets] > seed.sql
- * The runtime's tenant datasets are included unless --no-datasets is given.
+ * The runtime's tenant datasets are included unless --no-datasets is given; --datasets-only emits only them, for a
+ * tenant that already exists (its governed tables, and any edits made to them, are left as they are).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -31,7 +32,7 @@ export function literal(v: unknown): string {
 export function runtimeDatasets(root: string): Array<{ id: string; value: Json }> {
   const src = join(root, "apps/runtime/src");
   const manifest = JSON.parse(readFileSync(join(src, "manifest.json"), "utf8")) as { datasets: Record<string, unknown> };
-  const { product } = JSON.parse(readFileSync(join(src, "dataset-classes.json"), "utf8")) as { product: Record<string, string> };
+  const { product } = JSON.parse(readFileSync(join(src, "../dataset-classes.json"), "utf8")) as { product: Record<string, string> };
   return Object.keys(manifest.datasets)
     .filter((id) => !(id in product))
     .map((id) => ({ id, value: JSON.parse(readFileSync(join(src, "data", `${id}.json`), "utf8")) as Json }));
@@ -92,9 +93,16 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const wb = readFileSync(file);
   // The committed registry is the contract; the workbook only supplies rows.
   const reg = JSON.parse(readFileSync(join(root, "schema/aip-data-model.json"), "utf8")) as Registry;
+  const tenantId = flag("tenant") ?? (() => { throw new Error("--tenant is required"); })();
+  if (process.argv.includes("--datasets-only")) {
+    // Only the runtime datasets of an existing tenant: governed tables (and edits made to them) are left untouched.
+    if (!GUID.test(tenantId)) throw new Error("tenant id must be a GUID");
+    process.stdout.write(["begin;", ...datasetSeedSql(tenantId, runtimeDatasets(root)), "commit;"].join("\n") + "\n");
+    process.exit(0);
+  }
   process.stdout.write(
     seedSql(reg, wb, {
-      id: flag("tenant") ?? (() => { throw new Error("--tenant is required"); })(),
+      id: tenantId,
       name: flag("name", "Seed tenant")!,
       region: flag("region", "IN")!,
       currency: flag("currency", reg.defaultCurrency)!,

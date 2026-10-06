@@ -14,7 +14,8 @@
     "check:data": "tsx src/check-data.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "governed:json": "tsx src/governed-cli.ts"
+    "governed:json": "tsx src/governed-cli.ts",
+    "datasets:fixture": "tsx src/datasets-cli.ts"
   },
   "dependencies": {
     "xlsx": "0.18.5"

@@ -10,7 +10,8 @@
     "serve": "node serve.mjs dist/standalone 4173",
     "test": "node test/parity.mjs",
     "test:governed": "node test/governed.mjs",
-    "test:grids": "node test/grids.mjs"
+    "test:grids": "node test/grids.mjs",
+    "test:database-only": "node test/database-only.mjs"
   },
   "dependencies": {
     "xlsx": "0.18.5"

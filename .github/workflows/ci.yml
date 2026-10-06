@@ -221,3 +221,28 @@ jobs:
             ${{ runner.temp }}/governed/governed-crawl.json
             ${{ runner.temp }}/grids/grid-crawl.json
           retention-days: 14
+
+  database-only:
+    name: database-only parity (no tenant data in the build)
+    needs: changes
+    if: needs.changes.outputs.runtime == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sustantix/license build
+      - run: pnpm --filter @sustantix/aip-runtime exec playwright install --with-deps chromium
+      - name: Vercel build loads every tenant dataset from the host after sign-in, every screen as in the reference
+        run: pnpm --filter @sustantix/aip-runtime test:database-only
+        env:
+          AIP_PARITY_OUT: ${{ runner.temp }}/database-only
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-only-crawl
+          path: ${{ runner.temp }}/database-only/crawl.json
+          retention-days: 14

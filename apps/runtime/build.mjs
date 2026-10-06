@@ -33,9 +33,15 @@ mkdirSync(join(out, "vendor"), { recursive: true });
 const require = createRequire(import.meta.url);
 cpSync(join(dirname(require.resolve("xlsx/package.json")), "dist", "xlsx.full.min.js"), join(out, "vendor", "xlsx.full.min.js"));
 
+// Database-only data (Vercel): the tenant's datasets are loaded from the database after sign-in, so the deployment
+// carries only product content (help, dictionaries, rules, configuration; dataset-classes.json).
+const databaseOnly = target === "vercel";
+const product = JSON.parse(readFileSync(join(here, "dataset-classes.json"), "utf8")).product;
+const shipped = (id) => !databaseOnly || id in product;
 let dataBytes = 0;
 for (const f of readdirSync(join(src, "data"))) {
   if (!f.endsWith(".json")) continue;
+  if (!shipped(f.slice(0, -5))) continue;
   const text = readFileSync(join(src, "data", f), "utf8");
   JSON.parse(text); // integrity: every dataset must be valid JSON
   const js = `__AIP_REG(${JSON.stringify(f.slice(0, -5))},${JSON.stringify(text)});\n`;
@@ -51,6 +57,7 @@ const inline = (file) => {
   return body;
 };
 let html = readFileSync(join(src, "index.html"), "utf8");
+html = html.replace(/<script src="data\/([0-9a-f]{16})\.js"><\/script>\n?/g, (tag, id) => (shipped(id) ? tag : ""));
 let inlined = 0;
 html = html.replace(/<script( id="[^"]*")? src="(js\/[^"]+)"><\/script>/g, (_, id = "", file) => (inlined++, `<script${id}>${inline(file)}</script>`));
 html = html.replace(/<script type="application\/x-aip-deferred"( id="[^"]*")? data-aip-src="(js\/[^"]+)"><\/script>/g, (_, id = "", file) => (inlined++, `<script type="application/x-aip-deferred"${id}>${inline(file)}</script>`));
@@ -66,8 +73,9 @@ const info = {
   bridgeSha256: createHash("sha256").update(readFileSync(bridge)).digest("hex"),
   builtAt: new Date().toISOString(),
   scripts: inlined,
-  datasets: Object.keys(manifest.datasets).length,
+  datasets: Object.keys(manifest.datasets).filter(shipped).length,
+  databaseDatasets: databaseOnly ? Object.keys(manifest.datasets).filter((id) => !shipped(id)).length : 0,
   dataMB: +(dataBytes / 1e6).toFixed(1),
 };
 writeFileSync(join(out, "build-info.json"), JSON.stringify(info, null, 2));
-console.log(`runtime(${target}) → ${out} · ${info.scripts} scripts · ${info.datasets} datasets · ${info.dataMB} MB data`);
+console.log(`runtime(${target}) → ${out} · ${info.scripts} scripts · ${info.datasets} datasets · ${info.dataMB} MB data${databaseOnly ? ` · ${info.databaseDatasets} datasets from the database` : ""}`);

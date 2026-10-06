@@ -47,6 +47,15 @@ export interface GridHost {
   recordExport?(grid: string, format: "csv" | "xlsx", rows: number): Promise<void>;
 }
 
+/**
+ * Database-only data: the host holds the tenant's runtime datasets (everything the runtime reads that is not product
+ * content) and loads them after sign-in, before any runtime module runs. Hosts that offer this ship no tenant data.
+ */
+export interface DatasetSource {
+  /** Every dataset of the signed-in tenant, as JSON text by dataset id. */
+  load(progress: (done: number, total: number) => void): Promise<Map<string, string>>;
+}
+
 export interface Identity {
   displayName: string;
   login: string;
@@ -72,4 +81,5 @@ export interface HostAdapter {
   persistence?: StatePersistence;
   governed?: GovernedSource;
   grid?: GridHost;
+  datasets?: DatasetSource;
 }

@@ -79,9 +79,10 @@ const config: NextConfig = {
       // The runtime page (7.6 MB, every script inlined): revalidated on every load, so a deploy is picked up at once
       // while an unchanged page comes back as 304 instead of being downloaded again.
       { source: "/aip/index.html", headers: REVALIDATE },
-      // API responses are never stored, except the governed workbook: it carries its own version tag (ETag) and is
-      // revalidated on every load (lib/workbook-version.ts).
-      { source: "/api/:path((?!aip/workbook$).*)", headers: NO_STORE },
+      // API responses are never stored, except the governed workbook, which carries its own version tag (ETag) and is
+      // revalidated on every load (lib/workbook-version.ts), and the dataset chunks, whose address carries the data
+      // version, so each answer is kept as it is (lib/datasets.ts).
+      { source: "/api/:path((?!aip/workbook$|aip/datasets/chunk$).*)", headers: NO_STORE },
     ];
   },
 };
