@@ -70,7 +70,9 @@ if (await page.isVisible("#aipHomeOverlay").catch(() => false)) {
   await page.click("#aipHomeSkip");
   await settle();
 }
-const views = await page.$$eval("#sidebar .nav-item[data-view]", (n) => n.map((x) => ({ v: x.dataset.view, t: x.innerText.trim() })));
+// AIP_CRAWL_VIEWS=a,b crawls only those screens (investigating one screen without the full half-hour crawl).
+const only = process.env.AIP_CRAWL_VIEWS ? new Set(process.env.AIP_CRAWL_VIEWS.split(",")) : null;
+const views = (await page.$$eval("#sidebar .nav-item[data-view]", (n) => n.map((x) => ({ v: x.dataset.view, t: x.innerText.trim() })))).filter((v) => !only || only.has(v.v));
 for (const v of views) {
   await page.evaluate((v) => {
     document.querySelectorAll("#sidebar .x-nav-body").forEach((b) => (b.style.display = "block"));
