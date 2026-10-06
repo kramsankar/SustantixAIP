@@ -171,8 +171,11 @@ function installDatabaseOnly(source: DatasetSource): { ready(): Promise<void> } 
   return { ready };
 }
 
-/** Data Source choices that load a workbook or a built-in dataset, and the workbook upload panel. */
-const WITHDRAWN = ["#loadExcelOption", "#uploadExcelOption", "#loadSyntheticOption", ".dm-panel:has(#dmFile)"];
+/**
+ * Data Source choices that load a workbook or a built-in dataset, and on Data Management the workbook upload, import,
+ * worksheet and validation panels and "Restore demo data" (the loaded-data summary and the data dictionary remain).
+ */
+const WITHDRAWN = ["#loadExcelOption", "#uploadExcelOption", "#loadSyntheticOption", ".dm-grid:has(#dmFile)", ".dm-grid:has(#dmSheets)"];
 
 function showDataUnavailable(reason: string) {
   const el = document.getElementById("loginStatus");

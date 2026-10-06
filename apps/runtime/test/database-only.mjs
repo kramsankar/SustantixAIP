@@ -116,6 +116,15 @@ try {
   const got = JSON.parse(readFileSync(out, "utf8")).views;
   check(served.manifest >= 1 && served.chunks >= 1, `data loaded from the host after sign-in (${served.manifest} manifest, ${served.chunks} chunk requests)`);
   check(got.length === Object.keys(ref).length, `all ${Object.keys(ref).length} screens reachable`);
+  // Data Management keeps its loaded-data summary and data dictionary; the workbook upload, import, worksheet and
+  // validation panels (and "Restore demo data") are withdrawn, so the reference is compared without them.
+  const WITHDRAWN_HEADS = ["Upload Excel Workbook", "Import & Commit", "Detected worksheets", "Validation and preview"];
+  const WITHDRAWN_TABS = ["Choose Excel file", "Select all worksheets", "Clear selection", "Validate & Commit", "Download JSON backup", "Restore demo data"];
+  const dm = ref.datamanagement;
+  if (dm) {
+    const cut = dm.text.indexOf("Loaded Data Summary");
+    ref.datamanagement = { ...dm, text: dm.text.slice(0, dm.text.indexOf("\n") + 1) + dm.text.slice(cut), heads: dm.heads.filter((h) => !WITHDRAWN_HEADS.includes(h)), tabs: dm.tabs.filter((t) => !WITHDRAWN_TABS.includes(t)) };
+  }
   for (const v of got) {
     const r = ref[v.v];
     const text = asReference(v.text ?? "");
