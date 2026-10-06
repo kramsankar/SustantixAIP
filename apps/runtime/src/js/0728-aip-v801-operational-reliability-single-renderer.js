@@ -1,0 +1,2 @@
+
+window.AIP_V801_AUDIT={release:'v801',baseline:'v800',scope:'Operational Reliability single authoritative renderer',changes:['retired legacy renderReliabilityEngineering DOM','core router delegates directly to renderOperationalReliability','Reliability Engineering subtab legacy call now delegates to current renderer','Home reconciliation remains on current Operational Reliability DOM'],excelBusinessDataChanged:false};window.AIP_CURRENT_BUILD='v823';

@@ -1,0 +1,91 @@
+/**
+ * Regenerates every derived schema artefact from the governed workbook:
+ *   schema/aip-data-model.json               registry (source of truth for all backends)
+ *   supabase/migrations/*_aip_platform.sql   tenancy, RLS helpers, audit, FX, license memory
+ *   supabase/migrations/*_aip_data_model.sql one RLS-protected table per sheet
+ *   supabase/migrations/*_aip_reference.sql  controlled vocabulary (schema/reference/vocabulary.json)
+ *   supabase/migrations/*_aip_masters.sql    phase 2 masters and consolidated registers (src/masters.ts)
+ *   supabase/migrations/*_aip_analytics.sql  model runs and outputs of the AIP analytics engines
+ *   supabase/migrations/*_aip_changes.sql    phase 4 change sets, saved grid views, audited exports
+ *   powerplatform/schema/*.json              Dataverse metadata payloads
+ * Usage: tsx src/cli.ts [workbook.xlsx]
+ */
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { dataModelPlan, platformPlan } from "./dataverse.ts";
+import { inferRegistry, runtimeDeclaredKeys } from "./infer.ts";
+import { dataModelSql, platformSql } from "./postgres.ts";
+import { correctionLogPlan, correctionLogSql, applyCorrections, loadCorrections } from "./corrections.ts";
+import { loadVocabulary, referencePlan, referenceSql, validateVocabulary } from "./reference.ts";
+import { masterPlan, masterRelationships } from "./master-dataverse.ts";
+import { agentsPlan, agentsSql } from "./agents-sql.ts";
+import { analyticsPlan, analyticsSql } from "./analytics-sql.ts";
+import { mastersSql } from "./master-sql.ts";
+import { buildMasters, masterDefs, masterManifest } from "./masters.ts";
+import { compatSql, compatTestSql, rebuildSheets } from "./compat.ts";
+import { changeModel, changesSql } from "./changes-sql.ts";
+import { changeSetPlan, dataverseChangeModel } from "./changes-dataverse.ts";
+import { integrationSql } from "./integration-sql.ts";
+import { feedSql } from "./feed-sql.ts";
+import { scheduleSql } from "./schedule-sql.ts";
+import { outboxSql } from "./outbox-sql.ts";
+import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
+import { readSheets } from "./rows.ts";
+
+const root = fileURLToPath(new URL("../../../", import.meta.url));
+const workbook = process.argv[2] ?? join(root, "reference/AIP_Data_v915.xlsx");
+const reg = inferRegistry(readFileSync(workbook), basename(workbook), "INR", runtimeDeclaredKeys(root));
+
+mkdirSync(join(root, "schema"), { recursive: true });
+writeFileSync(join(root, "schema/aip-data-model.json"), JSON.stringify(reg, null, 1) + "\n");
+
+mkdirSync(join(root, "supabase/migrations"), { recursive: true });
+writeFileSync(join(root, "supabase/migrations/20260925000100_aip_platform.sql"), platformSql(reg.defaultCurrency));
+writeFileSync(join(root, "supabase/migrations/20260925000200_aip_data_model.sql"), dataModelSql(reg));
+
+const vocab = loadVocabulary(root);
+const problems = validateVocabulary(vocab, reg);
+if (problems.length) throw new Error(`schema/reference/vocabulary.json is invalid:\n  ${problems.join("\n  ")}`);
+writeFileSync(join(root, "supabase/migrations/20261001000100_aip_reference.sql"), referenceSql(vocab));
+// Corrections must derive cleanly from the current workbook before the log table is (re)generated.
+const derived = applyCorrections(reg, readSheets(readFileSync(workbook)), loadCorrections(root)).entries;
+writeFileSync(join(root, "supabase/migrations/20261001000200_aip_data_correction.sql"), correctionLogSql());
+// Masters must build cleanly before their tables are (re)generated.
+const built = buildMasters(reg, readSheets(readFileSync(workbook)), vocab, loadCorrections(root));
+if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
+writeFileSync(join(root, "supabase/migrations/20261005000100_aip_masters.sql"), mastersSql(masterDefs(reg), reg.defaultCurrency));
+writeFileSync(join(root, "supabase/migrations/20261005000200_aip_analytics.sql"), analyticsSql());
+writeFileSync(join(root, "supabase/migrations/20261005000300_aip_agents.sql"), agentsSql());
+// Phase 3: transactions, time series and the record-link ledger, then the sheet compatibility views.
+const masterNames = masterDefs(reg).map((d) => d.name);
+writeFileSync(join(root, "supabase/migrations/20261006000100_aip_transactions.sql"), mastersSql(transactionDefs(reg), reg.defaultCurrency, { header: false, external: masterNames, title: "phase 3: transactions, time series and record links" }));
+writeFileSync(join(root, "supabase/migrations/20261006000200_aip_compat.sql"), compatSql(reg, [...masterDefs(reg), ...transactionDefs(reg)]));
+writeFileSync(join(root, "schema/aip-compat.json"), JSON.stringify({ version: 1, sheets: SHEET_SPECS.map((x) => x.sheet) }, null, 1) + "\n");
+const trips = rebuildSheets(reg, readSheets(readFileSync(workbook)), built, vocab, loadCorrections(root));
+writeFileSync(join(root, "supabase/tests/95_compat_equivalence.sql"), compatTestSql(reg, trips, "00000000-0000-0000-0000-0000000000c1"));
+// Phase 4: the change-set write path over every master, register and transaction, and the model the hosts validate against.
+writeFileSync(join(root, "supabase/migrations/20261007000100_aip_changes.sql"), changesSql([...masterDefs(reg), ...transactionDefs(reg)], vocab));
+writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
+// Phase 5: integrations, staging and quarantine.
+writeFileSync(join(root, "supabase/migrations/20261008000100_aip_integration.sql"), integrationSql());
+writeFileSync(join(root, "supabase/migrations/20261008000200_aip_outbox.sql"), outboxSql());
+writeFileSync(join(root, "supabase/migrations/20261008000300_aip_feed.sql"), feedSql());
+writeFileSync(join(root, "supabase/migrations/20261008000400_aip_schedules.sql"), scheduleSql());
+writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
+// Master manifest: what each master holds, for hosts and agents that read the code views without this package.
+writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
+
+mkdirSync(join(root, "powerplatform/schema"), { recursive: true });
+writeFileSync(join(root, "powerplatform/schema/platform-tables.json"), JSON.stringify(platformPlan(), null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/reference-tables.json"), JSON.stringify([...referencePlan(vocab), correctionLogPlan()], null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan(), ...agentsPlan(), changeSetPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/transaction-tables.json"), JSON.stringify({ tables: masterPlan(transactionDefs(reg), { lineage: false, external: masterNames }), relationships: masterRelationships(transactionDefs(reg), masterNames) }, null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/data-model-tables.json"), JSON.stringify(dataModelPlan(reg).map(({ source, ...p }) => ({ ...p, sheet: source?.sheet })), null, 1) + "\n");
+
+const cols = reg.tables.reduce((n, t) => n + t.columns.length, 0);
+const rows = reg.tables.reduce((n, t) => n + t.rowCount, 0);
+console.log(`corrections: ${derived.length} corrected row(s)`);
+console.log(`masters: ${built.masters.length} tables · ${built.masters.reduce((n, m) => n + m.rows.length, 0)} rows`);
+console.log(`reference: ${vocab.tables.length} tables · ${vocab.tables.reduce((n, t) => n + t.values.length, 0)} codes · ${vocab.bindings.length} governed columns`);
+console.log(`schema: ${reg.tables.length} tables · ${cols} columns · ${rows} seed rows · money columns ${reg.tables.flatMap((t) => t.columns).filter((c) => c.kind === "money").length}`);

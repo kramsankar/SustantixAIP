@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.next/
+.vercel/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+# Licensing private keys never enter source control
+*.pem
+*.key
+*.snk
+secrets/
+license-keys/
+# .NET
+bin/
+obj/
+# Power Platform CLI artefacts
+out/
+*.zip
+.power/
+
+# Local agent worktrees
+.claude/worktrees/
+
+# Generated tenant seed (tenant data; never committed): pnpm --filter @sustantix/schema seed:sql
+supabase/seed.sql
+# Data bundles hold tenant data
+*.aipbundle

@@ -1,0 +1,3609 @@
+{
+ "version": 1,
+ "description": "Sustantix AIP controlled vocabulary (phase 1). Canonical codes, observed aliases, column bindings and open owner decisions. Curated: edit by review, then run the schema generator.",
+ "nullTokens": [
+  "N/A",
+  "n/a",
+  "-"
+ ],
+ "tables": [
+  {
+   "name": "asset_class",
+   "label": "Asset class",
+   "description": "Physical asset classes; parent_code forms the class hierarchy.",
+   "attributes": [
+    {
+     "name": "category",
+     "kind": "text"
+    },
+    {
+     "name": "parent_code",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "PV_ARRAY",
+     "label": "PV Array",
+     "category": "generation"
+    },
+    {
+     "code": "PV_MODULE",
+     "label": "PV Module",
+     "category": "generation",
+     "parent_code": "PV_ARRAY"
+    },
+    {
+     "code": "SCB",
+     "label": "String Combiner Box",
+     "category": "collection"
+    },
+    {
+     "code": "INVERTER",
+     "label": "Inverter",
+     "category": "conversion"
+    },
+    {
+     "code": "TRANSFORMER",
+     "label": "Transformer",
+     "category": "conversion"
+    },
+    {
+     "code": "SWITCHGEAR",
+     "label": "Switchgear",
+     "category": "protection"
+    },
+    {
+     "code": "HV_SWITCHGEAR",
+     "label": "HV Switchgear",
+     "category": "protection",
+     "parent_code": "SWITCHGEAR"
+    },
+    {
+     "code": "TRACKER",
+     "label": "Tracker",
+     "category": "structure"
+    },
+    {
+     "code": "TRACKER_DRIVE",
+     "label": "Tracker Drive",
+     "category": "structure",
+     "parent_code": "TRACKER"
+    },
+    {
+     "code": "WEATHER_STATION",
+     "label": "Weather Station",
+     "category": "monitoring"
+    },
+    {
+     "code": "BESS_SYSTEM",
+     "label": "BESS System",
+     "category": "storage"
+    },
+    {
+     "code": "BESS_CONTAINER",
+     "label": "BESS Container",
+     "category": "storage",
+     "parent_code": "BESS_SYSTEM"
+    },
+    {
+     "code": "BESS_PCS",
+     "label": "BESS PCS",
+     "category": "storage",
+     "parent_code": "BESS_SYSTEM"
+    },
+    {
+     "code": "BESS_MV_TRANSFORMER",
+     "label": "BESS MV Transformer",
+     "category": "storage",
+     "parent_code": "BESS_SYSTEM"
+    },
+    {
+     "code": "BESS_EMS",
+     "label": "BESS EMS / Controller",
+     "category": "storage",
+     "parent_code": "BESS_SYSTEM"
+    },
+    {
+     "code": "BACKUP_DG",
+     "label": "Backup DG",
+     "category": "auxiliary"
+    },
+    {
+     "code": "PLANT_AUXILIARIES",
+     "label": "Plant auxiliaries",
+     "category": "auxiliary"
+    },
+    {
+     "code": "ELECTRICAL_BOP",
+     "label": "Electrical balance of plant",
+     "category": "collection"
+    },
+    {
+     "code": "INSTRUMENTATION",
+     "label": "Instrumentation",
+     "category": "monitoring"
+    },
+    {
+     "code": "SCADA_SYSTEM",
+     "label": "SCADA system",
+     "category": "monitoring"
+    },
+    {
+     "code": "SAFETY_SYSTEM",
+     "label": "Safety system",
+     "category": "protection"
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "SCB",
+     "code": "SCB"
+    },
+    {
+     "alias": "String/Combiner",
+     "code": "SCB"
+    },
+    {
+     "alias": "Module",
+     "code": "PV_MODULE"
+    },
+    {
+     "alias": "HV switchgear",
+     "code": "HV_SWITCHGEAR"
+    },
+    {
+     "alias": "Electrical",
+     "code": "ELECTRICAL_BOP"
+    },
+    {
+     "alias": "SCADA",
+     "code": "SCADA_SYSTEM"
+    },
+    {
+     "alias": "Safety",
+     "code": "SAFETY_SYSTEM"
+    },
+    {
+     "alias": "Weather",
+     "code": "WEATHER_STATION"
+    },
+    {
+     "alias": "Cleaning",
+     "code": "PV_ARRAY"
+    }
+   ]
+  },
+  {
+   "name": "maintenance_type",
+   "label": "Maintenance type",
+   "description": "Maintenance strategy that triggered the work.",
+   "attributes": [
+    {
+     "name": "strategy_family",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "CORRECTIVE",
+     "label": "Corrective",
+     "strategy_family": "reactive"
+    },
+    {
+     "code": "PREVENTIVE",
+     "label": "Preventive",
+     "strategy_family": "planned"
+    },
+    {
+     "code": "PREDICTIVE",
+     "label": "Predictive",
+     "strategy_family": "condition"
+    },
+    {
+     "code": "CONDITION_BASED",
+     "label": "Condition-Based",
+     "strategy_family": "condition"
+    },
+    {
+     "code": "RISK_BASED",
+     "label": "Risk-Based",
+     "strategy_family": "planned"
+    },
+    {
+     "code": "INSPECTION",
+     "label": "Inspection",
+     "strategy_family": "planned"
+    },
+    {
+     "code": "INVENTORY_LED",
+     "label": "Inventory-led",
+     "strategy_family": "planned"
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "priority",
+   "label": "Priority",
+   "description": "Urgency of work; rank 1 is the most urgent.",
+   "attributes": [
+    {
+     "name": "rank",
+     "kind": "integer"
+    }
+   ],
+   "values": [
+    {
+     "code": "CRITICAL",
+     "label": "Critical",
+     "rank": 1
+    },
+    {
+     "code": "HIGH",
+     "label": "High",
+     "rank": 2
+    },
+    {
+     "code": "MEDIUM",
+     "label": "Medium",
+     "rank": 3
+    },
+    {
+     "code": "LOW",
+     "label": "Low",
+     "rank": 4
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "P1",
+     "code": "CRITICAL"
+    },
+    {
+     "alias": "P2",
+     "code": "HIGH"
+    }
+   ]
+  },
+  {
+   "name": "severity",
+   "label": "Severity",
+   "description": "Impact rating shared by severity and criticality columns; rank 1 is the most severe.",
+   "attributes": [
+    {
+     "name": "rank",
+     "kind": "integer"
+    }
+   ],
+   "values": [
+    {
+     "code": "CRITICAL",
+     "label": "Critical",
+     "rank": 1
+    },
+    {
+     "code": "HIGH",
+     "label": "High",
+     "rank": 2
+    },
+    {
+     "code": "MEDIUM",
+     "label": "Medium",
+     "rank": 3
+    },
+    {
+     "code": "LOW",
+     "label": "Low",
+     "rank": 4
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "risk_band",
+   "label": "Risk band",
+   "description": "Composite asset risk band; rank 1 is the most severe. Watch sits between Medium and Low.",
+   "attributes": [
+    {
+     "name": "rank",
+     "kind": "integer"
+    }
+   ],
+   "values": [
+    {
+     "code": "CRITICAL",
+     "label": "Critical",
+     "rank": 1
+    },
+    {
+     "code": "HIGH",
+     "label": "High",
+     "rank": 2
+    },
+    {
+     "code": "MEDIUM",
+     "label": "Medium",
+     "rank": 3
+    },
+    {
+     "code": "WATCH",
+     "label": "Watch",
+     "rank": 4
+    },
+    {
+     "code": "LOW",
+     "label": "Low",
+     "rank": 5
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "status",
+   "label": "Status",
+   "description": "Lifecycle statuses, unique per entity scope. category: open, active, done or cancelled.",
+   "key": [
+    "scope",
+    "code"
+   ],
+   "attributes": [
+    {
+     "name": "scope",
+     "kind": "text"
+    },
+    {
+     "name": "category",
+     "kind": "text"
+    },
+    {
+     "name": "is_terminal",
+     "kind": "boolean"
+    }
+   ],
+   "values": [
+    {
+     "code": "OPEN",
+     "label": "Open",
+     "scope": "work_order",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "SCHEDULED",
+     "label": "Scheduled",
+     "scope": "work_order",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "RELEASED",
+     "label": "Released",
+     "scope": "work_order",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "IN_PROGRESS",
+     "label": "In Progress",
+     "scope": "work_order",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "AWAITING_PART",
+     "label": "Awaiting Part",
+     "scope": "work_order",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 5
+    },
+    {
+     "code": "OVERDUE_ACTIONS",
+     "label": "Overdue Actions",
+     "scope": "work_order",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 6
+    },
+    {
+     "code": "COMPLETED",
+     "label": "Completed",
+     "scope": "work_order",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 7
+    },
+    {
+     "code": "UNDER_REVIEW",
+     "label": "Under Review",
+     "scope": "intervention",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "PLANNED",
+     "label": "Planned",
+     "scope": "intervention",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "RESOURCE_READINESS",
+     "label": "Resource Readiness",
+     "scope": "intervention",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "AIP_OPTIMIZED",
+     "label": "AIP Optimized",
+     "scope": "intervention",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "APPROVED",
+     "label": "Approved",
+     "scope": "intervention",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 5
+    },
+    {
+     "code": "COMPLETED",
+     "label": "Completed",
+     "scope": "intervention",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 6
+    },
+    {
+     "code": "DRAFT",
+     "label": "Draft",
+     "scope": "plan",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "ALTERNATIVE",
+     "label": "Alternative",
+     "scope": "plan",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "UNDER_REVIEW",
+     "label": "Under Review",
+     "scope": "plan",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "SELECTED",
+     "label": "Selected",
+     "scope": "plan",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "RETURNED_FOR_RE_OPTIMIZATION",
+     "label": "Returned for Re-optimization",
+     "scope": "plan",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 5
+    },
+    {
+     "code": "APPROVED",
+     "label": "Approved",
+     "scope": "plan",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 6
+    },
+    {
+     "code": "APPROVED_WITH_EXCEPTION",
+     "label": "Approved with Exception",
+     "scope": "plan",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 7
+    },
+    {
+     "code": "READY",
+     "label": "Ready",
+     "scope": "readiness",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 1
+    },
+    {
+     "code": "CONSTRAINED",
+     "label": "Constrained",
+     "scope": "readiness",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "PENDING",
+     "label": "Pending",
+     "scope": "readiness",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "PLANNED",
+     "label": "Planned",
+     "scope": "outage",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "APPROVED",
+     "label": "Approved",
+     "scope": "outage",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "NOTIFIED_BY_UTILITY",
+     "label": "Notified by transmission utility",
+     "scope": "outage",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "CORRECTIVE_ACTION_OPEN",
+     "label": "Corrective action open",
+     "scope": "hse_incident",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "CLOSED",
+     "label": "Closed",
+     "scope": "hse_incident",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 2
+    },
+    {
+     "code": "OPEN",
+     "label": "Open",
+     "scope": "alert",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "ACKNOWLEDGED",
+     "label": "Acknowledged",
+     "scope": "alert",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "CONVERTED_TO_WORK_ORDER",
+     "label": "Converted to WO",
+     "scope": "alert",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 3
+    },
+    {
+     "code": "OPEN",
+     "label": "Open",
+     "scope": "finding",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "UNDER_REVIEW",
+     "label": "Under Review",
+     "scope": "finding",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "ENGINEERING_REVIEW",
+     "label": "Engineering review",
+     "scope": "finding",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "WORK_ORDER_CREATED",
+     "label": "Work Order Created",
+     "scope": "finding",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "RESOLVED",
+     "label": "Resolved",
+     "scope": "finding",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 5
+    },
+    {
+     "code": "OPEN",
+     "label": "Open",
+     "scope": "event",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "RESOLVED",
+     "label": "Resolved",
+     "scope": "event",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 2
+    },
+    {
+     "code": "CLOSED",
+     "label": "Closed",
+     "scope": "event",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 3
+    },
+    {
+     "code": "UNDER_REVIEW",
+     "label": "Under review",
+     "scope": "rca",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "VALIDATED",
+     "label": "Validated",
+     "scope": "rca",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 2
+    },
+    {
+     "code": "ACTIVE",
+     "label": "Active",
+     "scope": "warranty",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "EXPIRING",
+     "label": "Expiring",
+     "scope": "warranty",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "EXPIRED",
+     "label": "Expired",
+     "scope": "warranty",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 3
+    },
+    {
+     "code": "OPPORTUNITY",
+     "label": "Opportunity",
+     "scope": "warranty_claim",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "EVIDENCE_READY",
+     "label": "Evidence Ready",
+     "scope": "warranty_claim",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "SUBMITTED",
+     "label": "Submitted",
+     "scope": "warranty_claim",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "APPROVED",
+     "label": "Approved",
+     "scope": "warranty_claim",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 4
+    },
+    {
+     "code": "ADEQUATE",
+     "label": "Adequate",
+     "scope": "stock",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "BELOW_REORDER",
+     "label": "Below Reorder",
+     "scope": "stock",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "STOCKOUT",
+     "label": "Stockout",
+     "scope": "stock",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "OPERATIONAL",
+     "label": "Operational",
+     "scope": "asset_operating",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "FORCED_OUTAGE",
+     "label": "Forced outage",
+     "scope": "asset_operating",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "RUNNING",
+     "label": "Running",
+     "scope": "telemetry_state",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "DERATED",
+     "label": "Derated",
+     "scope": "telemetry_state",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "CURTAILED",
+     "label": "Curtailed",
+     "scope": "telemetry_state",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "TRIPPED",
+     "label": "Tripped",
+     "scope": "telemetry_state",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "NO_DATA",
+     "label": "No data",
+     "scope": "telemetry_state",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 5
+    },
+    {
+     "code": "UNDER_REVIEW",
+     "label": "Under Review",
+     "scope": "recommendation",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "DRAFT",
+     "label": "Draft",
+     "scope": "scenario",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "FEASIBLE",
+     "label": "Feasible",
+     "scope": "scenario",
+     "category": "done",
+     "is_terminal": true,
+     "sort_order": 2
+    },
+    {
+     "code": "ACTIVE",
+     "label": "Active",
+     "scope": "scenario",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "NOT_CONFIGURED",
+     "label": "Not configured",
+     "scope": "connector",
+     "category": "open",
+     "is_terminal": false,
+     "sort_order": 1
+    },
+    {
+     "code": "CONFIGURED",
+     "label": "Configured",
+     "scope": "connector",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 2
+    },
+    {
+     "code": "AVAILABLE",
+     "label": "Available",
+     "scope": "connector",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 3
+    },
+    {
+     "code": "ACTIVE",
+     "label": "Active",
+     "scope": "connector",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 4
+    },
+    {
+     "code": "STANDBY",
+     "label": "Standby",
+     "scope": "connector",
+     "category": "active",
+     "is_terminal": false,
+     "sort_order": 5
+    }
+   ],
+   "aliases": [
+    {
+     "scope": "readiness",
+     "alias": "Constraint",
+     "code": "CONSTRAINED"
+    }
+   ]
+  },
+  {
+   "name": "unit",
+   "label": "Unit of measure",
+   "description": "Units with a dimension and a factor to the dimension's base unit (null where no fixed factor exists). CUR_* units take their currency from the row. Dimension parameter_type holds non-measurement parameter types until phase 2 moves them to the policy parameter type.",
+   "attributes": [
+    {
+     "name": "symbol",
+     "kind": "text"
+    },
+    {
+     "name": "dimension",
+     "kind": "text"
+    },
+    {
+     "name": "base_factor",
+     "kind": "decimal"
+    }
+   ],
+   "values": [
+    {
+     "code": "PERCENT",
+     "label": "Percent",
+     "symbol": "%",
+     "dimension": "ratio",
+     "base_factor": 0.01
+    },
+    {
+     "code": "INDEX",
+     "label": "Index",
+     "symbol": "index",
+     "dimension": "dimensionless",
+     "base_factor": 1
+    },
+    {
+     "code": "RATING",
+     "label": "Rating",
+     "symbol": "rating",
+     "dimension": "dimensionless",
+     "base_factor": 1
+    },
+    {
+     "code": "RATE",
+     "label": "Rate",
+     "symbol": "rate",
+     "dimension": "dimensionless",
+     "base_factor": 1
+    },
+    {
+     "code": "STATE",
+     "label": "State",
+     "symbol": "state",
+     "dimension": "categorical",
+     "base_factor": null
+    },
+    {
+     "code": "COUNT",
+     "label": "Count",
+     "symbol": "count",
+     "dimension": "count",
+     "base_factor": 1
+    },
+    {
+     "code": "DEG_C",
+     "label": "Degree Celsius",
+     "symbol": "°C",
+     "dimension": "temperature",
+     "base_factor": null
+    },
+    {
+     "code": "AMPERE",
+     "label": "Ampere",
+     "symbol": "A",
+     "dimension": "current",
+     "base_factor": 1
+    },
+    {
+     "code": "VOLT",
+     "label": "Volt",
+     "symbol": "V",
+     "dimension": "voltage",
+     "base_factor": 1
+    },
+    {
+     "code": "HERTZ",
+     "label": "Hertz",
+     "symbol": "Hz",
+     "dimension": "frequency",
+     "base_factor": 1
+    },
+    {
+     "code": "DEGREE",
+     "label": "Degree (angle)",
+     "symbol": "deg",
+     "dimension": "angle",
+     "base_factor": 1
+    },
+    {
+     "code": "MEGAWATT",
+     "label": "Megawatt",
+     "symbol": "MW",
+     "dimension": "power",
+     "base_factor": 1000000
+    },
+    {
+     "code": "MEGAWATT_HOUR",
+     "label": "Megawatt hour",
+     "symbol": "MWh",
+     "dimension": "energy",
+     "base_factor": 1000000
+    },
+    {
+     "code": "KILOWATT_HOUR",
+     "label": "Kilowatt hour",
+     "symbol": "kWh",
+     "dimension": "energy",
+     "base_factor": 1000
+    },
+    {
+     "code": "WATT_PER_M2",
+     "label": "Watt per square metre",
+     "symbol": "W/m²",
+     "dimension": "irradiance",
+     "base_factor": 1
+    },
+    {
+     "code": "SECOND",
+     "label": "Second",
+     "symbol": "s",
+     "dimension": "time",
+     "base_factor": 1
+    },
+    {
+     "code": "HOUR",
+     "label": "Hour",
+     "symbol": "h",
+     "dimension": "time",
+     "base_factor": 3600
+    },
+    {
+     "code": "DAY",
+     "label": "Day",
+     "symbol": "d",
+     "dimension": "time",
+     "base_factor": 86400
+    },
+    {
+     "code": "MONTH",
+     "label": "Month",
+     "symbol": "month",
+     "dimension": "time",
+     "base_factor": null
+    },
+    {
+     "code": "YEAR",
+     "label": "Year",
+     "symbol": "year",
+     "dimension": "time",
+     "base_factor": null
+    },
+    {
+     "code": "KM_PER_HOUR",
+     "label": "Kilometre per hour",
+     "symbol": "km/h",
+     "dimension": "speed",
+     "base_factor": 0.2777777777777778
+    },
+    {
+     "code": "CUBIC_METRE",
+     "label": "Cubic metre",
+     "symbol": "m³",
+     "dimension": "volume",
+     "base_factor": 1
+    },
+    {
+     "code": "LITRE",
+     "label": "Litre",
+     "symbol": "L",
+     "dimension": "volume",
+     "base_factor": 0.001
+    },
+    {
+     "code": "TONNE",
+     "label": "Tonne",
+     "symbol": "t",
+     "dimension": "mass",
+     "base_factor": 1000
+    },
+    {
+     "code": "TCO2E",
+     "label": "Tonne CO2e",
+     "symbol": "tCO2e",
+     "dimension": "emissions",
+     "base_factor": 1000
+    },
+    {
+     "code": "L_PER_MWH",
+     "label": "Litre per MWh",
+     "symbol": "L/MWh",
+     "dimension": "water_intensity",
+     "base_factor": 1
+    },
+    {
+     "code": "TCO2E_PER_MWH",
+     "label": "Tonne CO2e per MWh",
+     "symbol": "tCO2e/MWh",
+     "dimension": "emission_intensity",
+     "base_factor": 1
+    },
+    {
+     "code": "KGCO2E_PER_L",
+     "label": "kg CO2e per litre",
+     "symbol": "kgCO2e/L",
+     "dimension": "fuel_emission_factor",
+     "base_factor": 1
+    },
+    {
+     "code": "KGCO2E_PER_KG",
+     "label": "kg CO2e per kg",
+     "symbol": "kgCO2e/kg",
+     "dimension": "mass_emission_factor",
+     "base_factor": 1
+    },
+    {
+     "code": "KG_PER_UNIT",
+     "label": "Kilogram per unit",
+     "symbol": "kg/unit",
+     "dimension": "mass_per_count",
+     "base_factor": 1
+    },
+    {
+     "code": "CURRENCY",
+     "label": "Currency amount",
+     "symbol": "¤",
+     "dimension": "money",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_KWH",
+     "label": "Currency per kWh",
+     "symbol": "¤/kWh",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_HOUR",
+     "label": "Currency per hour",
+     "symbol": "¤/h",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_INTERVENTION",
+     "label": "Currency per intervention",
+     "symbol": "¤/intervention",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_EVENT",
+     "label": "Currency per event",
+     "symbol": "¤/event",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_UNIT",
+     "label": "Currency per unit",
+     "symbol": "¤/unit",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "CUR_PER_KG",
+     "label": "Currency per kg",
+     "symbol": "¤/kg",
+     "dimension": "money_rate",
+     "base_factor": null
+    },
+    {
+     "code": "L_PER_RECOVERED_MWH",
+     "label": "Litre per recovered MWh",
+     "symbol": "L/recovered MWh",
+     "dimension": "water_intensity",
+     "base_factor": 1
+    },
+    {
+     "code": "STRATEGY",
+     "label": "Strategy",
+     "symbol": "strategy",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "RULE",
+     "label": "Rule",
+     "symbol": "rule",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "WORKFLOW",
+     "label": "Workflow",
+     "symbol": "workflow",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "LEXICOGRAPHIC",
+     "label": "Lexicographic order",
+     "symbol": "lexicographic",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "STATUS_VALUE",
+     "label": "Status value",
+     "symbol": "status",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "DATE_TIME",
+     "label": "Date / time",
+     "symbol": "date/time",
+     "dimension": "parameter_type",
+     "base_factor": null
+    },
+    {
+     "code": "MODEL_SCORE_SET",
+     "label": "Model score set",
+     "symbol": "RUL/Condition/Readiness/Replacement/Regulatory",
+     "dimension": "parameter_type",
+     "base_factor": null
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "%",
+     "code": "PERCENT"
+    },
+    {
+     "alias": "% of exposure",
+     "code": "PERCENT"
+    },
+    {
+     "alias": "index",
+     "code": "INDEX"
+    },
+    {
+     "alias": "rating",
+     "code": "RATING"
+    },
+    {
+     "alias": "rate",
+     "code": "RATE"
+    },
+    {
+     "alias": "state",
+     "code": "STATE"
+    },
+    {
+     "alias": "count",
+     "code": "COUNT"
+    },
+    {
+     "alias": "unit",
+     "code": "COUNT"
+    },
+    {
+     "alias": "units",
+     "code": "COUNT"
+    },
+    {
+     "alias": "modules",
+     "code": "COUNT"
+    },
+    {
+     "alias": "°C",
+     "code": "DEG_C"
+    },
+    {
+     "alias": "A",
+     "code": "AMPERE"
+    },
+    {
+     "alias": "V",
+     "code": "VOLT"
+    },
+    {
+     "alias": "Hz",
+     "code": "HERTZ"
+    },
+    {
+     "alias": "deg",
+     "code": "DEGREE"
+    },
+    {
+     "alias": "MW",
+     "code": "MEGAWATT"
+    },
+    {
+     "alias": "MWh",
+     "code": "MEGAWATT_HOUR"
+    },
+    {
+     "alias": "W/m²",
+     "code": "WATT_PER_M2"
+    },
+    {
+     "alias": "seconds",
+     "code": "SECOND"
+    },
+    {
+     "alias": "hours",
+     "code": "HOUR"
+    },
+    {
+     "alias": "days",
+     "code": "DAY"
+    },
+    {
+     "alias": "months",
+     "code": "MONTH"
+    },
+    {
+     "alias": "years",
+     "code": "YEAR"
+    },
+    {
+     "alias": "km/h",
+     "code": "KM_PER_HOUR"
+    },
+    {
+     "alias": "m3",
+     "code": "CUBIC_METRE"
+    },
+    {
+     "alias": "tonnes",
+     "code": "TONNE"
+    },
+    {
+     "alias": "tCO2e",
+     "code": "TCO2E"
+    },
+    {
+     "alias": "L/MWh",
+     "code": "L_PER_MWH"
+    },
+    {
+     "alias": "tCO2e/MWh",
+     "code": "TCO2E_PER_MWH"
+    },
+    {
+     "alias": "kgCO2e/L",
+     "code": "KGCO2E_PER_L"
+    },
+    {
+     "alias": "kgCO2e/kg",
+     "code": "KGCO2E_PER_KG"
+    },
+    {
+     "alias": "kg/unit",
+     "code": "KG_PER_UNIT"
+    },
+    {
+     "alias": "INR",
+     "code": "CURRENCY",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/kWh",
+     "code": "CUR_PER_KWH",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/hour",
+     "code": "CUR_PER_HOUR",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/intervention",
+     "code": "CUR_PER_INTERVENTION",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR / intervention",
+     "code": "CUR_PER_INTERVENTION",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/event",
+     "code": "CUR_PER_EVENT",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/unit",
+     "code": "CUR_PER_UNIT",
+     "currency": "INR"
+    },
+    {
+     "alias": "INR/kg",
+     "code": "CUR_PER_KG",
+     "currency": "INR"
+    },
+    {
+     "alias": "L/recovered MWh",
+     "code": "L_PER_RECOVERED_MWH"
+    },
+    {
+     "alias": "strategies",
+     "code": "STRATEGY"
+    },
+    {
+     "alias": "strategy",
+     "code": "STRATEGY"
+    },
+    {
+     "alias": "rule",
+     "code": "RULE"
+    },
+    {
+     "alias": "workflow",
+     "code": "WORKFLOW"
+    },
+    {
+     "alias": "lexicographic",
+     "code": "LEXICOGRAPHIC"
+    },
+    {
+     "alias": "status",
+     "code": "STATUS_VALUE"
+    },
+    {
+     "alias": "date/time",
+     "code": "DATE_TIME"
+    },
+    {
+     "alias": "RUL/Condition/Readiness/Replacement/Regulatory",
+     "code": "MODEL_SCORE_SET"
+    },
+    {
+     "alias": "assets/cohorts",
+     "code": "COUNT"
+    }
+   ]
+  },
+  {
+   "name": "currency",
+   "label": "Currency",
+   "description": "ISO-4217 currencies enabled for the platform; minor_units is the number of decimal places.",
+   "attributes": [
+    {
+     "name": "minor_units",
+     "kind": "integer"
+    }
+   ],
+   "values": [
+    {
+     "code": "INR",
+     "label": "Indian rupee",
+     "minor_units": 2
+    },
+    {
+     "code": "USD",
+     "label": "US dollar",
+     "minor_units": 2
+    },
+    {
+     "code": "EUR",
+     "label": "Euro",
+     "minor_units": 2
+    },
+    {
+     "code": "GBP",
+     "label": "Pound sterling",
+     "minor_units": 2
+    },
+    {
+     "code": "AED",
+     "label": "UAE dirham",
+     "minor_units": 2
+    },
+    {
+     "code": "SAR",
+     "label": "Saudi riyal",
+     "minor_units": 2
+    },
+    {
+     "code": "SGD",
+     "label": "Singapore dollar",
+     "minor_units": 2
+    },
+    {
+     "code": "AUD",
+     "label": "Australian dollar",
+     "minor_units": 2
+    },
+    {
+     "code": "JPY",
+     "label": "Japanese yen",
+     "minor_units": 0
+    },
+    {
+     "code": "CNY",
+     "label": "Chinese yuan",
+     "minor_units": 2
+    },
+    {
+     "code": "ZAR",
+     "label": "South African rand",
+     "minor_units": 2
+    },
+    {
+     "code": "BRL",
+     "label": "Brazilian real",
+     "minor_units": 2
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "region",
+   "label": "Region",
+   "description": "Countries and their subdivisions (codes follow ISO 3166), with tax regime, default currency and time zone. Tenants add subdivisions they operate in.",
+   "attributes": [
+    {
+     "name": "kind",
+     "kind": "text"
+    },
+    {
+     "name": "parent_code",
+     "kind": "text"
+    },
+    {
+     "name": "tax_regime",
+     "kind": "text"
+    },
+    {
+     "name": "currency_code",
+     "kind": "text"
+    },
+    {
+     "name": "timezone",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "IN",
+     "label": "India",
+     "kind": "country",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "AE",
+     "label": "United Arab Emirates",
+     "kind": "country",
+     "tax_regime": "VAT",
+     "currency_code": "AED",
+     "timezone": "Asia/Dubai"
+    },
+    {
+     "code": "SA",
+     "label": "Saudi Arabia",
+     "kind": "country",
+     "tax_regime": "VAT",
+     "currency_code": "SAR",
+     "timezone": "Asia/Riyadh"
+    },
+    {
+     "code": "SG",
+     "label": "Singapore",
+     "kind": "country",
+     "tax_regime": "GST",
+     "currency_code": "SGD",
+     "timezone": "Asia/Singapore"
+    },
+    {
+     "code": "AU",
+     "label": "Australia",
+     "kind": "country",
+     "tax_regime": "GST",
+     "currency_code": "AUD",
+     "timezone": "Australia/Sydney"
+    },
+    {
+     "code": "GB",
+     "label": "United Kingdom",
+     "kind": "country",
+     "tax_regime": "VAT",
+     "currency_code": "GBP",
+     "timezone": "Europe/London"
+    },
+    {
+     "code": "DE",
+     "label": "Germany",
+     "kind": "country",
+     "tax_regime": "VAT",
+     "currency_code": "EUR",
+     "timezone": "Europe/Berlin"
+    },
+    {
+     "code": "US",
+     "label": "United States",
+     "kind": "country",
+     "tax_regime": "SALES_TAX",
+     "currency_code": "USD",
+     "timezone": "America/New_York"
+    },
+    {
+     "code": "IN-AP",
+     "label": "Andhra Pradesh",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-GJ",
+     "label": "Gujarat",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-HR",
+     "label": "Haryana",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-KA",
+     "label": "Karnataka",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-MP",
+     "label": "Madhya Pradesh",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-MH",
+     "label": "Maharashtra",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-OD",
+     "label": "Odisha",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-PB",
+     "label": "Punjab",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-RJ",
+     "label": "Rajasthan",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-TN",
+     "label": "Tamil Nadu",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-TG",
+     "label": "Telangana",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    },
+    {
+     "code": "IN-UP",
+     "label": "Uttar Pradesh",
+     "kind": "subdivision",
+     "parent_code": "IN",
+     "tax_regime": "GST",
+     "currency_code": "INR",
+     "timezone": "Asia/Kolkata"
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "failure_mode",
+   "label": "Failure mode",
+   "description": "Functional failure modes. Seeded with every observed mode; near-duplicates await the owner's merge decision.",
+   "attributes": [],
+   "values": [
+    {
+     "code": "BREAKER_MECHANISM_FAILURE",
+     "label": "Breaker mechanism failure"
+    },
+    {
+     "code": "BYPASS_DIODE_FAILURE",
+     "label": "Bypass diode failure"
+    },
+    {
+     "code": "BYPASS_DIODE_OR_CONNECTION_ANOMALY",
+     "label": "Bypass diode or connection anomaly"
+    },
+    {
+     "code": "CELL_INTERCONNECT_FAILURE",
+     "label": "Cell interconnect failure"
+    },
+    {
+     "code": "CONFIRMED_MODULE_FUNCTIONAL_FAILURE",
+     "label": "Confirmed module functional failure"
+    },
+    {
+     "code": "COOLING_FAN_DEGRADATION",
+     "label": "Cooling fan degradation"
+    },
+    {
+     "code": "COOLING_FAN_FAILURE",
+     "label": "Cooling fan failure"
+    },
+    {
+     "code": "DC_LINK_THERMAL_DEGRADATION",
+     "label": "DC-link thermal degradation"
+    },
+    {
+     "code": "DRIVE_MOTOR_OR_GEARBOX_WEAR",
+     "label": "Drive motor or gearbox wear"
+    },
+    {
+     "code": "FUSE_TERMINAL_OVERHEATING",
+     "label": "Fuse/terminal overheating"
+    },
+    {
+     "code": "GENERAL_CORRECTIVE_FAILURE",
+     "label": "General corrective failure"
+    },
+    {
+     "code": "GRID_OVERVOLTAGE_PROTECTION_TRIP",
+     "label": "Grid overvoltage / protection trip"
+    },
+    {
+     "code": "IGBT_THERMAL_DEGRADATION",
+     "label": "IGBT thermal degradation"
+    },
+    {
+     "code": "INSULATION_DETERIORATION",
+     "label": "Insulation deterioration"
+    },
+    {
+     "code": "INSULATION_FAILURE",
+     "label": "Insulation failure"
+    },
+    {
+     "code": "INVERTER_PREVENTIVE_DEGRADATION_CONTROL",
+     "label": "Inverter preventive degradation control"
+    },
+    {
+     "code": "IRRADIANCE_SENSOR_DRIFT",
+     "label": "Irradiance sensor drift"
+    },
+    {
+     "code": "JUNCTION_BOX_FAILURE",
+     "label": "Junction box failure"
+    },
+    {
+     "code": "SOILING_AND_DEGRADATION",
+     "label": "Soiling and degradation"
+    },
+    {
+     "code": "STRING_OPEN_CIRCUIT",
+     "label": "String open circuit"
+    },
+    {
+     "code": "SWITCHGEAR_CONTACT_DEGRADATION",
+     "label": "Switchgear contact degradation"
+    },
+    {
+     "code": "SWITCHGEAR_PREVENTIVE_INSPECTION",
+     "label": "Switchgear preventive inspection"
+    },
+    {
+     "code": "TRACKER_DRIVE_FAULT",
+     "label": "Tracker drive fault"
+    },
+    {
+     "code": "TRACKER_DRIVE_MISALIGNMENT",
+     "label": "Tracker drive misalignment"
+    },
+    {
+     "code": "TRACKER_GEARBOX_WEAR",
+     "label": "Tracker gearbox wear"
+    },
+    {
+     "code": "TRACKER_POSITION_SENSOR_DRIFT",
+     "label": "Tracker position sensor drift"
+    },
+    {
+     "code": "TRANSFORMER_COOLING_SYSTEM_DEGRADATION",
+     "label": "Transformer cooling system degradation"
+    },
+    {
+     "code": "TRANSFORMER_DEFECT_RESPONSE",
+     "label": "Transformer defect response"
+    },
+    {
+     "code": "TRANSFORMER_INSULATION_CONNECTION_DEFECT",
+     "label": "Transformer insulation / connection defect"
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "Tracker drive mechanism fault",
+     "code": "TRACKER_DRIVE_FAULT"
+    },
+    {
+     "alias": "Transformer insulation degradation",
+     "code": "INSULATION_DETERIORATION"
+    },
+    {
+     "alias": "Power-stage thermal degradation",
+     "code": "IGBT_THERMAL_DEGRADATION"
+    }
+   ]
+  },
+  {
+   "name": "defect_code",
+   "label": "Defect and finding type",
+   "description": "PV module defect catalogue plus inspection finding types for other asset classes.",
+   "attributes": [
+    {
+     "name": "category",
+     "kind": "text"
+    },
+    {
+     "name": "component",
+     "kind": "text"
+    },
+    {
+     "name": "asset_class_code",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "SOILING",
+     "label": "Soiling / bird deposits",
+     "category": "Condition",
+     "component": "Surface",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "SHADING",
+     "label": "Shading",
+     "category": "Condition",
+     "component": "Installation",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "HOTSPOT",
+     "label": "Thermal hotspot",
+     "category": "Observation",
+     "component": "Cell / interconnection",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "LOW_OUTPUT",
+     "label": "Low output",
+     "category": "Observation",
+     "component": "Module",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "CELL_CRACK",
+     "label": "Cell cracking",
+     "category": "Defect",
+     "component": "Cell",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "GLASS_DAMAGE",
+     "label": "Glass damage",
+     "category": "Defect",
+     "component": "Glass",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "DELAMINATION",
+     "label": "Delamination",
+     "category": "Defect",
+     "component": "Encapsulation",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "BACKSHEET",
+     "label": "Backsheet deterioration",
+     "category": "Defect",
+     "component": "Backsheet",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "CORROSION",
+     "label": "Corrosion",
+     "category": "Defect",
+     "component": "Interconnection",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "JUNCTION_BOX",
+     "label": "Junction box defect",
+     "category": "Defect",
+     "component": "Junction box",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "BYPASS_DIODE",
+     "label": "Bypass diode defect",
+     "category": "Defect",
+     "component": "Diode",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "PID",
+     "label": "Potential-induced degradation",
+     "category": "Degradation",
+     "component": "Module",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "LID_LETID",
+     "label": "Light-related degradation",
+     "category": "Degradation",
+     "component": "Cell",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "WEATHER_DAMAGE",
+     "label": "Storm / hail damage",
+     "category": "External damage",
+     "component": "Module",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "TRACKER_MISALIGNMENT",
+     "label": "Tracker misalignment",
+     "category": "Observation",
+     "asset_class_code": "TRACKER"
+    },
+    {
+     "code": "COMBINER_THERMAL_ANOMALY",
+     "label": "Combiner box thermal anomaly",
+     "category": "Observation",
+     "asset_class_code": "SCB"
+    },
+    {
+     "code": "VEGETATION_ENCROACHMENT",
+     "label": "Vegetation encroachment",
+     "category": "Condition",
+     "asset_class_code": "PV_ARRAY"
+    },
+    {
+     "code": "CABLE_INSULATION_DAMAGE",
+     "label": "Cable insulation damage",
+     "category": "Defect",
+     "asset_class_code": "PV_ARRAY"
+    },
+    {
+     "code": "WATERLOGGING",
+     "label": "Waterlogging",
+     "category": "Condition",
+     "asset_class_code": "PV_ARRAY"
+    },
+    {
+     "code": "FIRE_SMOKE",
+     "label": "Fire or smoke indication",
+     "category": "Observation",
+     "asset_class_code": "PV_ARRAY"
+    },
+    {
+     "code": "LOOSE_CONNECTOR",
+     "label": "Loose connector (suspected)",
+     "category": "Observation",
+     "asset_class_code": "PV_MODULE"
+    },
+    {
+     "code": "STRING_CURRENT_IMBALANCE",
+     "label": "String current imbalance",
+     "category": "Observation",
+     "asset_class_code": "SCB"
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "Thermal Hotspot",
+     "code": "HOTSPOT"
+    },
+    {
+     "alias": "Soiling Accumulation",
+     "code": "SOILING"
+    },
+    {
+     "alias": "Bird Dropping Accumulation",
+     "code": "SOILING"
+    },
+    {
+     "alias": "Cell Microcrack",
+     "code": "CELL_CRACK"
+    },
+    {
+     "alias": "PID Suspected",
+     "code": "PID"
+    },
+    {
+     "alias": "Module Delamination",
+     "code": "DELAMINATION"
+    },
+    {
+     "alias": "Frame Corrosion",
+     "code": "CORROSION"
+    },
+    {
+     "alias": "Junction Box Thermal Anomaly",
+     "code": "JUNCTION_BOX"
+    },
+    {
+     "alias": "Bypass Diode Failure Suspected",
+     "code": "BYPASS_DIODE"
+    },
+    {
+     "alias": "Tracker Misalignment",
+     "code": "TRACKER_MISALIGNMENT"
+    },
+    {
+     "alias": "Combiner Box Thermal Anomaly",
+     "code": "COMBINER_THERMAL_ANOMALY"
+    },
+    {
+     "alias": "Vegetation Encroachment",
+     "code": "VEGETATION_ENCROACHMENT"
+    },
+    {
+     "alias": "Cable Insulation Damage",
+     "code": "CABLE_INSULATION_DAMAGE"
+    },
+    {
+     "alias": "Waterlogging",
+     "code": "WATERLOGGING"
+    },
+    {
+     "alias": "Fire/Smoke Indication",
+     "code": "FIRE_SMOKE"
+    },
+    {
+     "alias": "Loose MC4 Connector Suspected",
+     "code": "LOOSE_CONNECTOR"
+    },
+    {
+     "alias": "String Current Imbalance",
+     "code": "STRING_CURRENT_IMBALANCE"
+    },
+    {
+     "alias": "Cracked Module",
+     "code": "GLASS_DAMAGE"
+    }
+   ]
+  },
+  {
+   "name": "skill",
+   "label": "Skill",
+   "description": "Technician competencies required by work and held by crews.",
+   "attributes": [],
+   "values": [
+    {
+     "code": "POWER_ELECTRONICS",
+     "label": "Power Electronics"
+    },
+    {
+     "code": "HIGH_VOLTAGE",
+     "label": "High Voltage"
+    },
+    {
+     "code": "ELECTRICAL",
+     "label": "Electrical"
+    },
+    {
+     "code": "MECHANICAL",
+     "label": "Mechanical"
+    },
+    {
+     "code": "INSTRUMENTATION",
+     "label": "Instrumentation"
+    },
+    {
+     "code": "SCADA",
+     "label": "SCADA"
+    },
+    {
+     "code": "PV_ELECTRICAL_INSPECTION",
+     "label": "PV electrical inspection"
+    }
+   ],
+   "aliases": []
+  },
+  {
+   "name": "event_type",
+   "label": "Event type",
+   "description": "Event classifications, unique per domain scope.",
+   "key": [
+    "scope",
+    "code"
+   ],
+   "attributes": [
+    {
+     "name": "scope",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "EARLY_PRECURSOR",
+     "label": "Early precursor",
+     "scope": "operational",
+     "sort_order": 1
+    },
+    {
+     "code": "CONDITION_DEVIATION",
+     "label": "Condition deviation",
+     "scope": "operational",
+     "sort_order": 2
+    },
+    {
+     "code": "WARNING_THRESHOLD_CROSSED",
+     "label": "Warning threshold crossed",
+     "scope": "operational",
+     "sort_order": 3
+    },
+    {
+     "code": "OPERATIONAL_IMPACT_CONFIRMED",
+     "label": "Operational impact confirmed",
+     "scope": "operational",
+     "sort_order": 4
+    },
+    {
+     "code": "RESTORATION_VERIFIED",
+     "label": "Restoration verified",
+     "scope": "operational",
+     "sort_order": 5
+    },
+    {
+     "code": "INVERTER_COOLING_FAILURE",
+     "label": "Inverter cooling failure",
+     "scope": "operational",
+     "sort_order": 6
+    },
+    {
+     "code": "TRANSFORMER_INSULATION_DEGRADATION",
+     "label": "Transformer insulation degradation",
+     "scope": "operational",
+     "sort_order": 7
+    },
+    {
+     "code": "COMBINER_CONNECTOR_HOTSPOT",
+     "label": "Combiner connector hotspot",
+     "scope": "operational",
+     "sort_order": 8
+    },
+    {
+     "code": "TRACKER_DRIVE_FAILURE",
+     "label": "Tracker drive failure",
+     "scope": "operational",
+     "sort_order": 9
+    },
+    {
+     "code": "SCADA_COMMUNICATION_LOSS",
+     "label": "SCADA communication loss",
+     "scope": "operational",
+     "sort_order": 10
+    },
+    {
+     "code": "SWITCHGEAR_RELAY_TRIP",
+     "label": "Switchgear relay trip",
+     "scope": "operational",
+     "sort_order": 11
+    },
+    {
+     "code": "MODULE_THERMAL_ANOMALY",
+     "label": "Module thermal anomaly",
+     "scope": "operational",
+     "sort_order": 12
+    },
+    {
+     "code": "OBSERVATION",
+     "label": "Observation",
+     "scope": "hse",
+     "sort_order": 1
+    },
+    {
+     "code": "NEAR_MISS",
+     "label": "Near Miss",
+     "scope": "hse",
+     "sort_order": 2
+    },
+    {
+     "code": "FIRST_AID",
+     "label": "First Aid",
+     "scope": "hse",
+     "sort_order": 3
+    },
+    {
+     "code": "RECORDABLE",
+     "label": "Recordable",
+     "scope": "hse",
+     "sort_order": 4
+    },
+    {
+     "code": "FAILURE",
+     "label": "Failure",
+     "scope": "reliability",
+     "sort_order": 1
+    },
+    {
+     "code": "CONFIRMED_FUNCTIONAL_FAILURE",
+     "label": "Confirmed functional failure",
+     "scope": "reliability",
+     "sort_order": 2
+    },
+    {
+     "code": "RIGHT_CENSORED",
+     "label": "Right Censored",
+     "scope": "reliability",
+     "sort_order": 3
+    },
+    {
+     "code": "SITE_MAINTENANCE_WINDOW",
+     "label": "Site Maintenance Window",
+     "scope": "calendar",
+     "sort_order": 1
+    },
+    {
+     "code": "GRID_OUTAGE_WINDOW",
+     "label": "Grid Outage Window",
+     "scope": "calendar",
+     "sort_order": 2
+    },
+    {
+     "code": "ACCESS_RESTRICTION",
+     "label": "Access Restriction",
+     "scope": "calendar",
+     "sort_order": 3
+    },
+    {
+     "code": "TRAINING",
+     "label": "Training",
+     "scope": "calendar",
+     "sort_order": 4
+    },
+    {
+     "code": "LEAVE",
+     "label": "Leave",
+     "scope": "calendar",
+     "sort_order": 5
+    },
+    {
+     "code": "PUBLIC_HOLIDAY",
+     "label": "Public Holiday",
+     "scope": "calendar",
+     "sort_order": 6
+    },
+    {
+     "code": "REGIONAL_HOLIDAY",
+     "label": "Regional Holiday",
+     "scope": "calendar",
+     "sort_order": 7
+    },
+    {
+     "code": "OT_RESTRICTION",
+     "label": "OT Restriction",
+     "scope": "calendar",
+     "sort_order": 8
+    },
+    {
+     "code": "CALIBRATION",
+     "label": "Calibration",
+     "scope": "calendar",
+     "sort_order": 9
+    },
+    {
+     "code": "ASSIGNED",
+     "label": "Assigned",
+     "scope": "calendar",
+     "sort_order": 10
+    },
+    {
+     "code": "SERVICE",
+     "label": "Service",
+     "scope": "calendar",
+     "sort_order": 11
+    },
+    {
+     "code": "SHIFT_ASSIGNMENT",
+     "label": "Shift / Assignment",
+     "scope": "resource_calendar",
+     "sort_order": 1
+    },
+    {
+     "code": "COOLING_SUBSYSTEM_DEGRADATION",
+     "label": "Cooling subsystem degradation",
+     "scope": "operational",
+     "sort_order": 13
+    },
+    {
+     "code": "GRID_VOLTAGE_EXCURSION",
+     "label": "Grid voltage excursion",
+     "scope": "operational",
+     "sort_order": 14
+    },
+    {
+     "code": "INSULATION_DETERIORATION",
+     "label": "Insulation deterioration",
+     "scope": "operational",
+     "sort_order": 15
+    },
+    {
+     "code": "POSITION_SENSOR_DRIFT",
+     "label": "Position-sensor drift",
+     "scope": "operational",
+     "sort_order": 16
+    },
+    {
+     "code": "DRIVE_MECHANISM_FAULT",
+     "label": "Drive mechanism fault",
+     "scope": "operational",
+     "sort_order": 17
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "Cooling-system deterioration",
+     "code": "COOLING_SUBSYSTEM_DEGRADATION",
+     "scope": "operational"
+    }
+   ]
+  },
+  {
+   "name": "source_system",
+   "label": "Source system",
+   "description": "Systems data originates from. Aliases record whether a value was demonstration, synthetic, illustrative or configured data.",
+   "attributes": [],
+   "values": [
+    {
+     "code": "SCADA",
+     "label": "SCADA"
+    },
+    {
+     "code": "REVENUE_METER",
+     "label": "Revenue meter"
+    },
+    {
+     "code": "HISTORIAN",
+     "label": "Historian"
+    },
+    {
+     "code": "CONDITION_MONITORING",
+     "label": "Condition monitoring"
+    },
+    {
+     "code": "EAM",
+     "label": "Enterprise asset management"
+    },
+    {
+     "code": "ERP",
+     "label": "ERP"
+    },
+    {
+     "code": "WFM",
+     "label": "Workforce management"
+    },
+    {
+     "code": "FSM",
+     "label": "Field service management"
+    },
+    {
+     "code": "DMS",
+     "label": "Document management"
+    },
+    {
+     "code": "FLEET",
+     "label": "Fleet management"
+    },
+    {
+     "code": "OPTIMIZER",
+     "label": "Optimisation engine"
+    },
+    {
+     "code": "WEATHER_SERVICE",
+     "label": "Weather service"
+    },
+    {
+     "code": "AI_VISION",
+     "label": "AI vision"
+    },
+    {
+     "code": "CAMERA",
+     "label": "Camera"
+    },
+    {
+     "code": "ANALYTICS_ENGINE",
+     "label": "Analytics engine"
+    },
+    {
+     "code": "AIP_CORE",
+     "label": "AIP core"
+    },
+    {
+     "code": "HSE",
+     "label": "HSE system"
+    },
+    {
+     "code": "TIMESHEET",
+     "label": "Timesheet"
+    },
+    {
+     "code": "COMMERCIAL_PPA",
+     "label": "Commercial and PPA"
+    },
+    {
+     "code": "CLIMATE_RISK",
+     "label": "Climate, nature and asset risk"
+    },
+    {
+     "code": "REGULATORY_RATES",
+     "label": "Regulatory rate master"
+    },
+    {
+     "code": "LOGISTICS_RATES",
+     "label": "Logistics rate master"
+    },
+    {
+     "code": "WORKFORCE_COST",
+     "label": "Workforce cost master"
+    },
+    {
+     "code": "PLANNING_PROFILE",
+     "label": "Planning risk profile"
+    },
+    {
+     "code": "INSPECTION",
+     "label": "Field inspection"
+    },
+    {
+     "code": "MAINTENANCE_LOG",
+     "label": "Maintenance log"
+    },
+    {
+     "code": "FUEL_LOG",
+     "label": "Fuel log"
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "SYS-EAM",
+     "code": "EAM"
+    },
+    {
+     "alias": "AIP Core",
+     "code": "AIP_CORE"
+    },
+    {
+     "alias": "SYS-WFM",
+     "code": "WFM"
+    },
+    {
+     "alias": "SYS-OPT",
+     "code": "OPTIMIZER"
+    },
+    {
+     "alias": "SYS-WEA",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "SYS-DMS",
+     "code": "DMS"
+    },
+    {
+     "alias": "SYS-FLT",
+     "code": "FLEET"
+    },
+    {
+     "alias": "SYS-FSM",
+     "code": "FSM"
+    },
+    {
+     "alias": "Commercial & PPA",
+     "code": "COMMERCIAL_PPA"
+    },
+    {
+     "alias": "ERP HR / Workforce Cost Master",
+     "code": "WORKFORCE_COST"
+    },
+    {
+     "alias": "Logistics Rate Master",
+     "code": "LOGISTICS_RATES"
+    },
+    {
+     "alias": "Sustainability Regulatory Rate Master",
+     "code": "REGULATORY_RATES"
+    },
+    {
+     "alias": "Climate, Nature & Asset Risk",
+     "code": "CLIMATE_RISK"
+    },
+    {
+     "alias": "SCADA / revenue meter demo",
+     "code": "REVENUE_METER",
+     "provenance": "demo"
+    },
+    {
+     "alias": "O&M cleaning log demo",
+     "code": "MAINTENANCE_LOG",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Fuel / maintenance log demo",
+     "code": "FUEL_LOG",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Maintenance inspection demo",
+     "code": "INSPECTION",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Plant meter demo",
+     "code": "REVENUE_METER",
+     "provenance": "demo"
+    },
+    {
+     "alias": "HSE system demo",
+     "code": "HSE",
+     "provenance": "demo"
+    },
+    {
+     "alias": "HSE/time demo",
+     "code": "HSE",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Contractor timesheet demo",
+     "code": "TIMESHEET",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Asset/EAM demo",
+     "code": "EAM",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Meteomatics",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "Tomorrow.io",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "Google Weather API",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "India Meteorological Department (IMD)",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "ISRO MOSDAC",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "NASA POWER",
+     "code": "WEATHER_SERVICE"
+    },
+    {
+     "alias": "Configured SCADA",
+     "code": "SCADA",
+     "provenance": "configured"
+    },
+    {
+     "alias": "Configured Weather",
+     "code": "WEATHER_SERVICE",
+     "provenance": "configured"
+    },
+    {
+     "alias": "Configured Camera",
+     "code": "CAMERA",
+     "provenance": "configured"
+    },
+    {
+     "alias": "Configured AI Vision",
+     "code": "AI_VISION",
+     "provenance": "configured"
+    },
+    {
+     "alias": "Configured Weather Service",
+     "code": "WEATHER_SERVICE",
+     "provenance": "configured"
+    },
+    {
+     "alias": "Seasonal planning risk profile",
+     "code": "PLANNING_PROFILE"
+    },
+    {
+     "alias": "Synthetic SCADA / revenue-meter history",
+     "code": "REVENUE_METER",
+     "provenance": "synthetic"
+    },
+    {
+     "alias": "AI Vision",
+     "code": "AI_VISION"
+    },
+    {
+     "alias": "Demonstration inspection",
+     "code": "INSPECTION",
+     "provenance": "demo"
+    },
+    {
+     "alias": "Historian",
+     "code": "HISTORIAN"
+    },
+    {
+     "alias": "Condition Monitoring",
+     "code": "CONDITION_MONITORING"
+    },
+    {
+     "alias": "Analytics Engine",
+     "code": "ANALYTICS_ENGINE"
+    },
+    {
+     "alias": "Illustrative thermal inspection",
+     "code": "INSPECTION",
+     "provenance": "illustrative"
+    }
+   ]
+  },
+  {
+   "name": "framework",
+   "label": "Reporting framework",
+   "description": "Sustainability disclosure frameworks that ESG metrics map to.",
+   "attributes": [
+    {
+     "name": "jurisdiction",
+     "kind": "text"
+    }
+   ],
+   "values": [
+    {
+     "code": "BRSR",
+     "label": "BRSR and BRSR Core",
+     "jurisdiction": "IN"
+    },
+    {
+     "code": "SASB_IF_EU",
+     "label": "SASB IF-EU",
+     "jurisdiction": "global"
+    },
+    {
+     "code": "GRI",
+     "label": "GRI Standards",
+     "jurisdiction": "global"
+    },
+    {
+     "code": "ISSB",
+     "label": "IFRS / ISSB",
+     "jurisdiction": "global"
+    },
+    {
+     "code": "TCFD",
+     "label": "TCFD",
+     "jurisdiction": "global"
+    },
+    {
+     "code": "CSRD_ESRS",
+     "label": "CSRD / ESRS",
+     "jurisdiction": "EU"
+    },
+    {
+     "code": "CDP",
+     "label": "CDP",
+     "jurisdiction": "global"
+    }
+   ],
+   "aliases": [
+    {
+     "alias": "BRSR / BRSR Core",
+     "code": "BRSR"
+    },
+    {
+     "alias": "SASB IF-EU",
+     "code": "SASB_IF_EU"
+    },
+    {
+     "alias": "GRI",
+     "code": "GRI"
+    },
+    {
+     "alias": "IFRS/ISSB",
+     "code": "ISSB"
+    }
+   ]
+  },
+  {
+   "name": "emission_factor",
+   "label": "Emission factor",
+   "description": "Versioned emission factors. Tenant-governed: each tenant approves its own values; no platform defaults ship.",
+   "attributes": [
+    {
+     "name": "value",
+     "kind": "decimal"
+    },
+    {
+     "name": "unit_code",
+     "kind": "text"
+    },
+    {
+     "name": "region_code",
+     "kind": "text"
+    },
+    {
+     "name": "authority",
+     "kind": "text"
+    },
+    {
+     "name": "effective_from",
+     "kind": "date"
+    },
+    {
+     "name": "effective_to",
+     "kind": "date"
+    },
+    {
+     "name": "factor_status",
+     "kind": "text"
+    }
+   ],
+   "values": [],
+   "aliases": [],
+   "tenantSeed": {
+    "sheet": "sus_emission_factor_config",
+    "map": {
+     "code": "factor_id",
+     "label": "factor_name",
+     "value": "value",
+     "unit_code": {
+      "column": "unit",
+      "ref": "unit"
+     },
+     "authority": "authority",
+     "effective_from": "effective_from",
+     "effective_to": "effective_to",
+     "factor_status": "status"
+    }
+   }
+  }
+ ],
+ "bindings": [
+  {
+   "column": "ai_alerts_and_rul.alert_status",
+   "ref": "status",
+   "scope": "alert"
+  },
+  {
+   "column": "asset_master.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "asset_master.operating_status",
+   "ref": "status",
+   "scope": "asset_operating"
+  },
+  {
+   "column": "asset_master.risk_band",
+   "ref": "risk_band"
+  },
+  {
+   "column": "asset_master.status",
+   "ref": "status",
+   "scope": "asset_operating"
+  },
+  {
+   "column": "bess_systems.operating_status",
+   "ref": "status",
+   "scope": "asset_operating"
+  },
+  {
+   "column": "cbm_assessments.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "cbm_assessments.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ],
+   "fallbackRef": "defect_code"
+  },
+  {
+   "column": "cbm_assessments.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "cbm_evidence.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "cost_and_rate_master.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "event_log.event_status",
+   "ref": "status",
+   "scope": "event"
+  },
+  {
+   "column": "event_log.event_type",
+   "ref": "event_type",
+   "scope": "operational"
+  },
+  {
+   "column": "event_log.severity",
+   "ref": "severity"
+  },
+  {
+   "column": "event_log.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "event_root_cause_cases.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "event_root_cause_cases.event_type",
+   "ref": "event_type",
+   "scope": "operational"
+  },
+  {
+   "column": "event_root_cause_cases.severity",
+   "ref": "severity"
+  },
+  {
+   "column": "event_root_cause_cases.validation_status",
+   "ref": "status",
+   "scope": "rca"
+  },
+  {
+   "column": "event_root_cause_evidence.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "event_root_cause_evidence.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "fcst_actual.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "inventory_balance.stock_status",
+   "ref": "status",
+   "scope": "stock"
+  },
+  {
+   "column": "inverter_telemetry.status",
+   "ref": "status",
+   "scope": "telemetry_state"
+  },
+  {
+   "column": "msi_erp_spares.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "msi_part_master.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "msi_spare_requirements.maintenance_type",
+   "ref": "maintenance_type"
+  },
+  {
+   "column": "oem_warranty_learning.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "operational_reliability.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "operational_reliability.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "operational_reliability.severity",
+   "ref": "severity"
+  },
+  {
+   "column": "plan_calendar.event_type",
+   "ref": "event_type",
+   "scope": "calendar"
+  },
+  {
+   "column": "plan_capability_config.status",
+   "ref": "status",
+   "scope": "connector"
+  },
+  {
+   "column": "plan_field_packs.erp_eam_wo_status",
+   "ref": "status",
+   "scope": "work_order"
+  },
+  {
+   "column": "plan_field_packs.permit_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_interface_catalogue.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "plan_interface_catalogue.status",
+   "ref": "status",
+   "scope": "connector"
+  },
+  {
+   "column": "plan_interventions.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "plan_interventions.maintenance_type",
+   "ref": "maintenance_type"
+  },
+  {
+   "column": "plan_interventions.planning_status",
+   "ref": "status",
+   "scope": "intervention"
+  },
+  {
+   "column": "plan_interventions.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "plan_interventions.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "plan_job_templates.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "plan_job_templates.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "plan_operational_feed.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "plan_operational_feed.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "plan_optimization_config.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "plan_rcm_context.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "plan_rcm_context.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "plan_readiness.access_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.crew_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.material_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.outage_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.overall_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.tool_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_readiness.vehicle_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "plan_resource_calendar.event_type",
+   "ref": "event_type",
+   "scope": "resource_calendar"
+  },
+  {
+   "column": "plan_scenarios.scenario_status",
+   "ref": "status",
+   "scope": "scenario"
+  },
+  {
+   "column": "plan_schedule.status",
+   "ref": "status",
+   "scope": "intervention"
+  },
+  {
+   "column": "plan_system_landscape.configuration_status",
+   "ref": "status",
+   "scope": "connector"
+  },
+  {
+   "column": "plan_weather_forecast.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "planned_outages.status",
+   "ref": "status",
+   "scope": "outage"
+  },
+  {
+   "column": "pm_plans.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "pno_fleet_schedule.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "pno_fleet_schedule.planning_status",
+   "ref": "status",
+   "scope": "intervention"
+  },
+  {
+   "column": "pno_fleet_schedule.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "pno_intervention_cost_basis.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "pno_intervention_cost_basis.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "pno_interventions.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "pno_interventions.maintenance_type",
+   "ref": "maintenance_type"
+  },
+  {
+   "column": "pno_interventions.planning_status",
+   "ref": "status",
+   "scope": "intervention"
+  },
+  {
+   "column": "pno_interventions.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "pno_interventions.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "pno_materials.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "pno_materials.material_status",
+   "ref": "status",
+   "scope": "readiness"
+  },
+  {
+   "column": "pno_materials.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "pno_optimization.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "pno_optimization_interface.status",
+   "ref": "status",
+   "scope": "connector"
+  },
+  {
+   "column": "pno_plan_status_config.plan_status",
+   "ref": "status",
+   "scope": "plan"
+  },
+  {
+   "column": "pno_policy.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "pno_rolling_window_config.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "pno_scheduling_rules.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "pno_site_mobilization.state",
+   "ref": "region"
+  },
+  {
+   "column": "pno_technician_skills.primary_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "prescriptive_actions.decision_status",
+   "ref": "status",
+   "scope": "recommendation"
+  },
+  {
+   "column": "pv_defect_catalog.defect_code",
+   "ref": "defect_code"
+  },
+  {
+   "column": "rcm_climate_applicability.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_climate_applicability.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_consequence_assessment.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_consequence_assessment.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_decision_logic.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_decision_logic.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_functions_and_failures.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_functions_and_failures.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_policy_governance.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_policy_governance.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_source_linkage.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_source_linkage.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_strategy.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_strategy.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_task_triggers.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "rcm_task_triggers.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "rcm_task_triggers.required_skill",
+   "ref": "skill"
+  },
+  {
+   "column": "reliability_life_history.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "reliability_life_history.event_type",
+   "ref": "event_type",
+   "scope": "reliability"
+  },
+  {
+   "column": "reliability_life_history.failure_mode",
+   "ref": "failure_mode",
+   "nullTokens": [
+    "No confirmed functional failure"
+   ]
+  },
+  {
+   "column": "sites.state",
+   "ref": "region"
+  },
+  {
+   "column": "spare_parts_master.criticality",
+   "ref": "severity"
+  },
+  {
+   "column": "sus_benchmarks.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_circularity_eol.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "sus_circularity_eol.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "sus_circularity_eol.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_climate_asset_risk.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "sus_emission_factor_config.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_eol_assumptions.asset_class",
+   "ref": "asset_class",
+   "wildcard": "All"
+  },
+  {
+   "column": "sus_eol_assumptions.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_eol_kpi_basis.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_framework_mapping.framework",
+   "ref": "framework"
+  },
+  {
+   "column": "sus_generation.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "sus_generation.state",
+   "ref": "region"
+  },
+  {
+   "column": "sus_ghg_activity.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "sus_ghg_activity.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "sus_hse_events.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "sus_hse_events.event_type",
+   "ref": "event_type",
+   "scope": "hse"
+  },
+  {
+   "column": "sus_hse_events.severity",
+   "ref": "severity"
+  },
+  {
+   "column": "sus_hse_events.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "sus_hse_events.status",
+   "ref": "status",
+   "scope": "hse_incident"
+  },
+  {
+   "column": "sus_hse_hours.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "sus_metric_catalogue.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_model_governance.asset_class",
+   "ref": "asset_class",
+   "wildcard": "All"
+  },
+  {
+   "column": "sus_model_governance.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "sus_water_cleaning.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "sus_water_cleaning.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "technology_integration_registry.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "technology_integration_registry.status",
+   "ref": "status",
+   "scope": "connector"
+  },
+  {
+   "column": "twin_engineering_parameters.state",
+   "ref": "region"
+  },
+  {
+   "column": "ve_rate_config.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "ve_rate_config.unit",
+   "ref": "unit"
+  },
+  {
+   "column": "vision_findings.defect_type",
+   "ref": "defect_code"
+  },
+  {
+   "column": "vision_findings.finding_status",
+   "ref": "status",
+   "scope": "finding"
+  },
+  {
+   "column": "vision_findings.severity",
+   "ref": "severity"
+  },
+  {
+   "column": "vision_work_order_link.link_status",
+   "ref": "status",
+   "scope": "finding"
+  },
+  {
+   "column": "vision_work_order_link.source_system",
+   "ref": "source_system"
+  },
+  {
+   "column": "warranty_claims.claim_status",
+   "ref": "status",
+   "scope": "warranty_claim"
+  },
+  {
+   "column": "warranty_register.asset_class",
+   "ref": "asset_class"
+  },
+  {
+   "column": "warranty_register.current_status",
+   "ref": "status",
+   "scope": "warranty"
+  },
+  {
+   "column": "work_orders.maintenance_type",
+   "ref": "maintenance_type"
+  },
+  {
+   "column": "work_orders.priority",
+   "ref": "priority"
+  },
+  {
+   "column": "work_orders.status",
+   "ref": "status",
+   "scope": "work_order"
+  }
+ ],
+ "openDecisions": [],
+ "decisionsMade": [
+  {
+   "date": "2026-10-01",
+   "ref": "priority",
+   "columns": [
+    "cbm_assessments.priority"
+   ],
+   "decision": "P1 = Critical, P2 = High (data owner)."
+  },
+  {
+   "date": "2026-10-01",
+   "ref": "asset_class",
+   "columns": [
+    "pno_interventions.asset_class"
+   ],
+   "decision": "Electrical, Instrumentation, SCADA and Safety become asset classes (electrical balance of plant, instrumentation, SCADA system, safety system); Weather maps to Weather Station; Cleaning maps to PV Array, the asset cleaned. Delegated by the data owner."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "maintenance_type",
+   "columns": [
+    "msi_spare_requirements.maintenance_type"
+   ],
+   "decision": "Inventory-led is kept as a maintenance type (planned family): stock-driven replenishment work."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "risk_band",
+   "columns": [
+    "asset_master.risk_band"
+   ],
+   "decision": "Watch ranks between Medium and Low."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "status",
+   "columns": [
+    "asset_master.operating_status"
+   ],
+   "decision": "'Demo - unverified' is provenance, not an operating state: correction C10 clears the status and records the flag in data basis."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "status",
+   "columns": [
+    "pno_interventions.erp_execution_status",
+    "pno_fleet_schedule.erp_execution_status",
+    "plan_interventions.erp_execution_status",
+    "plan_schedule.erp_execution_status"
+   ],
+   "decision": "Execution status is split in phase 3 into status, start timeliness and finish timeliness; the columns stay unbound until then."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "unit",
+   "columns": [
+    "pno_policy.unit",
+    "plan_optimization_config.unit",
+    "pno_rolling_window_config.unit",
+    "sus_model_governance.unit",
+    "sus_eol_assumptions.unit",
+    "sus_eol_kpi_basis.unit"
+   ],
+   "decision": "Non-measurement values are coded as parameter types (dimension parameter_type) until phase 2 moves them to the policy parameter type; assets/cohorts counts as Count; L/recovered MWh is a separate basis from L/MWh."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "rcm_strategy.failure_mode",
+    "reliability_life_history.failure_mode",
+    "cbm_assessments.failure_mode",
+    "plan_rcm_context.failure_mode"
+   ],
+   "decision": "True synonyms merged: Tracker drive mechanism fault → Tracker drive fault; Transformer insulation degradation → Insulation deterioration; Power-stage thermal degradation → IGBT thermal degradation. Degradation and failure stay distinct (Cooling fan degradation vs failure; Insulation deterioration vs failure) because they are different stages."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "operational_reliability.failure_mode"
+   ],
+   "decision": "The column is a reliability reporting category, not a failure mode; it stays unbound and is renamed reliability_category in phase 2."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "defect_code",
+   "columns": [
+    "vision_findings.defect_type",
+    "cbm_assessments.failure_mode"
+   ],
+   "decision": "Cracked Module is glass damage; cell microcracks are recorded separately as cell cracking."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "skill",
+   "columns": [
+    "pno_resources.primary_skill_or_type"
+   ],
+   "decision": "The column holds a skill for technicians, a tool category for tools and a vehicle type for vehicles; it stays unbound and is split by resource type in phase 2."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "event_type",
+   "columns": [
+    "event_root_cause_cases.event_type"
+   ],
+   "decision": "RCA event types are operational event types; five are added and Cooling-system deterioration is an alias of Cooling subsystem degradation."
+  },
+  {
+   "date": "2026-10-02",
+   "ref": "failure_mode",
+   "columns": [
+    "plan_rcm_context.failure_mode",
+    "reliability_life_history.failure_mode"
+   ],
+   "decision": "Inverter preventive degradation control, Switchgear preventive inspection and Transformer defect response are kept as failure-mode codes: each names the failure the work addresses."
+  },
+  {
+   "date": "2026-10-05",
+   "ref": "status/scenario",
+   "decision": "Portfolio scenarios marked Active in the optimiser register (the baseline) get scenario status ACTIVE; what-if scenarios are DRAFT."
+  }
+ ]
+}

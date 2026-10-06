@@ -1,0 +1,2 @@
+
+window.AIP_V599_AUDIT={release:'v599',baseline:'v598',scope:'Asset-to-Value visual polish only',changes:['Decision Trace nodes serial numbered dynamically','Duplicate Decision number line above Decision Trace removed','Shared Decision ID chip uses light-purple fill with white text','Value Pathway and Decision Trace selected buttons use purple fill with white text','Sequencing arrows removed from both visualizations; navigation arrows retained'],dataChanged:false,excelChanged:false,navigationChanged:false,calculationChanged:false};window.AIP_CURRENT_BUILD='v599';

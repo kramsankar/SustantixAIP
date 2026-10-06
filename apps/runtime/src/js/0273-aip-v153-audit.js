@@ -1,0 +1,1 @@
+window.AIP_V153_AUDIT={release:'v1.53',baseline:'v1.52',excelBusinessDataChanged:false,changes:['Removed repeated Tool / Vehicle and Access / Outage labels from combined dependency status lines','Combined dependency tiles now show status values only, preserving Green Ready, Amber Ready with Constraint, and Red Blocked semantics']};

@@ -1,0 +1,126 @@
+{
+ "version": 1,
+ "description": "Analytical models implemented by AIP's own engines (packages/analytics). Each is registered as an ml_model master row; runs record their metrics in aip.model_run and their results in aip.model_output.",
+ "models": [
+  {
+   "code": "AIP-GEN-HYBRID-1",
+   "name": "Hybrid solar generation forecast",
+   "model_type": "Probabilistic generation forecast",
+   "engine": "forecast.generation",
+   "version": "1.0.0",
+   "algorithm": "Physics chain baseline + gradient-boosted residual trees (squared loss for q50, pinball loss for q10/q90) + split conformal calibration",
+   "feature_set": "physics output / capacity, lead time, time of day (sin, cos), plant scale",
+   "validation_method": "Time-ordered split: 60 % train, 15 % calibration, 25 % test",
+   "primary_metric": "nMAE % of capacity; q10–q90 coverage (target 80 %)",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-ANOM-INV-1",
+   "name": "Inverter anomaly detection",
+   "model_type": "Unsupervised anomaly detection",
+   "engine": "anomaly.inverter",
+   "version": "1.0.0",
+   "algorithm": "Isolation Forest (200 trees, ψ = 256) on fleet-relative daily features; robust z-scores explain each anomaly",
+   "feature_set": "yield ratio to plant median, conversion-efficiency delta, temperature rise, DC voltage ratio, downtime share",
+   "validation_method": "Injected-fault recall on held-out telemetry; score stability across seeds",
+   "primary_metric": "Recall of injected faults at the anomaly threshold",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-DRIFT-CUSUM-1",
+   "name": "Plant performance drift",
+   "model_type": "Change detection",
+   "engine": "anomaly.cusum",
+   "version": "1.0.0",
+   "algorithm": "Two-sided tabular CUSUM (k = 0.5σ, h = 5σ) on the daylight performance residual",
+   "feature_set": "actual AC / weather-adjusted expected AC − 1",
+   "validation_method": "Detection delay and false-alarm rate on simulated shifts",
+   "primary_metric": "Detection delay for a 1σ shift",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-LIFE-1",
+   "name": "Asset life model",
+   "model_type": "Reliability (life-data analysis)",
+   "engine": "reliability.lifetime",
+   "version": "1.0.0",
+   "algorithm": "Right-censored maximum likelihood: Weibull (profile likelihood), lognormal, exponential; chosen per asset class by AICc; bootstrap intervals",
+   "feature_set": "operating hours at failure or censoring, failure flag, asset class",
+   "validation_method": "AICc model selection; bootstrap 90 % intervals; recovery of known parameters on simulated data",
+   "primary_metric": "AICc; parameter recovery error",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-RUL-1",
+   "name": "Remaining useful life and failure probability",
+   "model_type": "Predictive maintenance",
+   "engine": "reliability.rul",
+   "version": "1.0.0",
+   "algorithm": "Conditional reliability of the class life model at the asset's age, with a proportional-hazards condition multiplier exp(γ(1 − health/100))",
+   "feature_set": "asset age, asset class, health score",
+   "validation_method": "Bootstrap 90 % intervals on the failure probability; class life models checked by AICc and on simulated data with known parameters",
+   "primary_metric": "Failure probability over the horizon, with its interval",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-RISK-1",
+   "name": "Composite asset risk",
+   "model_type": "Risk scoring",
+   "engine": "risk.composite",
+   "version": "1.0.0",
+   "algorithm": "Expected loss = P(failure in horizon) × (lost generation × tariff + repair cost) × safety weight; saturating 0–100 score on governed bands",
+   "feature_set": "failure probability, rated MW, capacity factor, outage hours (MTTR + part lead time), tariff, repair cost",
+   "validation_method": "Spearman rank agreement with the expert risk queue on the assets both score",
+   "primary_metric": "Expected loss (currency); rank agreement",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-BESS-SOH-1",
+   "name": "Battery state-of-health forecast",
+   "model_type": "Degradation forecast",
+   "engine": "bess.degradation",
+   "version": "1.0.0",
+   "algorithm": "Plan-relative fade ratio from capacity tests, shrunk to the fleet average; SoH(t) = 100 − k·(100 − plan(t))",
+   "feature_set": "capacity tests, OEM degradation plan, daily equivalent full cycles, warranty terms",
+   "validation_method": "Leave-last-test-out error on the capacity tests",
+   "primary_metric": "Absolute error of predicted SoH at the held-out test (percentage points)",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-RAR-MC-1",
+   "name": "Revenue at risk",
+   "model_type": "Monte Carlo simulation",
+   "engine": "commercial.revenue_at_risk",
+   "version": "1.0.0",
+   "algorithm": "2,000 correlated draws (daily common factor) from the probabilistic generation forecast plus Bernoulli asset outages; energy × tariff",
+   "feature_set": "q10/q50/q90 per interval, tariff, asset failure probabilities and outage hours",
+   "validation_method": "Seeded reproducibility and percentile ordering; tested on synthetic horizons",
+   "primary_metric": "Revenue at risk (P50 − 5th percentile)",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-SPARES-1",
+   "name": "Spare-part demand and stocking policy",
+   "model_type": "Intermittent demand forecast",
+   "engine": "spares.demand",
+   "version": "1.0.0",
+   "algorithm": "Croston, SBA and TSB against the mean on a time-ordered holdout; reorder point = rate·L + z·σ·√L by criticality service level",
+   "feature_set": "daily part demand from executed interventions, lead time, criticality, stock position",
+   "validation_method": "Holdout MAE of cumulative demand",
+   "primary_metric": "Holdout MAE (units)",
+   "owner_foundation": "AIP analytics"
+  },
+  {
+   "code": "AIP-MAINT-1",
+   "name": "Reliability and maintainability (MTBF / MTTR)",
+   "model_type": "Reliability KPI",
+   "engine": "reliability.maintainability",
+   "version": "1.0.0",
+   "algorithm": "MTBF = exposure hours / failures (life history); MTTR = mean resolution hours of completed corrective work orders; inherent availability",
+   "feature_set": "life-history exposure and failures, corrective work-order resolution hours",
+   "validation_method": "Failures, exposure and repair counts reported per class with each estimate",
+   "primary_metric": "MTBF, MTTR (hours)",
+   "owner_foundation": "AIP analytics"
+  }
+ ]
+}

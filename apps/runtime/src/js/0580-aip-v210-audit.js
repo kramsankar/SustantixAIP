@@ -1,0 +1,1 @@
+window.AIP_V210_AUDIT={release:'v2.10',baseline:'v2.09',excelBusinessDataChanged:false,changes:['Weather Context font slightly reduced while remaining bold','Asset / Intervention table heading font slightly increased']};

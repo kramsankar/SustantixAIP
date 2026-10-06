@@ -1,0 +1,89 @@
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import type { NextConfig } from "next";
+
+const here = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Content-Security-Policy for the AIP runtime.
+ *
+ * 'unsafe-inline' and 'unsafe-eval' in script-src are deliberate: the AIP reference runtime is
+ * shipped as one HTML document whose scripts are inlined at their original positions
+ * (see apps/runtime/build.mjs), it wires UI through inline on* handler attributes, and
+ * parts of it evaluate generated code. Nonces cannot be applied to a static document
+ * and hashes cannot cover handler attributes. Everything else stays locked to 'self';
+ * the runtime never talks to Supabase from the browser, connect-src only allows it for
+ * future direct use.
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
+const SECURITY_HEADERS = [
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  { key: "Content-Security-Policy", value: CSP },
+];
+
+const IMMUTABLE = [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }];
+const NO_STORE = [{ key: "Cache-Control", value: "no-store, max-age=0" }];
+const REVALIDATE = [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }];
+
+const config: NextConfig = {
+  reactStrictMode: true,
+  // The analytics engines ship as TypeScript source from the workspace.
+  transpilePackages: ["@sustantix/analytics", "@sustantix/agents", "@sustantix/schema", "@sustantix/grid", "@sustantix/bundle"],
+  poweredByHeader: false,
+  // Trace workspace packages (pnpm symlinks) from the monorepo root.
+  outputFileTracingRoot: join(here, "../.."),
+  // The runtime bundle under public/aip is static and never needs to be traced into functions.
+  outputFileTracingExcludes: { "*": ["public/aip/**"] },
+  experimental: {
+    // lib/trusted-keys.ts imports the monorepo keyset from config/license.
+    externalDir: true,
+  },
+  async rewrites() {
+    // The runtime's Assistant screen calls /api/assistant by default; the AIP Copilot agent answers it.
+    return [{ source: "/api/assistant", destination: "/api/aip/assistant" }];
+  },
+  async redirects() {
+    return [
+      { source: "/", destination: "/aip/index.html", permanent: false },
+      { source: "/aip", destination: "/aip/index.html", permanent: false },
+      // The Sustantix Enterprise Grid workspace (phase 4).
+      { source: "/grids", destination: "/aip/grid/index.html", permanent: false },
+    ];
+  },
+  async headers() {
+    return [
+      { source: "/:path*", headers: SECURITY_HEADERS },
+      // Content-addressed file names (data/<hash>.js, assets/img-<hash>.png) or pinned vendor builds.
+      { source: "/aip/data/:path*", headers: IMMUTABLE },
+      { source: "/aip/assets/:path*", headers: IMMUTABLE },
+      { source: "/aip/vendor/:path*", headers: IMMUTABLE },
+      // Not content-addressed: revalidate on every load so a deploy is picked up immediately.
+      { source: "/aip/host/:path*", headers: REVALIDATE },
+      { source: "/aip/grid/:path*", headers: REVALIDATE },
+      { source: "/aip/build-info.json", headers: REVALIDATE },
+      // The runtime page (7.6 MB, every script inlined): revalidated on every load, so a deploy is picked up at once
+      // while an unchanged page comes back as 304 instead of being downloaded again.
+      { source: "/aip/index.html", headers: REVALIDATE },
+      // API responses are never stored, except the governed workbook: it carries its own version tag (ETag) and is
+      // revalidated on every load (lib/workbook-version.ts).
+      { source: "/api/:path((?!aip/workbook$).*)", headers: NO_STORE },
+    ];
+  },
+};
+
+export default config;

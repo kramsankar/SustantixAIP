@@ -1,0 +1,1 @@
+window.AIP_V314_AUDIT={release:'v314',baseline:'v313',planningTables:{topScrollbarRemoved:true,bottomScrollbarRetained:true},integrationLandscape:{coloredIcons:true,statusTerminology:'Defined in demo'},dataManagement:{enterpriseSystemConnectorsVisible:false},navigationChanged:false,startupChanged:false};

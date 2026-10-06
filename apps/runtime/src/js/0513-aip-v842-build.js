@@ -1,0 +1,1 @@
+window.AIP_CURRENT_BUILD='v842';window.AIP_V842_AUDIT={release:'v842',baseline:'v841',scope:'Thin Sustantix-blue Home/Workspace header frame and Home Skip-to-Workspace vertical alignment only',excelBusinessDataChanged:false};

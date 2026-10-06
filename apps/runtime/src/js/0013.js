@@ -1,0 +1,1 @@
+window.__APMSafeMutationObserver=class{constructor(callback){this.callback=callback}observe(){}disconnect(){}takeRecords(){return[]}};

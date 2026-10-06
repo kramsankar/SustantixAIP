@@ -1,0 +1,86 @@
+import type { Access, LicenseStatus } from "@sustantix/license";
+import { isSameOrigin } from "./csrf";
+import { hostnameOf } from "./host";
+import { json } from "./http";
+
+/** License and origin gate applied to every /api request (middleware + route handlers). */
+
+export const API_PREFIX = "/api/aip/";
+
+/**
+ * - open:     reachable without a license (the runtime needs these to render its gate).
+ * - readable: needs access `full` or `read_only`.
+ * - writable: needs access `full` (grace periods are read-only).
+ */
+export type Requirement = "open" | "readable" | "writable";
+
+const OPEN_ENDPOINTS = new Set(["license", "time", "session", "sign-out"]);
+
+/** Public aliases of gated endpoints (rewritten to their canonical path). */
+const ALIASES: Record<string, string> = { "/api/assistant": "/api/aip/assistant" };
+
+export function requirementFor(path: string, method: string): Requirement {
+  const pathname = ALIASES[path.replace(/\/+$/, "")] ?? path;
+  if (!pathname.startsWith(API_PREFIX)) return "open";
+  const endpoint = pathname.slice(API_PREFIX.length).replace(/\/+$/, "");
+  if (OPEN_ENDPOINTS.has(endpoint)) return "open";
+  // The scheduler reaches the platform URL, not the licensed domain: its routes check CRON_SECRET and then the
+  // license against the deployment's licensed domain themselves (lib/cron.ts).
+  if (endpoint.startsWith("cron/")) return "open";
+  const m = method.toUpperCase();
+  if (endpoint === "state" && (m === "PUT" || m === "DELETE" || m === "POST" || m === "PATCH")) return "writable";
+  // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
+  if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals") || endpoint.startsWith("agents/schedules")) && m !== "GET" && m !== "HEAD") return "writable";
+  // Change sets and saved views write; grid reads and exports (POST bodies carrying a query) only read.
+  // Deliveries, integration management and grid actions write.
+  if ((endpoint === "ingest" || endpoint.startsWith("integrations") || endpoint.startsWith("outbox/") || /^grid\/[^/]+\/actions\//.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
+  if ((endpoint === "changes" || endpoint === "workbook/changes" || /^grid\/[^/]+\/views(\/|$)/.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
+  return "readable";
+}
+
+export function permits(requirement: Requirement, access: Access): boolean {
+  if (requirement === "open") return true;
+  if (requirement === "readable") return access === "full" || access === "read_only";
+  return access === "full";
+}
+
+export interface GuardInput {
+  pathname: string;
+  method: string;
+  headers: { get(name: string): string | null };
+  /** Resolved request host (with port), or null when the Host header is unusable. */
+  host: string | null;
+}
+
+export interface GuardDeps {
+  verdict(hostname: string): Promise<LicenseStatus>;
+}
+
+/** Returns a rejection Response, or null when the request may proceed. */
+export async function guardRequest(input: GuardInput, deps: GuardDeps): Promise<Response | null> {
+  if (!input.host) return json({ error: "bad_host", message: "request host is missing or invalid" }, 400);
+  // An integration's delivery carries its key, not a session cookie: there is no browser session to forge, so the
+  // same-origin rule (a defence for cookies) does not apply to it. The key itself is verified by the route.
+  const integrationDelivery = input.pathname === `${API_PREFIX}ingest` && /^Bearer\s+sxi_/i.test(input.headers.get("authorization") ?? "");
+  if (!integrationDelivery && !isSameOrigin(input.method, input.headers, input.host)) {
+    return json({ error: "cross_origin", message: "cross-origin state-changing request refused" }, 403);
+  }
+  const requirement = requirementFor(input.pathname, input.method);
+  if (requirement === "open") return null;
+  let status: LicenseStatus;
+  try {
+    status = await deps.verdict(hostnameOf(input.host));
+  } catch {
+    return json({ error: "license_unavailable", message: "license verdict could not be computed" }, 503);
+  }
+  if (permits(requirement, status.access)) return null;
+  return json(
+    {
+      error: "license_required",
+      state: status.state,
+      access: status.access,
+      reason: requirement === "writable" && status.access === "read_only" ? "license is read-only (grace period)" : status.reason,
+    },
+    402,
+  );
+}
