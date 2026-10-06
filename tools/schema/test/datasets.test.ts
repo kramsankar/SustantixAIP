@@ -66,10 +66,10 @@ describe("runtime catalogue", () => {
     expect(blocks.flatMap((b) => JSON.parse(b.text) as unknown[])).toEqual(rows);
   });
 
-  it("keeps members read-only and the stored text as written; replaces the first store", () => {
+  it("keeps members read-only and the stored text as written; leaves the first store for a later migration", () => {
     const sql = catalogueSql();
     expect(sql).toContain("rows json not null");
-    expect(sql).toContain("drop table if exists aip.dataset_part;");
+    expect(sql).not.toMatch(/drop table/);
     expect(sql).toMatch(/grant select on aip\.runtime_dataset, aip\.runtime_sheet, aip\.runtime_sheet_group, aip\.runtime_sheet_block to authenticated/);
     expect(sql).not.toMatch(/jsonb not null/);
   });
