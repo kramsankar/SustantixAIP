@@ -45,7 +45,9 @@ class PagedStore implements GridStore {
 describe("grid catalogue", () => {
   it("resolves every grid of the census against the governed model", () => {
     const all = grids();
-    expect(all).toHaveLength(20);
+    // 20 grids from the screen census, plus one administrator grid per vocabulary table.
+    expect(all.filter((g) => g.screen !== "Reference Data")).toHaveLength(20);
+    expect(all.filter((g) => g.screen === "Reference Data")).toHaveLength(16);
     for (const g of all) expect(g.columns.length, g.id).toBeGreaterThan(0);
     const wo = gridById("work-orders");
     expect(wo.relation).toBe("aip.v_work_order");
@@ -201,6 +203,25 @@ describe("change sets", () => {
     expect(changeError({ code: "AX404" }).status).toBe(404);
     expect(changeError({ code: "42501" }).status).toBe(403);
     expect(changeError({ code: "XX000", message: "internal detail" })).toMatchObject({ status: 500, message: "the change set could not be applied" });
+  });
+});
+
+describe("reference data", () => {
+  it("gives administrators a grid per vocabulary table, with platform rows read-only", () => {
+    const status = gridById("ref-status");
+    expect(status).toMatchObject({ entity: "ref_status", relation: "aip.v_ref_status", readOnlyWhen: "is_platform", source: { platformRows: true } });
+    expect(selectList(status).split(",")).toContain("is_platform");
+    expect(catalogueFor([status], member("admin"))[0]!.columns.find((c) => c.field === "label")!.editable).toBe(true);
+    expect(catalogueFor([status], member("planner"))[0]!.canEdit).toBe(false);
+    const b = applyGridQuery(new Recorder(), status, parseQuery(status, {}), tenant);
+    expect(b.calls[0]).toEqual(["or", `tenant_id.is.null,tenant_id.eq.${tenant}`]);
+  });
+
+  it("addresses a scoped vocabulary row as scope:CODE", () => {
+    const admin = member("admin");
+    expect(() => parseChangeSet({ id: uuid, items: [{ entity: "ref_status", op: "insert", code: "ON_HOLD", values: { label: "On hold" } }] }, CHANGE_MODEL, admin)).toThrow(/scope:CODE/);
+    expect(parseChangeSet({ id: uuid, items: [{ entity: "ref_status", op: "insert", code: "work_order:ON_HOLD", values: { label: "On hold" } }] }, CHANGE_MODEL, admin).items).toHaveLength(1);
+    expect(() => parseChangeSet({ id: uuid, items: [{ entity: "ref_priority", op: "insert", code: "P9", values: { label: "x" } }] }, CHANGE_MODEL, member("planner"))).toThrow(ApiError);
   });
 });
 

@@ -238,6 +238,13 @@ describe("Sustantix Enterprise Grid", () => {
     expect(g.el.querySelector('.sxg-body [data-r="0"][data-c="2"]')!.getAttribute("aria-readonly")).toBe("true");
   });
 
+  it("keeps platform rows of a vocabulary grid read-only", async () => {
+    const api = new FakeApi([{ code: "WO-0001", status: "OPEN", sla_hours: 1, row_version: 1, is_platform: true }, { code: "WO-0002", status: "OPEN", sla_hours: 2, row_version: 1, is_platform: false }]);
+    const g = await mount(api, { readOnlyWhen: "is_platform" });
+    expect(g.el.querySelector('.sxg-body [data-r="0"][data-c="2"]')!.getAttribute("aria-readonly")).toBe("true");
+    expect(g.el.querySelector('.sxg-body [data-r="1"][data-c="2"]')!.getAttribute("aria-readonly")).toBe("false");
+  });
+
   it("moves the active cell with the keyboard and exposes it to assistive technology", async () => {
     const api = new FakeApi(sample(10));
     const g = await mount(api);

@@ -51,6 +51,8 @@ export interface GridDef {
   groupBy: string[];
   bulkEdit: string[];
   tree: { parent: string } | null;
+  /** A boolean field that, when true, makes its row read-only (platform vocabulary rows). */
+  readOnlyWhen?: string;
 }
 
 export const FILTER_OPS = ["eq", "neq", "lt", "lte", "gt", "gte", "contains", "starts", "in", "empty", "notEmpty"] as const;

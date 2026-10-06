@@ -61,7 +61,7 @@ const trips = rebuildSheets(reg, readSheets(readFileSync(workbook)), built, voca
 writeFileSync(join(root, "supabase/tests/95_compat_equivalence.sql"), compatTestSql(reg, trips, "00000000-0000-0000-0000-0000000000c1"));
 // Phase 4: the change-set write path over every master, register and transaction, and the model the hosts validate against.
 writeFileSync(join(root, "supabase/migrations/20261007000100_aip_changes.sql"), changesSql([...masterDefs(reg), ...transactionDefs(reg)], vocab));
-writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
+writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
 

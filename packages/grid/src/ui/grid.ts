@@ -807,6 +807,11 @@ export class SustantixGrid {
     this.render();
   }
 
+  /** Selected rows the user may change (platform rows of a vocabulary grid are skipped). */
+  private editableSelection(): Row[] {
+    return this.loadedRows().filter((r) => this.selected.has(String(r[this.def.key])) && !(this.def.readOnlyWhen && r[this.def.readOnlyWhen] === true));
+  }
+
   private loadedRows(): Row[] {
     return this.mode === "client" ? this.view : [...this.pages.values()].flat();
   }
@@ -878,6 +883,7 @@ export class SustantixGrid {
 
   private canEditCell(row: Row | null, meta: GridColumn): boolean {
     if (!this.edits || !row || !meta.editable) return false;
+    if (this.def.readOnlyWhen && row[this.def.readOnlyWhen] === true) return false;
     return !this.edits.isDeleted(String(row[this.def.key]));
   }
 
@@ -1239,7 +1245,7 @@ export class SustantixGrid {
     const code = this.doc.createElement("input");
     code.className = "sxg-input";
     code.maxLength = 200;
-    if ((await this.dialog(`New ${this.def.title.toLowerCase().replace(/s$/, "")}`, [this.field("Business code", code)], [{ id: "add", label: "Add", primary: true }])) !== "add") return;
+    if ((await this.dialog(`New ${this.def.title.toLowerCase().replace(/s$/, "")}`, [this.field(this.cols.get(this.def.key)?.label === "Scope:Code" ? "Scope:Code (for example work_order:ON_HOLD)" : "Business code", code)], [{ id: "add", label: "Add", primary: true }])) !== "add") return;
     const value = code.value.trim();
     if (!value) return this.setStatus("A new row needs its business code", true);
     if (this.all.some((r) => String(r[this.def.key]) === value) || this.edits!.has(value)) return this.setStatus(`${value} already exists`, true);
@@ -1264,7 +1270,7 @@ export class SustantixGrid {
     if ("error" in parsed) return this.setStatus(`${meta.label}: ${parsed.error}`, true);
     const confirm = await this.dialog("Confirm bulk edit", [this.doc.createTextNode(`Set ${meta.label} to "${parsed.value ?? "(empty)"}" on ${n} row${n === 1 ? "" : "s"}? The change is saved, audited and attributed to you when you press Save.`)], [{ id: "apply", label: `Apply to ${n}`, primary: true }]);
     if (confirm !== "apply") return;
-    for (const r of this.loadedRows()) if (this.selected.has(String(r[this.def.key]))) this.edits!.set(r, meta.field, parsed.value);
+    for (const r of this.editableSelection()) this.edits!.set(r, meta.field, parsed.value);
     this.render();
   }
 
@@ -1272,7 +1278,7 @@ export class SustantixGrid {
     const n = this.selected.size;
     const confirm = await this.dialog("Delete rows", [this.doc.createTextNode(`Mark ${n} row${n === 1 ? "" : "s"} for deletion? Nothing is deleted until you press Save; a row other records still reference cannot be deleted (deactivate it instead).`)], [{ id: "delete", label: `Delete ${n}`, primary: true }]);
     if (confirm !== "delete") return;
-    for (const r of this.loadedRows()) if (this.selected.has(String(r[this.def.key]))) this.edits!.remove(r);
+    for (const r of this.editableSelection()) this.edits!.remove(r);
     this.added = this.added.filter((r) => this.edits!.has(String(r[this.def.key])));
     this.selected.clear();
     this.render();

@@ -26,6 +26,17 @@ describe("phase 4 change sets", () => {
     expect(m.entities.find((e) => e.name === "site")!.writers).toEqual(["admin"]);
   });
 
+  it("lets administrators maintain tenant vocabulary, addressing scoped rows as scope:CODE", () => {
+    const m = changeModel(defs, loadVocabulary(root));
+    const status = m.entities.find((e) => e.name === "ref_status")!;
+    expect(status).toMatchObject({ layer: "reference", writers: ["admin"], scoped: true, view: "v_ref_status" });
+    expect(status.columns.map((c) => c.name)).toEqual(["code", "label", "description", "sort_order", "is_active"]);
+    expect(m.entities.find((e) => e.name === "ref_priority")!.scoped).toBeUndefined();
+    const sql = changesSql(defs, loadVocabulary(root));
+    expect(sql).toContain(`create view aip."v_ref_status" with (security_invoker = true) as\nselect r.id, r.tenant_id, r.scope || ':' || r.code as code`);
+    expect(sql).toContain("platform vocabulary changes only with a Sustantix release");
+  });
+
   it("maps references to their id columns and vocabulary tables", () => {
     const asset = changeColumns(defs.find((d) => d.name === "asset")!);
     expect(asset.find((c) => c.name === "site")).toMatchObject({ dbColumn: "site_id", kind: "fk", target: "site" });

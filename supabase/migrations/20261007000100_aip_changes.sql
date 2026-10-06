@@ -24,6 +24,22 @@ begin
 end $$;
 revoke all on function aip.audit_master_row() from public, anon, authenticated;
 
+-- Tenant vocabulary audit records the change set too (platform rows change only by migration and are not audited).
+create or replace function aip.audit_ref_row() returns trigger language plpgsql security definer set search_path = aip, pg_temp as $$
+declare
+  t uuid := coalesce(new.tenant_id, old.tenant_id);
+begin
+  if t is not null then
+    insert into aip.audit_log(tenant_id, actor, action, entity, entity_key, before, after, change_set_id)
+    values (t, auth.uid(), lower(tg_op), tg_table_name, coalesce(new.code, old.code),
+            case when tg_op in ('UPDATE','DELETE') then to_jsonb(old) end,
+            case when tg_op in ('INSERT','UPDATE') then to_jsonb(new) end,
+            aip.current_change_set());
+  end if;
+  return coalesce(new, old);
+end $$;
+revoke all on function aip.audit_ref_row() from public, anon, authenticated;
+
 -- What a change set may write: platform metadata generated from the governed model, rebuilt by every migration.
 create table if not exists aip.change_entity (
   name text primary key,
@@ -33,6 +49,8 @@ create table if not exists aip.change_entity (
   editable boolean not null,
   has_currency boolean not null
 );
+-- A scoped vocabulary table addresses its rows as "scope:CODE".
+alter table aip.change_entity add column if not exists scoped boolean not null default false;
 create table if not exists aip.change_column (
   entity text not null references aip.change_entity(name) on delete cascade,
   name text not null,
@@ -55,74 +73,90 @@ grant all on aip.change_entity, aip.change_column to service_role;
 
 delete from aip.change_column;
 delete from aip.change_entity;
-insert into aip.change_entity(name, label, layer, writers, editable, has_currency) values
-  ('site', 'Site', 'organisation', array['admin']::text[], true, false),
-  ('party', 'Party', 'organisation', array['admin']::text[], true, false),
-  ('party_role', 'Party role', 'organisation', array['admin']::text[], true, false),
-  ('equipment_model', 'Equipment model', 'asset', array['admin']::text[], true, false),
-  ('asset', 'Asset', 'asset', array['admin']::text[], true, false),
-  ('asset_inverter', 'Inverter configuration', 'asset', array['admin']::text[], true, false),
-  ('asset_bess', 'BESS configuration', 'asset', array['admin']::text[], true, false),
-  ('pv_array', 'PV array', 'asset', array['admin']::text[], true, false),
-  ('pv_module_group', 'PV module group', 'asset', array['admin']::text[], true, false),
-  ('pv_population_segment', 'PV population segment', 'asset', array['admin']::text[], true, false),
-  ('pv_module', 'PV module', 'asset', array['admin']::text[], true, false),
-  ('part', 'Part', 'supply', array['admin']::text[], true, true),
-  ('part_stock', 'Part stock', 'supply', array['admin']::text[], true, false),
-  ('rate_card', 'Rate', 'supply', array['admin']::text[], true, true),
-  ('crew', 'Crew', 'workforce', array['admin']::text[], true, false),
-  ('technician', 'Technician', 'workforce', array['admin']::text[], true, false),
-  ('resource', 'Planning resource', 'workforce', array['admin']::text[], true, false),
-  ('vehicle', 'Vehicle', 'workforce', array['admin']::text[], true, false),
-  ('tool', 'Tool', 'workforce', array['admin']::text[], true, false),
-  ('system', 'System', 'integration', array['admin']::text[], true, false),
-  ('connector', 'Connector', 'integration', array['admin']::text[], true, false),
-  ('interface', 'Interface', 'integration', array['admin']::text[], true, false),
-  ('source_document', 'Source document', 'integration', array['admin']::text[], true, false),
-  ('metric', 'ESG metric', 'sustainability', array['admin']::text[], true, false),
-  ('metric_framework_map', 'Metric disclosure mapping', 'sustainability', array['admin']::text[], true, false),
-  ('ml_model', 'Analytical model', 'analytics', array['admin']::text[], true, false),
-  ('warranty_contract', 'Warranty', 'contract', array['admin']::text[], true, true),
-  ('offtake_contract', 'Offtake contract', 'contract', array['admin']::text[], true, true),
-  ('intervention', 'Intervention', 'register', array['planner','admin']::text[], true, true),
-  ('scenario', 'Planning scenario', 'register', array['planner','admin']::text[], true, true),
-  ('scenario_intervention', 'Scenario line', 'register', array['planner','admin']::text[], true, true),
-  ('hse_incident', 'HSE incident', 'register', array['planner','admin']::text[], true, false),
-  ('alert', 'Predictive alert', 'transaction', array['planner','admin']::text[], true, false),
-  ('recommendation', 'Recommendation', 'transaction', array['planner','admin']::text[], true, true),
-  ('work_order', 'Work order', 'transaction', array['planner','admin']::text[], true, true),
-  ('event', 'Operational event', 'transaction', array['planner','admin']::text[], true, true),
-  ('rca_case', 'Root-cause case', 'transaction', array['planner','admin']::text[], true, false),
-  ('rca_evidence', 'Root-cause evidence', 'transaction', array['planner','admin']::text[], true, false),
-  ('vision_inspection', 'Vision inspection', 'transaction', array['planner','admin']::text[], true, false),
-  ('vision_finding', 'Vision finding', 'transaction', array['planner','admin']::text[], true, true),
-  ('warranty_claim', 'Warranty claim', 'transaction', array['planner','admin']::text[], true, true),
-  ('pm_plan', 'Preventive maintenance plan', 'transaction', array['planner','admin']::text[], true, false),
-  ('cbm_assessment', 'Condition assessment', 'transaction', array['planner','admin']::text[], true, false),
-  ('condition_evidence', 'Condition evidence', 'transaction', array['planner','admin']::text[], true, false),
-  ('part_requirement', 'Part requirement', 'transaction', array['planner','admin']::text[], true, false),
-  ('intervention_requirement', 'Intervention requirement', 'transaction', array['planner','admin']::text[], true, false),
-  ('planned_outage', 'Planned outage', 'transaction', array['planner','admin']::text[], true, false),
-  ('capacity_test', 'Capacity test', 'transaction', array['planner','admin']::text[], true, false),
-  ('hse_hours', 'Hours worked', 'transaction', array['planner','admin']::text[], true, false),
-  ('ghg_activity', 'GHG activity', 'transaction', array['planner','admin']::text[], true, false),
-  ('water_cleaning', 'Module cleaning', 'transaction', array['planner','admin']::text[], true, false),
-  ('execution_feedback', 'Execution feedback', 'transaction', array['planner','admin']::text[], true, false),
-  ('forecast_run', 'Forecast run', 'transaction', array['planner','admin']::text[], true, false),
-  ('outcome_validation', 'Outcome validation', 'transaction', array['planner','admin']::text[], true, true),
-  ('ppa_settlement', 'PPA settlement', 'transaction', array['planner','admin']::text[], true, true),
-  ('plant_telemetry', 'Plant telemetry', 'series', array['admin']::text[], false, false),
-  ('inverter_reading', 'Inverter telemetry', 'series', array['admin']::text[], false, false),
-  ('bess_reading', 'BESS telemetry', 'series', array['admin']::text[], false, false),
-  ('bess_day', 'BESS daily operations', 'series', array['admin']::text[], false, false),
-  ('weather_forecast', 'Weather forecast', 'series', array['admin']::text[], false, false),
-  ('forecast_interval', 'Forecast interval', 'series', array['admin']::text[], false, false),
-  ('plant_actual', 'Metered output', 'series', array['admin']::text[], false, false),
-  ('forecast_validation', 'Forecast validation', 'series', array['admin']::text[], false, false),
-  ('life_observation', 'Life observation', 'series', array['admin']::text[], false, false),
-  ('resource_event', 'Resource calendar event', 'series', array['admin']::text[], false, false),
-  ('site_weather', 'Site work-weather forecast', 'series', array['admin']::text[], false, false),
-  ('record_link', 'Record link', 'transaction', array['planner','admin']::text[], true, false);
+insert into aip.change_entity(name, label, layer, writers, editable, has_currency, scoped) values
+  ('site', 'Site', 'organisation', array['admin']::text[], true, false, false),
+  ('party', 'Party', 'organisation', array['admin']::text[], true, false, false),
+  ('party_role', 'Party role', 'organisation', array['admin']::text[], true, false, false),
+  ('equipment_model', 'Equipment model', 'asset', array['admin']::text[], true, false, false),
+  ('asset', 'Asset', 'asset', array['admin']::text[], true, false, false),
+  ('asset_inverter', 'Inverter configuration', 'asset', array['admin']::text[], true, false, false),
+  ('asset_bess', 'BESS configuration', 'asset', array['admin']::text[], true, false, false),
+  ('pv_array', 'PV array', 'asset', array['admin']::text[], true, false, false),
+  ('pv_module_group', 'PV module group', 'asset', array['admin']::text[], true, false, false),
+  ('pv_population_segment', 'PV population segment', 'asset', array['admin']::text[], true, false, false),
+  ('pv_module', 'PV module', 'asset', array['admin']::text[], true, false, false),
+  ('part', 'Part', 'supply', array['admin']::text[], true, true, false),
+  ('part_stock', 'Part stock', 'supply', array['admin']::text[], true, false, false),
+  ('rate_card', 'Rate', 'supply', array['admin']::text[], true, true, false),
+  ('crew', 'Crew', 'workforce', array['admin']::text[], true, false, false),
+  ('technician', 'Technician', 'workforce', array['admin']::text[], true, false, false),
+  ('resource', 'Planning resource', 'workforce', array['admin']::text[], true, false, false),
+  ('vehicle', 'Vehicle', 'workforce', array['admin']::text[], true, false, false),
+  ('tool', 'Tool', 'workforce', array['admin']::text[], true, false, false),
+  ('system', 'System', 'integration', array['admin']::text[], true, false, false),
+  ('connector', 'Connector', 'integration', array['admin']::text[], true, false, false),
+  ('interface', 'Interface', 'integration', array['admin']::text[], true, false, false),
+  ('source_document', 'Source document', 'integration', array['admin']::text[], true, false, false),
+  ('metric', 'ESG metric', 'sustainability', array['admin']::text[], true, false, false),
+  ('metric_framework_map', 'Metric disclosure mapping', 'sustainability', array['admin']::text[], true, false, false),
+  ('ml_model', 'Analytical model', 'analytics', array['admin']::text[], true, false, false),
+  ('warranty_contract', 'Warranty', 'contract', array['admin']::text[], true, true, false),
+  ('offtake_contract', 'Offtake contract', 'contract', array['admin']::text[], true, true, false),
+  ('intervention', 'Intervention', 'register', array['planner','admin']::text[], true, true, false),
+  ('scenario', 'Planning scenario', 'register', array['planner','admin']::text[], true, true, false),
+  ('scenario_intervention', 'Scenario line', 'register', array['planner','admin']::text[], true, true, false),
+  ('hse_incident', 'HSE incident', 'register', array['planner','admin']::text[], true, false, false),
+  ('alert', 'Predictive alert', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('recommendation', 'Recommendation', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('work_order', 'Work order', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('event', 'Operational event', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('rca_case', 'Root-cause case', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('rca_evidence', 'Root-cause evidence', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('vision_inspection', 'Vision inspection', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('vision_finding', 'Vision finding', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('warranty_claim', 'Warranty claim', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('pm_plan', 'Preventive maintenance plan', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('cbm_assessment', 'Condition assessment', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('condition_evidence', 'Condition evidence', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('part_requirement', 'Part requirement', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('intervention_requirement', 'Intervention requirement', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('planned_outage', 'Planned outage', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('capacity_test', 'Capacity test', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('hse_hours', 'Hours worked', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('ghg_activity', 'GHG activity', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('water_cleaning', 'Module cleaning', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('execution_feedback', 'Execution feedback', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('forecast_run', 'Forecast run', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('outcome_validation', 'Outcome validation', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('ppa_settlement', 'PPA settlement', 'transaction', array['planner','admin']::text[], true, true, false),
+  ('plant_telemetry', 'Plant telemetry', 'series', array['admin']::text[], false, false, false),
+  ('inverter_reading', 'Inverter telemetry', 'series', array['admin']::text[], false, false, false),
+  ('bess_reading', 'BESS telemetry', 'series', array['admin']::text[], false, false, false),
+  ('bess_day', 'BESS daily operations', 'series', array['admin']::text[], false, false, false),
+  ('weather_forecast', 'Weather forecast', 'series', array['admin']::text[], false, false, false),
+  ('forecast_interval', 'Forecast interval', 'series', array['admin']::text[], false, false, false),
+  ('plant_actual', 'Metered output', 'series', array['admin']::text[], false, false, false),
+  ('forecast_validation', 'Forecast validation', 'series', array['admin']::text[], false, false, false),
+  ('life_observation', 'Life observation', 'series', array['admin']::text[], false, false, false),
+  ('resource_event', 'Resource calendar event', 'series', array['admin']::text[], false, false, false),
+  ('site_weather', 'Site work-weather forecast', 'series', array['admin']::text[], false, false, false),
+  ('record_link', 'Record link', 'transaction', array['planner','admin']::text[], true, false, false),
+  ('ref_asset_class', 'Asset class (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_maintenance_type', 'Maintenance type (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_priority', 'Priority (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_severity', 'Severity (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_risk_band', 'Risk band (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_status', 'Status (reference)', 'reference', array['admin']::text[], true, false, true),
+  ('ref_unit', 'Unit of measure (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_currency', 'Currency (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_region', 'Region (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_failure_mode', 'Failure mode (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_defect_code', 'Defect and finding type (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_skill', 'Skill (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_event_type', 'Event type (reference)', 'reference', array['admin']::text[], true, false, true),
+  ('ref_source_system', 'Source system (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_framework', 'Reporting framework (reference)', 'reference', array['admin']::text[], true, false, false),
+  ('ref_emission_factor', 'Emission factor (reference)', 'reference', array['admin']::text[], true, false, false);
 insert into aip.change_column(entity, name, db_column, kind, target, scope, editable) values
   ('site', 'name', 'name', 'text', null, null, true),
   ('site', 'region', 'region_id', 'ref', 'ref_region', null, true),
@@ -1243,7 +1277,153 @@ insert into aip.change_column(entity, name, db_column, kind, target, scope, edit
   ('record_link', 'status', 'status', 'text', null, null, true),
   ('record_link', 'source_record', 'source_record', 'text', null, null, true),
   ('record_link', 'response_time_hours', 'response_time_hours', 'decimal', null, null, true),
-  ('record_link', 'is_active', 'is_active', 'boolean', null, null, true);
+  ('record_link', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_asset_class', 'label', 'label', 'text', null, null, true),
+  ('ref_asset_class', 'description', 'description', 'text', null, null, true),
+  ('ref_asset_class', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_asset_class', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_maintenance_type', 'label', 'label', 'text', null, null, true),
+  ('ref_maintenance_type', 'description', 'description', 'text', null, null, true),
+  ('ref_maintenance_type', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_maintenance_type', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_priority', 'label', 'label', 'text', null, null, true),
+  ('ref_priority', 'description', 'description', 'text', null, null, true),
+  ('ref_priority', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_priority', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_severity', 'label', 'label', 'text', null, null, true),
+  ('ref_severity', 'description', 'description', 'text', null, null, true),
+  ('ref_severity', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_severity', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_risk_band', 'label', 'label', 'text', null, null, true),
+  ('ref_risk_band', 'description', 'description', 'text', null, null, true),
+  ('ref_risk_band', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_risk_band', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_status', 'label', 'label', 'text', null, null, true),
+  ('ref_status', 'description', 'description', 'text', null, null, true),
+  ('ref_status', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_status', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_unit', 'label', 'label', 'text', null, null, true),
+  ('ref_unit', 'description', 'description', 'text', null, null, true),
+  ('ref_unit', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_unit', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_currency', 'label', 'label', 'text', null, null, true),
+  ('ref_currency', 'description', 'description', 'text', null, null, true),
+  ('ref_currency', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_currency', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_region', 'label', 'label', 'text', null, null, true),
+  ('ref_region', 'description', 'description', 'text', null, null, true),
+  ('ref_region', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_region', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_failure_mode', 'label', 'label', 'text', null, null, true),
+  ('ref_failure_mode', 'description', 'description', 'text', null, null, true),
+  ('ref_failure_mode', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_failure_mode', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_defect_code', 'label', 'label', 'text', null, null, true),
+  ('ref_defect_code', 'description', 'description', 'text', null, null, true),
+  ('ref_defect_code', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_defect_code', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_skill', 'label', 'label', 'text', null, null, true),
+  ('ref_skill', 'description', 'description', 'text', null, null, true),
+  ('ref_skill', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_skill', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_event_type', 'label', 'label', 'text', null, null, true),
+  ('ref_event_type', 'description', 'description', 'text', null, null, true),
+  ('ref_event_type', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_event_type', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_source_system', 'label', 'label', 'text', null, null, true),
+  ('ref_source_system', 'description', 'description', 'text', null, null, true),
+  ('ref_source_system', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_source_system', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_framework', 'label', 'label', 'text', null, null, true),
+  ('ref_framework', 'description', 'description', 'text', null, null, true),
+  ('ref_framework', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_framework', 'is_active', 'is_active', 'boolean', null, null, true),
+  ('ref_emission_factor', 'label', 'label', 'text', null, null, true),
+  ('ref_emission_factor', 'description', 'description', 'text', null, null, true),
+  ('ref_emission_factor', 'sort_order', 'sort_order', 'integer', null, null, true),
+  ('ref_emission_factor', 'is_active', 'is_active', 'boolean', null, null, true);
+
+-- Vocabulary read views for the Reference Data grids: the row key (scope:CODE where scoped) and whether it is a platform row.
+drop view if exists aip."v_ref_asset_class";
+create view aip."v_ref_asset_class" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_asset_class" r;
+grant select on aip."v_ref_asset_class" to authenticated, service_role;
+drop view if exists aip."v_ref_maintenance_type";
+create view aip."v_ref_maintenance_type" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_maintenance_type" r;
+grant select on aip."v_ref_maintenance_type" to authenticated, service_role;
+drop view if exists aip."v_ref_priority";
+create view aip."v_ref_priority" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_priority" r;
+grant select on aip."v_ref_priority" to authenticated, service_role;
+drop view if exists aip."v_ref_severity";
+create view aip."v_ref_severity" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_severity" r;
+grant select on aip."v_ref_severity" to authenticated, service_role;
+drop view if exists aip."v_ref_risk_band";
+create view aip."v_ref_risk_band" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_risk_band" r;
+grant select on aip."v_ref_risk_band" to authenticated, service_role;
+drop view if exists aip."v_ref_status";
+create view aip."v_ref_status" with (security_invoker = true) as
+select r.id, r.tenant_id, r.scope || ':' || r.code as code, r.scope as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_status" r;
+grant select on aip."v_ref_status" to authenticated, service_role;
+drop view if exists aip."v_ref_unit";
+create view aip."v_ref_unit" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_unit" r;
+grant select on aip."v_ref_unit" to authenticated, service_role;
+drop view if exists aip."v_ref_currency";
+create view aip."v_ref_currency" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_currency" r;
+grant select on aip."v_ref_currency" to authenticated, service_role;
+drop view if exists aip."v_ref_region";
+create view aip."v_ref_region" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_region" r;
+grant select on aip."v_ref_region" to authenticated, service_role;
+drop view if exists aip."v_ref_failure_mode";
+create view aip."v_ref_failure_mode" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_failure_mode" r;
+grant select on aip."v_ref_failure_mode" to authenticated, service_role;
+drop view if exists aip."v_ref_defect_code";
+create view aip."v_ref_defect_code" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_defect_code" r;
+grant select on aip."v_ref_defect_code" to authenticated, service_role;
+drop view if exists aip."v_ref_skill";
+create view aip."v_ref_skill" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_skill" r;
+grant select on aip."v_ref_skill" to authenticated, service_role;
+drop view if exists aip."v_ref_event_type";
+create view aip."v_ref_event_type" with (security_invoker = true) as
+select r.id, r.tenant_id, r.scope || ':' || r.code as code, r.scope as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_event_type" r;
+grant select on aip."v_ref_event_type" to authenticated, service_role;
+drop view if exists aip."v_ref_source_system";
+create view aip."v_ref_source_system" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_source_system" r;
+grant select on aip."v_ref_source_system" to authenticated, service_role;
+drop view if exists aip."v_ref_framework";
+create view aip."v_ref_framework" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_framework" r;
+grant select on aip."v_ref_framework" to authenticated, service_role;
+drop view if exists aip."v_ref_emission_factor";
+create view aip."v_ref_emission_factor" with (security_invoker = true) as
+select r.id, r.tenant_id, r.code as code, null::text as scope, r.code as ref_code, r.label, r.description, r.sort_order, r.is_active, (r.tenant_id is null) as is_platform, r.row_version, r.updated_at
+from aip."ref_emission_factor" r;
+grant select on aip."v_ref_emission_factor" to authenticated, service_role;
 
 -- Every applied change set, append-only. Rejected sets roll back entirely and leave nothing behind.
 create table if not exists aip.change_set (
@@ -1286,6 +1466,8 @@ declare
   list text;
   version bigint;
   cur jsonb;
+  key_sql text;
+  ins_code text;
   results jsonb := '[]'::jsonb;
 begin
   if p_id is null or p_tenant is null then raise exception 'change set id and tenant are required' using errcode = '22023'; end if;
@@ -1338,6 +1520,14 @@ begin
         rec := rec || jsonb_build_object(col.db_column, v);
       end if;
     end loop;
+    -- Rows are addressed by business code; a scoped vocabulary row by "scope:CODE".
+    key_sql := case when ent.scoped then '(t.scope || '':'' || t.code)' else 't.code' end;
+    ins_code := item_code;
+    if ent.scoped then
+      if item_code !~ '^[a-z][a-z0-9_]*:[^:]+$' then raise exception 'item %: % rows are addressed as scope:CODE', i, ent.label using errcode = '22023'; end if;
+      ins_code := split_part(item_code, ':', 2);
+      if op = 'insert' then rec := rec || jsonb_build_object('scope', split_part(item_code, ':', 1)); end if;
+    end if;
     select array_agg(key order by key) into cols from jsonb_object_keys(rec) as key;
     list := (select string_agg(format('%I', c), ', ') from unnest(cols) c);
 
@@ -1345,20 +1535,24 @@ begin
     if op = 'insert' then
       execute format('insert into aip.%1$I as t (tenant_id, code%2$s) select $2, $3%3$s from jsonb_populate_record(null::aip.%1$I, $1) r returning t.row_version',
                      ent.name, coalesce(', ' || list, ''), coalesce(', ' || (select string_agg(format('r.%I', c), ', ') from unnest(cols) c), ''))
-        into version using rec, p_tenant, item_code;
+        into version using rec, p_tenant, ins_code;
     elsif op = 'update' then
       if cols is null then raise exception 'item %: nothing to change', i using errcode = '22023'; end if;
-      execute format('update aip.%1$I t set (%2$s) = (select %3$s from jsonb_populate_record(null::aip.%1$I, $1) r) where t.tenant_id = $2 and t.code = $3 and t.row_version = $4 returning t.row_version',
-                     ent.name, list, (select string_agg(format('r.%I', c), ', ') from unnest(cols) c))
+      execute format('update aip.%1$I t set (%2$s) = (select %3$s from jsonb_populate_record(null::aip.%1$I, $1) r) where t.tenant_id = $2 and %4$s = $3 and t.row_version = $4 returning t.row_version',
+                     ent.name, list, (select string_agg(format('r.%I', c), ', ') from unnest(cols) c), key_sql)
         into version using rec, p_tenant, item_code, base;
     else
-      execute format('delete from aip.%I t where t.tenant_id = $1 and t.code = $2 and t.row_version = $3 returning t.row_version', ent.name)
+      execute format('delete from aip.%I t where t.tenant_id = $1 and %s = $2 and t.row_version = $3 returning t.row_version', ent.name, key_sql)
         into version using p_tenant, item_code, base;
     end if;
 
     if version is null then
       execute format('select to_jsonb(v) from aip.%I v where v.tenant_id = $1 and v.code = $2', 'v_' || ent.name) into cur using p_tenant, item_code;
       if cur is null then
+        if ent.layer = 'reference' then
+          execute format('select to_jsonb(v) from aip.%I v where v.tenant_id is null and v.code = $1', 'v_' || ent.name) into cur using item_code;
+          if cur is not null then raise exception 'item %: % is a platform code; platform vocabulary changes only with a Sustantix release', i, item_code using errcode = '42501'; end if;
+        end if;
         raise exception 'item %: % % does not exist', i, ent.label, item_code using errcode = 'AX404';
       end if;
       raise exception 'item %: % % changed since version % (now %)', i, ent.label, item_code, base, cur->>'row_version'

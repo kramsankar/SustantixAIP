@@ -38,6 +38,7 @@ export function selectList(def: GridDef): string {
     if (def.columns.some((c) => c.kind === "money")) fields.add("currency");
   }
   if (def.tree) fields.add(def.tree.parent);
+  if (def.readOnlyWhen) fields.add(def.readOnlyWhen);
   const kinds = new Map(def.columns.map((c) => [c.field, c.kind]));
   return [...fields].map((f) => (isNumeric(kinds.get(f) ?? "text") && kinds.get(f) !== "integer" ? `${f}:${f}::text` : f)).join(",");
 }

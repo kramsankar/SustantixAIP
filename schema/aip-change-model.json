@@ -8165,6 +8165,680 @@
      "editable": true
     }
    ]
+  },
+  {
+   "name": "ref_asset_class",
+   "label": "Asset class (reference)",
+   "layer": "reference",
+   "view": "v_ref_asset_class",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_maintenance_type",
+   "label": "Maintenance type (reference)",
+   "layer": "reference",
+   "view": "v_ref_maintenance_type",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_priority",
+   "label": "Priority (reference)",
+   "layer": "reference",
+   "view": "v_ref_priority",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_severity",
+   "label": "Severity (reference)",
+   "layer": "reference",
+   "view": "v_ref_severity",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_risk_band",
+   "label": "Risk band (reference)",
+   "layer": "reference",
+   "view": "v_ref_risk_band",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_status",
+   "label": "Status (reference)",
+   "layer": "reference",
+   "view": "v_ref_status",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "scoped": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Scope:Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_unit",
+   "label": "Unit of measure (reference)",
+   "layer": "reference",
+   "view": "v_ref_unit",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_currency",
+   "label": "Currency (reference)",
+   "layer": "reference",
+   "view": "v_ref_currency",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_region",
+   "label": "Region (reference)",
+   "layer": "reference",
+   "view": "v_ref_region",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_failure_mode",
+   "label": "Failure mode (reference)",
+   "layer": "reference",
+   "view": "v_ref_failure_mode",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_defect_code",
+   "label": "Defect and finding type (reference)",
+   "layer": "reference",
+   "view": "v_ref_defect_code",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_skill",
+   "label": "Skill (reference)",
+   "layer": "reference",
+   "view": "v_ref_skill",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_event_type",
+   "label": "Event type (reference)",
+   "layer": "reference",
+   "view": "v_ref_event_type",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "scoped": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Scope:Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_source_system",
+   "label": "Source system (reference)",
+   "layer": "reference",
+   "view": "v_ref_source_system",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_framework",
+   "label": "Reporting framework (reference)",
+   "layer": "reference",
+   "view": "v_ref_framework",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_emission_factor",
+   "label": "Emission factor (reference)",
+   "layer": "reference",
+   "view": "v_ref_emission_factor",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "code",
+     "label": "Code",
+     "kind": "text",
+     "editable": false
+    },
+    {
+     "name": "label",
+     "label": "Label",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "label": "Description",
+     "kind": "text",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "label": "Order",
+     "kind": "integer",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "label": "Active",
+     "kind": "boolean",
+     "editable": true
+    }
+   ]
   }
  ]
 }

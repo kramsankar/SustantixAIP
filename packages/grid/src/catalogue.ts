@@ -150,6 +150,27 @@ export function resolveCatalogue(cat: Catalogue, model: ChangeModel, registry: R
       tree: g.tree ?? null,
     });
   }
+  // Reference Data: one administrator grid per vocabulary table; platform rows stay read-only.
+  for (const e of model.entities.filter((x) => x.layer === "reference")) {
+    const id = `ref-${e.name.replace(/^ref_/, "").replace(/_/g, "-")}`;
+    if (seen.has(id)) problems.push(`grid ${id}: duplicate id`);
+    grids.push({
+      id,
+      title: e.label.replace(/ \(reference\)$/, ""),
+      screen: "Reference Data",
+      source: { kind: "entity", name: e.name, platformRows: true },
+      relation: `aip.${e.view}`,
+      columns: e.columns.map((c) => ({ field: c.name, label: c.label, kind: c.kind, editable: e.editable && c.editable })),
+      key: "code",
+      entity: e.name,
+      writers: e.writers,
+      defaultSort: [{ field: "sort_order", dir: "asc" }],
+      groupBy: [],
+      bulkEdit: ["is_active"],
+      tree: null,
+      readOnlyWhen: "is_platform",
+    });
+  }
   return { grids, problems };
 }
 

@@ -142,7 +142,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261006000200_aip_compat.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261007000100_aip_changes.sql
           # Change sets, saved views and their audit trail survive a re-apply.
-          test "$(psql -At -c "select count(*) from aip.change_set")" = "4"
+          test "$(psql -At -c "select count(*) from aip.change_set")" = "7"
           test "$(psql -At -c "select count(*) from aip.grid_view")" = "2"
 
   parity:

@@ -201,3 +201,69 @@ begin
 end $$;
 reset role;
 \echo 'reference view: platform vocabulary shared, tenant vocabulary isolated'
+
+-- Reference Data: administrators add and maintain the tenant's own codes; platform codes and planners cannot change them.
+set role authenticated;
+select set_config('request.jwt.claim.sub', 'cccccccc-0000-0000-0000-000000000003', false);
+do $$
+declare r jsonb; n int;
+begin
+  r := aip.apply_change_set('11111111-0000-0000-0000-000000000006', '00000000-0000-0000-0000-00000000000a', 'grid', $j$[
+    {"entity":"ref_status","op":"insert","code":"work_order:ON_HOLD","values":{"label":"On hold","sort_order":50}},
+    {"entity":"ref_priority","op":"insert","code":"A-URGENT","values":{"label":"Tenant urgent"}}
+  ]$j$);
+  r := aip.apply_change_set('11111111-0000-0000-0000-000000000007', '00000000-0000-0000-0000-00000000000a', 'grid',
+    '[{"entity":"ref_status","op":"update","code":"work_order:ON_HOLD","baseVersion":1,"values":{"label":"On hold (vendor)"}}]');
+  select count(*) into n from aip.v_ref_status where code = 'work_order:ON_HOLD' and label = 'On hold (vendor)' and not is_platform and row_version = 2;
+  if n <> 1 then raise exception 'tenant vocabulary not maintained'; end if;
+  -- The new tenant code is immediately usable in the tenant's own records.
+  r := aip.apply_change_set('11111111-0000-0000-0000-000000000008', '00000000-0000-0000-0000-00000000000a', 'grid',
+    '[{"entity":"work_order","op":"update","code":"WO-A-1","baseVersion":2,"values":{"status":"ON_HOLD","priority":"A-URGENT"}}]');
+  select count(*) into n from aip.v_work_order where code = 'WO-A-1' and status = 'ON_HOLD' and priority = 'A-URGENT';
+  if n <> 1 then raise exception 'tenant code not usable in a work order'; end if;
+  begin
+    perform aip.apply_change_set(gen_random_uuid(), '00000000-0000-0000-0000-00000000000a', 'grid', '[{"entity":"ref_status","op":"update","code":"work_order:OPEN","baseVersion":1,"values":{"label":"Hijacked"}}]');
+    raise exception 'platform vocabulary changed';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform aip.apply_change_set(gen_random_uuid(), '00000000-0000-0000-0000-00000000000a', 'grid', '[{"entity":"ref_status","op":"insert","code":"ON_HOLD_2","values":{"label":"x"}}]');
+    raise exception 'scoped code accepted without its scope';
+  exception when invalid_parameter_value then null;
+  end;
+  begin
+    perform aip.apply_change_set(gen_random_uuid(), '00000000-0000-0000-0000-00000000000a', 'grid', '[{"entity":"ref_priority","op":"insert","code":"lower case","values":{"label":"x"}}]');
+    raise exception 'malformed code accepted';
+  exception when check_violation then null;
+  end;
+  begin
+    perform aip.apply_change_set(gen_random_uuid(), '00000000-0000-0000-0000-00000000000a', 'grid', '[{"entity":"ref_priority","op":"delete","code":"A-URGENT","baseVersion":1}]');
+    raise exception 'a code in use was deleted';
+  exception when foreign_key_violation then null;
+  end;
+end $$;
+
+select set_config('request.jwt.claim.sub', 'aaaaaaaa-0000-0000-0000-000000000001', false);
+do $$
+begin
+  perform aip.apply_change_set(gen_random_uuid(), '00000000-0000-0000-0000-00000000000a', 'grid', '[{"entity":"ref_priority","op":"insert","code":"P-X","values":{"label":"x"}}]');
+  raise exception 'planner changed vocabulary';
+exception when insufficient_privilege then null;
+end $$;
+
+select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);
+do $$
+declare n int;
+begin
+  select count(*) into n from aip.v_ref_status where code = 'work_order:ON_HOLD';
+  if n <> 0 then raise exception 'isolation breach: tenant B sees tenant A vocabulary'; end if;
+end $$;
+reset role;
+
+do $$
+declare n int;
+begin
+  select count(*) into n from aip.audit_log where entity = 'ref_status' and entity_key = 'ON_HOLD' and change_set_id is not null;
+  if n <> 2 then raise exception 'tenant vocabulary changes not audited under their change sets (%)', n; end if;
+end $$;
+\echo 'reference data: admin-maintained tenant codes, platform codes read-only, usable at once, isolated, audited'

@@ -205,6 +205,7 @@ export function parseChangeSet(body: unknown, model: ChangeModel, m: Membership)
     if (!e) throw new ApiError(422, "unknown_entity", `${where}: unknown entity ${item.entity}`);
     if (!e.editable) throw new ApiError(403, "read_only", `${where}: ${e.label} is written by integrations only`);
     if (!e.writers.includes(m.role)) throw new ApiError(403, "forbidden", `${where}: your role cannot change ${e.label}`);
+    if ((e as { scoped?: boolean }).scoped && !/^[a-z][a-z0-9_]*:[^:]+$/.test(item.code)) throw new ApiError(422, "invalid_code", `${where}: ${e.label} rows are addressed as scope:CODE`);
     if (item.op !== "insert" && item.baseVersion === undefined) throw new ApiError(400, "invalid_change_set", `${where}: ${item.op} needs the row version it was read at`);
     if (item.op === "update" && !Object.keys(item.values ?? {}).length) throw new ApiError(400, "invalid_change_set", `${where}: nothing to change`);
     if (item.op === "delete" && item.values && Object.keys(item.values).length) throw new ApiError(400, "invalid_change_set", `${where}: a delete carries no values`);
