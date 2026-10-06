@@ -4,6 +4,7 @@
   async function runDeferredScripts(){
     if(started) return;
     started=true;
+    if(window.__AIP_DATASETS__){try{await window.__AIP_DATASETS__.ready()}catch(_){return}}
     document.body.classList.add('aip-booting');
     const nodes=[...document.querySelectorAll('script[type="application/x-aip-deferred"]')];
     for(const node of nodes){

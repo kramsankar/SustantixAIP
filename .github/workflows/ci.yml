@@ -109,7 +109,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Apply migrations and prove tenant isolation
         run: |
-          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql supabase/tests/97_changes.sql supabase/tests/98_integration.sql supabase/tests/99_outbox.sql supabase/tests/100_feed.sql supabase/tests/101_schedules.sql; do
+          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql supabase/tests/97_changes.sql supabase/tests/98_integration.sql supabase/tests/99_outbox.sql supabase/tests/100_feed.sql supabase/tests/101_schedules.sql supabase/tests/102_datasets.sql; do
             psql -v ON_ERROR_STOP=1 -q -f "$f"
           done
       - name: Seed loads idempotently
@@ -131,6 +131,9 @@ jobs:
           # Phase 3: transactions and time series, the link ledger, and every compatibility view rebuilding its sheet
           test "$(psql -At -c "select count(*) from aip.plant_telemetry where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "19944"
           test "$(psql -At -c "select count(*) from aip.record_link where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "350"
+          # Database-only data: the runtime's 36 tenant datasets (764 tables, 170,440 records), held as compressed blocks
+          test "$(psql -At -c "select count(distinct dataset) || '/' || count(*) filter (where part <> '\$frame') || '/' || sum(row_count) from aip.dataset_part where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "36/764/170440"
+          test "$(psql -At -c "select sum(row_count) from aip.dataset_block where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "170440"
           psql -v ON_ERROR_STOP=1 -q -f supabase/tests/95_compat_equivalence.sql
           # 4 workbook forecasting models + the 10 AIP engines (schema/analytics/models.json)
           test "$(psql -At -c "select count(*) || '/' || count(engine) from aip.ml_model where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "14/10"
@@ -217,4 +220,29 @@ jobs:
             ${{ runner.temp }}/parity/crawl.json
             ${{ runner.temp }}/governed/governed-crawl.json
             ${{ runner.temp }}/grids/grid-crawl.json
+          retention-days: 14
+
+  database-only:
+    name: database-only parity (no tenant data in the build)
+    needs: changes
+    if: needs.changes.outputs.runtime == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @sustantix/license build
+      - run: pnpm --filter @sustantix/aip-runtime exec playwright install --with-deps chromium
+      - name: Vercel build loads every tenant dataset from the host after sign-in, every screen as in the reference
+        run: pnpm --filter @sustantix/aip-runtime test:database-only
+        env:
+          AIP_PARITY_OUT: ${{ runner.temp }}/database-only
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-only-crawl
+          path: ${{ runner.temp }}/database-only/crawl.json
           retention-days: 14
