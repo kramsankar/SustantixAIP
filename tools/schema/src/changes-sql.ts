@@ -194,7 +194,7 @@ grant all on aip.change_set to service_role;
 -- Integrations bulk-load the time series a person never edits cell by cell: a change set with source "import" may
 -- write them (administrators and integrations only, as the series' writers say). Grids never send that source.
 create or replace function aip.change_set_may_write(ent aip.change_entity, p_source text) returns boolean
-language sql immutable as $$ select ent.editable or (ent.layer = 'series' and p_source = 'import') $$;
+language sql immutable set search_path = aip, pg_temp as $$ select ent.editable or (ent.layer = 'series' and p_source = 'import') $$;
 
 -- Applies one change set. Items: {entity, op: insert|update|delete, code, baseVersion (update/delete), values}.
 -- values hold column → value, references as business codes; money and decimals as strings (never floats).
