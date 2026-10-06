@@ -114,7 +114,7 @@ source or a master is fixed.
 | --- | --- | --- |
 | `GET / POST /api/aip/outbox/destinations` | List; create `{name, url, events: [change, proposal], entities}`, receiving the signing secret **once** | writes: `full` |
 | `PATCH /api/aip/outbox/destinations/{id}` | `{enabled, events, entities}` | `full` |
-| `GET /api/aip/cron/outbox` | The delivery worker; answers only Vercel Cron (`Authorization: Bearer $CRON_SECRET`), every 5 minutes | — |
+| `GET /api/aip/cron/outbox` | The delivery worker; answers only Vercel Cron (`Authorization: Bearer $CRON_SECRET`) | — |
 | `POST /api/aip/grid/outbox/actions/retry` | Send failed or set-aside events again | `full` |
 
 An event is written to `aip.outbox` in the same transaction as the change set, or as the proposal status change to
@@ -136,7 +136,7 @@ grid shows every event and its last error. Receivers should:
 | --- | --- | --- |
 | `GET / POST /api/aip/agents/schedules` | List; create `{name, agent, prompt, cadence: hourly\|daily\|weekly, atHour, atWeekday, timeZone}` | writes: `full` |
 | `PATCH /api/aip/agents/schedules/{id}` | `{enabled, prompt, cadence, atHour, atWeekday, timeZone}` | `full` |
-| `GET /api/aip/cron/agents` | The worker; answers only Vercel Cron (`$CRON_SECRET`), hourly at minute 7 | — |
+| `GET /api/aip/cron/agents` | The worker; answers only Vercel Cron (`$CRON_SECRET`) | — |
 | `POST /api/aip/grid/agent-schedules/actions/run-now` | Run schedules at the worker's next pass | `full` |
 
 - **Timing:** times are local to the schedule's own IANA time zone, including daylight-saving changes.
@@ -145,7 +145,12 @@ grid shows every event and its last error. Receivers should:
 - **Scope:** a run reads only its tenant's governed data. It can raise proposals, which wait for a person and then
   reach the outbox like any approved proposal; nothing it suggests changes data on its own.
 - **Bookkeeping:** each slot is claimed once. The Agent schedules grid shows the next run and the last outcome.
-- **Requirements:** the worker needs `ANTHROPIC_API_KEY`. Hourly crons need a Vercel plan that allows them.
+- **Requirements:** the worker needs `ANTHROPIC_API_KEY`.
+
+**Worker cadence.** `vercel.json` runs both workers once a day (outbox 00:05 UTC, agent schedules 01:07 UTC), the
+most the Vercel Hobby plan allows; Vercel refuses any deployment whose crons run more often. On Pro, set the outbox
+to `*/5 * * * *` and agent schedules to `7 * * * *`. Until then, hourly agent schedules run at the daily pass, and
+outbound events wait up to a day (an administrator's Retry on the Outbox grid queues failed ones for the next pass).
 
 **Data bundles.** `GET /api/aip/bundle/{entity}?offset=&limit=` is one page of a bundle export (administrators,
 or an administrator integration key with no entity restriction). It reads the tenant's own rows only. To move a
@@ -179,8 +184,8 @@ PP_ACCESS_TOKEN=… pnpm --filter @sustantix/bundle sx-bundle import --to datave
    - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
    - `AIP_GRID_SCREENS`: optional. Screens whose tables show as Enterprise Grids: comma-separated screen names
      (for example `workorderintelligence,guardrails`), `all`, or empty for none (the default).
-   - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox worker (every
-     5 minutes) and the agent-schedule worker (hourly), both set in `vercel.json`. Without it the workers answer
+   - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox and
+     agent-schedule workers, both scheduled in `vercel.json` (daily on Hobby; see "Worker cadence"). Without it the workers answer
      `503` and nothing runs. Scheduled work is licensed against the first domain the deployment's license binds.
    - `AIP_DATA_SOURCE`: `embedded` (default: the runtime shows its bundled data) or `governed` (the runtime boots
      on the tenant's governed data through `GET /api/aip/workbook`). Governed mode needs the `aip_compat` schema
