@@ -1,0 +1,14 @@
+{
+  "about": "Where each runtime dataset lives on database hosts. Product content ships with the application (identical for every tenant); tenant data is held in the database (aip.dataset_part / aip.dataset_row) and loaded after sign-in. Every dataset in manifest.json must be listed exactly once.",
+  "product": {
+    "a28024940d6ba6f4": "screen workflow guidance (help)",
+    "ff538c4e9889cd63": "KPI formula dictionary (help)",
+    "2bd5c0475ae34441": "KPI formula dictionary, v891 (help)",
+    "82651ec5d7e8a281": "F1 screen help",
+    "dc06d923f428fc0c": "workbook schema description (sheet columns and row counts)",
+    "b7e4616f42572265": "workbook column lists",
+    "6557c769367ca1c7": "engineering knowledge rules",
+    "341a8d0eda67f8d0": "sustainability model configuration",
+    "aae0e1022aaea251": "import validation messages"
+  }
+}
