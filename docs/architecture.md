@@ -198,6 +198,33 @@ live in the browser). In governed mode an import's save now reaches the host ins
 - Its planner is platform-neutral and unit-tested with the licensing tests; provisioning registers the API and the
   table. `apps/powerapp/scripts/grid-datasources.mjs --run` registers the governed tables with the code app.
 
+## Integration (phase 5)
+
+**Inbound.**
+- Deliveries pass the data-model check, then the executable data-quality rules (`schema/quality/rules.json`, run by
+  `tools/schema/src/quality.ts`), then reference resolution, then a merge with the stored row.
+- They apply as change sets in chunks of 500. A chunk that fails is split so that only the failing record is
+  isolated.
+- Every delivered record is kept in `aip.staging_batch` / `aip.staging_row` with its outcome. Quarantined rows wait
+  in `v_staging_quarantine` for replay or discard.
+- Integrations authenticate with hashed `sxi_` keys and act through `aip.apply_change_set_as`, which only the
+  service role may call, as their own technical tenant member. Change-set rules and audit apply to them as to a
+  person.
+
+**Outbound.**
+- Triggers on `aip.change_set` and on `aip.agent_proposal` (approved or applied) write `aip.outbox` rows in the
+  same transaction, one per subscribed destination.
+- `claim_outbox` leases due rows with `for update skip locked`, so concurrent workers never double-send.
+  `complete_outbox` records delivery or backs off, and sets an event aside after 8 attempts. `retry_outbox` is for
+  administrators only.
+- Destination secrets are readable only by the service role.
+- Delivery is signed with HMAC-SHA256, carries the event id as its idempotency key, and is SSRF-guarded: https only,
+  public addresses after DNS resolution, no redirects.
+
+**Power Apps edition.** Change sets are already recorded in `sus_changeset`, so outbound delivery there uses the
+platform's own webhook or Power Automate trigger on that table. Configure it per customer environment; no extra code
+is needed.
+
 ## Analytics (`packages/analytics`)
 
 The reference app displayed model results (forecast bands, remaining life, risk, state of health) that were precomputed in the workbook. `@sustantix/analytics` computes them from each tenant's own data, deterministically (seeded):
@@ -264,7 +291,7 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 - **Phase 4 (done):** the change-set write path on both editions, the Sustantix Enterprise Grid (20 governed grids plus
   16 Reference Data grids), screen grids in 14 runtime screens behind a switch, governed workbook imports, and
   administrator vocabulary maintenance.
-- **Phase 5:** staging and data-quality quarantine, outbox (approved proposals to ERP/EAM), realtime, Dataverse sync, and scheduled agent runs.
+- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh, scheduled agent runs, and edition export/import.
 
 ## Evolution path
 

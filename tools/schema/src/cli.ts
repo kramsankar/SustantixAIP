@@ -27,6 +27,7 @@ import { compatSql, compatTestSql, rebuildSheets } from "./compat.ts";
 import { changeModel, changesSql } from "./changes-sql.ts";
 import { changeSetPlan, dataverseChangeModel } from "./changes-dataverse.ts";
 import { integrationSql } from "./integration-sql.ts";
+import { outboxSql } from "./outbox-sql.ts";
 import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
 
@@ -66,6 +67,7 @@ writeFileSync(join(root, "supabase/migrations/20261007000100_aip_changes.sql"), 
 writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Phase 5: integrations, staging and quarantine.
 writeFileSync(join(root, "supabase/migrations/20261008000100_aip_integration.sql"), integrationSql());
+writeFileSync(join(root, "supabase/migrations/20261008000200_aip_outbox.sql"), outboxSql());
 writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");

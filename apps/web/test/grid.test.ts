@@ -46,7 +46,7 @@ describe("grid catalogue", () => {
   it("resolves every grid of the census against the governed model", () => {
     const all = grids();
     // 20 grids from the screen census, plus one administrator grid per vocabulary table.
-    expect(all.filter((g) => !g.id.startsWith("ref-"))).toHaveLength(21);
+    expect(all.filter((g) => !g.id.startsWith("ref-"))).toHaveLength(22);
     expect(all.filter((g) => g.id.startsWith("ref-") && g.screen === "New: Reference Data")).toHaveLength(16);
     for (const g of all) expect(g.columns.length, g.id).toBeGreaterThan(0);
     const wo = gridById("work-orders");

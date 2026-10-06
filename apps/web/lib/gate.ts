@@ -24,13 +24,16 @@ export function requirementFor(path: string, method: string): Requirement {
   if (!pathname.startsWith(API_PREFIX)) return "open";
   const endpoint = pathname.slice(API_PREFIX.length).replace(/\/+$/, "");
   if (OPEN_ENDPOINTS.has(endpoint)) return "open";
+  // The scheduler reaches the platform URL, not the licensed domain: its routes check CRON_SECRET and then the
+  // license against the deployment's licensed domain themselves (lib/cron.ts).
+  if (endpoint.startsWith("cron/")) return "open";
   const m = method.toUpperCase();
   if (endpoint === "state" && (m === "PUT" || m === "DELETE" || m === "POST" || m === "PATCH")) return "writable";
   // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
   if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals")) && m !== "GET" && m !== "HEAD") return "writable";
   // Change sets and saved views write; grid reads and exports (POST bodies carrying a query) only read.
   // Deliveries, integration management and grid actions write.
-  if ((endpoint === "ingest" || endpoint.startsWith("integrations") || /^grid\/[^/]+\/actions\//.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
+  if ((endpoint === "ingest" || endpoint.startsWith("integrations") || endpoint.startsWith("outbox/") || /^grid\/[^/]+\/actions\//.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
   if ((endpoint === "changes" || endpoint === "workbook/changes" || /^grid\/[^/]+\/views(\/|$)/.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
   return "readable";
 }

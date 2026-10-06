@@ -370,6 +370,84 @@
    ]
   },
   {
+   "id": "outbox",
+   "title": "Outbound deliveries",
+   "screen": "Enterprise Integration",
+   "source": {
+    "kind": "view",
+    "name": "v_outbox"
+   },
+   "columns": [
+    {
+     "field": "event",
+     "label": "Event",
+     "kind": "text"
+    },
+    {
+     "field": "record",
+     "label": "Record",
+     "kind": "text"
+    },
+    {
+     "field": "destination",
+     "label": "Destination",
+     "kind": "text"
+    },
+    {
+     "field": "status",
+     "label": "Status",
+     "kind": "text"
+    },
+    {
+     "field": "attempts",
+     "label": "Attempts",
+     "kind": "integer"
+    },
+    {
+     "field": "last_error",
+     "label": "Last error",
+     "kind": "text"
+    },
+    {
+     "field": "next_attempt_at",
+     "label": "Next attempt",
+     "kind": "datetime"
+    },
+    {
+     "field": "delivered_at",
+     "label": "Delivered",
+     "kind": "datetime"
+    },
+    {
+     "field": "created_at",
+     "label": "Raised",
+     "kind": "datetime"
+    },
+    {
+     "field": "event_id",
+     "label": "Event id (idempotency key)",
+     "kind": "text"
+    }
+   ],
+   "key": "code",
+   "defaultSort": [
+    {
+     "field": "created_at",
+     "dir": "desc"
+    }
+   ],
+   "groupBy": [
+    "status"
+   ],
+   "actions": [
+    {
+     "id": "retry",
+     "label": "Retry",
+     "confirm": "Send these failed or set-aside deliveries again"
+    }
+   ]
+  },
+  {
    "id": "ai-guardrails",
    "title": "AI guardrail policies",
    "screen": "AI Guardrails",

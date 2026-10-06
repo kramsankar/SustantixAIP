@@ -80,6 +80,46 @@ returns the stored result without applying twice. Viewers cannot write; planners
 administrators also write masters; time series are never written cell by cell. The Reference Data grid reads
 `aip.v_reference`; no extra schema needs exposing.
 
+## Integration: inbound data and outbound events (phase 5)
+
+**Inbound.** A source system (ERP/EAM, SCADA, a weather service) delivers with an integration key:
+
+| Endpoint | Purpose | License gate |
+| --- | --- | --- |
+| `GET / POST /api/aip/integrations` | List integrations; create one (`{name, role, entities}`) and receive its `sxi_` key **once** | writes: `full` |
+| `PATCH /api/aip/integrations/{id}` | Enable or disable, narrow its entities | `full` |
+| `POST /api/aip/ingest` | `Authorization: Bearer sxi_…` with `{entity, records[]}` or `{sheet, rows[]}` (≤ 5,000) | `full` |
+| `POST /api/aip/grid/data-quarantine/actions/replay` / `…/discard` | Replay or discard quarantined rows | `full` |
+
+Only the key's SHA-256 is stored. Each integration is its own technical tenant member, so its writes carry a role and
+an audit identity. Every record is checked against the data model and the executable rules in
+`schema/quality/rules.json`. Its references are resolved, and it is merged as a change set in chunks of 500. A
+failing record is isolated rather than failing its chunk. Each record ends **applied**, **unchanged** or
+**quarantined**. Quarantined rows show in the Data Quarantine grid with their issues, ready to replay once the
+source or a master is fixed.
+
+**Outbound.** Administrators subscribe destinations to events:
+
+| Endpoint | Purpose | License gate |
+| --- | --- | --- |
+| `GET / POST /api/aip/outbox/destinations` | List; create `{name, url, events: [change, proposal], entities}`, receiving the signing secret **once** | writes: `full` |
+| `PATCH /api/aip/outbox/destinations/{id}` | `{enabled, events, entities}` | `full` |
+| `GET /api/aip/cron/outbox` | The delivery worker; answers only Vercel Cron (`Authorization: Bearer $CRON_SECRET`), every 5 minutes | — |
+| `POST /api/aip/grid/outbox/actions/retry` | Send failed or set-aside events again | `full` |
+
+An event is written to `aip.outbox` in the same transaction as the change set, or as the proposal status change to
+approved or applied, so it exists exactly when the change does. Each event carries the record as stored.
+
+The worker claims due events under a lease and posts JSON to the destination. It refuses anything but https to a
+public address, checked after DNS resolution, and does not follow redirects. Failures back off over 1 minute,
+5 minutes, 30 minutes, 2 hours, 12 hours and 1 day; after 8 attempts the event is set aside (`dead`). The Outbox
+grid shows every event and its last error. Receivers should:
+
+1. Verify `X-Sustantix-Signature: t=<unix seconds>,v1=<hex>`, where `v1` is HMAC-SHA256 over `"<t>.<raw body>"`
+   with the destination secret. Compare in constant time and reject a `t` older than a few minutes.
+2. De-duplicate on `Idempotency-Key` (the event id), because a retry delivers the same event again.
+3. Answer 2xx only once the event is stored.
+
 ## Deploying to Vercel
 
 1. **Project**: import the repository and set **Root Directory** to `apps/web`. `vercel.json` sets the framework
@@ -97,6 +137,8 @@ administrators also write masters; time series are never written cell by cell. T
    - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
    - `AIP_GRID_SCREENS`: optional. Screens whose tables show as Enterprise Grids: comma-separated screen names
      (for example `workorderintelligence,guardrails`), `all`, or empty for none (the default).
+   - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox worker
+     (`vercel.json` schedules it every 5 minutes). Without it the worker answers `503` and nothing is sent.
    - `AIP_DATA_SOURCE`: `embedded` (default: the runtime shows its bundled data) or `governed` (the runtime boots
      on the tenant's governed data through `GET /api/aip/workbook`). Governed mode needs the `aip_compat` schema
      exposed (step 3) and the tenant loaded.

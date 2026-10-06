@@ -17,3 +17,5 @@ export * from "./changes-sql.ts";
 export * from "./sheet-import.ts";
 export * from "./changes-dataverse.ts";
 export * from "./quality.ts";
+export * from "./outbox-sql.ts";
+export * from "./integration-sql.ts";

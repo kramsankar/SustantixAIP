@@ -3,6 +3,7 @@ import { jsonBody } from "@/lib/grid/body";
 import { CHANGE_MODEL, gridById } from "@/lib/grid/catalogue";
 import { deliveryContext } from "@/lib/ingest/context";
 import { discard, replay } from "@/lib/ingest/service";
+import { requestContext } from "@/lib/analytics/context";
 import { guard } from "@/lib/server";
 import { z } from "zod";
 
@@ -23,6 +24,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     const v = body.safeParse(await jsonBody(req, 256 * 1024));
     if (!v.success) throw new ApiError(400, "invalid_action", "keys: the selected rows");
     const ids = v.data.keys.map(Number);
+    if (id === "outbox" && action === "retry") {
+      const { membership, db } = await requestContext();
+      const { data, error } = await db.rpc("retry_outbox", { p_tenant: membership.tenantId, p_ids: ids });
+      if (error) throw new ApiError(error.code === "42501" ? 403 : 500, error.code === "42501" ? "forbidden" : "retry_failed", error.message);
+      return json({ retried: data as number });
+    }
     const ctx = await deliveryContext(req.headers);
     if (ctx.who.role === "viewer") throw new ApiError(403, "forbidden", "viewers cannot change quarantined data");
     if (id === "data-quarantine" && action === "replay") return json(await replay(ids, ctx.who, CHANGE_MODEL, ctx.store, ctx.ledger, ctx.newId));

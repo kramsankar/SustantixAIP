@@ -17,6 +17,8 @@ const ServerEnvSchema = z.object({
   AIP_DATA_SOURCE: z.preprocess(blankToUndefined, z.enum(["embedded", "governed"]).default("embedded")),
   // Screens whose tables show as Enterprise Grids (phase 4): comma-separated data-view names, "all", or empty (none).
   AIP_GRID_SCREENS: z.preprocess(blankToUndefined, z.string().trim().regex(/^(all|[a-z][a-z0-9]*(\s*,\s*[a-z][a-z0-9]*)*)$/).default("")),
+  // Scheduled work (phase 5): Vercel Cron calls /api/aip/cron/* with "Authorization: Bearer <CRON_SECRET>".
+  CRON_SECRET: z.preprocess(blankToUndefined, z.string().min(24).optional()),
   // Agents (optional): without a key the agent endpoints answer 503 agents_not_configured.
   ANTHROPIC_API_KEY: z.preprocess(blankToUndefined, z.string().trim().min(20).optional()),
   AIP_AGENT_MODEL: z.preprocess(blankToUndefined, z.string().trim().regex(/^claude-[a-z0-9.-]+$/).default("claude-sonnet-5-5")),
