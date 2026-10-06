@@ -97,3 +97,57 @@ describe("Dataverse grid adapter", () => {
     expect(await api.views("work-orders")).toEqual([]);
   });
 });
+
+describe("Dataverse live refresh", () => {
+  const log = [
+    { sus_name: "cs-1", createdon: "2026-10-06T02:00:00Z", sus_result: JSON.stringify([{ entity: "work_order", op: "update", code: "WO-1", rowVersion: null }]) },
+    { sus_name: "cs-2", createdon: "2026-10-06T02:01:00Z", sus_result: JSON.stringify([{ entity: "work_order", op: "insert", code: "WO-9" }, { entity: "site", op: "update", code: "SP-01" }]) },
+    { sus_name: "cs-bad", createdon: "2026-10-06T02:01:30Z", sus_result: "not json" },
+  ];
+  function feedClient(rows = log) {
+    const { c, calls } = client();
+    const queries: Array<{ table: string; filter?: string; orderBy?: string[]; top: number }> = [];
+    c.query = async (table, o) => {
+      queries.push({ table, ...o });
+      return o.orderBy?.[0] === "createdon desc" ? rows.slice(-1) : rows.slice(0, o.top);
+    };
+    return { c, calls, queries };
+  }
+
+  it("places the cursor at the latest change set, then reads the log after it with an overlap", async () => {
+    const { c, queries } = feedClient();
+    const api = dataverseGridApi(c, null);
+    expect(await api.changes!(null)).toEqual({ cursor: "2026-10-06T02:01:30Z", items: [], truncated: false });
+    const f = await api.changes!("2026-10-06T02:02:00.000Z");
+    expect(queries[1]).toMatchObject({ table: "sus_changesets", filter: "createdon gt 2026-10-06T02:00:00.000Z", orderBy: ["createdon asc"], top: 501 });
+    expect(f.cursor).toBe("2026-10-06T02:02:00.000Z");
+    expect(f.items).toEqual([
+      { changeSet: "cs-1", entity: "work_order", code: "WO-1", op: "update", at: "2026-10-06T02:00:00Z" },
+      { changeSet: "cs-2", entity: "work_order", code: "WO-9", op: "insert", at: "2026-10-06T02:01:00Z" },
+      { changeSet: "cs-2", entity: "site", code: "SP-01", op: "update", at: "2026-10-06T02:01:00Z" },
+    ]);
+  });
+
+  it("drops a cached table when a change set touches it for the first time only", async () => {
+    const { c, calls } = feedClient();
+    const api = dataverseGridApi(c, null);
+    const loads = () => calls.filter((x) => x.op === "list" && x.table === "sus_work_orders").length;
+    await api.rows("work-orders", { offset: 0, limit: 10 });
+    expect(loads()).toBe(2); // two pages
+    await api.changes!("2026-10-06T01:59:00.000Z");
+    await api.rows("work-orders", { offset: 0, limit: 10 });
+    expect(loads()).toBe(4);
+    await api.changes!("2026-10-06T02:01:30Z"); // the overlap re-reads the same change sets
+    await api.rows("work-orders", { offset: 0, limit: 10 });
+    expect(loads()).toBe(4);
+  });
+
+  it("marks an overflowing answer truncated, and is absent when the client cannot query", async () => {
+    const many = Array.from({ length: 501 }, (_, i) => ({ sus_name: `cs-${i}`, createdon: `2026-10-06T03:${String(Math.floor(i / 60)).padStart(2, "0")}:${String(i % 60).padStart(2, "0")}Z`, sus_result: "[]" }));
+    const { c } = feedClient(many);
+    const f = await dataverseGridApi(c, null).changes!("2026-10-06T03:00:00Z");
+    expect(f).toMatchObject({ truncated: true, items: [] });
+    expect(f.cursor).toBe("2026-10-06T03:08:20Z");
+    expect(dataverseGridApi(client().c, null).changes).toBeUndefined();
+  });
+});

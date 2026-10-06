@@ -2,7 +2,7 @@
  * How the grid talks to its host. The Vercel host serves this over /api/aip; another host supplies its own GridApi
  * with the same contract.
  */
-import type { ChangeSetRequest, ChangeSetResult, ConflictBody, GridDef, GridPage, GridQuery } from "../contract.ts";
+import type { ChangeFeed, ChangeSetRequest, ChangeSetResult, ConflictBody, GridDef, GridPage, GridQuery } from "../contract.ts";
 
 export type CatalogueGrid = GridDef & { canEdit: boolean };
 
@@ -27,6 +27,8 @@ export interface GridApi {
   applyChanges(req: ChangeSetRequest): Promise<ChangeSetResult>;
   /** A grid's own action on selected rows (keys); resolves the host's counts. */
   runAction?(grid: string, action: string, keys: string[]): Promise<Record<string, unknown>>;
+  /** The tenant's change feed after `since` (null: just the cursor), for live refresh. */
+  changes?(since: string | null): Promise<ChangeFeed>;
 }
 
 /** A refused request, with the server's error code and body (a 409 conflict carries the current row). */
@@ -74,5 +76,6 @@ export function httpGridApi(base = "/api/aip", fetchImpl: typeof fetch = (...a) 
     deleteView: (grid, id) => call(`/grid/${enc(grid)}/views/${enc(id)}`, { method: "DELETE" }),
     applyChanges: (req) => post("/changes", req),
     runAction: (grid, action, keys) => post(`/grid/${enc(grid)}/actions/${enc(action)}`, { keys }),
+    changes: (since) => call(`/changes/feed${since ? `?since=${enc(since)}` : ""}`),
   };
 }

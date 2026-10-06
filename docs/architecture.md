@@ -221,6 +221,12 @@ live in the browser). In governed mode an import's save now reaches the host ins
 - Delivery is signed with HMAC-SHA256, carries the event id as its idempotency key, and is SSRF-guarded: https only,
   public addresses after DNS resolution, no redirects.
 
+**Live refresh.** Both editions publish a change feed with the same contract (`ChangeFeed` in `packages/grid`):
+`aip.change_feed` on Supabase, and the `sus_changeset` log read through the code app's data client on Dataverse. On
+Dataverse the adapter also drops a cached table when a change set first touches it. One `LiveFeed` per page polls
+while the page is visible and routes items to the grids of the changed entity. Grids merge the changed records by
+key and keep pending edits; a page's own change sets are ignored.
+
 **Power Apps edition.** Change sets are already recorded in `sus_changeset`, so outbound delivery there uses the
 platform's own webhook or Power Automate trigger on that table. Configure it per customer environment; no extra code
 is needed.
@@ -291,7 +297,7 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 - **Phase 4 (done):** the change-set write path on both editions, the Sustantix Enterprise Grid (20 governed grids plus
   16 Reference Data grids), screen grids in 14 runtime screens behind a switch, governed workbook imports, and
   administrator vocabulary maintenance.
-- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh, scheduled agent runs, and edition export/import.
+- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh on both editions (done); scheduled agent runs, and edition export/import.
 
 ## Evolution path
 

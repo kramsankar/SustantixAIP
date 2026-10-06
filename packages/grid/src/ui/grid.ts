@@ -28,6 +28,10 @@ import { FILTER_OPS, LIMITS, opsFor, parseCellInput, type GridColumn, type GridF
 import { moneyTotals } from "../decimal.ts";
 import { searchRows, sortRows, matches } from "../query.ts";
 import { GridApiError, type CatalogueGrid, type GridApi, type SavedView } from "./api.ts";
+import type { ChangeFeedItem, LiveFeed } from "./live.ts";
+
+/** Up to this many changed records are fetched and merged; more reload the grid. */
+const LIVE_MERGE_MAX = 200;
 import { EditBuffer } from "./edits.ts";
 import { alignRight, display, editText, moneyTotal } from "./format.ts";
 import { injectStyles } from "./styles.ts";
@@ -63,6 +67,8 @@ export interface GridOptions {
   actions?: Array<{ label: string; onClick: () => void }>;
   /** Row height in pixels (screen grids use taller rows, so two-line cells are not cut). */
   rowHeight?: number;
+  /** The page's change feed: the grid shows others' changes to its entity as they are applied. */
+  live?: LiveFeed;
 }
 
 export interface GridViewState {
@@ -115,6 +121,8 @@ export class SustantixGrid {
   /** Vocabulary labels by column, for display; cells, edits and exports keep the governed codes. */
   private labels = new Map<string, Map<string, string>>();
   private busy = false;
+  private liveOff: (() => void) | null = null;
+  private liveQueue: { items: ChangeFeedItem[]; truncated: boolean } | null = null;
 
   private table!: Table<Row>;
   private virtualizer!: Virtualizer<HTMLElement, HTMLElement>;
@@ -192,6 +200,7 @@ export class SustantixGrid {
       await this.loadLabels();
       await this.refresh();
       this.setStatus("");
+      if (this.opts.live && this.def.entity && !this.liveOff) this.liveOff = this.opts.live.subscribe(this.def.entity, (items, truncated) => void this.onLive(items, truncated));
     } catch (e) {
       this.setStatus(errorText(e), true);
     }
@@ -218,6 +227,8 @@ export class SustantixGrid {
   }
 
   destroy(): void {
+    this.liveOff?.();
+    this.liveOff = null;
     for (const f of this.cleanup) f();
     this.el.remove();
   }
@@ -558,6 +569,7 @@ export class SustantixGrid {
   }
 
   private renderBody(): void {
+    if (this.liveQueue) this.flushLive();
     this.ensureVisible();
     const cols = this.visibleColumns();
     const template = this.template(cols);
@@ -1083,6 +1095,7 @@ export class SustantixGrid {
     this.busy = true;
     this.renderToolbar();
     this.setStatus("Saving…");
+    this.opts.live?.ignore(req.id);
     try {
       const res = await this.api.applyChanges(req);
       this.edits.discard();
@@ -1124,6 +1137,49 @@ export class SustantixGrid {
       this.all = rows;
     }
     await this.refresh();
+  }
+
+  /**
+   * Others' changes to this grid's entity. Changed rows are fetched by key and merged (a full reload when many changed
+   * or the feed overflowed); the user's unsaved edits stay, and a conflict surfaces when they save. While the user is
+   * typing or saving, the update waits for them.
+   */
+  private async onLive(items: ChangeFeedItem[], truncated: boolean): Promise<void> {
+    if (this.busy || this.editing) {
+      this.liveQueue = { items: [...(this.liveQueue?.items ?? []), ...items], truncated: truncated || !!this.liveQueue?.truncated };
+      return;
+    }
+    const codes = [...new Set(items.map((i) => i.code))];
+    try {
+      if (this.mode === "server") await this.refresh();
+      else if (truncated || codes.length > LIVE_MERGE_MAX) await this.reloadAfterSave();
+      else {
+        const page = await this.api.rows(this.def.id, { offset: 0, limit: LIMITS.pageMax, sort: this.state.sort, filters: [{ field: this.def.key, op: "in", value: codes }] });
+        const fresh = new Map(page.rows.map((r) => [String(r[this.def.key]), r]));
+        const kept = this.all.filter((r) => !codes.includes(String(r[this.def.key])) || fresh.has(String(r[this.def.key])));
+        const at = new Map(kept.map((r, i) => [String(r[this.def.key]), i]));
+        for (const [code, row] of fresh) {
+          const i = at.get(code);
+          if (i === undefined) kept.push(row);
+          else kept[i] = row;
+        }
+        this.all = kept;
+        await this.refresh();
+      }
+      const n = truncated ? "Many records" : `${codes.length} record${codes.length === 1 ? "" : "s"}`;
+      this.setStatus(`${n} updated by others just now${this.pendingCount() ? "; your unsaved edits are kept" : ""}`);
+    } catch {
+      /* the next change, or a reload, brings the grid up to date */
+    }
+  }
+
+  /** Applies live updates that arrived while the user was editing or saving. */
+  private flushLive(): void {
+    const q = this.liveQueue;
+    if (!q || this.busy || this.editing) return;
+    this.liveQueue = null;
+    // After the current draw, never inside it.
+    queueMicrotask(() => void this.onLive(q.items, q.truncated));
   }
 
   private replaceRow(code: string, current: Row): void {

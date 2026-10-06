@@ -107,7 +107,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Apply migrations and prove tenant isolation
         run: |
-          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql supabase/tests/97_changes.sql supabase/tests/98_integration.sql supabase/tests/99_outbox.sql; do
+          for f in supabase/tests/00_supabase_stub.sql supabase/migrations/*.sql supabase/tests/90_rls_isolation.sql supabase/tests/91_reference_rls.sql supabase/tests/92_masters_rls.sql supabase/tests/93_analytics_rls.sql supabase/tests/94_agents_rls.sql supabase/tests/96_transactions_rls.sql supabase/tests/97_changes.sql supabase/tests/98_integration.sql supabase/tests/99_outbox.sql supabase/tests/100_feed.sql; do
             psql -v ON_ERROR_STOP=1 -q -f "$f"
           done
       - name: Seed loads idempotently
@@ -143,8 +143,9 @@ jobs:
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261007000100_aip_changes.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000100_aip_integration.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000200_aip_outbox.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000300_aip_feed.sql
           # Change sets, saved views, staged rows, outbound events and their audit trail survive a re-apply.
-          test "$(psql -At -c "select count(*) from aip.change_set")" = "10"
+          test "$(psql -At -c "select count(*) from aip.change_set")" = "11"
           test "$(psql -At -c "select count(*) || '/' || count(*) filter (where status = 'delivered') from aip.outbox")" = "2/1"
           test "$(psql -At -c "select count(*) from aip.staging_row")" = "1"
           test "$(psql -At -c "select count(*) from aip.grid_view")" = "2"

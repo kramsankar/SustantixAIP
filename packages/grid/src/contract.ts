@@ -201,3 +201,21 @@ export function parseCellInput(kind: ColumnKind, input: string): { value: unknow
       return s.length <= 4000 ? { value: s } : { error: "Too long" };
   }
 }
+
+/** Live refresh: the change sets applied in a tenant, as business codes and operations (never actors or values). */
+export interface ChangeFeedItem {
+  changeSet: string;
+  entity: string;
+  code: string;
+  op: "insert" | "update" | "delete";
+  /** When the change set was applied (ISO 8601). */
+  at: string;
+}
+
+export interface ChangeFeed {
+  /** Pass back as `since` on the next call. Hosts re-send a short overlap after it, so a late commit is not missed. */
+  cursor: string;
+  items: ChangeFeedItem[];
+  /** More changed than one answer carries: grids reload in full. */
+  truncated: boolean;
+}

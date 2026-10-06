@@ -73,12 +73,22 @@ The Sustantix Enterprise Grid workspace is served at `/grids` (static bundle `pu
 | `POST /api/aip/workbook/changes` | A workbook import made on governed data, as one change set | `full` |
 | `GET /api/aip/ui` | Deployment switches for the runtime (`gridScreens`) | readable |
 | `POST /api/aip/grid/export-audit` | Audits an export a screen grid made in the browser | readable |
+| `GET /api/aip/changes/feed?since=<cursor>` | Live refresh: which records of the tenant changed (entity, code, operation), never who or what | readable |
 
 A change set item is `{entity, op: insert|update|delete, code, baseVersion, values}`. References travel as business
 codes, amounts as decimal strings. A stale `baseVersion` answers `409 conflict` with the current row; a repeated `id`
 returns the stored result without applying twice. Viewers cannot write; planners write registers and transactions;
 administrators also write masters; time series are never written cell by cell. The Reference Data grid reads
 `aip.v_reference`; no extra schema needs exposing.
+
+**Live refresh.** While the page is shown, an open grid polls the change feed every 15 seconds (longer after
+failures). The feed is `aip.change_feed`: any member of the tenant may call it, and it returns business codes only,
+with a two-minute overlap so late commits are not missed. When another user or an integration changes records of
+the grid's entity:
+- The grid fetches just those records and merges them in place. It reloads in full after more than 200 changes, or
+  after a day away.
+- The user's unsaved edits stay; a real collision still surfaces as a conflict on save.
+- A change set the page saved itself is not echoed back.
 
 ## Integration: inbound data and outbound events (phase 5)
 

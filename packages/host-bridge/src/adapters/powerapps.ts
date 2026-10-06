@@ -94,6 +94,10 @@ export function powerAppsAdapter(dataSourcesInfo: Parameters<typeof getClient>[0
         const r = await dc().retrieveMultipleRecordsAsync<Record<string, unknown>>(table, { select, maxPageSize: 5000, ...(skipToken ? { skipToken } : {}) });
         return { rows: unwrap(r, `read ${table}`) ?? [], ...(r.skipToken ? { skipToken: r.skipToken } : {}) };
       },
+      async query(table, o) {
+        const r = await dc().retrieveMultipleRecordsAsync<Record<string, unknown>>(table, { select: o.select, top: o.top, ...(o.filter ? { filter: o.filter } : {}), ...(o.orderBy ? { orderBy: o.orderBy } : {}) });
+        return unwrap(r, `read ${table}`) ?? [];
+      },
       async customApi(name, body) {
         const r = await dc().executeAsync<unknown, Record<string, unknown>>({ dataverseRequest: { action: "customapi", parameters: { operationName: name, tableName: STATE_TABLE, body } } });
         return unwrap(r, name) ?? {};

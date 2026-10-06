@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { requirementFor } from "../lib/gate";
 import { ApiError } from "../lib/http";
 import { CHANGE_MODEL, dictionaryRows, gridById, grids } from "../lib/grid/catalogue";
+import { parseSince, readFeed } from "../lib/grid/feed";
 import { applyChanges, catalogueFor, changeError, exportGrid, parseChangeSet, parseQuery, parseView, readGrid, type ChangeStore, type ExportLog, type GridStore } from "../lib/grid/service";
 import { applyGridQuery, likeLiteral, selectList, type FilterBuilder } from "../lib/supabase/grid-store";
 import type { Membership } from "../lib/tenant";
@@ -262,5 +263,34 @@ describe("screen grid switch", () => {
     expect(parse("<script>")).toBe("EnvError");
     expect(requirementFor("/api/aip/ui", "GET")).toBe("readable");
     expect(requirementFor("/api/aip/grid/export-audit", "POST")).toBe("readable");
+  });
+});
+
+describe("change feed", () => {
+  it("accepts a previous cursor or nothing, and refuses anything else", () => {
+    expect(parseSince(null)).toBeNull();
+    expect(parseSince("")).toBeNull();
+    expect(parseSince("2026-10-06T02:50:00.123Z")).toBe("2026-10-06T02:50:00.123Z");
+    expect(parseSince("2026-10-06T08:20:00.123+05:30")).toBe("2026-10-06T08:20:00.123+05:30");
+    for (const bad of ["yesterday", "2026-10-06", "2026-13-45T00:00:00Z", "2026-10-06T00:00:00Z'; drop table x", "1".repeat(50)])
+      expect(() => parseSince(bad), bad).toThrow(expect.objectContaining({ status: 400 }));
+  });
+
+  it("reads the feed as the member and normalizes the cursor", async () => {
+    const calls: unknown[] = [];
+    const db = {
+      rpc: async (fn: string, args: unknown) => {
+        calls.push([fn, args]);
+        return { data: { cursor: "2026-10-06 02:50:00.5+00", items: [{ changeSet: "c", entity: "work_order", code: "WO-1", op: "update", at: "x" }], truncated: false }, error: null };
+      },
+    };
+    const f = await readFeed(db, "t1", "2026-10-06T02:49:00.000Z");
+    expect(calls).toEqual([["change_feed", { p_tenant: "t1", p_since: "2026-10-06T02:49:00.000Z" }]]);
+    expect(f).toEqual({ cursor: "2026-10-06T02:50:00.500Z", items: [expect.objectContaining({ code: "WO-1" })], truncated: false });
+    await expect(readFeed({ rpc: async () => ({ data: null, error: { message: "not a member of this tenant" } }) }, "t2", null)).rejects.toThrow(/not a member/);
+  });
+
+  it("is a read under the license gate", () => {
+    expect(requirementFor("/api/aip/changes/feed", "GET")).toBe("readable");
   });
 });

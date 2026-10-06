@@ -5,6 +5,7 @@
 import type { GridFilter } from "../contract.ts";
 import { GridApiError, type CatalogueGrid, type GridApi } from "./api.ts";
 import { SustantixGrid } from "./grid.ts";
+import { LiveFeed } from "./live.ts";
 import { injectStyles } from "./styles.ts";
 
 export interface WorkspaceOptions {
@@ -41,6 +42,9 @@ export async function mountWorkspace(root: HTMLElement, opts: WorkspaceOptions):
   }
 
   let current: SustantixGrid | null = null;
+  // One feed for the page: the open grid follows others' changes while the page is shown.
+  const live = opts.api.changes ? new LiveFeed(opts.api) : null;
+  if (live) doc.addEventListener("visibilitychange", () => doc.visibilityState === "visible" && void live.poll());
   const buttons = new Map<string, HTMLButtonElement>();
 
   const open = (id: string, filters: GridFilter[] = []) => {
@@ -63,6 +67,7 @@ export async function mountWorkspace(root: HTMLElement, opts: WorkspaceOptions):
       def,
       role: catalogue.role,
       filters,
+      ...(live ? { live } : {}),
       ...(opts.currency ? { currency: opts.currency } : {}),
       onNavigate: (entity, code) => {
         const target = catalogue.grids.find((g) => g.entity === entity);

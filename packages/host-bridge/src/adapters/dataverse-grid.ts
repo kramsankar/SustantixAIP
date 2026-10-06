@@ -1,4 +1,4 @@
-import { queryRows, resolveCatalogue, type Catalogue, type ChangeModel, type ChangeSetRequest, type ChangeSetResult, type GridColumn, type GridDef, type GridPage, type GridQuery } from "@sustantix/grid";
+import { queryRows, resolveCatalogue, type Catalogue, type ChangeFeed, type ChangeFeedItem, type ChangeModel, type ChangeSetRequest, type ChangeSetResult, type GridColumn, type GridDef, type GridPage, type GridQuery } from "@sustantix/grid";
 import changeModel from "../../../../schema/aip-change-model.json";
 import catalogue from "../../../../schema/grids/grids.json";
 import dataverseModel from "../../../../powerplatform/schema/change-model.json";
@@ -19,7 +19,13 @@ export interface DataverseGridClient {
   customApi(name: string, body: Record<string, unknown>): Promise<Record<string, unknown>>;
   /** The entity set (data source) name the code app registered for a table's logical name. */
   entitySet(logicalName: string): string;
+  /** Rows matching an OData filter, ordered, at most `top` (live refresh reads the change-set log with it). */
+  query?(table: string, o: { select: string[]; filter?: string; orderBy?: string[]; top: number }): Promise<Row[]>;
 }
+
+/** Seconds re-read before the cursor, so a change set committed late is still seen (the grid drops repeats). */
+export const FEED_OVERLAP_MS = 120_000;
+export const FEED_MAX_SETS = 500;
 
 interface DvColumn {
   name: string;
@@ -35,7 +41,7 @@ interface DvEntity {
   scoped?: boolean;
   columns: DvColumn[];
 }
-const DV = dataverseModel as unknown as { api: string; key: string; entities: DvEntity[]; platformCodes: Record<string, string[]> };
+const DV = dataverseModel as unknown as { api: string; key: string; changeSetTable: string; entities: DvEntity[]; platformCodes: Record<string, string[]> };
 const PLATFORM = new Map(Object.entries(DV.platformCodes).map(([k, v]) => [k, new Set(v)]));
 const FORMATTED = "@OData.Community.Display.V1.FormattedValue";
 
@@ -95,6 +101,8 @@ const select = (e: DvEntity, key: string) => [key, "versionnumber", ...e.columns
 
 export function dataverseGridApi(client: DataverseGridClient, storage: Pick<Storage, "getItem" | "setItem"> | null = typeof localStorage === "undefined" ? null : localStorage) {
   const cache = new Map<string, Promise<Row[]>>();
+  // Change sets the feed has already accounted for in the cache.
+  const told = new Set<string>();
   let probed: Promise<{ role: string; gridScreens: string }> | null = null;
   /** The caller's AIP role and the environment's screen-grid switch, from the change-set plug-in. */
   const probe = () =>
@@ -200,6 +208,44 @@ export function dataverseGridApi(client: DataverseGridClient, storage: Pick<Stor
     async deleteView(grid: string, id: string) {
       putViews(grid, views(grid).filter((x) => x.id !== id));
     },
+    /**
+     * Live refresh from the change-set log (sus_changeset), which every AIP role reads: which records changed, by
+     * business code. Tables cached in this browser are dropped when a change set touches them for the first time.
+     */
+    ...(client.query
+      ? {
+          async changes(since: string | null): Promise<ChangeFeed> {
+            const table = client.entitySet(DV.changeSetTable);
+            const select = [DV.key, "sus_result", "createdon"];
+            if (since === null) {
+              const [last] = await client.query!(table, { select: ["createdon"], orderBy: ["createdon desc"], top: 1 });
+              return { cursor: String(last?.createdon ?? new Date(0).toISOString()), items: [], truncated: false };
+            }
+            const from = new Date(Date.parse(since) - FEED_OVERLAP_MS).toISOString();
+            const sets = await client.query!(table, { select, filter: `createdon gt ${from}`, orderBy: ["createdon asc"], top: FEED_MAX_SETS + 1 });
+            const latest = sets.reduce((m, r) => (String(r.createdon) > m ? String(r.createdon) : m), since);
+            if (sets.length > FEED_MAX_SETS) {
+              cache.clear();
+              return { cursor: latest, items: [], truncated: true };
+            }
+            const items: ChangeFeedItem[] = [];
+            for (const r of sets) {
+              let result: Array<{ entity: string; op: ChangeFeedItem["op"]; code: string }> = [];
+              try {
+                result = JSON.parse(String(r.sus_result ?? "[]"));
+              } catch {
+                /* a log row that does not parse tells nothing */
+              }
+              const id = String(r[DV.key]);
+              for (const i of result) items.push({ changeSet: id, entity: i.entity, code: i.code, op: i.op, at: String(r.createdon) });
+              if (!told.has(id)) for (const e of new Set(result.map((i) => i.entity))) cache.delete(e);
+              told.add(id);
+            }
+            if (told.size > 5000) told.clear();
+            return { cursor: latest, items, truncated: false };
+          },
+        }
+      : {}),
     async applyChanges(req: ChangeSetRequest): Promise<ChangeSetResult> {
       try {
         const out = await client.customApi(DV.api, { ChangeSetJson: JSON.stringify(req) });

@@ -1,7 +1,8 @@
 // Real-browser check of the Enterprise Grid workspace: the built bundle in Chromium against a mocked grid API.
 //   node test/browser.mjs [--shots <dir>]
 // Proves the workspace lists the catalogue, renders a virtualised grid, sorts, edits a cell and saves exactly one
-// change set, opens a 6,000-row register in server mode, and logs no page errors.
+// change set, follows another user's change through the live feed, opens a 6,000-row register in server mode, and
+// logs no page errors.
 import { createServer } from "node:http";
 import { mkdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -45,6 +46,9 @@ const workOrders = Array.from({ length: 420 }, (_, i) => ({ code: `WO-${String(i
 const modules = Array.from({ length: 6000 }, (_, i) => ({ code: `PVM-${String(i + 1).padStart(5, "0")}`, segment: `SEG-${(i % 12) + 1}`, serial_number: `SN${100000 + i}`, row_version: 1 }));
 const changeSets = [];
 const rowCalls = [];
+// The tenant's change feed: what the page saved itself, and what others changed meanwhile.
+const feed = [];
+let feedCalls = 0;
 
 // Same launch policy as the runtime's parity crawl: a pinned local Chromium when present, else Playwright's own.
 const browser = await chromium
@@ -66,13 +70,20 @@ await page.route("**/api/aip/**", async (route) => {
     const q = route.request().postDataJSON();
     rowCalls.push({ grid: m[1], ...q });
     let rows = m[1] === "work-orders" ? workOrders : modules;
+    for (const f of q.filters ?? []) if (f.op === "in") rows = rows.filter((r) => f.value.includes(r[f.field]));
     const sort = q.sort?.[0];
     if (sort) rows = [...rows].sort((a, b) => (a[sort.field] < b[sort.field] ? -1 : a[sort.field] > b[sort.field] ? 1 : 0) * (sort.dir === "desc" ? -1 : 1));
     return json({ rows: rows.slice(q.offset, q.offset + q.limit), total: rows.length, offset: q.offset });
   }
+  if (path === "/changes/feed") {
+    feedCalls++;
+    const since = url.searchParams.get("since");
+    return json({ cursor: new Date(Date.UTC(2026, 9, 6, 0, 0, feed.length)).toISOString(), items: since ? feed : [], truncated: false });
+  }
   if (path === "/changes") {
     const req = route.request().postDataJSON();
     changeSets.push(req);
+    for (const it of req.items) feed.push({ changeSet: req.id, entity: it.entity, code: it.code, op: it.op, at: "2026-10-06T00:00:00Z" });
     for (const it of req.items) Object.assign(workOrders.find((w) => w.code === it.code), it.values, { row_version: 2 });
     return json({ id: req.id, items: req.items.map((i) => ({ entity: i.entity, op: i.op, code: i.code, rowVersion: 2 })), replayed: false });
   }
@@ -113,6 +124,17 @@ try {
   await page.waitForFunction(() => document.querySelector(".sxg-status")?.textContent?.includes("saved"));
   check(changeSets.length === 1 && changeSets[0].items.length === 2, "one change set carries both edits");
   check(changeSets[0].items.every((i) => i.baseVersion === 1) && changeSets[0].items[1].values.estimated_cost === "2500.75", "each edit carries its row version; the amount stays an exact string");
+
+  // Live refresh: another planner's change arrives without a reload; the page's own save is not echoed back.
+  check(feedCalls >= 1, "the open grid follows the tenant's change feed");
+  Object.assign(workOrders.find((w) => w.code === "WO-0002"), { sla_hours: 99, row_version: 2 });
+  feed.push({ changeSet: "other-planner-1", entity: "work_order", code: "WO-0002", op: "update", at: "2026-10-06T00:00:05Z" });
+  const before = rowCalls.length;
+  await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+  await page.waitForFunction(() => document.querySelector(".sxg-status")?.textContent?.includes("updated by others"));
+  const fetched = rowCalls.slice(before);
+  check(fetched.length === 1 && JSON.stringify(fetched[0].filters) === JSON.stringify([{ field: "code", op: "in", value: ["WO-0002"] }]), "only the record another user changed is fetched (the page's own save is not echoed)");
+  check((await page.locator(".sxg-body [data-r='0'][data-c='0']").textContent()) === "WO-0002" && (await page.locator(".sxg-body [data-r='0'][data-c='4']").textContent()) === "99", "the change shows in place, in the current sort");
 
   await page.locator(".sxg-ws-nav button", { hasText: "PV module register" }).click();
   await page.waitForSelector(".sxg-foot >> text=Sorted and filtered in the database");
