@@ -155,7 +155,8 @@ jobs:
           test "$(psql -At -c "select count(*) from aip.grid_view")" = "2"
 
   # The parity crawls (bundled and governed data, screen grids) take most of a CI run. They guard the runtime and what
-  # ships with it, so they run on main always and elsewhere only when one of those changed.
+  # ships with it (including the schema tools and schema/ inputs the governed workbook and the grid catalogue are built
+  # from), so they run on main always and elsewhere only when one of those changed.
   changes:
     name: What changed
     runs-on: ubuntu-latest
@@ -175,7 +176,7 @@ jobs:
           fi
           changed=$(git diff --name-only "$BASE" HEAD)
           echo "$changed"
-          if echo "$changed" | grep -qE '^(apps/runtime/|tools/extract-reference/|packages/(host-bridge|grid|license)/|reference/|\.github/workflows/ci\.yml$|pnpm-lock\.yaml$)'; then
+          if echo "$changed" | grep -qE '^(apps/runtime/|tools/(extract-reference|schema)/|schema/|packages/(host-bridge|grid|license)/|reference/|\.github/workflows/ci\.yml$|pnpm-lock\.yaml$)'; then
             echo "runtime=true" >> "$GITHUB_OUTPUT"
           else
             echo "runtime=false" >> "$GITHUB_OUTPUT"
