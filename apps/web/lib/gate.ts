@@ -30,7 +30,7 @@ export function requirementFor(path: string, method: string): Requirement {
   const m = method.toUpperCase();
   if (endpoint === "state" && (m === "PUT" || m === "DELETE" || m === "POST" || m === "PATCH")) return "writable";
   // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
-  if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals")) && m !== "GET" && m !== "HEAD") return "writable";
+  if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals") || endpoint.startsWith("agents/schedules")) && m !== "GET" && m !== "HEAD") return "writable";
   // Change sets and saved views write; grid reads and exports (POST bodies carrying a query) only read.
   // Deliveries, integration management and grid actions write.
   if ((endpoint === "ingest" || endpoint.startsWith("integrations") || endpoint.startsWith("outbox/") || /^grid\/[^/]+\/actions\//.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";

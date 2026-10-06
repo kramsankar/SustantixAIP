@@ -28,6 +28,7 @@ import { changeModel, changesSql } from "./changes-sql.ts";
 import { changeSetPlan, dataverseChangeModel } from "./changes-dataverse.ts";
 import { integrationSql } from "./integration-sql.ts";
 import { feedSql } from "./feed-sql.ts";
+import { scheduleSql } from "./schedule-sql.ts";
 import { outboxSql } from "./outbox-sql.ts";
 import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
@@ -70,6 +71,7 @@ writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeM
 writeFileSync(join(root, "supabase/migrations/20261008000100_aip_integration.sql"), integrationSql());
 writeFileSync(join(root, "supabase/migrations/20261008000200_aip_outbox.sql"), outboxSql());
 writeFileSync(join(root, "supabase/migrations/20261008000300_aip_feed.sql"), feedSql());
+writeFileSync(join(root, "supabase/migrations/20261008000400_aip_schedules.sql"), scheduleSql());
 writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");

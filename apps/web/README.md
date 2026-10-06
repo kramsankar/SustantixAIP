@@ -130,6 +130,23 @@ grid shows every event and its last error. Receivers should:
 2. De-duplicate on `Idempotency-Key` (the event id), because a retry delivers the same event again.
 3. Answer 2xx only once the event is stored.
 
+**Scheduled agent runs.** Administrators give an agent a standing question and a cadence:
+
+| Endpoint | Purpose | License gate |
+| --- | --- | --- |
+| `GET / POST /api/aip/agents/schedules` | List; create `{name, agent, prompt, cadence: hourly\|daily\|weekly, atHour, atWeekday, timeZone}` | writes: `full` |
+| `PATCH /api/aip/agents/schedules/{id}` | `{enabled, prompt, cadence, atHour, atWeekday, timeZone}` | `full` |
+| `GET /api/aip/cron/agents` | The worker; answers only Vercel Cron (`$CRON_SECRET`), hourly at minute 7 | — |
+| `POST /api/aip/grid/agent-schedules/actions/run-now` | Run schedules at the worker's next pass | `full` |
+
+- **Timing:** times are local to the schedule's own IANA time zone, including daylight-saving changes.
+- **Identity:** each schedule acts as its own technical member (role planner), so its runs appear in `agent_run`
+  and the audit trail under that identity.
+- **Scope:** a run reads only its tenant's governed data. It can raise proposals, which wait for a person and then
+  reach the outbox like any approved proposal; nothing it suggests changes data on its own.
+- **Bookkeeping:** each slot is claimed once. The Agent schedules grid shows the next run and the last outcome.
+- **Requirements:** the worker needs `ANTHROPIC_API_KEY`. Hourly crons need a Vercel plan that allows them.
+
 ## Deploying to Vercel
 
 1. **Project**: import the repository and set **Root Directory** to `apps/web`. `vercel.json` sets the framework
@@ -147,8 +164,9 @@ grid shows every event and its last error. Receivers should:
    - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
    - `AIP_GRID_SCREENS`: optional. Screens whose tables show as Enterprise Grids: comma-separated screen names
      (for example `workorderintelligence,guardrails`), `all`, or empty for none (the default).
-   - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox worker
-     (`vercel.json` schedules it every 5 minutes). Without it the worker answers `503` and nothing is sent.
+   - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox worker (every
+     5 minutes) and the agent-schedule worker (hourly), both set in `vercel.json`. Without it the workers answer
+     `503` and nothing runs. Scheduled work is licensed against the first domain the deployment's license binds.
    - `AIP_DATA_SOURCE`: `embedded` (default: the runtime shows its bundled data) or `governed` (the runtime boots
      on the tenant's governed data through `GET /api/aip/workbook`). Governed mode needs the `aip_compat` schema
      exposed (step 3) and the tenant loaded.

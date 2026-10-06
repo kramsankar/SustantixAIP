@@ -227,9 +227,19 @@ Dataverse the adapter also drops a cached table when a change set first touches 
 while the page is visible and routes items to the grids of the changed entity. Grids merge the changed records by
 key and keep pending edits; a page's own change sets are ignored.
 
+**Scheduled agent runs.** `aip.agent_schedule` holds a standing question, an agent and a cadence.
+- **Timing:** `aip.next_agent_slot` computes slots in the schedule's own time zone, DST-safe.
+- **Claiming:** the hourly worker claims one due schedule at a time (`claim_agent_schedule`, `skip locked`), which
+  moves it to its next slot first, so a slot never runs twice.
+- **Running:** the run uses a port bound to the schedule's tenant (every query filters `tenant_id`; agent tools read
+  only the master views in their catalogue) and acts as the schedule's technical planner member. Its only effect is
+  pending proposals.
+- **Audit:** changes to configuration are audited; run bookkeeping is recorded in `agent_run` and `agent_step`.
+
 **Power Apps edition.** Change sets are already recorded in `sus_changeset`, so outbound delivery there uses the
 platform's own webhook or Power Automate trigger on that table. Configure it per customer environment; no extra code
-is needed.
+is needed. Scheduled agent runs are part of the Vercel edition only for now. On Power Platform the equivalent is a
+recurrence flow that invokes the tenant's Copilot Studio agent, and it is not shipped yet.
 
 ## Analytics (`packages/analytics`)
 
@@ -297,7 +307,7 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 - **Phase 4 (done):** the change-set write path on both editions, the Sustantix Enterprise Grid (20 governed grids plus
   16 Reference Data grids), screen grids in 14 runtime screens behind a switch, governed workbook imports, and
   administrator vocabulary maintenance.
-- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh on both editions (done); scheduled agent runs, and edition export/import.
+- **Phase 5 (in progress):** staging and data-quality quarantine with replay, and the ingest API (done); outbox with signed webhook delivery (done); live refresh on both editions (done); scheduled agent runs (done), and edition export/import.
 
 ## Evolution path
 

@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
-const body = z.object({ keys: z.array(z.string().regex(/^\d{1,18}$/)).min(1).max(5000) }).strict();
+const body = z.object({ keys: z.array(z.string().regex(/^(\d{1,18}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/)).min(1).max(5000) }).strict();
 
 /** POST /api/aip/grid/{id}/actions/{action} — {keys}: a grid's own actions (quarantine: replay or discard rows). */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string; action: string }> }): Promise<Response> {
@@ -23,6 +23,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     if (!def.actions?.some((a) => a.id === action)) throw new ApiError(404, "not_found", "no such action");
     const v = body.safeParse(await jsonBody(req, 256 * 1024));
     if (!v.success) throw new ApiError(400, "invalid_action", "keys: the selected rows");
+    if (id === "agent-schedules" && action === "run-now") {
+      const { membership, db } = await requestContext();
+      const { data, error } = await db.rpc("run_agent_schedules_now", { p_tenant: membership.tenantId, p_ids: v.data.keys });
+      if (error) throw new ApiError(error.code === "42501" ? 403 : error.code === "22P02" ? 400 : 500, error.code === "42501" ? "forbidden" : "run_failed", error.message);
+      return json({ queued: data as number });
+    }
+    if (v.data.keys.some((k) => !/^\d+$/.test(k))) throw new ApiError(400, "invalid_action", "keys: the selected rows");
     const ids = v.data.keys.map(Number);
     if (id === "outbox" && action === "retry") {
       const { membership, db } = await requestContext();

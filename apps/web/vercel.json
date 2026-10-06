@@ -9,12 +9,19 @@
     },
     "app/api/aip/cron/outbox/route.ts": {
       "maxDuration": 300
+    },
+    "app/api/aip/cron/agents/route.ts": {
+      "maxDuration": 300
     }
   },
   "crons": [
     {
       "path": "/api/aip/cron/outbox",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/aip/cron/agents",
+      "schedule": "7 * * * *"
     }
   ]
 }

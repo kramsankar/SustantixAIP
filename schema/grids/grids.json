@@ -448,6 +448,84 @@
    ]
   },
   {
+   "id": "agent-schedules",
+   "title": "Agent schedules",
+   "screen": "AIP Agents",
+   "source": {
+    "kind": "view",
+    "name": "v_agent_schedule"
+   },
+   "columns": [
+    {
+     "field": "name",
+     "label": "Schedule",
+     "kind": "text"
+    },
+    {
+     "field": "agent",
+     "label": "Agent",
+     "kind": "text"
+    },
+    {
+     "field": "runs",
+     "label": "Runs",
+     "kind": "text"
+    },
+    {
+     "field": "time_zone",
+     "label": "Time zone",
+     "kind": "text"
+    },
+    {
+     "field": "enabled",
+     "label": "On",
+     "kind": "boolean"
+    },
+    {
+     "field": "next_run_at",
+     "label": "Next run",
+     "kind": "datetime"
+    },
+    {
+     "field": "last_run_at",
+     "label": "Last run",
+     "kind": "datetime"
+    },
+    {
+     "field": "last_status",
+     "label": "Last outcome",
+     "kind": "text"
+    },
+    {
+     "field": "last_message",
+     "label": "Result",
+     "kind": "text"
+    },
+    {
+     "field": "prompt",
+     "label": "Standing question",
+     "kind": "text"
+    }
+   ],
+   "key": "code",
+   "defaultSort": [
+    {
+     "field": "next_run_at",
+     "dir": "asc"
+    }
+   ],
+   "groupBy": [
+    "agent"
+   ],
+   "actions": [
+    {
+     "id": "run-now",
+     "label": "Run now",
+     "confirm": "Run these schedules at the scheduler's next pass (within the hour)"
+    }
+   ]
+  },
+  {
    "id": "ai-guardrails",
    "title": "AI guardrail policies",
    "screen": "AI Guardrails",
