@@ -112,7 +112,7 @@ describe("runtime state service", () => {
   it("rejects invalid JSON and invalid shapes with 400", async () => {
     const { c, repo } = ctx();
     await expect(saveState(c, Buffer.from("{not json"))).rejects.toMatchObject({ status: 400, code: "invalid_json" });
-    const err = await saveState(c, body({ data: { A: [1] }, mode: "x" })).catch((e: ApiError) => e);
+    const err = await saveState(c, body({ data: [], mode: "x" })).catch((e: ApiError) => e);
     expect(err).toBeInstanceOf(ApiError);
     expect((err as ApiError).status).toBe(400);
     expect((err as ApiError).extra.issues).toBeDefined();

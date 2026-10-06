@@ -17,6 +17,21 @@ describe("runtime state validation", () => {
     expect(b.ok && b.value.lastImport).toBeNull();
   });
 
+  it("accepts the runtime's own entries beside the sheets (as production sends them)", () => {
+    const r = validateRuntimeState({
+      ...good,
+      data: {
+        ...good.data,
+        version: "v87_675",
+        navigationChange: { combinedLeftPane: true, order: ["portfolio", "enterprise"] },
+        platformSyntheticData: { sites: [{ id: "SP-01" }], seed: 42 },
+        uiChange: { theme: null },
+        tags: ["a", "b"],
+      },
+    });
+    expect(r.ok, JSON.stringify(r)).toBe(true);
+  });
+
   it("accepts structured lastImport JSON", () => {
     expect(validateRuntimeState({ ...good, lastImport: { at: 1, files: ["a.xlsx"] } }).ok).toBe(true);
   });
@@ -28,11 +43,7 @@ describe("runtime state validation", () => {
     ["missing data", { mode: "x", lastImport: null }],
     ["missing mode", { data: {}, lastImport: null }],
     ["data as array", { ...good, data: [] }],
-    ["sheet not an array", { ...good, data: { Assets: { id: 1 } } }],
-    ["row is a number", { ...good, data: { Assets: [1] } }],
-    ["row is null", { ...good, data: { Assets: [null] } }],
-    ["row is an array", { ...good, data: { Assets: [["a", "b"]] } }],
-    ["row is a string", { ...good, data: { Assets: ["row"] } }],
+    ["a value that is not JSON", { ...good, data: { Assets: () => 1 } }],
     ["mode too long", { ...good, mode: "m".repeat(65) }],
     ["mode not a string", { ...good, mode: 3 }],
     ["empty sheet name", { ...good, data: { "": [] } }],

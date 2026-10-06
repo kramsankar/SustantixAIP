@@ -2,13 +2,14 @@ import { z } from "zod";
 
 /** Shape of the snapshot the AIP runtime persists (see host-bridge RuntimeState). */
 
-const Row = z.record(z.string(), z.unknown()).refine((v) => v !== null && typeof v === "object" && !Array.isArray(v), {
-  message: "row must be an object",
-});
-
+/**
+ * The runtime keeps more than workbook sheets under `data`: alongside the sheets (arrays of rows) it stores its own
+ * configuration and derived datasets (version, navigation changes, synthetic platform data…) as plain JSON values.
+ * Every entry must be JSON, under a non-empty name; the snapshot as a whole stays within MAX_STATE_BYTES.
+ */
 export const RuntimeStateSchema = z
   .object({
-    data: z.record(z.string().min(1).max(256), z.array(Row)),
+    data: z.record(z.string().min(1).max(256), z.json()),
     mode: z.string().max(64),
     // The runtime stores null before the first import; JSON drops undefined.
     lastImport: z.json().optional().transform((v) => v ?? null),
