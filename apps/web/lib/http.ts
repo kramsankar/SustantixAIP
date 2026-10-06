@@ -29,7 +29,12 @@ export function noContent(headers: Record<string, string> = {}): Response {
 }
 
 export function errorResponse(err: unknown, log: (msg: string, detail?: unknown) => void = defaultLog): Response {
-  if (err instanceof ApiError) return json({ error: err.code, message: err.message, ...err.extra }, err.status, err.headers);
+  if (err instanceof ApiError) {
+    // A refused request leaves its reason in the server log (code and field paths only, never submitted values),
+    // so a rejection seen only as a status code can be diagnosed.
+    if (err.status === 400 || err.status === 413 || err.status === 415) log(`refused ${err.status} ${err.code}`, err.extra?.issues ?? err.message);
+    return json({ error: err.code, message: err.message, ...err.extra }, err.status, err.headers);
+  }
   if (err instanceof Error && err.name === "EnvError") {
     log("server misconfigured", err.message);
     return json({ error: "server_misconfigured", message: "server is not configured" }, 503);
