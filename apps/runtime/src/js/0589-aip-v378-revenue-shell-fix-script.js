@@ -3,29 +3,9 @@
   function normalizePane(paneId,helpView){
     const pane=document.getElementById(paneId);
     if(!pane)return;
-    let holder=pane.querySelector(':scope > .f1-help-top-right.aip-v378-revenue-help');
-    let button=pane.querySelector('.f1-btn');
-    if(!holder){
-      holder=document.createElement('div');
-      holder.className='f1-help-top-right aip-v378-revenue-help';
-      pane.insertBefore(holder,pane.firstChild);
-    }
-    if(!button){
-      button=document.createElement('button');
-      button.type='button';
-      button.className='f1-btn';
-      button.innerHTML='<span class="f1-key">F1</span> Help';
-    }
-    if(button.parentNode!==holder)holder.appendChild(button);
-    button.onclick=function(e){
-      e.preventDefault();e.stopPropagation();
-      if(typeof window.openHelp==='function')window.openHelp(helpView);
-    };
-    button.dataset.helpView=helpView;
-    button.title='F1 Help';
-    button.setAttribute('aria-label','Open F1 Help');
-    /* Remove duplicate/legacy controls and child page-heads after preserving one F1. */
-    pane.querySelectorAll('.f1-btn').forEach(b=>{if(b!==button)b.remove()});
+    /* Sustantix: F1 Help is retired (the v403 removal guard purges every F1 control on each change under #main).
+       Recreating it here fought that guard in an endless add/remove loop, and every turn woke each page-wide
+       observer, keeping the page busy on every screen. Only the redundant child page-heads are normalized now. */
     pane.querySelectorAll(':scope > .page-head').forEach(h=>h.remove());
   }
   function normalizeRevenueCommercial(){

@@ -44,7 +44,16 @@ const text = (el: Element) => (el.textContent ?? "").replace(/\s+/g, " ").trim()
 const cellsOf = (tr: Element) => [...tr.children].filter((c): c is HTMLTableCellElement => c.tagName === "TD" || c.tagName === "TH");
 const allRows = (t: HTMLTableElement) =>
   [...t.children].flatMap((c) => (c.tagName === "TR" ? [c] : ["THEAD", "TBODY", "TFOOT"].includes(c.tagName) ? [...c.children].filter((r) => r.tagName === "TR") : []));
-const headerRow = (t: HTMLTableElement) => allRows(t).find((r) => r.parentElement?.tagName === "THEAD") ?? allRows(t)[0] ?? null;
+const firstRow = (section: Element) => [...section.children].find((r) => r.tagName === "TR") ?? null;
+/** The first row of the first head, else the table's first row; found without listing every row (scans run often). */
+const headerRow = (t: HTMLTableElement): Element | null => {
+  for (const c of t.children) if (c.tagName === "THEAD" && firstRow(c)) return firstRow(c);
+  for (const c of t.children) {
+    if (c.tagName === "TR") return c;
+    if (["THEAD", "TBODY", "TFOOT"].includes(c.tagName) && firstRow(c)) return firstRow(c);
+  }
+  return null;
+};
 const headerCells = (t: HTMLTableElement) => {
   const h = headerRow(t);
   return h ? cellsOf(h) : [];
@@ -75,22 +84,25 @@ function longestLine(td: Element | undefined): number {
 /** Reads a screen table into grid columns and rows (text values; numbers also as sort keys). */
 export function readTable(t: HTMLTableElement): { columns: GridColumn[]; rows: Row[] } {
   const heads = headerCells(t);
-  const trs = bodyRows(t).filter((tr) => cellsOf(tr).length > 1 || text(tr) !== "");
+  // Each row's cells and their text are read once: large screen tables (thousands of rows) are read on every redraw.
+  const body = bodyRows(t).map((tr) => {
+    const tds = cellsOf(tr);
+    return { tr, tds, texts: heads.map((_, i) => (tds[i] ? text(tds[i]!) : "")) };
+  });
+  const trs = body.filter((b) => b.tds.length > 1 || text(b.tr) !== "");
   const columns: GridColumn[] = heads.map((h, i) => {
-    const values = trs.map((tr) => (cellsOf(tr)[i] ? text(cellsOf(tr)[i]!) : "")).filter((v) => v !== "");
+    const values = trs.map((b) => b.texts[i]!).filter((v) => v !== "");
     const numeric = values.length > 0 && values.filter((v) => figure(v) !== null).length / values.length >= 0.8;
     const label = text(h) || (i === 0 ? "Select" : `Column ${i + 1}`);
     // Size to the content: the longest line of a cell (a cell may stack lines), within sensible bounds.
-    const longest = Math.max(label.length, ...trs.slice(0, 200).map((tr) => longestLine(cellsOf(tr)[i])));
+    const longest = Math.max(label.length, ...trs.slice(0, 200).map((b) => longestLine(b.tds[i])));
     const width = Math.max(80, Math.min(340, Math.round(longest * 7.2) + 28));
     return { field: `c${i}`, label, kind: "text" as ColumnKind, editable: false, width, ...(numeric ? { sortKey: `n${i}` } : {}) };
   });
-  const rows = trs.map((tr, r) => {
-    const row: Row = { __key: `r${String(r).padStart(5, "0")}`, __tr: tr };
-    const tds = cellsOf(tr);
+  const rows = trs.map((b, r) => {
+    const row: Row = { __key: `r${String(r).padStart(5, "0")}`, __tr: b.tr };
     heads.forEach((_, i) => {
-      const td = tds[i];
-      const v = td ? text(td) : "";
+      const v = b.texts[i]!;
       row[`c${i}`] = v;
       if (columns[i]!.sortKey) row[`n${i}`] = figure(v);
     });
@@ -138,6 +150,8 @@ export class ScreenGrids {
   private readonly mounted = new Map<HTMLTableElement, Mounted>();
   private assetGrid: { grid: SustantixGrid; host: HTMLElement } | null = null;
   private readonly cells = new WeakMap<HTMLElement, HTMLTableCellElement>();
+  /** Mounted tables changed since the last scan: only these are re-read, not every table on every tick. */
+  private readonly dirty = new Set<HTMLTableElement>();
   private readonly observer: MutationObserver;
   private timer: ReturnType<typeof setTimeout> | undefined;
   private readonly enabled: Set<string> | "all";
@@ -145,6 +159,7 @@ export class ScreenGrids {
   constructor(private readonly doc: Document, private readonly opts: ScreenGridOptions) {
     this.enabled = opts.screens === "all" ? "all" : new Set(opts.screens);
     this.observer = new MutationObserver((list) => {
+      this.note(list);
       // The grids' own redraws never trigger a rescan.
       if (list.every((m) => (m.target as Element).closest?.(".sxg, .sxg-screen"))) return;
       this.schedule();
@@ -176,12 +191,21 @@ export class ScreenGrids {
     return this.enabled === "all" || this.enabled.has(view);
   }
 
+  private note(list: MutationRecord[]): void {
+    for (const r of list) {
+      const t = (r.target as Element).closest?.("table");
+      if (t && this.mounted.has(t)) this.dirty.add(t);
+    }
+  }
+
   /** Mounts grids on newly drawn tables of switched-on screens, follows redraws and drops grids whose table is gone. */
   scan(): void {
+    this.note(this.observer.takeRecords());
     for (const [t, m] of this.mounted) {
       if (!t.isConnected || !m.host.isConnected) this.unmount(m);
-      else if (signatureOf(t) !== m.signature) this.reload(m);
+      else if (this.dirty.has(t) && signatureOf(t) !== m.signature) this.reload(m);
     }
+    this.dirty.clear();
     for (const spec of SCREEN_GRIDS) {
       if (!this.on(spec.view)) continue;
       const view = this.doc.getElementById(spec.viewId);

@@ -54,15 +54,74 @@ async function probe(mode, grids) {
     document.querySelectorAll("#sidebar .x-nav-body").forEach((b) => (b.style.display = "block"));
     document.querySelector(`#sidebar .nav-item[data-view="${v}"]`).click();
   }, view);
-  await page.waitForTimeout(15000);
+  let hot;
+  if (process.env.AIP_WATCH) {
+    // Which nodes keep being added and removed once the screen has settled: names the parties to a redraw loop.
+    await page.waitForTimeout(3000);
+    hot = await page.evaluate(async () => {
+      const tally = new Map();
+      const name = (n, parent) => `${n.nodeName.toLowerCase()}${n.id ? "#" + n.id : ""}${n.className && typeof n.className === "string" ? "." + n.className.trim().split(/\s+/).slice(0, 2).join(".") : ""} in ${parent.closest?.(".view")?.id ?? parent.nodeName}`;
+      const mo = new MutationObserver((list) => {
+        for (const m of list) {
+          for (const n of m.addedNodes) if (n.nodeType === 1) tally.set("+ " + name(n, m.target), (tally.get("+ " + name(n, m.target)) ?? 0) + 1);
+          for (const n of m.removedNodes) if (n.nodeType === 1) tally.set("- " + name(n, m.target), (tally.get("- " + name(n, m.target)) ?? 0) + 1);
+        }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+      await new Promise((r) => setTimeout(r, 5000));
+      mo.disconnect();
+      return [...tally].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, c]) => `${c}x ${k}`);
+    });
+    await page.waitForTimeout(7000);
+  } else if (process.env.AIP_PROFILE) {
+    // Self time by function over a window after the screen opens: names the code that keeps the page busy.
+    await page.waitForTimeout(3000);
+    const cdp = await page.context().newCDPSession(page);
+    const sources = new Map();
+    cdp.on("Debugger.scriptParsed", (e) => sources.set(e.scriptId, e));
+    await cdp.send("Debugger.enable");
+    await cdp.send("Profiler.enable");
+    await cdp.send("Profiler.start");
+    await page.waitForTimeout(6000);
+    const { profile } = await cdp.send("Profiler.stop");
+    const self = new Map();
+    const dt = profile.timeDeltas;
+    profile.samples.forEach((id, i) => self.set(id, (self.get(id) ?? 0) + (dt[i + 1] ?? 0) / 1000));
+    // Inline scripts have no URL: name each frame by the source text around it.
+    const text = new Map();
+    const where = async (f) => {
+      if (!f.scriptId || f.scriptId === "0") return "";
+      if (!text.has(f.scriptId)) text.set(f.scriptId, (await cdp.send("Debugger.getScriptSource", { scriptId: f.scriptId }).catch(() => ({ scriptSource: "" }))).scriptSource.split("\n"));
+      const line = text.get(f.scriptId)[f.lineNumber] ?? "";
+      return ` «${line.slice(Math.max(0, f.columnNumber - 30), f.columnNumber + 90).replace(/\s+/g, " ")}»`;
+    };
+    const parent = new Map();
+    for (const n of profile.nodes) for (const c of n.children ?? []) parent.set(c, n);
+    const byFn = new Map();
+    for (const n of profile.nodes) {
+      let f = n.callFrame;
+      // Native DOM calls are charged to the script function that made them.
+      let via = "";
+      if (!f.url && f.lineNumber < 0 && parent.get(n.id)) via = ` <- ${parent.get(n.id).callFrame.functionName || "(anon)"}@${parent.get(n.id).callFrame.scriptId}:${parent.get(n.id).callFrame.lineNumber + 1}:${parent.get(n.id).callFrame.columnNumber}`;
+      const k = `${f.functionName || "(anon)"}@${f.scriptId}:${f.lineNumber + 1}:${f.columnNumber}${via}`;
+      const prev = byFn.get(k) ?? { ms: 0, f: via ? parent.get(n.id).callFrame : f };
+      prev.ms += self.get(n.id) ?? 0;
+      byFn.set(k, prev);
+    }
+    hot = [];
+    for (const [k, v] of [...byFn].sort((a, b) => b[1].ms - a[1].ms).slice(0, 20)) hot.push(`${Math.round(v.ms)}ms ${k}${await where(v.f)}`);
+    await page.waitForTimeout(6000);
+  } else await page.waitForTimeout(15000);
   const tasks = await page.evaluate(() => window.__longTasks);
   await page.close();
+  if (hot) console.log(`hot (${mode}${grids ? " + grids" : ""}):\n  ${hot.join("\n  ")}`);
   return { mode: mode + (grids ? " + grids" : ""), badge, longestTaskMs: Math.round(Math.max(0, ...tasks)), blockedMs: Math.round(tasks.reduce((a, b) => a + b, 0)), tasks: tasks.length, wallMs: Date.now() - t0 };
 }
 
 try {
   const out = [];
-  for (const [m, g] of [["governed", true], ["synthetic", true], ["synthetic", false], ["embedded", true]]) out.push(await probe(m, g));
+  const modes = process.env.AIP_MODES ? process.env.AIP_MODES.split(",").map((x) => [x.replace("+grids", ""), x.endsWith("+grids")]) : [["governed", true], ["synthetic", true], ["synthetic", false], ["embedded", true]];
+  for (const [m, g] of modes) out.push(await probe(m, g));
   console.table(out);
 } finally {
   await browser.close();
