@@ -29,6 +29,8 @@ export function requirementFor(path: string, method: string): Requirement {
   // Running analytics writes results; agent proposals are decided (written) through their own endpoint.
   if ((endpoint === "analytics/run" || endpoint.startsWith("agents/proposals")) && m !== "GET" && m !== "HEAD") return "writable";
   // Change sets and saved views write; grid reads and exports (POST bodies carrying a query) only read.
+  // Deliveries, integration management and grid actions write.
+  if ((endpoint === "ingest" || endpoint.startsWith("integrations") || /^grid\/[^/]+\/actions\//.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
   if ((endpoint === "changes" || endpoint === "workbook/changes" || /^grid\/[^/]+\/views(\/|$)/.test(endpoint)) && m !== "GET" && m !== "HEAD") return "writable";
   return "readable";
 }
@@ -54,7 +56,10 @@ export interface GuardDeps {
 /** Returns a rejection Response, or null when the request may proceed. */
 export async function guardRequest(input: GuardInput, deps: GuardDeps): Promise<Response | null> {
   if (!input.host) return json({ error: "bad_host", message: "request host is missing or invalid" }, 400);
-  if (!isSameOrigin(input.method, input.headers, input.host)) {
+  // An integration's delivery carries its key, not a session cookie: there is no browser session to forge, so the
+  // same-origin rule (a defence for cookies) does not apply to it. The key itself is verified by the route.
+  const integrationDelivery = input.pathname === `${API_PREFIX}ingest` && /^Bearer\s+sxi_/i.test(input.headers.get("authorization") ?? "");
+  if (!integrationDelivery && !isSameOrigin(input.method, input.headers, input.host)) {
     return json({ error: "cross_origin", message: "cross-origin state-changing request refused" }, 403);
   }
   const requirement = requirementFor(input.pathname, input.method);

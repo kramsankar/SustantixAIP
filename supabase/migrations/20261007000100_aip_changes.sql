@@ -1445,6 +1445,11 @@ revoke all on aip.change_set from authenticated;
 grant select, insert on aip.change_set to authenticated;
 grant all on aip.change_set to service_role;
 
+-- Integrations bulk-load the time series a person never edits cell by cell: a change set with source "import" may
+-- write them (administrators and integrations only, as the series' writers say). Grids never send that source.
+create or replace function aip.change_set_may_write(ent aip.change_entity, p_source text) returns boolean
+language sql immutable as $$ select ent.editable or (ent.layer = 'series' and p_source = 'import') $$;
+
 -- Applies one change set. Items: {entity, op: insert|update|delete, code, baseVersion (update/delete), values}.
 -- values hold column → value, references as business codes; money and decimals as strings (never floats).
 create or replace function aip.apply_change_set(p_id uuid, p_tenant uuid, p_source text, p_items jsonb)
@@ -1490,7 +1495,7 @@ begin
     i := i + 1;
     select * into ent from aip.change_entity where name = item->>'entity';
     if not found then raise exception 'item %: unknown entity %', i, item->>'entity' using errcode = '22023'; end if;
-    if not ent.editable then raise exception 'item %: % is written by integrations only', i, ent.name using errcode = '42501'; end if;
+    if not aip.change_set_may_write(ent, p_source) then raise exception 'item %: % is written by integrations only', i, ent.name using errcode = '42501'; end if;
     if not aip.has_role(p_tenant, ent.writers) then raise exception 'item %: your role cannot write %', i, ent.label using errcode = '42501'; end if;
     op := item->>'op';
     item_code := item->>'code';
@@ -1504,7 +1509,9 @@ begin
     rec := '{}'::jsonb;
     for k, v in select key, value from jsonb_each(coalesce(item->'values', '{}'::jsonb)) loop
       select * into col from aip.change_column where entity = ent.name and name = k;
-      if not found or not col.editable then raise exception 'item %: % is not an editable column of %', i, k, ent.label using errcode = '22023'; end if;
+      if not found or not (col.editable or (ent.layer = 'series' and p_source = 'import' and col.name not in ('source_ordinal'))) then
+        raise exception 'item %: % is not an editable column of %', i, k, ent.label using errcode = '22023';
+      end if;
       if col.kind in ('fk','ref') and jsonb_typeof(v) <> 'null' then
         if jsonb_typeof(v) <> 'string' then raise exception 'item %: % takes a business code', i, k using errcode = '22023'; end if;
         if col.kind = 'fk' then

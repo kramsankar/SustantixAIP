@@ -22,6 +22,7 @@ export interface CatalogueGrid {
   groupBy?: string[];
   bulkEdit?: string[];
   tree?: { parent: string };
+  actions?: Array<{ id: string; label: string; confirm?: string }>;
 }
 
 export interface Catalogue {
@@ -148,6 +149,7 @@ export function resolveCatalogue(cat: Catalogue, model: ChangeModel, registry: R
       groupBy: g.groupBy ?? [],
       bulkEdit: g.bulkEdit ?? [],
       tree: g.tree ?? null,
+      ...(g.actions?.length ? { actions: g.actions } : {}),
     });
   }
   // Reference Data: one administrator grid per vocabulary table; platform rows stay read-only.

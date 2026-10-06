@@ -57,6 +57,15 @@ export interface GridDef {
   tree: { parent: string } | null;
   /** A boolean field that, when true, makes its row read-only (platform vocabulary rows). */
   readOnlyWhen?: string;
+  /** Actions on selected rows that the host carries out (for example replaying quarantined records). */
+  actions?: GridAction[];
+}
+
+export interface GridAction {
+  id: string;
+  label: string;
+  /** The question asked before the action runs. */
+  confirm?: string;
 }
 
 export const FILTER_OPS = ["eq", "neq", "lt", "lte", "gt", "gte", "contains", "starts", "in", "empty", "notEmpty"] as const;

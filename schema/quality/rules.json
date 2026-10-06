@@ -1,0 +1,27 @@
+{
+ "version": 1,
+ "description": "Governed data-quality rules as executable checks. Rules with a record scope gate ingestion: a record that breaks a 'reject' rule goes to quarantine, a 'warn' rule is recorded and the record applied. Population rules (freshness SLAs, calibration, alignment) judge a whole dataset and are monitored, not used to gate a record. Rule ids and wording come from the governed workbook (Data Quality Checks, FCST_DQ_Rules, MSI_Data_Quality). Confidential — Sustantix.",
+ "rules": [
+  { "id": "DQ-001", "check": "Asset master key completeness", "entity": "asset", "kind": "required", "fields": ["code", "site", "tag"], "severity": "reject" },
+  { "id": "DQ-002", "check": "Work-order key completeness", "entity": "work_order", "kind": "required", "fields": ["code", "site", "asset"], "severity": "reject" },
+  { "id": "DQ-003", "check": "Duplicate work-order IDs", "entity": "work_order", "kind": "unique", "fields": ["code"], "severity": "reject" },
+  { "id": "DQ-004", "check": "Crew master key completeness", "entity": "technician", "kind": "required", "fields": ["code", "name", "crew"], "severity": "reject" },
+  { "id": "DQ-005", "check": "Crew-assignment key completeness", "scope": "population", "reason": "crew assignments are planning output, not ingested records" },
+  { "id": "DQ-006", "check": "Telemetry key completeness", "entity": "plant_telemetry", "kind": "required", "fields": ["code", "at", "site"], "severity": "reject" },
+  { "id": "DQ-006", "check": "Telemetry key completeness", "entity": "inverter_reading", "kind": "required", "fields": ["code", "at", "site", "asset"], "severity": "reject" },
+  { "id": "DQ-007", "check": "Telemetry freshness SLA", "scope": "population", "reason": "judges the latest telemetry per site against the dataset, not a single reading" },
+  { "id": "DQ-008", "check": "Source / lineage coverage", "entity": "work_order", "kind": "required", "fields": ["source_record"], "severity": "warn" },
+  { "id": "DQ-008", "check": "Source / lineage coverage", "entity": "plant_telemetry", "kind": "required", "fields": ["data_provenance"], "severity": "warn" },
+  { "id": "DQ-008", "check": "Source / lineage coverage", "entity": "inverter_reading", "kind": "required", "fields": ["data_provenance"], "severity": "warn" },
+  { "id": "DQ-009", "check": "Forecast weather freshness", "scope": "population", "reason": "judges the latest forecast run against the valid interval" },
+  { "id": "DQ-010", "check": "Forecast interval completeness", "entity": "forecast_interval", "kind": "required", "fields": ["code", "site", "interval_start", "forecast_delivered_mw"], "severity": "reject" },
+  { "id": "DQ-011", "check": "Forecast / actual timestamp alignment", "scope": "population", "reason": "a matured interval joins to one actual interval across two series" },
+  { "id": "DQ-012", "check": "Forecast run uniqueness", "entity": "forecast_run", "kind": "unique", "fields": ["code"], "severity": "reject" },
+  { "id": "DQ-013", "check": "Model-version lineage", "entity": "forecast_interval", "kind": "required", "fields": ["model", "physics_model_version", "residual_model_version"], "severity": "reject" },
+  { "id": "DQ-014", "check": "Prediction interval calibration", "scope": "population", "reason": "observed coverage across intervals, monitored by the forecast back-test" },
+  { "id": "DQ-015", "check": "Commercial forecast lineage", "scope": "population", "reason": "forward exposure is computed, not ingested" },
+  { "id": "DQ-016", "check": "Outcome validation linkage", "entity": "outcome_validation", "kind": "required", "fields": ["work_order", "forecast_run_id"], "severity": "warn" },
+  { "id": "MSI-DQ-04", "check": "Available quantity reconciles", "entity": "part_stock", "kind": "reconcile", "target": "available_qty", "terms": [{ "field": "on_hand_qty", "sign": 1 }, { "field": "reserved_qty", "sign": -1 }, { "field": "quality_hold_qty", "sign": -1 }], "severity": "reject" },
+  { "id": "MSI-DQ-05", "check": "No negative ERP quantities", "entity": "part_stock", "kind": "nonNegative", "fields": ["on_hand_qty", "reserved_qty", "quality_hold_qty", "in_transit_qty", "available_qty"], "severity": "reject" }
+ ]
+}

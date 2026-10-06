@@ -2,9 +2,11 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { serverEnv } from "../env";
 
 /**
- * Service-role client. Bypasses RLS — used only for the license clock memory and for
- * appending audit rows (authenticated users have no INSERT grant on aip.audit_log).
- * Never used to read or write tenant data on a user's behalf.
+ * Service-role client. Bypasses RLS — used only for the license clock memory, for appending
+ * audit rows (authenticated users have no INSERT grant on aip.audit_log), and for integrations
+ * after their key is verified (every query then names the integration's tenant, and writes run
+ * through apply_change_set_as as the integration's own tenant member).
+ * Never used to read or write tenant data on a signed-in user's behalf.
  */
 let admin: SupabaseClient<any, "aip", "aip"> | undefined;
 

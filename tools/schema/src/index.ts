@@ -16,3 +16,4 @@ export * from "./compat.ts";
 export * from "./changes-sql.ts";
 export * from "./sheet-import.ts";
 export * from "./changes-dataverse.ts";
+export * from "./quality.ts";

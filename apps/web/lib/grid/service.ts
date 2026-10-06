@@ -96,7 +96,7 @@ function checkFilterValue(col: GridColumn, f: GridFilter): void {
   }
 }
 
-function valueFits(kind: ColumnKind, v: unknown, forFilter = false): boolean {
+export function valueFits(kind: ColumnKind, v: unknown, forFilter = false): boolean {
   switch (kind) {
     case "integer":
       return typeof v === "number" ? Number.isInteger(v) : forFilter && typeof v === "string" && /^-?\d{1,12}$/.test(v);

@@ -25,6 +25,8 @@ export interface GridApi {
   saveView(grid: string, v: { name: string; shared: boolean; state: Record<string, unknown> }, existing?: SavedView): Promise<SavedView>;
   deleteView(grid: string, id: string): Promise<void>;
   applyChanges(req: ChangeSetRequest): Promise<ChangeSetResult>;
+  /** A grid's own action on selected rows (keys); resolves the host's counts. */
+  runAction?(grid: string, action: string, keys: string[]): Promise<Record<string, unknown>>;
 }
 
 /** A refused request, with the server's error code and body (a 409 conflict carries the current row). */
@@ -71,5 +73,6 @@ export function httpGridApi(base = "/api/aip", fetchImpl: typeof fetch = (...a) 
       existing ? post(`/grid/${enc(grid)}/views/${enc(existing.id)}`, { ...v, rowVersion: existing.rowVersion }, "PUT") : post(`/grid/${enc(grid)}/views`, v),
     deleteView: (grid, id) => call(`/grid/${enc(grid)}/views/${enc(id)}`, { method: "DELETE" }),
     applyChanges: (req) => post("/changes", req),
+    runAction: (grid, action, keys) => post(`/grid/${enc(grid)}/actions/${enc(action)}`, { keys }),
   };
 }

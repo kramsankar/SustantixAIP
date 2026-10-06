@@ -93,6 +93,8 @@ export class SustantixGrid {
   private readonly edits: EditBuffer | null;
   private readonly currency: string;
   private readonly rowHeight: number;
+  /** Rows can be selected: for editing, or for the grid's own actions. */
+  private readonly selectable: boolean;
 
   private state: GridViewState;
   private mode: "client" | "server" = "client";
@@ -136,6 +138,7 @@ export class SustantixGrid {
     this.api = opts.api;
     this.currency = opts.currency ?? "INR";
     this.rowHeight = opts.rowHeight ?? ROW_HEIGHT;
+    this.selectable = !!(opts.def.canEdit && opts.def.entity) || !!opts.def.actions?.length;
     this.cols = new Map(this.def.columns.map((c) => [c.field, c]));
     this.edits = this.def.canEdit && this.def.entity ? new EditBuffer(this.def.entity, opts.newId) : null;
     this.state = {
@@ -224,6 +227,27 @@ export class SustantixGrid {
     return { sort: this.state.sort, filters: this.state.filters, ...(this.state.search ? { search: this.state.search } : {}) };
   }
 
+  /** Runs one of the grid's actions on the selected rows, after confirmation, then reloads. */
+  private async runAction(a: { id: string; label: string; confirm?: string }): Promise<void> {
+    const keys = [...this.selected];
+    const n = keys.length;
+    const ok = await this.dialog(a.label, [this.doc.createTextNode(`${a.confirm ?? a.label} — ${n} selected row${n === 1 ? "" : "s"}?`)], [{ id: "go", label: `${a.label} ${n}`, primary: true }]);
+    if (ok !== "go") return;
+    this.busy = true;
+    this.renderToolbar();
+    try {
+      const r = await this.api.runAction!(this.def.id, a.id, keys);
+      this.selected.clear();
+      this.setStatus(Object.entries(r).filter(([, v]) => typeof v === "number" && v > 0).map(([k, v]) => `${v} ${k}`).join(" · ") || "Done");
+      await this.reloadAfterSave();
+    } catch (e) {
+      this.setStatus(errorText(e), true);
+    } finally {
+      this.busy = false;
+      this.render();
+    }
+  }
+
   /** Redraws the rows in view (a screen grid after its table changed state in place). */
   redraw(): void {
     this.renderBody();
@@ -273,7 +297,7 @@ export class SustantixGrid {
     this.scroll.tabIndex = 0;
     this.scroll.setAttribute("role", "grid");
     this.scroll.setAttribute("aria-label", this.def.title);
-    this.scroll.setAttribute("aria-multiselectable", String(!!this.edits));
+    this.scroll.setAttribute("aria-multiselectable", String(this.selectable));
     this.head = div("sxg-headrow");
     this.head.setAttribute("role", "row");
     this.head.setAttribute("aria-rowindex", "1");
@@ -471,11 +495,11 @@ export class SustantixGrid {
   }
 
   private template(cols: Array<Column<Row, unknown>>): string {
-    return `${this.edits ? `${SELECT_WIDTH}px ` : ""}${cols.map((c) => `${c.getSize()}px`).join(" ")}`;
+    return `${this.selectable ? `${SELECT_WIDTH}px ` : ""}${cols.map((c) => `${c.getSize()}px`).join(" ")}`;
   }
 
   private pinOffset(col: Column<Row, unknown>): number | null {
-    return col.getIsPinned() === "left" ? col.getStart("left") + (this.edits ? SELECT_WIDTH : 0) : null;
+    return col.getIsPinned() === "left" ? col.getStart("left") + (this.selectable ? SELECT_WIDTH : 0) : null;
   }
 
   private renderHeader(): void {
@@ -484,7 +508,7 @@ export class SustantixGrid {
     this.head.style.gridTemplateColumns = this.template(cols);
     this.scroll.setAttribute("aria-colcount", String(cols.length));
     this.scroll.setAttribute("aria-rowcount", String(this.count() + 1));
-    if (this.edits) {
+    if (this.selectable) {
       const c = div("sxg-cell sxg-pin");
       c.style.left = "0";
       c.setAttribute("role", "columnheader");
@@ -537,7 +561,7 @@ export class SustantixGrid {
     this.ensureVisible();
     const cols = this.visibleColumns();
     const template = this.template(cols);
-    const width = cols.reduce((n, c) => n + c.getSize(), this.edits ? SELECT_WIDTH : 0);
+    const width = cols.reduce((n, c) => n + c.getSize(), this.selectable ? SELECT_WIDTH : 0);
     this.body.style.height = `${this.virtualizer.getTotalSize() - this.rowHeight}px`;
     this.body.style.minWidth = `${width}px`;
     this.body.replaceChildren();
@@ -565,7 +589,7 @@ export class SustantixGrid {
         rowEl.classList.add("sxg-selected");
         rowEl.setAttribute("aria-selected", "true");
       }
-      if (this.edits) {
+      if (this.selectable) {
         const c = div("sxg-cell sxg-pin");
         c.style.left = "0";
         c.dataset.r = String(r);
@@ -646,7 +670,7 @@ export class SustantixGrid {
   private renderGroup(rowEl: HTMLElement, d: Extract<Display, { kind: "group" }>, cols: Array<Column<Row, unknown>>, r: number): void {
     rowEl.classList.add("sxg-group");
     const leaves = d.trow.getLeafRows().filter((x) => !x.getIsGrouped()).map((x) => x.original);
-    if (this.edits) rowEl.append(div("sxg-cell"));
+    if (this.selectable) rowEl.append(div("sxg-cell"));
     cols.forEach((col, ci) => {
       const meta = this.cols.get(col.id)!;
       const cell = div(`sxg-cell${alignRight(meta) ? " sxg-num" : ""}`);
@@ -758,6 +782,11 @@ export class SustantixGrid {
     }
     t.append(this.button("Export CSV", () => void this.exportAs("csv")), this.button("Export Excel", () => void this.exportAs("xlsx")));
     for (const a of this.opts.actions ?? []) t.append(this.button(a.label, a.onClick));
+    // The grid's own actions on the selected rows (for example replaying quarantined records).
+    if (this.def.actions?.length && this.api.runAction) {
+      t.append(div("sxg-spacer"));
+      for (const a of this.def.actions) t.append(this.button(a.label, () => void this.runAction(a), !this.selected.size || this.busy));
+    }
 
     if (this.edits) {
       t.append(div("sxg-spacer"));
@@ -888,7 +917,7 @@ export class SustantixGrid {
         else this.beginEdit(r, c);
         return;
       case " ":
-        if (this.edits) {
+        if (this.selectable) {
           e.preventDefault();
           this.toggleSelect(r);
         }
