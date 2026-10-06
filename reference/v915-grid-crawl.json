@@ -35,7 +35,25 @@
     "Work Order Actions\n↗",
     "View all 80 Priority Actions →",
     "Maintenance & Reliability\n23",
-    "Asset Risk & Performance\n57"
+    "Asset Risk & Performance\n57",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Site",
+    "Name",
+    "State",
+    "Capacity",
+    "Assets",
+    "PR",
+    "Availability",
+    "Health",
+    "Commissioned",
+    "Generation (12 Months)",
+    "Total O&M Cost",
+    "Procurement Value",
+    "Crew Cost"
    ],
    "heads": [
     "Portfolio Intelligence",
@@ -46,8 +64,8 @@
     "Site Registry",
     "Site O&M Performance — ranked by Blended O&M Cost (₹/MWh)"
    ],
-   "text": "Portfolio Intelligence\nOverview\nPerformance\nSite Benchmarking\nLoss & Recovery\n12 SITES · 969 ASSETS · 997 MW AC\nWork Order Actions\n↗\nPRIORITY ACTIONS\n80\nCRITICAL INTERVENTIONS\n4\nLOWEST SOURCE PERFORMANCE INDEX\n92.5\n%\nPORTFOLIO PR\n81.2\n%\nAVAILABILITY\n97.7\n%\nOPEN WORK ORDERS\n95\nGENERATION LOSS VALUE (YTD)\n₹\n13.50\nCr\nCO₂ AVOIDED\n8,59,976\ntCO₂e\nPriority Actions\n80 above threshold\n1\nCritical work order WO-00145\nSP-01-INV-008 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n2\nCritical work order WO-00149\nSP-09-SWG-001 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n3\nCritical work order WO-00151\nSP-01-INV-013 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n4\nCritical work order WO-00157\nSP-01-TRK-003 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n5\nOverdue preventive work order WO-00077\nSP-01-TRF-002 · Urgency 100/100 · Operational risk 55/100 · Business impact 80/100 · Recoverability 55/100\nPRIORITY SCORE\n74/100\nView all 80 Priority Actions →\nAction Mix\n80 Priority Actions\nMaintenance & Reliability\n23\nAsset Risk & Performance\n57\n12\nSITES\n969\nREGISTERED ASSETS\nReported performance index — source history (not irradiance-based PR)\nMaintenance Mix\n67%\nPROACTIVE SHARE\nCorrective · 48 \nPreventive · 50 \nAdaptive · 0 \nPredictive · 48\nSite Registry\nSITE\tNAME\tSTATE\tCAPACITY\tASSETS\tPR\tAVAILABILITY\tHEALTH\tCOMMISSIONED\nSP-01\tSuryanagar Solar Park\tRajasthan\t120 MWac\t151\t95.5%\t98.4%\t\n89\n\t2016\nSP-02\tKalyanpura SPV\tGujarat\t95 MWac\t109\t94.6%\t98.1%\t\n88\n\t2017\nSP-03\tBellary Ridge Solar\tKarnataka\t88 MWac\t59\t96.2%\t98.9%\t\n87\n\t2018\nSP-04\tThoothukudi Coastal PV\tTamil Nadu\t110 MWac\t101\t95.1%\t97.6%\t\n89\n\t2019\nSP-05\tRamagundam Solar Farm\tTelangana\t75 MWac\t56\t95.8%\t98.7%\t\n89\n\t2020\nSP-06\tSolapur Plains SPV\tMaharashtra\t60 MWac\t52\t93.1%\t96.6%\t\n88\n\t2021\nSP-07\tAnantapur Sun Fields\tAndhra Pradesh\t102 MWac\t128\t94.3%\t97.4%\t\n90\n\t2022\nSP-08\tRewa Ridge Solar\tMadhya Pradesh\t68 MWac\t53\t92.5%\t95.8%\t\n86\n\t2016\nSP-09\tBathinda Solar Belt\tPunjab\t90 MWac\t61\t93.8%\t97.2%\t\n87\n\t2017\nSP-10\tHisar Open Plains\tHaryana\t55 MWac\t51\t95.7%\t98.5%\t\n88\n\t2018\nSP-11\tDhenkanal Solar Estate\tOdisha\t84 MWac\t99\t94.8%\t97.9%\t\n89\n\t2019\nSP-12\tJhansi Uplands SPV\tUttar Pradesh\t50 MWac\t49\t93.6%\t96.8%\t\n86\n\t2020\nSite O&M Performance — ranked by Blended O&M Cost (₹/MWh)\nSITE\tGENERATION (12 MONTHS)\tTOTAL O&M COST\tPROCUREMENT VALUE\tCREW COST\nSP-06 — Solapur Plains SPV\t176,047 MWh\t₹1.6 Cr\t₹1.5 Cr\t₹3.3 L\nSP-08 — Rewa Ridge Solar\t197,238 MWh\t₹1.7 Cr\t₹1.7 Cr\t₹3.9 L\nSP-10 — Hisar Open Plains\t163,803 MWh\t₹1.2 Cr\t₹1.2 Cr\t₹69,016\nSP-01 — Suryanagar Solar Park\t352,230 MWh\t₹2.5 Cr\t₹2.4 Cr\t₹6.8 L\nSP-05 — Ramagundam Solar Farm\t225,089 MWh\t₹1.5 Cr\t₹1.5 Cr\t₹1.4 L\nSP-11 — Dhenkanal Solar Estate\t248,993 MWh\t₹1.5 Cr\t₹1.5 Cr\t₹2.9 L\nSP-12 — Jhansi Uplands SPV\t145,076 MWh\t₹86.7 L\t₹84.9 L\t₹1.9 L\nSP-03 — Bellary Ridge Solar\t265,202 MWh\t₹1.6 Cr\t₹1.5 Cr\t₹2.4 L\nSP-09 — Bathinda Solar Belt\t266,147 MWh\t₹1.4 Cr\t₹1.3 Cr\t₹2.4 L\nSP-02 — Kalyanpura SPV\t279,226 MWh\t₹1.1 Cr\t₹1.1 Cr\t₹2.2 L\nSP-07 — Anantapur Sun Fields\t300,831 MWh\t₹1.2 Cr\t₹1.2 Cr\t₹1.5 L\nSP-04 — Thoothukudi Coastal PV\t321,639 MWh\t₹1.2 Cr\t₹1.2 Cr\t₹1.5 L",
-   "grids": 0
+   "text": "Portfolio Intelligence\nOverview\nPerformance\nSite Benchmarking\nLoss & Recovery\n12 SITES · 969 ASSETS · 997 MW AC\nWork Order Actions\n↗\nPRIORITY ACTIONS\n80\nCRITICAL INTERVENTIONS\n4\nLOWEST SOURCE PERFORMANCE INDEX\n92.5\n%\nPORTFOLIO PR\n81.2\n%\nAVAILABILITY\n97.7\n%\nOPEN WORK ORDERS\n95\nGENERATION LOSS VALUE (YTD)\n₹\n13.50\nCr\nCO₂ AVOIDED\n8,59,976\ntCO₂e\nPriority Actions\n80 above threshold\n1\nCritical work order WO-00145\nSP-01-INV-008 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n2\nCritical work order WO-00149\nSP-09-SWG-001 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n3\nCritical work order WO-00151\nSP-01-INV-013 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n4\nCritical work order WO-00157\nSP-01-TRK-003 · Urgency 90/100 · Operational risk 95/100 · Business impact 72/100 · Recoverability 82/100\nPRIORITY SCORE\n85/100\n5\nOverdue preventive work order WO-00077\nSP-01-TRF-002 · Urgency 100/100 · Operational risk 55/100 · Business impact 80/100 · Recoverability 55/100\nPRIORITY SCORE\n74/100\nView all 80 Priority Actions →\nAction Mix\n80 Priority Actions\nMaintenance & Reliability\n23\nAsset Risk & Performance\n57\n12\nSITES\n969\nREGISTERED ASSETS\nReported performance index — source history (not irradiance-based PR)\nMaintenance Mix\n67%\nPROACTIVE SHARE\nCorrective · 48 \nPreventive · 50 \nAdaptive · 0 \nPredictive · 48\nSite Registry\nFilter\nNo grouping\nGroup by Site\nGroup by Name\nGroup by State\nGroup by Capacity\nGroup by Assets\nGroup by PR\nGroup by Availability\nGroup by Health\nGroup by Commissioned\nColumns\nReset layout\nExport CSV\nExport Excel\nSite\nName\nState\nCapacity\nAssets\nPR\nAvailability\nHealth\nCommissioned\nSP-01\nSuryanagar Solar Park\nRajasthan\n120 MWac\n151\n95.5%\n98.4%\n89\n2016\nSP-02\nKalyanpura SPV\nGujarat\n95 MWac\n109\n94.6%\n98.1%\n88\n2017\nSP-03\nBellary Ridge Solar\nKarnataka\n88 MWac\n59\n96.2%\n98.9%\n87\n2018\nSP-04\nThoothukudi Coastal PV\nTamil Nadu\n110 MWac\n101\n95.1%\n97.6%\n89\n2019\nSP-05\nRamagundam Solar Farm\nTelangana\n75 MWac\n56\n95.8%\n98.7%\n89\n2020\nSP-06\nSolapur Plains SPV\nMaharashtra\n60 MWac\n52\n93.1%\n96.6%\n88\n2021\nSP-07\nAnantapur Sun Fields\nAndhra Pradesh\n102 MWac\n128\n94.3%\n97.4%\n90\n2022\nSP-08\nRewa Ridge Solar\nMadhya Pradesh\n68 MWac\n53\n92.5%\n95.8%\n86\n2016\nSP-09\nBathinda Solar Belt\nPunjab\n90 MWac\n61\n93.8%\n97.2%\n87\n2017\nSP-10\nHisar Open Plains\nHaryana\n55 MWac\n51\n95.7%\n98.5%\n88\n2018\nSP-11\nDhenkanal Solar Estate\nOdisha\n84 MWac\n99\n94.8%\n97.9%\n89\n2019\nSP-12\nJhansi Uplands SPV\nUttar Pradesh\n50 MWac\n49\n93.6%\n96.8%\n86\n2020\n12 rows\nSite O&M Performance — ranked by Blended O&M Cost (₹/MWh)\nFilter\nNo grouping\nGroup by Site\nGroup by Generation (12 Months)\nGroup by Total O&M Cost\nGroup by Procurement Value\nGroup by Crew Cost\nColumns\nReset layout\nExport CSV\nExport Excel\nSite\nGeneration (12 Months)\nTotal O&M Cost\nProcurement Value\nCrew Cost\nSP-06 — Solapur Plains SPV\n176,047 MWh\n₹1.6 Cr\n₹1.5 Cr\n₹3.3 L\nSP-08 — Rewa Ridge Solar\n197,238 MWh\n₹1.7 Cr\n₹1.7 Cr\n₹3.9 L\nSP-10 — Hisar Open Plains\n163,803 MWh\n₹1.2 Cr\n₹1.2 Cr\n₹69,016\nSP-01 — Suryanagar Solar Park\n352,230 MWh\n₹2.5 Cr\n₹2.4 Cr\n₹6.8 L\nSP-05 — Ramagundam Solar Farm\n225,089 MWh\n₹1.5 Cr\n₹1.5 Cr\n₹1.4 L\nSP-11 — Dhenkanal Solar Estate\n248,993 MWh\n₹1.5 Cr\n₹1.5 Cr\n₹2.9 L\nSP-12 — Jhansi Uplands SPV\n145,076 MWh\n₹86.7 L\n₹84.9 L\n₹1.9 L\nSP-03 — Bellary Ridge Solar\n265,202 MWh\n₹1.6 Cr\n₹1.5 Cr\n₹2.4 L\nSP-09 — Bathinda Solar Belt\n266,147 MWh\n₹1.4 Cr\n₹1.3 Cr\n₹2.4 L\nSP-02 — Kalyanpura SPV\n279,226 MWh\n₹1.1 Cr\n₹1.1 Cr\n₹2.2 L\nSP-07 — Anantapur Sun Fields\n300,831 MWh\n₹1.2 Cr\n₹1.2 Cr\n₹1.5 L\nSP-04 — Thoothukudi Coastal PV\n321,639 MWh\n₹1.2 Cr\n₹1.2 Cr\n₹1.5 L\n12 rows",
+   "grids": 2
   },
   {
    "v": "assetexplorer",
@@ -115,15 +133,27 @@
    "id": "view-revenuecommercial",
    "tabs": [
     "Loss Intelligence",
-    "Commercial & PPA"
+    "Commercial & PPA",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Loss driver",
+    "Loss",
+    "Share",
+    "Plant",
+    "Total loss",
+    "Recoverable",
+    "External loss"
    ],
    "heads": [
     "Revenue & Commercial Intelligence",
     "Portfolio loss bridge",
     "Site loss ranking"
    ],
-   "text": "Revenue & Commercial Intelligence\nLoss Intelligence\nCommercial & PPA\nObserved telemetry: 21-07-26 to 19-08-26 · 30 observed days\nClean expected output at POI → metered output. Negative residuals mean metered output exceeds the model. Recovery is a modelled opportunity and can exceed the net gap; unmatched availability stays unallocated.\nSeparate FY2026-YTD portfolio workbook generation gap: 44,985.78 MWh; not included in the observed-period calculation.\nCLEAN EXPECTED AT POI\n1,79,411\nMWh\nACTUAL GENERATION\n1,77,094\nMWh\nTOTAL LOSS\n2,317\nMWh\nATTAINMENT\n98.7\n%\nPortfolio loss bridge\nLOSS DRIVER\tLOSS\tSHARE\nSoiling\t1,714.1 MWh\t74.0%\nCurtailment\t669.9 MWh\t28.9%\nUnallocated availability\t403.8 MWh\t17.4%\nEquipment unavailability\t0.0 MWh\t0.0%\nPlanned maintenance\t0.0 MWh\t0.0%\nGrid outage\t0.0 MWh\t0.0%\nUnallocated / model residual (signed)\t-470.4 MWh\t-20.3%\nSite loss ranking\nPLANT\tTOTAL LOSS\tRECOVERABLE\tEXTERNAL LOSS\nSP-04 · Thoothukudi Coastal PV\t1,225.5 MWh\t383.5 MWh\t262.5 MWh\nSP-02 · Kalyanpura SPV\t284.9 MWh\t159.0 MWh\t112.7 MWh\nSP-07 · Anantapur Sun Fields\t251.0 MWh\t163.9 MWh\t283.8 MWh\nSP-10 · Hisar Open Plains\t207.3 MWh\t71.4 MWh\t0.0 MWh\nSP-06 · Solapur Plains SPV\t194.3 MWh\t75.7 MWh\t4.3 MWh\nSP-05 · Ramagundam Solar Farm\t167.8 MWh\t125.7 MWh\t0.0 MWh\nSP-09 · Bathinda Solar Belt\t154.5 MWh\t128.3 MWh\t0.0 MWh\nSP-01 · Suryanagar Solar Park\t32.3 MWh\t226.9 MWh\t0.0 MWh\nSP-12 · Jhansi Uplands SPV\t4.6 MWh\t69.5 MWh\t0.0 MWh\nSP-08 · Rewa Ridge Solar\t-55.9 MWh\t53.1 MWh\t0.0 MWh\nSP-03 · Bellary Ridge Solar\t-74.3 MWh\t153.7 MWh\t0.0 MWh\nSP-11 · Dhenkanal Solar Estate\t-74.7 MWh\t93.7 MWh\t6.7 MWh",
-   "grids": 0
+   "text": "Revenue & Commercial Intelligence\nLoss Intelligence\nCommercial & PPA\nObserved telemetry: 21-07-26 to 19-08-26 · 30 observed days\nClean expected output at POI → metered output. Negative residuals mean metered output exceeds the model. Recovery is a modelled opportunity and can exceed the net gap; unmatched availability stays unallocated.\nSeparate FY2026-YTD portfolio workbook generation gap: 44,985.78 MWh; not included in the observed-period calculation.\nCLEAN EXPECTED AT POI\n1,79,411\nMWh\nACTUAL GENERATION\n1,77,094\nMWh\nTOTAL LOSS\n2,317\nMWh\nATTAINMENT\n98.7\n%\nPortfolio loss bridge\nLOSS DRIVER\tLOSS\tSHARE\nSoiling\t1,714.1 MWh\t74.0%\nCurtailment\t669.9 MWh\t28.9%\nUnallocated availability\t403.8 MWh\t17.4%\nEquipment unavailability\t0.0 MWh\t0.0%\nPlanned maintenance\t0.0 MWh\t0.0%\nGrid outage\t0.0 MWh\t0.0%\nUnallocated / model residual (signed)\t-470.4 MWh\t-20.3%\nFilter\nNo grouping\nGroup by Loss driver\nGroup by Loss\nGroup by Share\nColumns\nReset layout\nExport CSV\nExport Excel\nLoss driver\nLoss\nShare\nSoiling\n1,714.1 MWh\n74.0%\nCurtailment\n669.9 MWh\n28.9%\nUnallocated availability\n403.8 MWh\n17.4%\nEquipment unavailability\n0.0 MWh\n0.0%\nPlanned maintenance\n0.0 MWh\n0.0%\nGrid outage\n0.0 MWh\n0.0%\nUnallocated / model residual (signed)\n-470.4 MWh\n-20.3%\n7 rows\nSite loss ranking\nPLANT\tTOTAL LOSS\tRECOVERABLE\tEXTERNAL LOSS\nSP-04 · Thoothukudi Coastal PV\t1,225.5 MWh\t383.5 MWh\t262.5 MWh\nSP-02 · Kalyanpura SPV\t284.9 MWh\t159.0 MWh\t112.7 MWh\nSP-07 · Anantapur Sun Fields\t251.0 MWh\t163.9 MWh\t283.8 MWh\nSP-10 · Hisar Open Plains\t207.3 MWh\t71.4 MWh\t0.0 MWh\nSP-06 · Solapur Plains SPV\t194.3 MWh\t75.7 MWh\t4.3 MWh\nSP-05 · Ramagundam Solar Farm\t167.8 MWh\t125.7 MWh\t0.0 MWh\nSP-09 · Bathinda Solar Belt\t154.5 MWh\t128.3 MWh\t0.0 MWh\nSP-01 · Suryanagar Solar Park\t32.3 MWh\t226.9 MWh\t0.0 MWh\nSP-12 · Jhansi Uplands SPV\t4.6 MWh\t69.5 MWh\t0.0 MWh\nSP-08 · Rewa Ridge Solar\t-55.9 MWh\t53.1 MWh\t0.0 MWh\nSP-03 · Bellary Ridge Solar\t-74.3 MWh\t153.7 MWh\t0.0 MWh\nSP-11 · Dhenkanal Solar Estate\t-74.7 MWh\t93.7 MWh\t6.7 MWh\nFilter\nNo grouping\nGroup by Plant\nGroup by Total loss\nGroup by Recoverable\nGroup by External loss\nColumns\nReset layout\nExport CSV\nExport Excel\nPlant\nTotal loss\nRecoverable\nExternal loss\nSP-04 · Thoothukudi Coastal PV\n1,225.5 MWh\n383.5 MWh\n262.5 MWh\nSP-02 · Kalyanpura SPV\n284.9 MWh\n159.0 MWh\n112.7 MWh\nSP-07 · Anantapur Sun Fields\n251.0 MWh\n163.9 MWh\n283.8 MWh\nSP-10 · Hisar Open Plains\n207.3 MWh\n71.4 MWh\n0.0 MWh\nSP-06 · Solapur Plains SPV\n194.3 MWh\n75.7 MWh\n4.3 MWh\nSP-05 · Ramagundam Solar Farm\n167.8 MWh\n125.7 MWh\n0.0 MWh\nSP-09 · Bathinda Solar Belt\n154.5 MWh\n128.3 MWh\n0.0 MWh\nSP-01 · Suryanagar Solar Park\n32.3 MWh\n226.9 MWh\n0.0 MWh\nSP-12 · Jhansi Uplands SPV\n4.6 MWh\n69.5 MWh\n0.0 MWh\nSP-08 · Rewa Ridge Solar\n-55.9 MWh\n53.1 MWh\n0.0 MWh\nSP-03 · Bellary Ridge Solar\n-74.3 MWh\n153.7 MWh\n0.0 MWh\nSP-11 · Dhenkanal Solar Estate\n-74.7 MWh\n93.7 MWh\n6.7 MWh\n12 rows",
+   "grids": 2
   },
   {
    "v": "dataexplorer",
@@ -211,6 +241,18 @@
     "Decision Workspace",
     "Asset-to-Value Intelligence",
     "Reset",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Priority",
+    "Decision",
+    "Value / risk",
+    "Evidence",
+    "Readiness",
+    "Owner / due / status",
+    "Action",
     "Critical\n↗",
     "Strong\n↗",
     "Under Review ↗",
@@ -223,8 +265,8 @@
    "heads": [
     "Decision Intelligence"
    ],
-   "text": "Decision Intelligence\nDecision Overview\nDecision Workspace\nAsset-to-Value Intelligence\nACTIVE DECISIONS\n15\nCRITICAL DECISIONS\n3\nGROSS VALUE AT STAKE\n₹\n1.37\nCr\nEXECUTION READY\n3\nAll\nCritical\nHigh\nMedium\nAll\nCommercial\nESG\nInventory\nMaintenance\nPerformance\nReliability\nWarranty\nReset\nPRIORITY\tDECISION\tVALUE / RISK\tEVIDENCE\tREADINESS\tOWNER / DUE / STATUS\tACTION\n\nCritical\n↗\n\t\nInspect INV-RJ-014 cooling assembly\nDEC-001 · Suryanagar Solar Park · SP-01-INV-001\n\t₹22.46 L\nAn unplanned inverter outage could cause approximately 9 days of lost generation and secondary component damage.\n\t\nStrong\n↗\n\tReady ✓\tReliability Lead\n25-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nSubmit OEM claim for inverter power module\nDEC-002 · Suryanagar Solar Park · SP-01-INV-014\n\t₹16.55 L\nClaim value may be reduced or rejected if the evidence package is not submitted before the OEM review window closes.\n\t\nLimited\n↗\n\t\n2 Blockers\n↗\n\tWarranty Manager\n29-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nCorrect low-PR site loss driver\nDEC-003 · Rewa Ridge Solar · Site-level\n\t₹13.87 L\nEach week of delay continues avoidable generation and revenue leakage at the affected site.\n\t\nStrong\n↗\n\t\n2 Blockers\n↗\n\tPlant Performance Lead\n30-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nRebalance critical inverter spare\nDEC-004 · Suryanagar Solar Park · PRT-001\n\t₹6.66 L\nA stockout could extend future inverter downtime and trigger emergency procurement premiums.\n\t\nStrong\n↗\n\t\n2 Blockers\n↗\n\tStores Manager\n05-08-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nBundle corrective and preventive work\nDEC-005 · Suryanagar Solar Park · VIS-001\n\t₹11.54 L\nSeparate visits would increase mobilization cost and require an additional outage window.\n\t\nStrong\n↗\n\tReady ✓\tMaintenance Planner\n28-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nOptimize module cleaning window\nDEC-006 · Suryanagar Solar Park · CLN-0001\n\t₹7.39 L\nDelaying beyond the recommended weather window increases soiling losses; acting too early raises water and cleaning cost.\n\t\nStrong\n↗\n\t\n2 Blockers\n↗\n\tESG Operations Lead\n03-08-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nAccelerate inverter intervention before risk window closes\nDEC-007 · Kalyanpura SPV · SP-02-INV-002\n\t₹2.65 L\n65.85 MWh energy at risk; failure probability 65.2% if unresolved.\n\t\nModerate\n↗\n\tReady ✓\tReliability Lead\n28-07-26\nUnder Review ↗\n\tReview →\n\nCritical\n↗\n\t\nClear parts constraint for inverter intervention\nDEC-008 · Solapur Plains SPV · SP-06-INV-001\n\t₹2.48 L\n61.50 MWh energy at risk; failure probability 89.2% if unresolved.\n\t\nModerate\n↗\n\t\n2 Blockers\n↗\n\tMaintenance Planner\n27-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nApprove SCB protection intervention\nDEC-009 · Bathinda Solar Belt · SP-09-SCB-003\n\t₹3.82 L\n91.95 MWh energy at risk; failure probability 72.4% if unresolved.\n\t\nModerate\n↗\n\t\n2 Blockers\n↗\n\tReliability Lead\n27-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nResolve transformer execution blocker\nDEC-010 · Anantapur Sun Fields · SP-07-TRF-002\n\t₹2.82 L\n65.85 MWh energy at risk; failure probability 71.2% if unresolved.\n\t\nModerate\n↗\n\t\n2 Blockers\n↗\n\tReliability Lead\n28-07-26\nUnder Review ↗\n\tReview →\n\nCritical\n↗\n\t\nResolve permit / access for switchgear intervention\nDEC-011 · Thoothukudi Coastal PV · SP-04-SWG-004\n\t₹70,200\n18.00 MWh energy at risk; failure probability 89.2% if unresolved.\n\t\nModerate\n↗\n\t\n2 Blockers\n↗\n\tMaintenance Planner\n24-07-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nReview PPA shortfall recovery and penalty exposure\nDEC-012 · Kalyanpura SPV · PPA-02\n\t₹21.09 L\n811.8 MWh shortfall with ₹60,614 availability penalty; ₹208,639 curtailment compensation available.\n\t\nStrong\n↗\n\t\n2 Blockers\n↗\n\tCommercial Manager\n25-08-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nReview PPA shortfall recovery and penalty exposure\nDEC-013 · Thoothukudi Coastal PV · PPA-04\n\t₹22.21 L\n809.9 MWh shortfall with ₹57,201 availability penalty; ₹362,704 curtailment compensation available.\n\t\nStrong\n↗\n\t\n2 Blockers\n↗\n\tCommercial Manager\n25-08-26\nUnder Review ↗\n\tReview →\n\nMedium\n↗\n\t\nOptimize water-assisted cleaning decisi",
-   "grids": 0
+   "text": "Decision Intelligence\nDecision Overview\nDecision Workspace\nAsset-to-Value Intelligence\nACTIVE DECISIONS\n15\nCRITICAL DECISIONS\n3\nGROSS VALUE AT STAKE\n₹\n1.37\nCr\nEXECUTION READY\n3\nAll\nCritical\nHigh\nMedium\nAll\nCommercial\nESG\nInventory\nMaintenance\nPerformance\nReliability\nWarranty\nReset\nFilter\nNo grouping\nGroup by Priority\nGroup by Decision\nGroup by Value / risk\nGroup by Evidence\nGroup by Readiness\nGroup by Owner / due / status\nGroup by Action\nColumns\nReset layout\nExport CSV\nExport Excel\nPriority\nDecision\nValue / risk\nEvidence\nReadiness\nOwner / due / status\nAction\nCritical\n↗\nInspect INV-RJ-014 cooling assembly\nDEC-001 · Suryanagar Solar Park · SP-01-INV-001\n₹22.46 L\nAn unplanned inverter outage could cause approximately 9 days of lost generation and secondary component damage.\nStrong\n↗\nReady ✓\nReliability Lead\n25-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nSubmit OEM claim for inverter power module\nDEC-002 · Suryanagar Solar Park · SP-01-INV-014\n₹16.55 L\nClaim value may be reduced or rejected if the evidence package is not submitted before the OEM review window closes.\nLimited\n↗\n2 Blockers\n↗\nWarranty Manager\n29-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nCorrect low-PR site loss driver\nDEC-003 · Rewa Ridge Solar · Site-level\n₹13.87 L\nEach week of delay continues avoidable generation and revenue leakage at the affected site.\nStrong\n↗\n2 Blockers\n↗\nPlant Performance Lead\n30-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nRebalance critical inverter spare\nDEC-004 · Suryanagar Solar Park · PRT-001\n₹6.66 L\nA stockout could extend future inverter downtime and trigger emergency procurement premiums.\nStrong\n↗\n2 Blockers\n↗\nStores Manager\n05-08-26\nUnder Review ↗\nReview →\nMedium\n↗\nBundle corrective and preventive work\nDEC-005 · Suryanagar Solar Park · VIS-001\n₹11.54 L\nSeparate visits would increase mobilization cost and require an additional outage window.\nStrong\n↗\nReady ✓\nMaintenance Planner\n28-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nOptimize module cleaning window\nDEC-006 · Suryanagar Solar Park · CLN-0001\n₹7.39 L\nDelaying beyond the recommended weather window increases soiling losses; acting too early raises water and cleaning cost.\nStrong\n↗\n2 Blockers\n↗\nESG Operations Lead\n03-08-26\nUnder Review ↗\nReview →\nMedium\n↗\nAccelerate inverter intervention before risk window closes\nDEC-007 · Kalyanpura SPV · SP-02-INV-002\n₹2.65 L\n65.85 MWh energy at risk; failure probability 65.2% if unresolved.\nModerate\n↗\nReady ✓\nReliability Lead\n28-07-26\nUnder Review ↗\nReview →\nCritical\n↗\nClear parts constraint for inverter intervention\nDEC-008 · Solapur Plains SPV · SP-06-INV-001\n₹2.48 L\n61.50 MWh energy at risk; failure probability 89.2% if unresolved.\nModerate\n↗\n2 Blockers\n↗\nMaintenance Planner\n27-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nApprove SCB protection intervention\nDEC-009 · Bathinda Solar Belt · SP-09-SCB-003\n₹3.82 L\n91.95 MWh energy at risk; failure probability 72.4% if unresolved.\nModerate\n↗\n2 Blockers\n↗\nReliability Lead\n27-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nResolve transformer execution blocker\nDEC-010 · Anantapur Sun Fields · SP-07-TRF-002\n₹2.82 L\n65.85 MWh energy at risk; failure probability 71.2% if unresolved.\nModerate\n↗\n2 Blockers\n↗\nReliability Lead\n28-07-26\nUnder Review ↗\nReview →\nCritical\n↗\nResolve permit / access for switchgear intervention\nDEC-011 · Thoothukudi Coastal PV · SP-04-SWG-004\n₹70,200\n18.00 MWh energy at risk; failure probability 89.2% if unresolved.\nModerate\n↗\n2 Blockers\n↗\nMaintenance Planner\n24-07-26\nUnder Review ↗\nReview →\nMedium\n↗\nReview PPA shortfall recovery and penalty exposure\nDEC-012 · Kalyanpura SPV · PPA-02\n₹21.09 L\n811.8 MWh shortfall with ₹60,614 availability penalty; ₹208,639 curtailment compensation available.\nStrong\n↗\n2 Blockers\n↗\nCommercial Manager\n25-08-26\nUnder Review ↗\nReview →\nMedium\n↗\nReview PPA shortfall recovery and penalty exposure\nDEC-013 · Thoothukudi Coastal PV · PPA-04\n₹22.21 L\n809.9 MWh shortfall with ₹57,201 availability penalty; ₹362,704 curtailment compensation available.\nStrong\n↗\n2 Blockers\n↗\nCommercial Manager\n25-",
+   "grids": 1
   },
   {
    "v": "predictive",
@@ -237,7 +279,21 @@
     "Corrective Maintenance",
     "Risk-Based Maintenance",
     "Strategy Governance",
-    "Record Context"
+    "Record Context",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "WO #",
+    "Site",
+    "Asset",
+    "Task",
+    "Frequency",
+    "PM Due Date",
+    "Actual Completion",
+    "Status",
+    "Compliance"
    ],
    "heads": [
     "Maintenance Strategy",
@@ -249,7 +305,7 @@
     "Preventive Work Orders"
    ],
    "text": "Maintenance Strategy\nPreventive Maintenance\nCondition-Based Maintenance\nPredictive Maintenance\nCorrective Maintenance\nRisk-Based Maintenance\nStrategy Governance\nSCHEDULED TASKS\n4\nOVERDUE ACTIONS\n21\nUPCOMING PM DUE (30D)\n4\nPM COMPLIANCE RATE\n52.27\n%\nSITE SCOPE\nAll sites\nSP-01 · Suryanagar Solar Park\nSP-02 · Kalyanpura SPV\nSP-03 · Bellary Ridge Solar\nSP-04 · Thoothukudi Coastal PV\nSP-05 · Ramagundam Solar Farm\nSP-06 · Solapur Plains SPV\nSP-07 · Anantapur Sun Fields\nSP-08 · Rewa Ridge Solar\nSP-09 · Bathinda Solar Belt\nSP-10 · Hisar Open Plains\nSP-11 · Dhenkanal Solar Estate\nSP-12 · Jhansi Uplands SPV\nASSET / COMPONENT EVIDENCE SCOPE\nAll qualifying assets / components\nAST-00001 · SP-01-INV-001 · Inverter · Central/string inverter\nAST-00003 · SP-01-INV-003 · Inverter · Central/string inverter\nAST-00005 · SP-01-INV-005 · Inverter · Central/string inverter\nAST-00006 · SP-01-INV-006 · Inverter · Central/string inverter\nAST-00007 · SP-01-INV-007 · Inverter · Central/string inverter\nAST-00008 · SP-01-INV-008 · Inverter · Central/string inverter\nAST-00010 · SP-01-INV-010 · Inverter · Central/string inverter\nAST-00012 · SP-01-INV-012 · Inverter · Central/string inverter\nAST-00013 · SP-01-INV-013 · Inverter · Central/string inverter\nAST-00016 · SP-01-INV-016 · Inverter · Central/string inverter\nAST-00017 · SP-01-INV-017 · Inverter · Central/string inverter\nAST-00018 · SP-01-INV-018 · Inverter · Central/string inverter\nAST-00020 · SP-01-TRF-002 · Transformer · Power transformer\nAST-00021 · SP-01-TRF-003 · Transformer · Power transformer\nAST-00022 · SP-01-TRF-004 · Transformer · Power transformer\nAST-00023 · SP-01-TRK-001 · Tracker · Single-axis tracker block\nAST-00024 · SP-01-TRK-002 · Tracker · Single-axis tracker block\nAST-00025 · SP-01-TRK-003 · Tracker · Single-axis tracker block\nAST-00026 · SP-01-TRK-004 · Tracker · Single-axis tracker block\nAST-00030 · SP-01-TRK-008 · Tracker · Single-axis tracker block\nAST-00035 · SP-01-SWG-001 · Switchgear · MV switchgear panel\nAST-00036 · SP-01-SWG-002 · Switchgear · MV switchgear panel\nAST-00039 · SP-01-SCB-001 · SCB · String combiner box\nAST-00042 · SP-01-SCB-004 · SCB · String combiner box\nAST-00043 · SP-01-SCB-005 · SCB · String combiner box\nAST-00044 · SP-01-SCB-006 · SCB · String combiner box\nAST-00045 · SP-01-SCB-007 · SCB · String combiner box\nAST-00046 · SP-01-SCB-008 · SCB · String combiner box\nAST-00048 · SP-02-INV-002 · Inverter · Central/string inverter\nAST-00055 · SP-02-INV-009 · Inverter · Central/string inverter\nAST-00058 · SP-02-INV-012 · Inverter · Central/string inverter\nAST-00060 · SP-02-INV-014 · Inverter · Central/string inverter\nAST-00066 · SP-02-TRF-002 · Transformer · Power transformer\nAST-00072 · SP-02-TRK-004 · Tracker · Single-axis tracker block\nAST-00073 · SP-02-TRK-005 · Tracker · Single-axis tracker block\nAST-00075 · SP-02-TRK-007 · Tracker · Single-axis tracker block\nAST-00083 · SP-02-SWG-003 · Switchgear · MV switchgear panel\nAST-00095 · SP-03-INV-003 · Inverter · Central/string inverter\nAST-00102 · SP-03-INV-010 · Inverter · Central/string inverter\nAST-00103 · SP-03-INV-011 · Inverter · Central/string inverter\nAST-00104 · SP-03-INV-012 · Inverter · Central/string inverter\nAST-00110 · SP-03-INV-018 · Inverter · Central/string inverter\nAST-00112 · SP-03-TRF-002 · Transformer · Power transformer\nAST-00127 · SP-03-SWG-001 · Switchgear · MV switchgear panel\nAST-00129 · SP-03-SWG-003 · Switchgear · MV switchgear panel\nAST-00130 · SP-03-SWG-004 · Switchgear · MV switchgear panel\nAST-00136 · SP-03-SCB-006 · SCB · String combiner box\nAST-00140 · SP-04-INV-002 · Inverter · Central/string inverter\nAST-00145 · SP-04-INV-007 · Inverter · Central/string inverter\nAST-00153 · SP-04-INV-015 · Inverter · Central/string inverter\nAST-00163 · SP-04-TRK-003 · Tracker · Single-axis tracker block\nAST-00176 · SP-04-SWG-004 · Switchgear · MV switchgear panel\nAST-00177 · SP-04-SCB-001 · SCB · String combiner box\nAST-00178 · SP-04-SCB-002 · SCB · String combiner box\nAST-00183 · SP-04-SCB-007 ",
-   "grids": 0
+   "grids": 1
   },
   {
    "v": "workorderintelligence",
@@ -263,6 +319,24 @@
     "Status & Audit Ledger",
     "ERP/EAM Transaction Status",
     "Create Work Order",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Select",
+    "WO ID",
+    "Site / Asset",
+    "Type",
+    "Priority",
+    "Status",
+    "Crew",
+    "Parts",
+    "Permit",
+    "Loss",
+    "Cost",
+    "ERP",
+    "Action",
     "WO-00001",
     "Update",
     "WO-00002",
@@ -286,42 +360,13 @@
     "WO-00020",
     "WO-00021",
     "WO-00022",
-    "WO-00023",
-    "WO-00024",
-    "WO-00025",
-    "WO-00026",
-    "WO-00027",
-    "WO-00028",
-    "WO-00029",
-    "WO-00030",
-    "WO-00031",
-    "WO-00032",
-    "WO-00033",
-    "WO-00034",
-    "WO-00035",
-    "WO-00036",
-    "WO-00037",
-    "WO-00038",
-    "WO-00039",
-    "WO-00040",
-    "WO-00041",
-    "WO-00042",
-    "WO-00043",
-    "WO-00044",
-    "WO-00045",
-    "WO-00046",
-    "WO-00047",
-    "WO-00048",
-    "WO-00049",
-    "WO-00050",
-    "WO-00051",
-    "WO-00052"
+    "WO-00023"
    ],
    "heads": [
     "Work Order Intelligence"
    ],
-   "text": "Work Order Intelligence\nOPEN WORK ORDERS\n95\nWOs\nCRITICAL PRIORITY\n4\nWOs\nOVERDUE ACTIONS\n89\nWOs\nREADY TO SCHEDULE\n6\nWOs\nSLA AT RISK\n0\nWOs\nERP/EAM PENDING\n163\nWOs\nCommand Centre\nWork Order Ledger\nLifecycle & Status\nApprovals & Exceptions\nStatus & Audit Ledger\nERP/EAM Transaction Status\n163 work orders\nAll\nDraft\nAwaiting Approval\nApproved\nReady to Schedule\nScheduled\nIn Progress\nCompleted\nClosed\nCreate Work Order\n\tWO ID\tSITE / ASSET\tTYPE\tPRIORITY\tSTATUS\tCREW\tPARTS\tPERMIT\tLOSS\tCOST\tERP\tACTION\n\tWO-00001\tSuryanagar Solar Park\nSP-01-INV-001\tPredictive\tHigh\tCompleted\tCREW-N-1\tReady\tReady\t0 MWh\t₹1,64,380\tPending\tUpdate\n\tWO-00002\tSuryanagar Solar Park\nSP-01-TRK-004\tPredictive\tHigh\tCompleted\tCREW-W-3\tReady\tReady\t0 MWh\t₹1,64,200\tPending\tUpdate\n\tWO-00003\tRewa Ridge Solar\nSP-08-TRF-001\tPredictive\tHigh\tCompleted\tCREW-N-2\tReady\tReady\t0 MWh\t₹1,51,420\tPending\tUpdate\n\tWO-00004\tRewa Ridge Solar\nSP-08-INV-015\tPredictive\tMedium\tIn Progress\tCREW-N-1\tReady\tReady\t0 MWh\t₹1,40,800\tPending\tUpdate\n\tWO-00005\tSuryanagar Solar Park\nSP-01-TRK-008\tPredictive\tHigh\tIn Progress\tCREW-N-3\tReady\tReady\t0 MWh\t₹1,47,460\tPending\tUpdate\n\tWO-00006\tSuryanagar Solar Park\nSP-01-SCB-001\tPredictive\tHigh\tOpen\tCREW-N-2\tReady\tReady\t0 MWh\t₹1,60,960\tPending\tUpdate\n\tWO-00007\tRewa Ridge Solar\nSP-08-SCB-001\tPredictive\tMedium\tCompleted\tCREW-C-2\tReady\tReady\t0 MWh\t₹1,41,700\tPending\tUpdate\n\tWO-00008\tSuryanagar Solar Park\nSP-01-TRF-004\tPredictive\tMedium\tOpen\tCREW-C-2\tReady\tReady\t0 MWh\t₹1,40,800\tPending\tUpdate\n\tWO-00009\tSuryanagar Solar Park\nSP-01-TRK-003\tPredictive\tHigh\tIn Progress\tCREW-N-3\tReady\tReady\t0 MWh\t₹1,62,400\tPending\tUpdate\n\tWO-00010\tSuryanagar Solar Park\nSP-01-TRF-002\tPredictive\tHigh\tCompleted\tCREW-S-2\tReady\tReady\t0 MWh\t₹1,61,140\tPending\tUpdate\n\tWO-00011\tKalyanpura SPV\nSP-02-INV-002\tPredictive\tHigh\tCompleted\tCREW-W-1\tReady\tReady\t0 MWh\t₹1,49,080\tPending\tUpdate\n\tWO-00012\tRewa Ridge Solar\nSP-08-TRK-002\tPredictive\tHigh\tIn Progress\tCREW-S-3\tReady\tReady\t0 MWh\t₹1,45,120\tPending\tUpdate\n\tWO-00013\tRewa Ridge Solar\nSP-08-SCB-003\tPredictive\tMedium\tOpen\tCREW-S-2\tReady\tReady\t0 MWh\t₹1,42,420\tPending\tUpdate\n\tWO-00014\tKalyanpura SPV\nSP-02-TRF-002\tPredictive\tMedium\tAwaiting Part\tCREW-S-2\tAwaiting Parts\tReady\t0 MWh\t₹1,40,080\tPending\tUpdate\n\tWO-00015\tSolapur Plains SPV\nSP-06-INV-014\tPredictive\tMedium\tCompleted\tCREW-E-1\tReady\tReady\t0 MWh\t₹1,39,900\tPending\tUpdate\n\tWO-00016\tRewa Ridge Solar\nSP-08-WST-002\tPredictive\tMedium\tOpen\tCREW-C-1\tReady\tReady\t0 MWh\t₹1,43,680\tPending\tUpdate\n\tWO-00017\tBathinda Solar Belt\nSP-09-SCB-003\tPredictive\tMedium\tScheduled\tCREW-W-2\tReady\tReady\t0 MWh\t₹1,39,900\tPending\tUpdate\n\tWO-00018\tSuryanagar Solar Park\nSP-01-SWG-001\tPredictive\tHigh\tIn Progress\tCREW-W-2\tReady\tReady\t0 MWh\t₹1,49,080\tPending\tUpdate\n\tWO-00019\tSuryanagar Solar Park\nSP-01-SCB-004\tPredictive\tHigh\tAwaiting Part\tCREW-S-2\tAwaiting Parts\tReady\t0 MWh\t₹1,50,340\tPending\tUpdate\n\tWO-00020\tBathinda Solar Belt\nSP-09-TRK-009\tPredictive\tMedium\tIn Progress\tCREW-S-3\tReady\tReady\t0 MWh\t₹1,39,180\tPending\tUpdate\n\tWO-00021\tDhenkanal Solar Estate\nSP-11-TRF-003\tPredictive\tMedium\tScheduled\tCREW-W-2\tReady\tReady\t0 MWh\t₹1,28,020\tPending\tUpdate\n\tWO-00022\tSuryanagar Solar Park\nSP-01-TRF-003\tPredictive\tMedium\tAwaiting Part\tCREW-S-2\tAwaiting Parts\tReady\t0 MWh\t₹1,37,920\tPending\tUpdate\n\tWO-00023\tRewa Ridge Solar\nSP-08-TRK-007\tPredictive\tMedium\tAwaiting Part\tCREW-E-3\tAwaiting Parts\tReady\t0 MWh\t₹1,41,160\tPending\tUpdate\n\tWO-00024\tJhansi Uplands SPV\nSP-12-INV-015\tPredictive\tMedium\tIn Progress\tCREW-E-1\tReady\tReady\t0 MWh\t₹1,26,760\tPending\tUpdate\n\tWO-00025\tJhansi Uplands SPV\nSP-12-TRK-010\tPredictive\tMedium\tAwaiting Part\tCREW-S-3\tAwaiting Parts\tReady\t0 MWh\t₹1,44,220\tPending\tUpdate\n\tWO-00026\tSuryanagar Solar Park\nSP-01-INV-005\tPredictive\tMedium\tOpen\tCREW-S-1\tReady\tReady\t0 MWh\t₹1,31,800\tPending\tUpdate\n\tWO-00027\tSuryanagar Solar Park\nSP-01-INV-012\tPredictive\tHigh\tCompleted\tCREW-S-1\tReady\tReady\t0 MWh\t₹1,46,380\tPending\tUpdate\n\tWO-00028\tSuryanagar Solar Park\nSP-01-SCB-006\tPredictive\tHigh\tIn Progress\tCREW-E-2\tReady\tReady\t0 MWh\t₹1,52,140\tPending\tUpdate\n\tWO-00029\t",
-   "grids": 0
+   "text": "Work Order Intelligence\nOPEN WORK ORDERS\n95\nWOs\nCRITICAL PRIORITY\n4\nWOs\nOVERDUE ACTIONS\n89\nWOs\nREADY TO SCHEDULE\n6\nWOs\nSLA AT RISK\n0\nWOs\nERP/EAM PENDING\n163\nWOs\nCommand Centre\nWork Order Ledger\nLifecycle & Status\nApprovals & Exceptions\nStatus & Audit Ledger\nERP/EAM Transaction Status\n163 work orders\nAll\nDraft\nAwaiting Approval\nApproved\nReady to Schedule\nScheduled\nIn Progress\nCompleted\nClosed\nCreate Work Order\nFilter\nNo grouping\nGroup by Select\nGroup by WO ID\nGroup by Site / Asset\nGroup by Type\nGroup by Priority\nGroup by Status\nGroup by Crew\nGroup by Parts\nGroup by Permit\nGroup by Loss\nGroup by Cost\nGroup by ERP\nGroup by Action\nColumns\nReset layout\nExport CSV\nExport Excel\nSelect\nWO ID\nSite / Asset\nType\nPriority\nStatus\nCrew\nParts\nPermit\nLoss\nCost\nERP\nAction\nWO-00001\nSuryanagar Solar Park\nSP-01-INV-001\nPredictive\nHigh\nCompleted\nCREW-N-1\nReady\nReady\n0 MWh\n₹1,64,380\nPending\nUpdate\nWO-00002\nSuryanagar Solar Park\nSP-01-TRK-004\nPredictive\nHigh\nCompleted\nCREW-W-3\nReady\nReady\n0 MWh\n₹1,64,200\nPending\nUpdate\nWO-00003\nRewa Ridge Solar\nSP-08-TRF-001\nPredictive\nHigh\nCompleted\nCREW-N-2\nReady\nReady\n0 MWh\n₹1,51,420\nPending\nUpdate\nWO-00004\nRewa Ridge Solar\nSP-08-INV-015\nPredictive\nMedium\nIn Progress\nCREW-N-1\nReady\nReady\n0 MWh\n₹1,40,800\nPending\nUpdate\nWO-00005\nSuryanagar Solar Park\nSP-01-TRK-008\nPredictive\nHigh\nIn Progress\nCREW-N-3\nReady\nReady\n0 MWh\n₹1,47,460\nPending\nUpdate\nWO-00006\nSuryanagar Solar Park\nSP-01-SCB-001\nPredictive\nHigh\nOpen\nCREW-N-2\nReady\nReady\n0 MWh\n₹1,60,960\nPending\nUpdate\nWO-00007\nRewa Ridge Solar\nSP-08-SCB-001\nPredictive\nMedium\nCompleted\nCREW-C-2\nReady\nReady\n0 MWh\n₹1,41,700\nPending\nUpdate\nWO-00008\nSuryanagar Solar Park\nSP-01-TRF-004\nPredictive\nMedium\nOpen\nCREW-C-2\nReady\nReady\n0 MWh\n₹1,40,800\nPending\nUpdate\nWO-00009\nSuryanagar Solar Park\nSP-01-TRK-003\nPredictive\nHigh\nIn Progress\nCREW-N-3\nReady\nReady\n0 MWh\n₹1,62,400\nPending\nUpdate\nWO-00010\nSuryanagar Solar Park\nSP-01-TRF-002\nPredictive\nHigh\nCompleted\nCREW-S-2\nReady\nReady\n0 MWh\n₹1,61,140\nPending\nUpdate\nWO-00011\nKalyanpura SPV\nSP-02-INV-002\nPredictive\nHigh\nCompleted\nCREW-W-1\nReady\nReady\n0 MWh\n₹1,49,080\nPending\nUpdate\nWO-00012\nRewa Ridge Solar\nSP-08-TRK-002\nPredictive\nHigh\nIn Progress\nCREW-S-3\nReady\nReady\n0 MWh\n₹1,45,120\nPending\nUpdate\nWO-00013\nRewa Ridge Solar\nSP-08-SCB-003\nPredictive\nMedium\nOpen\nCREW-S-2\nReady\nReady\n0 MWh\n₹1,42,420\nPending\nUpdate\nWO-00014\nKalyanpura SPV\nSP-02-TRF-002\nPredictive\nMedium\nAwaiting Part\nCREW-S-2\nAwaiting Parts\nReady\n0 MWh\n₹1,40,080\nPending\nUpdate\nWO-00015\nSolapur Plains SPV\nSP-06-INV-014\nPredictive\nMedium\nCompleted\nCREW-E-1\nReady\nReady\n0 MWh\n₹1,39,900\nPending\nUpdate\nWO-00016\nRewa Ridge Solar\nSP-08-WST-002\nPredictive\nMedium\nOpen\nCREW-C-1\nReady\nReady\n0 MWh\n₹1,43,680\nPending\nUpdate\nWO-00017\nBathinda Solar Belt\nSP-09-SCB-003\nPredictive\nMedium\nScheduled\nCREW-W-2\nReady\nReady\n0 MWh\n₹1,39,900\nPending\nUpdate\nWO-00018\nSuryanagar Solar Park\nSP-01-SWG-001\nPredictive\nHigh\nIn Progress\nCREW-W-2\nReady\nReady\n0 MWh\n₹1,49,080\nPending\nUpdate\nWO-00019\nSuryanagar Solar Park\nSP-01-SCB-004\nPredictive\nHigh\nAwaiting Part\nCREW-S-2\nAwaiting Parts\nReady\n0 MWh\n₹1,50,340\nPending\nUpdate\nWO-00020\nBathinda Solar Belt\nSP-09-TRK-009\nPredictive\nMedium\nIn Progress\nCREW-S-3\nReady\nReady\n0 MWh\n₹1,39,180\nPending\nUpdate\nWO-00021\nDhenkanal Solar Estate\nSP-11-TRF-003\nPredictive\nMedium\nScheduled\nCREW-W-2\nReady\nReady\n0 MWh\n₹1,28,020\nPending\nUpdate\nWO-00022\nSuryanagar Solar Park\nSP-01-TRF-003\nPredictive\nMedium\nAwaiting Part\nCREW-S-2\nAwaiting Parts\nReady\n0 MWh\n₹1,37,920\nPending\nUpdate\nWO-00023\nRewa Ridge Solar\nSP-08-TRK-007\nPredictive\nMedium\nAwaiting Part\nCREW-E-3\nAwaiting Parts\nReady\n0 MWh\n₹1,41,160\nPending\nUpdate\n163 rows",
+   "grids": 1
   },
   {
    "v": "resourceplanning",
@@ -357,6 +402,19 @@
     "INT-005\n67% ready · 4/6\n₹2.86 L",
     "View Attention Rules\n↗",
     "View All Interventions\n↗",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Intervention",
+    "Site / Asset",
+    "Required Completion By",
+    "Readiness",
+    "Attention severity",
+    "Why attention",
+    "Value exposure",
+    "Status",
     "3 rules breached ↗",
     "4 rules breached ↗",
     "₹3.37 L ↗",
@@ -378,8 +436,8 @@
     "Highest-value constrained interventions",
     "Planning Attention Register"
    ],
-   "text": "Planning & Optimization\nOverview\nPlan & Resources\nIntervention Schedule\nOptimize & Govern\nOperating Model & Systems\n↗\nInterfaces\n↗\nPlanning Horizon\nToday\nThis Week\n2 Weeks\n30 Days\n60 Days\n90 Days\n6 Months\n12 Months\nCustom range\nHorizon End Date\n30-10-26\nAll Sites\nPLAN READINESS\n7.1%\nEXECUTION-READY VALUE\n₹6.63 L\nPLANNING CONSTRAINTS\n13\nSCHEDULE RISK\n71.4%\nOPPORTUNITY ALIGNMENT\n0.0%\nPLAN-TO-EXECUTION CONFORMANCE\n100.0%\nIntervention Plan Status\n↗\nSelect a status below for more details\n14\nDUE\n6\nPlanning Gaps\n8\nPLAN PREPARED\n1\nScheduling Constraints\n7\nSCHEDULE OPTIMIZED\n0\nAwaiting Approval\n7\nPLAN APPROVED\n6\nExecution Blockers\n1\nEXECUTION READY\nConstraints by Type\nunresolved intervention constraints\nCrew\n6\nMaterial\n9\nTool\n9\nVehicle\n11\nAccess\n6\nOutage Window\n6\nPriority Intervention — Dependency & Readiness\nPRIORITY INTERVENTION\nINT-003 · SP-02-INV-002\nThermography, torque check and replace degraded power-stage component\n₹6.02 L ↗\nValue Exposure\n28-09-26\nRequired Completion By\nWhy this intervention? Highest Value Exposure among interventions with unresolved readiness dependencies\nWork Order\nWO-00011\nExact execution record ↗\nCrew\nReady\nCrew & skills ↗\nMaterial\nBlocked\nMaterials & spares ↗\nTool / Vehicle\nReady\n/\nReady\nTools / vehicle ↗\nAccess / Outage\nReady\n/\nReady\nExecution prerequisites ↗\nSchedule\n27-09-26\nIntervention Schedule ↗\nGovernance\nReady for Handoff\nOptimize & Govern ↗\nHighest-value constrained interventions\nINT-003\n83% ready · 5/6\n₹6.02 L\nINT-002\n67% ready · 4/6\n₹3.37 L\nINT-004\n83% ready · 5/6\n₹3.17 L\nINT-006\n67% ready · 4/6\n₹3.15 L\nINT-005\n67% ready · 4/6\n₹2.86 L\nPlanning Attention Register\nInterventions in Horizon\n14\n·\nRequire Attention\n14\n·\nWithin Governed Limits\n0\nView Attention Rules\n↗\nView All Interventions\n↗\nINTERVENTION\tSITE / ASSET\tREQUIRED COMPLETION BY\tREADINESS\tATTENTION SEVERITY\tWHY ATTENTION\tVALUE EXPOSURE\tSTATUS\nINT-003\nThermography, torque check and replace degraded power-stage component\tSP-02\nSP-02-INV-002\t28-09-26\t83%\tCritical\t3 rules breached ↗\nUnresolved mandatory dependency · High value exposure · +1 more\n\t₹6.02 L ↗\tApproved\nINT-002\nInspect drive motor, gearbox and alignment; replace drive assembly if required\tSP-01\nSP-01-TRK-004\t27-09-26\t67%\tCritical\t4 rules breached ↗\nReadiness below critical threshold · Unresolved mandatory dependency · +2 more\n\t₹3.37 L ↗\tApproved\nINT-004\nPreventive maintenance — Inverter inspection, testing and defect rectification\tSP-02\nSP-02-INV-009\t28-09-26\t83%\tCritical\t3 rules breached ↗\nUnresolved mandatory dependency · High value exposure · +1 more\n\t₹3.17 L ↗\tApproved\nINT-006\nCorrective maintenance — Switchgear inspection, testing and defect rectification\tSP-03\nSP-03-SWG-001\t29-09-26\t67%\tCritical\t3 rules breached ↗\nReadiness below critical threshold · Unresolved mandatory dependency · +1 more\n\t₹3.15 L ↗\tApproved\nINT-005\nCorrective maintenance — Transformer inspection, testing and defect rectification\tSP-03\nSP-03-TRF-002\t29-09-26\t67%\tCritical\t3 rules breached ↗\nReadiness below critical threshold · Unresolved mandatory dependency · +1 more\n\t₹2.86 L ↗\tApproved\nINT-008\nPreventive maintenance — Tracker inspection, testing and defect rectification\tSP-05\nSP-05-TRK-008\t29-10-26\t83%\tCritical\t2 rules breached ↗\nUnresolved mandatory dependency · Required completion threatened\n\t₹54,020 ↗\tPlanned\nINT-007\nPreventive maintenance — Switchgear inspection, testing and defect rectification\tSP-04\nSP-04-SWG-004\t25-10-26\t67%\tHigh\t2 rules breached ↗\nReadiness below critical threshold · Unresolved mandatory dependency\n\t₹2.08 L ↗\tApproved\nINT-PV-01\nIsolate and test the identified module; inspect junction box and matched connectors; replace only after engineering confirmation\tSP-03\nSP-03-PVG-01\t24-10-26\t0%\tHigh\t2 rules breached ↗\nReadiness below critical threshold · Unresolved mandatory dependency\n\t₹0 ↗\tUnder Review\nINT-PV-02\nIsolate and test the identified module; inspect junction box and matched connectors; replace only after engineering confirmation\tSP-04\nSP-04-PVG-01\t24-10-26\t0%\tHigh\t2 rules breach",
-   "grids": 0
+   "text": "Planning & Optimization\nOverview\nPlan & Resources\nIntervention Schedule\nOptimize & Govern\nOperating Model & Systems\n↗\nInterfaces\n↗\nPlanning Horizon\nToday\nThis Week\n2 Weeks\n30 Days\n60 Days\n90 Days\n6 Months\n12 Months\nCustom range\nHorizon End Date\n30-10-26\nAll Sites\nPLAN READINESS\n7.1%\nEXECUTION-READY VALUE\n₹6.63 L\nPLANNING CONSTRAINTS\n13\nSCHEDULE RISK\n71.4%\nOPPORTUNITY ALIGNMENT\n0.0%\nPLAN-TO-EXECUTION CONFORMANCE\n100.0%\nIntervention Plan Status\n↗\nSelect a status below for more details\n14\nDUE\n6\nPlanning Gaps\n8\nPLAN PREPARED\n1\nScheduling Constraints\n7\nSCHEDULE OPTIMIZED\n0\nAwaiting Approval\n7\nPLAN APPROVED\n6\nExecution Blockers\n1\nEXECUTION READY\nConstraints by Type\nunresolved intervention constraints\nCrew\n6\nMaterial\n9\nTool\n9\nVehicle\n11\nAccess\n6\nOutage Window\n6\nPriority Intervention — Dependency & Readiness\nPRIORITY INTERVENTION\nINT-003 · SP-02-INV-002\nThermography, torque check and replace degraded power-stage component\n₹6.02 L ↗\nValue Exposure\n28-09-26\nRequired Completion By\nWhy this intervention? Highest Value Exposure among interventions with unresolved readiness dependencies\nWork Order\nWO-00011\nExact execution record ↗\nCrew\nReady\nCrew & skills ↗\nMaterial\nBlocked\nMaterials & spares ↗\nTool / Vehicle\nReady\n/\nReady\nTools / vehicle ↗\nAccess / Outage\nReady\n/\nReady\nExecution prerequisites ↗\nSchedule\n27-09-26\nIntervention Schedule ↗\nGovernance\nReady for Handoff\nOptimize & Govern ↗\nHighest-value constrained interventions\nINT-003\n83% ready · 5/6\n₹6.02 L\nINT-002\n67% ready · 4/6\n₹3.37 L\nINT-004\n83% ready · 5/6\n₹3.17 L\nINT-006\n67% ready · 4/6\n₹3.15 L\nINT-005\n67% ready · 4/6\n₹2.86 L\nPlanning Attention Register\nInterventions in Horizon\n14\n·\nRequire Attention\n14\n·\nWithin Governed Limits\n0\nView Attention Rules\n↗\nView All Interventions\n↗\nFilter\nNo grouping\nGroup by Intervention\nGroup by Site / Asset\nGroup by Required Completion By\nGroup by Readiness\nGroup by Attention severity\nGroup by Why attention\nGroup by Value exposure\nGroup by Status\nColumns\nReset layout\nExport CSV\nExport Excel\nIntervention\nSite / Asset\nRequired Completion By\nReadiness\nAttention severity\nWhy attention\nValue exposure\nStatus\nINT-003\nThermography, torque check and replace degraded power-stage component\nSP-02\nSP-02-INV-002\n28-09-26\n83%\nCritical\n3 rules breached ↗Unresolved mandatory dependency · High value exposure · +1 more\n₹6.02 L ↗\nApproved\nINT-002\nInspect drive motor, gearbox and alignment; replace drive assembly if required\nSP-01\nSP-01-TRK-004\n27-09-26\n67%\nCritical\n4 rules breached ↗Readiness below critical threshold · Unresolved mandatory dependency · +2 more\n₹3.37 L ↗\nApproved\nINT-004\nPreventive maintenance — Inverter inspection, testing and defect rectification\nSP-02\nSP-02-INV-009\n28-09-26\n83%\nCritical\n3 rules breached ↗Unresolved mandatory dependency · High value exposure · +1 more\n₹3.17 L ↗\nApproved\nINT-006\nCorrective maintenance — Switchgear inspection, testing and defect rectification\nSP-03\nSP-03-SWG-001\n29-09-26\n67%\nCritical\n3 rules breached ↗Readiness below critical threshold · Unresolved mandatory dependency · +1 more\n₹3.15 L ↗\nApproved\nINT-005\nCorrective maintenance — Transformer inspection, testing and defect rectification\nSP-03\nSP-03-TRF-002\n29-09-26\n67%\nCritical\n3 rules breached ↗Readiness below critical threshold · Unresolved mandatory dependency · +1 more\n₹2.86 L ↗\nApproved\nINT-008\nPreventive maintenance — Tracker inspection, testing and defect rectification\nSP-05\nSP-05-TRK-008\n29-10-26\n83%\nCritical\n2 rules breached ↗Unresolved mandatory dependency · Required completion threatened\n₹54,020 ↗\nPlanned\nINT-007\nPreventive maintenance — Switchgear inspection, testing and defect rectification\nSP-04\nSP-04-SWG-004\n25-10-26\n67%\nHigh\n2 rules breached ↗Readiness below critical threshold · Unresolved mandatory dependency\n₹2.08 L ↗\nApproved\nINT-PV-01\nIsolate and test the identified module; inspect junction box and matched connectors; replace only after engineering confirmation\nSP-03\nSP-03-PVG-01\n24-10-26\n0%\nHigh\n2 rules breached ↗Readiness below critical threshold · Unres",
+   "grids": 1
   },
   {
    "v": "spares",
@@ -468,6 +526,18 @@
     "Climate mitigation",
     "HSE corrective actions",
     "End-of-life actions",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Site",
+    "Asset",
+    "Sustainability Topic",
+    "Operational condition",
+    "Sustainability / HSE impact",
+    "Asset response",
+    "Priority",
     "Critical · 72.5 · governed override",
     "High · 77.5 · governed override",
     "High · 75.5",
@@ -478,16 +548,15 @@
     "Medium · 53.3",
     "Medium · 47.0",
     "Medium · 46.8",
-    "Medium · 36.0",
-    "Low · 34.5"
+    "Medium · 36.0"
    ],
    "heads": [
     "Sustainability Performance",
     "Action ownership and outcome evidence",
     "Sustainability Attention Register"
    ],
-   "text": "Sustainability Performance\nSustainability Priorities\nClimate, Nature & Asset Risk\nEnergy, Carbon & Water\nMaintenance HSE & Resilience\nCircularity & End-of-Life\nSite \nAll sites\nSP-01 · Suryanagar Solar Park\nSP-02 · Kalyanpura SPV\nSP-03 · Bellary Ridge Solar\nSP-04 · Thoothukudi Coastal PV\nSP-05 · Ramagundam Solar Farm\nSP-06 · Solapur Plains SPV\nSP-07 · Anantapur Sun Fields\nSP-08 · Rewa Ridge Solar\nSP-09 · Bathinda Solar Belt\nSP-10 · Hisar Open Plains\nSP-11 · Dhenkanal Solar Estate\nSP-12 · Jhansi Uplands SPV\nSource period \nAll source periods\n2026-01\n2026-02\n2026-03\n2026-04\n2026-05\n2026-06\n2026-07\nFY2026-YTD\nReset scope\nExcel demo data · YTD and monthly records are not interchangeable\nAction ownership and outcome evidence\n\nReview the underlying risk, HSE or end-of-life record before assigning an action. Owner, due date and evidence are shown as missing until supplied. Local action entries are browser-saved working records, separate from imported source evidence.\n\nClimate mitigation\nHSE corrective actions\nEnd-of-life actions\nSustainability Priority: Bands sort first, then numeric score. Safety/lifecycle overrides are marked; equal component scores remain tied. Methodology: Sustainability Model & Governance\nSustainability Attention Register\nDouble-click a record below to explore more details about the asset\nSITE\tASSET\tSUSTAINABILITY TOPIC\tOPERATIONAL CONDITION\tSUSTAINABILITY / HSE IMPACT\tASSET RESPONSE\tPRIORITY\nSP-03 · Bellary Ridge Solar\tAST-00111\nTransformer\tFlooding\tVulnerability assessment · synthetic scenario\tOutage and access exposure\tInspect drainage / protection and recovery readiness\tCritical · 72.5 · governed override\nSP-07 · Anantapur Sun Fields\tAST-00295\nTransformer\tFlooding\tVulnerability assessment · synthetic scenario\tOutage and access exposure\tInspect drainage / protection and recovery readiness\tCritical · 72.5 · governed override\nSP-11 · Dhenkanal Solar Estate\tAST-00479\nTransformer\tFlooding\tVulnerability assessment · synthetic scenario\tOutage and access exposure\tInspect drainage / protection and recovery readiness\tCritical · 72.5 · governed override\nSP-06 · Solapur Plains SPV\tAST-00254\nTracker Drive\tEnd-of-life\tRUL 1 y · Watch\tCondition / lifecycle review\tRecovery path pending\tHigh · 77.5 · governed override\nSP-07 · Anantapur Sun Fields\tAST-00299\nTracker Drive\tEnd-of-life\tRUL 1 y · Watch\tCondition / lifecycle review\tRecovery path pending\tHigh · 77.5 · governed override\nSP-03 · Bellary Ridge Solar\tAST-00115\nTracker\tMaintenance HSE\tTracker corrective maintenance · Recordable · Corrective action open\tRecordable · High\tCorrective action open\tHigh · 75.5\nSP-01 · Suryanagar Solar Park\tAST-00001\nInverter\tExtreme heat\tVulnerability assessment · synthetic scenario\tThermal derating / accelerated wear\tReview thermal condition and cooling maintenance\tMedium · 59.5\nSP-05 · Ramagundam Solar Farm\tAST-00185\nInverter\tExtreme heat\tVulnerability assessment · synthetic scenario\tThermal derating / accelerated wear\tReview thermal condition and cooling maintenance\tMedium · 59.5\nSP-09 · Bathinda Solar Belt\tAST-00369\nInverter\tExtreme heat\tVulnerability assessment · synthetic scenario\tThermal derating / accelerated wear\tReview thermal condition and cooling maintenance\tMedium · 59.5\nSP-05 · Ramagundam Solar Farm\tAST-00204\nTransformer\tEnd-of-life\tRUL 2 y · Watch\tCondition / lifecycle review\tRepair / reuse\tMedium · 55.5\nSP-06 · Solapur Plains SPV\tAST-00249\nTransformer\tEnd-of-life\tRUL 2 y · Watch\tCondition / lifecycle review\tRepair / reuse\tMedium · 55.5\nSP-10 · Hisar Open Plains\tAST-00433\nTransformer\tMaintenance HSE\tTransformer inspection · First Aid · Corrective action open\tFirst Aid · Medium\tCorrective action open\tMedium · 54.5\nSP-02 · Kalyanpura SPV\tSUS-SP-02-PV-01\nPV Array\tWater stress\tVulnerability assessment · synthetic scenario\tCleaning constraint / soiling recovery trade-off\tOptimize cleaning frequency and water productivity\tMedium · 53.5\nSP-06 · Solapur Plains SPV\tSUS-SP-06-PV-01\nPV Array\tWater stress\tVulnerability assessment · synthetic",
-   "grids": 0
+   "text": "Sustainability Performance\nSustainability Priorities\nClimate, Nature & Asset Risk\nEnergy, Carbon & Water\nMaintenance HSE & Resilience\nCircularity & End-of-Life\nSite \nAll sites\nSP-01 · Suryanagar Solar Park\nSP-02 · Kalyanpura SPV\nSP-03 · Bellary Ridge Solar\nSP-04 · Thoothukudi Coastal PV\nSP-05 · Ramagundam Solar Farm\nSP-06 · Solapur Plains SPV\nSP-07 · Anantapur Sun Fields\nSP-08 · Rewa Ridge Solar\nSP-09 · Bathinda Solar Belt\nSP-10 · Hisar Open Plains\nSP-11 · Dhenkanal Solar Estate\nSP-12 · Jhansi Uplands SPV\nSource period \nAll source periods\n2026-01\n2026-02\n2026-03\n2026-04\n2026-05\n2026-06\n2026-07\nFY2026-YTD\nReset scope\nExcel demo data · YTD and monthly records are not interchangeable\nAction ownership and outcome evidence\n\nReview the underlying risk, HSE or end-of-life record before assigning an action. Owner, due date and evidence are shown as missing until supplied. Local action entries are browser-saved working records, separate from imported source evidence.\n\nClimate mitigation\nHSE corrective actions\nEnd-of-life actions\nSustainability Priority: Bands sort first, then numeric score. Safety/lifecycle overrides are marked; equal component scores remain tied. Methodology: Sustainability Model & Governance\nSustainability Attention Register\nDouble-click a record below to explore more details about the asset\nFilter\nNo grouping\nGroup by Site\nGroup by Asset\nGroup by Sustainability Topic\nGroup by Operational condition\nGroup by Sustainability / HSE impact\nGroup by Asset response\nGroup by Priority\nColumns\nReset layout\nExport CSV\nExport Excel\nSite\nAsset\nSustainability Topic\nOperational condition\nSustainability / HSE impact\nAsset response\nPriority\nSP-03 · Bellary Ridge Solar\nAST-00111\nTransformer\nFlooding\nVulnerability assessment · synthetic scenario\nOutage and access exposure\nInspect drainage / protection and recovery readiness\nCritical · 72.5 · governed override\nSP-07 · Anantapur Sun Fields\nAST-00295\nTransformer\nFlooding\nVulnerability assessment · synthetic scenario\nOutage and access exposure\nInspect drainage / protection and recovery readiness\nCritical · 72.5 · governed override\nSP-11 · Dhenkanal Solar Estate\nAST-00479\nTransformer\nFlooding\nVulnerability assessment · synthetic scenario\nOutage and access exposure\nInspect drainage / protection and recovery readiness\nCritical · 72.5 · governed override\nSP-06 · Solapur Plains SPV\nAST-00254\nTracker Drive\nEnd-of-life\nRUL 1 y · Watch\nCondition / lifecycle review\nRecovery path pending\nHigh · 77.5 · governed override\nSP-07 · Anantapur Sun Fields\nAST-00299\nTracker Drive\nEnd-of-life\nRUL 1 y · Watch\nCondition / lifecycle review\nRecovery path pending\nHigh · 77.5 · governed override\nSP-03 · Bellary Ridge Solar\nAST-00115\nTracker\nMaintenance HSE\nTracker corrective maintenance · Recordable · Corrective action open\nRecordable · High\nCorrective action open\nHigh · 75.5\nSP-01 · Suryanagar Solar Park\nAST-00001\nInverter\nExtreme heat\nVulnerability assessment · synthetic scenario\nThermal derating / accelerated wear\nReview thermal condition and cooling maintenance\nMedium · 59.5\nSP-05 · Ramagundam Solar Farm\nAST-00185\nInverter\nExtreme heat\nVulnerability assessment · synthetic scenario\nThermal derating / accelerated wear\nReview thermal condition and cooling maintenance\nMedium · 59.5\nSP-09 · Bathinda Solar Belt\nAST-00369\nInverter\nExtreme heat\nVulnerability assessment · synthetic scenario\nThermal derating / accelerated wear\nReview thermal condition and cooling maintenance\nMedium · 59.5\nSP-05 · Ramagundam Solar Farm\nAST-00204\nTransformer\nEnd-of-life\nRUL 2 y · Watch\nCondition / lifecycle review\nRepair / reuse\nMedium · 55.5\nSP-06 · Solapur Plains SPV\nAST-00249\nTransformer\nEnd-of-life\nRUL 2 y · Watch\nCondition / lifecycle review\nRepair / reuse\nMedium · 55.5\nSP-10 · Hisar Open Plains\nAST-00433\nTransformer\nMaintenance HSE\nTransformer inspection · First Aid · Corrective action open\nFirst Aid · Medium\nCorrective action open\nMedium · 54.5\nSP-02 · Kalyanpura SPV\nSUS-SP-02-PV-01\nPV Array\nWater stress\nVulnerability assessment · s",
+   "grids": 1
   },
   {
    "v": "sustainabilitymodelgovernance",
@@ -569,6 +638,18 @@
    "t": "Portfolio Action Prioritization",
    "id": "view-actionprioritization",
    "tabs": [
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "#",
+    "Record",
+    "Domain",
+    "Type",
+    "APS",
+    "Band",
+    "Trigger",
     "WO-00145",
     "WO-00149",
     "WO-00151",
@@ -592,43 +673,8 @@
     "WO-00054",
     "WO-00118",
     "WO-00131",
-    "AST-00003",
-    "AST-00005",
-    "AST-00006",
-    "AST-00008",
-    "AST-00012",
-    "AST-00020",
-    "AST-00021",
-    "AST-00022",
-    "AST-00023",
-    "AST-00025",
-    "AST-00026",
-    "AST-00030",
-    "AST-00032",
-    "AST-00035",
-    "AST-00036",
-    "AST-00039",
-    "AST-00042",
-    "AST-00043",
-    "AST-00044",
-    "AST-00046",
-    "AST-00048",
-    "AST-00066",
-    "AST-00070",
-    "AST-00083",
-    "AST-00217",
-    "AST-00231",
-    "AST-00236",
-    "AST-00244",
-    "AST-00264",
-    "AST-00271",
-    "AST-00272",
-    "AST-00315",
-    "AST-00323",
-    "AST-00325",
-    "AST-00337",
-    "AST-00341",
-    "AST-00346"
+    "Reset",
+    "Save"
    ],
    "heads": [
     "Portfolio Action Prioritization",
@@ -638,8 +684,8 @@
     "Ranking Weights",
     "Governed Inputs"
    ],
-   "text": "Portfolio Action Prioritization\nGoverned Attention Priority Score (APS), cross-domain ranking and evidence trace\nAPS Calculation & Evidence · WO-00145\nDeterministic governed calculation from the current action population\n85/100\nCritical · threshold 70\nAPS = (90 × 25%) + (95 × 30%) + (72 × 30%) + (82 × 15%) = 84.90 → 85\nUrgency\n90/100\nWeight 25% · contribution 22.50\nOperational / risk criticality\n95/100\nWeight 30% · contribution 28.50\nBusiness / consequence impact\n72/100\nWeight 30% · contribution 21.60\nRecoverability\n82/100\nWeight 15% · contribution 12.30\nAuthoritative record\nWO-00145 · Work Order\nSource domain\nCritical Work Orders\nEntity / site\nSP-01-INV-008 · SP-01\nInclusion trigger\nAPS ≥ 70\nExposure\n—\nEnergy at risk\n—\nCurrent rank\n1 of 80 qualifying actions\nStatus\nCritical · 85/100\nCurrent APS Ranking\nAll evaluated cross-domain candidates. Qualifying Attention Now records are APS ≥ 70. Home previews only the highest four qualifying records; it does not force category variety.\n#\tRECORD\tDOMAIN\tTYPE\tAPS\tBAND\tTRIGGER\n1\tWO-00145\tCritical Work Orders\tWork Order\t85\tCritical\tAPS ≥ 70\n2\tWO-00149\tCritical Work Orders\tWork Order\t85\tCritical\tAPS ≥ 70\n3\tWO-00151\tCritical Work Orders\tWork Order\t85\tCritical\tAPS ≥ 70\n4\tWO-00157\tCritical Work Orders\tWork Order\t85\tCritical\tAPS ≥ 70\n5\tWO-00077\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n6\tWO-00082\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n7\tWO-00096\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n8\tWO-00100\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n9\tWO-00110\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n10\tWO-00113\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n11\tWO-00114\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n12\tWO-00120\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n13\tWO-00126\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n14\tWO-00128\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n15\tWO-00130\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n16\tWO-00133\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n17\tWO-00137\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n18\tWO-00141\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n19\tWO-00142\tOverdue Preventive Tasks\tWork Order\t74\tHigh\tAPS ≥ 70\n20\tWO-00051\tOverdue Preventive Tasks\tWork Order\t73\tHigh\tAPS ≥ 70\n21\tWO-00054\tOverdue Preventive Tasks\tWork Order\t73\tHigh\tAPS ≥ 70\n22\tWO-00118\tOverdue Preventive Tasks\tWork Order\t73\tHigh\tAPS ≥ 70\n23\tWO-00131\tOverdue Preventive Tasks\tWork Order\t72\tHigh\tAPS ≥ 70\n24\tAST-00003\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n25\tAST-00005\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n26\tAST-00006\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n27\tAST-00008\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n28\tAST-00012\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n29\tAST-00020\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n30\tAST-00021\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n31\tAST-00022\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n32\tAST-00023\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n33\tAST-00025\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n34\tAST-00026\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n35\tAST-00030\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n36\tAST-00032\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n37\tAST-00035\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n38\tAST-00036\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n39\tAST-00039\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n40\tAST-00042\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n41\tAST-00043\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n42\tAST-00044\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n43\tAST-00046\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n44\tAST-00048\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n45\tAST-00066\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n46\tAST-00070\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n47\tAST-00083\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n48\tAST-00217\tHigh-Risk Assets\tAsset Risk\t72\tHigh\tAPS ≥ 70\n49\tAST-00231\tHigh-Risk Assets\tAss",
-   "grids": 0
+   "text": "Portfolio Action Prioritization\nGoverned Attention Priority Score (APS), cross-domain ranking and evidence trace\nAPS Calculation & Evidence · WO-00145\nDeterministic governed calculation from the current action population\n85/100\nCritical · threshold 70\nAPS = (90 × 25%) + (95 × 30%) + (72 × 30%) + (82 × 15%) = 84.90 → 85\nUrgency\n90/100\nWeight 25% · contribution 22.50\nOperational / risk criticality\n95/100\nWeight 30% · contribution 28.50\nBusiness / consequence impact\n72/100\nWeight 30% · contribution 21.60\nRecoverability\n82/100\nWeight 15% · contribution 12.30\nAuthoritative record\nWO-00145 · Work Order\nSource domain\nCritical Work Orders\nEntity / site\nSP-01-INV-008 · SP-01\nInclusion trigger\nAPS ≥ 70\nExposure\n—\nEnergy at risk\n—\nCurrent rank\n1 of 80 qualifying actions\nStatus\nCritical · 85/100\nCurrent APS Ranking\nAll evaluated cross-domain candidates. Qualifying Attention Now records are APS ≥ 70. Home previews only the highest four qualifying records; it does not force category variety.\nFilter\nNo grouping\nGroup by #\nGroup by Record\nGroup by Domain\nGroup by Type\nGroup by APS\nGroup by Band\nGroup by Trigger\nColumns\nReset layout\nExport CSV\nExport Excel\n#\nRecord\nDomain\nType\nAPS\nBand\nTrigger\n1\nWO-00145\nCritical Work Orders\nWork Order\n85\nCritical\nAPS ≥ 70\n2\nWO-00149\nCritical Work Orders\nWork Order\n85\nCritical\nAPS ≥ 70\n3\nWO-00151\nCritical Work Orders\nWork Order\n85\nCritical\nAPS ≥ 70\n4\nWO-00157\nCritical Work Orders\nWork Order\n85\nCritical\nAPS ≥ 70\n5\nWO-00077\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n6\nWO-00082\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n7\nWO-00096\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n8\nWO-00100\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n9\nWO-00110\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n10\nWO-00113\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n11\nWO-00114\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n12\nWO-00120\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n13\nWO-00126\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n14\nWO-00128\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n15\nWO-00130\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n16\nWO-00133\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n17\nWO-00137\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n18\nWO-00141\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n19\nWO-00142\nOverdue Preventive Tasks\nWork Order\n74\nHigh\nAPS ≥ 70\n20\nWO-00051\nOverdue Preventive Tasks\nWork Order\n73\nHigh\nAPS ≥ 70\n21\nWO-00054\nOverdue Preventive Tasks\nWork Order\n73\nHigh\nAPS ≥ 70\n22\nWO-00118\nOverdue Preventive Tasks\nWork Order\n73\nHigh\nAPS ≥ 70\n23\nWO-00131\nOverdue Preventive Tasks\nWork Order\n72\nHigh\nAPS ≥ 70\n82 rows\n80 of 82 evaluated actions currently qualify for Attention Now.\nPriority Threshold\nPriority action threshold\nRanking Weights\nOperational urgency %\nOperational risk %\nBusiness impact %\nRecoverability %\nGoverned Inputs\nOperational urgency\nSLA breach, overdue status and time-to-impact\nOperational / risk criticality\nAsset, reliability and HSE risk signals\nBusiness / consequence impact\nValue, energy, downtime and service exposure where authoritative data exists\nRecoverability\nAbility to mitigate or recover the exposure through action\nReset\nSave",
+   "grids": 1
   },
   {
    "v": "workorderconstraintprioritization",
@@ -688,7 +734,16 @@
     "Clear selection",
     "Validate & Commit",
     "Download JSON backup",
-    "Restore demo data"
+    "Restore demo data",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Sheet",
+    "Field",
+    "Type",
+    "Definition"
    ],
    "heads": [
     "Data Management",
@@ -699,28 +754,53 @@
     "Loaded Data Summary",
     "Data Dictionary"
    ],
-   "text": "Data Management\nUpload Excel Workbook\nDrop the Excel workbook here\nor choose it from your computer\nChoose Excel file\nNo workbook selected.\nImport & Commit\nSelect all worksheets\nClear selection\nImport mode \nUpdate matching records + add new\nAdd new records only\nReplace selected worksheets\nValidate & Commit\nDownload JSON backup\nRestore demo data\nDetected worksheets\nUpload a workbook to inspect its contents.\nValidation and preview\nValidation results will appear here before any records are committed.\nLoaded Data Summary\n930\nAssets registered\n36\nTechnicians on roster\n144\nActive crew assignments\n1,152\nTelemetry samples loaded\nData Dictionary\nSHEET\tFIELD\tTYPE\tDEFINITION\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t",
-   "grids": 0
+   "text": "Data Management\nUpload Excel Workbook\nDrop the Excel workbook here\nor choose it from your computer\nChoose Excel file\nNo workbook selected.\nImport & Commit\nSelect all worksheets\nClear selection\nImport mode \nUpdate matching records + add new\nAdd new records only\nReplace selected worksheets\nValidate & Commit\nDownload JSON backup\nRestore demo data\nDetected worksheets\nUpload a workbook to inspect its contents.\nValidation and preview\nValidation results will appear here before any records are committed.\nLoaded Data Summary\n930\nAssets registered\n36\nTechnicians on roster\n144\nActive crew assignments\n1,152\nTelemetry samples loaded\nData Dictionary\nFilter\nNo grouping\nGroup by Sheet\nGroup by Field\nGroup by Type\nGroup by Definition\nColumns\nReset layout\nExport CSV\nExport Excel\nSheet\nField\nType\nDefinition\n200 rows",
+   "grids": 1
   },
   {
    "v": "dataquality",
    "t": "Data Quality & Observability",
    "id": "view-dataquality",
    "tabs": [
-    "Run quality checks"
+    "Run quality checks",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Rule",
+    "Domain",
+    "Score",
+    "Status",
+    "Exceptions"
    ],
    "heads": [
     "Data Quality & Observability",
     "Governed data-quality checks"
    ],
-   "text": "Data Quality & Observability\nRun quality checks\nQUALITY SCORE\n100.0\n%\nShare of structural rules passing; all exceptions included\nOPEN RULE EXCEPTIONS\n0\nAcross all nine governed rules\nFRESHNESS SLA\n100.0\n%\nSites within 24h of latest telemetry\nLINEAGE COVERAGE\n100.0\n%\nEligible records with source / provenance\nGoverned data-quality checks\nRULE\tDOMAIN\tSCORE\tSTATUS\tEXCEPTIONS\nAsset master key completeness\tAsset Master\t100.0%\tPASS\t0\nWork-order key completeness\tMaintenance\t100.0%\tPASS\t0\nDuplicate work-order IDs\tMaintenance\t100.0%\tPASS\t0\nCrew master key completeness\tWorkforce\t100.0%\tPASS\t0\nCrew-assignment key completeness\tWorkforce\t100.0%\tPASS\t0\nTelemetry key completeness\tTelemetry\t100.0%\tPASS\t0\nTelemetry freshness SLA\tTelemetry\t100.0%\tPASS\t0\nSource / lineage coverage\tCross-domain\t100.0%\tPASS\t0\nSustainability required fields, references and factors\tSustainability\t100.0%\tPASS\t0",
-   "grids": 0
+   "text": "Data Quality & Observability\nRun quality checks\nQUALITY SCORE\n100.0\n%\nShare of structural rules passing; all exceptions included\nOPEN RULE EXCEPTIONS\n0\nAcross all nine governed rules\nFRESHNESS SLA\n100.0\n%\nSites within 24h of latest telemetry\nLINEAGE COVERAGE\n100.0\n%\nEligible records with source / provenance\nGoverned data-quality checks\nRULE\tDOMAIN\tSCORE\tSTATUS\tEXCEPTIONS\nAsset master key completeness\tAsset Master\t100.0%\tPASS\t0\nWork-order key completeness\tMaintenance\t100.0%\tPASS\t0\nDuplicate work-order IDs\tMaintenance\t100.0%\tPASS\t0\nCrew master key completeness\tWorkforce\t100.0%\tPASS\t0\nCrew-assignment key completeness\tWorkforce\t100.0%\tPASS\t0\nTelemetry key completeness\tTelemetry\t100.0%\tPASS\t0\nTelemetry freshness SLA\tTelemetry\t100.0%\tPASS\t0\nSource / lineage coverage\tCross-domain\t100.0%\tPASS\t0\nSustainability required fields, references and factors\tSustainability\t100.0%\tPASS\t0\nFilter\nNo grouping\nGroup by Rule\nGroup by Domain\nGroup by Score\nGroup by Status\nGroup by Exceptions\nColumns\nReset layout\nExport CSV\nExport Excel\nRule\nDomain\nScore\nStatus\nExceptions\nAsset master key completeness\nAsset Master\n100.0%\nPASS\n0\nWork-order key completeness\nMaintenance\n100.0%\nPASS\n0\nDuplicate work-order IDs\nMaintenance\n100.0%\nPASS\n0\nCrew master key completeness\nWorkforce\n100.0%\nPASS\n0\nCrew-assignment key completeness\nWorkforce\n100.0%\nPASS\n0\nTelemetry key completeness\nTelemetry\n100.0%\nPASS\n0\nTelemetry freshness SLA\nTelemetry\n100.0%\nPASS\n0\nSource / lineage coverage\nCross-domain\n100.0%\nPASS\n0\nSustainability required fields, references and factors\nSustainability\n100.0%\nPASS\n0\n9 rows",
+   "grids": 1
   },
   {
    "v": "integrations",
    "t": "Enterprise Integration",
    "id": "view-integrations",
-   "tabs": [],
+   "tabs": [
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "System Name",
+    "System Type",
+    "Configuration Status",
+    "Connection Method",
+    "Interface ID",
+    "Interface Name",
+    "Direction",
+    "Data Object",
+    "Status"
+   ],
    "heads": [
     "Enterprise Integration",
     "Systems & Interfaces · Planning Configuration",
@@ -734,8 +814,8 @@
     "Workforce / HR",
     "Optional Execution Interfaces"
    ],
-   "text": "Enterprise Integration\nSystems & Interfaces · Planning Configuration\nSYSTEM NAME\tSYSTEM TYPE\tCONFIGURATION STATUS\tCONNECTION METHOD\nAIP Core\tAIP\tActive\tNative\nERP/EAM Core\tERP/EAM\tDefined in demo\tAPI / batch\nWorkforce / HR\tWorkforce\tDefined in demo\tAPI\nFleet Management\tFleet\tNot configured\tOptional connector\nField Service\tFSM\tNot configured\tOptional connector\nAI Vision\tAI Vision\tNative demo capability\tNative\nExternal Optimization Solver\tSolver\tAvailable\tOptional API\nDocument Management\tDMS\tDefined in demo\tAPI / link\nWeather API\tWeather\tDefined in demo\tAPI\nSCADA Historian\tSCADA/IoT\tDefined in demo\tStreaming / batch\nINTERFACE ID\tINTERFACE NAME\tDIRECTION\tDATA OBJECT\tSTATUS\nINT-EAM-01\tERP/EAM work orders\tInbound\tWork Order\tDefined in demo\nINT-EAM-02\tApproved plan handoff\tOutbound\tPlanning Recommendation\tDefined in demo\nINT-EAM-03\tInventory & reservations\tInbound\tInventory\tDefined in demo\nINT-WFM-01\tCrew availability & certifications\tInbound\tCrew/Skill/Calendar\tDefined in demo\nINT-OPT-01\tExternal optimization request\tOutbound\tOptimization Problem\tAvailable\nINT-OPT-02\tExternal optimization solution\tInbound\tOptimization Solution\tAvailable\nINT-VIS-01\tInspection images & findings\tBidirectional\tImage/Finding\tDefined in demo\nINT-WEA-01\tWeather execution windows\tInbound\tForecast\tDefined in demo\nINT-DMS-01\tManuals & procedures\tInbound\tDocument Reference\tDefined in demo\nINT-FLT-01\tVehicle availability\tInbound\tVehicle/Calendar\tNot configured\nINT-FSM-01\tField service execution\tBidirectional\tField Job / Result\tNot configured\nIntegration Landscape\n⌁\nSCADA\nPlant SCADA / RTU\nTelemetry, alarms and operating state\nDefined in demo\nIntegration pattern\nStreaming / batch\nUsed by\nPortfolio · Maintenance · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-SCA\n◫\nHistorian\nSCADA historian / time-series context\nHistorical telemetry, trends and reliability evidence\nDefined in demo\nIntegration pattern\nHistorian / batch\nUsed by\nPortfolio · Reliability · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-SCA\n☁\nWeather API\nForecast & irradiance source\nForecast, irradiance, temperature and wind context\nDefined in demo\nIntegration pattern\nAPI\nUsed by\nPlanning · Sustainability · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-WEA\n◇\nERP / EAM\nEnterprise asset & maintenance core\nWork orders, inventory, procurement and planning handoff\nDefined in demo\nIntegration pattern\nAPI / batch\nUsed by\nMaintenance · Planning · Revenue\nConfiguration evidence\nPLAN_System_Landscape · SYS-EAM\n▤\nDocument Management\nGoverned document source\nManuals, procedures, warranty and engineering references\nDefined in demo\nIntegration pattern\nAPI / link\nUsed by\nMaintenance · Warranty · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-DMS\n◉\nAI Vision\nNative inspection evidence\nInspection imagery and findings used by maintenance workflows\nNative AIP demo capability\nIntegration pattern\nNative / event\nUsed by\nAI Work · Reliability · Maintenance\nConfiguration evidence\nPLAN_System_Landscape · SYS-VIS\n♟\nWorkforce / HR\nCrew & skills source\nCrew availability, skills, certifications and calendar context\nDefined in demo\nIntegration pattern\nAPI\nUsed by\nPlanning · Maintenance\nConfiguration evidence\nPLAN_System_Landscape · SYS-WFM\n＋\nOptional Execution Interfaces\nFleet Management / Field Service\nVehicle availability and field-service execution integration\nNot configured · Optional\nIntegration pattern\nOptional connector\nUsed by\nPlanning · Execution\nConfiguration evidence\nPLAN_System_Landscape · SYS-FLT / SYS-FSM",
-   "grids": 0
+   "text": "Enterprise Integration\nSystems & Interfaces · Planning Configuration\nFilter\nNo grouping\nGroup by System Name\nGroup by System Type\nGroup by Configuration Status\nGroup by Connection Method\nColumns\nReset layout\nExport CSV\nExport Excel\nSystem Name\nSystem Type\nConfiguration Status\nConnection Method\nAIP Core\nAIP\nActive\nNative\nERP/EAM Core\nERP/EAM\nDefined in demo\nAPI / batch\nWorkforce / HR\nWorkforce\nDefined in demo\nAPI\nFleet Management\nFleet\nNot configured\nOptional connector\nField Service\nFSM\nNot configured\nOptional connector\nAI Vision\nAI Vision\nNative demo capability\nNative\nExternal Optimization Solver\nSolver\nAvailable\nOptional API\nDocument Management\nDMS\nDefined in demo\nAPI / link\nWeather API\nWeather\nDefined in demo\nAPI\nSCADA Historian\nSCADA/IoT\nDefined in demo\nStreaming / batch\n10 rows\nFilter\nNo grouping\nGroup by Interface ID\nGroup by Interface Name\nGroup by Direction\nGroup by Data Object\nGroup by Status\nColumns\nReset layout\nExport CSV\nExport Excel\nInterface ID\nInterface Name\nDirection\nData Object\nStatus\nINT-EAM-01\nERP/EAM work orders\nInbound\nWork Order\nDefined in demo\nINT-EAM-02\nApproved plan handoff\nOutbound\nPlanning Recommendation\nDefined in demo\nINT-EAM-03\nInventory & reservations\nInbound\nInventory\nDefined in demo\nINT-WFM-01\nCrew availability & certifications\nInbound\nCrew/Skill/Calendar\nDefined in demo\nINT-OPT-01\nExternal optimization request\nOutbound\nOptimization Problem\nAvailable\nINT-OPT-02\nExternal optimization solution\nInbound\nOptimization Solution\nAvailable\nINT-VIS-01\nInspection images & findings\nBidirectional\nImage/Finding\nDefined in demo\nINT-WEA-01\nWeather execution windows\nInbound\nForecast\nDefined in demo\nINT-DMS-01\nManuals & procedures\nInbound\nDocument Reference\nDefined in demo\nINT-FLT-01\nVehicle availability\nInbound\nVehicle/Calendar\nNot configured\nINT-FSM-01\nField service execution\nBidirectional\nField Job / Result\nNot configured\n11 rows\nIntegration Landscape\n⌁\nSCADA\nPlant SCADA / RTU\nTelemetry, alarms and operating state\nDefined in demo\nIntegration pattern\nStreaming / batch\nUsed by\nPortfolio · Maintenance · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-SCA\n◫\nHistorian\nSCADA historian / time-series context\nHistorical telemetry, trends and reliability evidence\nDefined in demo\nIntegration pattern\nHistorian / batch\nUsed by\nPortfolio · Reliability · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-SCA\n☁\nWeather API\nForecast & irradiance source\nForecast, irradiance, temperature and wind context\nDefined in demo\nIntegration pattern\nAPI\nUsed by\nPlanning · Sustainability · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-WEA\n◇\nERP / EAM\nEnterprise asset & maintenance core\nWork orders, inventory, procurement and planning handoff\nDefined in demo\nIntegration pattern\nAPI / batch\nUsed by\nMaintenance · Planning · Revenue\nConfiguration evidence\nPLAN_System_Landscape · SYS-EAM\n▤\nDocument Management\nGoverned document source\nManuals, procedures, warranty and engineering references\nDefined in demo\nIntegration pattern\nAPI / link\nUsed by\nMaintenance · Warranty · Twin\nConfiguration evidence\nPLAN_System_Landscape · SYS-DMS\n◉\nAI Vision\nNative inspection evidence\nInspection imagery and findings used by maintenance workflows\nNative AIP demo capability\nIntegration pattern\nNative / event\nUsed by\nAI Work · Reliability · Maintenance\nConfiguration evidence\nPLAN_System_Landscape · SYS-VIS\n♟\nWorkforce / HR\nCrew & skills source\nCrew availability, skills, certifications and calendar context\nDefined in demo\nIntegration pattern\nAPI\nUsed by\nPlanning · Maintenance\nConfiguration evidence\nPLAN_System_Landscape · SYS-WFM\n＋\nOptional Execution Interfaces\nFleet Management / Field Service\nVehicle availability and field-service execution integration\nNot configured · Optional\nIntegration pattern\nOptional connector\nUsed by\nPlanning · Execution\nConfiguration evidence\nPLAN_System_Landscape · SYS-FLT / SYS-FSM",
+   "grids": 2
   },
   {
    "v": "controlassurance",
@@ -762,14 +842,24 @@
    "v": "twinfoundation",
    "t": "Twin Model & Physics",
    "id": "view-twinfoundation",
-   "tabs": [],
+   "tabs": [
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Parameter",
+    "Purpose",
+    "Unit",
+    "Applied at"
+   ],
    "heads": [
     "Twin Model & Physics",
     "Governed model parameters",
     "Model governance"
    ],
-   "text": "Twin Model & Physics\nPhysics-informed expected-performance model using governed engineering parameters.\n1\nPOA\nPlane-of-array irradiance\nIrradiance model\n↗\n→\n2\nTcell\nModule operating temperature\nThermal model\n↗\n→\n3\nPdc\nExpected DC field output\nDC performance model\n↗\n→\n4\nPac / POI\nExpected AC output\nAC conversion model\n↗\nGoverned model parameters\nFleet model definition\nPARAMETER\tPURPOSE\tUNIT\tAPPLIED AT\nPOA irradiance inputs\tIrradiance incident on the PV array\tW/m²\tPOA\nNOCT / thermal behaviour\tModule operating-temperature response\t°C\tTcell\nDC/AC ratio\tInstalled DC sizing relative to AC capacity\tratio\tPdc\nModule temperature coefficient\tDC power temperature derating\t%/°C\tPdc\nSoiling loss\tExpected DC field loss from soiling\t%\tPdc\nInverter conversion efficiency\tDC-to-AC conversion and clipping basis\t%\tPac / POI\nTransformer efficiency\tStep-up transformer conversion loss\t%\tPac / POI\nAnnual degradation\tLong-term expected-performance adjustment\t%/year\tExpected performance\nModel governance\nModel version\nEPM-2026.08R1\nParameter source\nTwin Engineering Parameters\nLoss evidence\nTwin Loss Model\nActive data source\nExcel\nAuditability\nVersion + governed input lineage",
-   "grids": 0
+   "text": "Twin Model & Physics\nPhysics-informed expected-performance model using governed engineering parameters.\n1\nPOA\nPlane-of-array irradiance\nIrradiance model\n↗\n→\n2\nTcell\nModule operating temperature\nThermal model\n↗\n→\n3\nPdc\nExpected DC field output\nDC performance model\n↗\n→\n4\nPac / POI\nExpected AC output\nAC conversion model\n↗\nGoverned model parameters\nFleet model definition\nPARAMETER\tPURPOSE\tUNIT\tAPPLIED AT\nPOA irradiance inputs\tIrradiance incident on the PV array\tW/m²\tPOA\nNOCT / thermal behaviour\tModule operating-temperature response\t°C\tTcell\nDC/AC ratio\tInstalled DC sizing relative to AC capacity\tratio\tPdc\nModule temperature coefficient\tDC power temperature derating\t%/°C\tPdc\nSoiling loss\tExpected DC field loss from soiling\t%\tPdc\nInverter conversion efficiency\tDC-to-AC conversion and clipping basis\t%\tPac / POI\nTransformer efficiency\tStep-up transformer conversion loss\t%\tPac / POI\nAnnual degradation\tLong-term expected-performance adjustment\t%/year\tExpected performance\nFilter\nNo grouping\nGroup by Parameter\nGroup by Purpose\nGroup by Unit\nGroup by Applied at\nColumns\nReset layout\nExport CSV\nExport Excel\nParameter\nPurpose\nUnit\nApplied at\nPOA irradiance inputs\nIrradiance incident on the PV array\nW/m²\nPOA\nNOCT / thermal behaviour\nModule operating-temperature response\n°C\nTcell\nDC/AC ratio\nInstalled DC sizing relative to AC capacity\nratio\nPdc\nModule temperature coefficient\nDC power temperature derating\n%/°C\nPdc\nSoiling loss\nExpected DC field loss from soiling\n%\nPdc\nInverter conversion efficiency\nDC-to-AC conversion and clipping basis\n%\nPac / POI\nTransformer efficiency\nStep-up transformer conversion loss\n%\nPac / POI\nAnnual degradation\nLong-term expected-performance adjustment\n%/year\nExpected performance\n8 rows\nModel governance\nModel version\nEPM-2026.08R1\nParameter source\nTwin Engineering Parameters\nLoss evidence\nTwin Loss Model\nActive data source\nExcel\nAuditability\nVersion + governed input lineage",
+   "grids": 1
   },
   {
    "v": "models",
@@ -824,14 +914,24 @@
     "Hard Stops",
     "Evidence & Model Use",
     "Approvals & Overrides",
-    "Decision Log"
+    "Decision Log",
+    "Filter",
+    "Columns",
+    "Reset layout",
+    "Export CSV",
+    "Export Excel",
+    "Control",
+    "Domain",
+    "State",
+    "Current evidence",
+    "Current behaviour / gap"
    ],
    "heads": [
     "AI Guardrails",
     "Guardrail control status"
    ],
-   "text": "AI Guardrails\nACTIONS EVALUATED\n71\nAPPROVAL REQUIRED\n20\nMANUAL REVIEW\n12\nBLOCKED ACTIONS\n8\nPolicy & Autonomy\nHard Stops\nEvidence & Model Use\nApprovals & Overrides\nDecision Log\nGuardrail control status\nCONTROL\tDOMAIN\tSTATE\tCURRENT EVIDENCE\tCURRENT BEHAVIOUR / GAP\nData freshness & validation\tData\tPartially configured\t8 data-quality records\tEvaluates stale/invalid context before consequential action.\nData-quality evidence exists; no recorded runtime enforcement yet.\n\nSafety / permit / certification hard stop\tSafety\tPartially configured\tPlanning/resource readiness evidence available\tEvaluates permit and mandatory certification context for crew release/assignment.\nReadiness evidence exists; no recorded permit/certification enforcement yet.\n\nConsequential action approval\tAuthority\tPartially configured\tNo governed approval source · approval routing observed\tRoutes applicable high-impact actions to human approval.\nNo governed approval source is available.\n\nModel intended-use boundary\tModel\tPartially configured\t26 registry capabilities available\tUses model configuration/status context to constrain model-assisted action.\nRegistry exists; runtime model-status enforcement has not yet been evidenced.\n\nModel health, drift & review expiry\tModel\tNot configured\tNo model health/drift/review metadata\tRequires model health, drift and review-expiry evidence before reliable operational use.\nDedicated model health/drift/review evidence is absent.\n\nExternal intelligence validation\tSolar IPP external data\tNot configured\t9 external capabilities · 0 configured\tValidates external intelligence before it is accepted as operational evidence.\nNo external capability is currently configured.\n\nOptimization acceptance gate\tSolar IPP planning\tNot configured\tOptimization acceptance source unavailable\tAccepts an optimized plan only when solver result, feasibility and governed hard constraints are evidenced.\nOptimization evidence is unavailable.\n\nAssistant grounding & execution boundary\tAssistant\tPartially configured\tAssistant/runtime boundary present\tBlocks ungrounded assistant output when grounding context is supplied.\nGrounding control exists; no recorded grounding block yet.\n\nOverride evidence\tGovernance\tPartially configured\tDecision log supports reason/evidence fields; no complete override record observed\tRetains the human override decision and supporting governance evidence.\nA complete override record requires approver, reason, supporting evidence and outcome.\n\nGuardrail decision persistence\tAudit\tPartially configured\tBrowser-session decision persistence available · 240 governed decision record(s) loaded\tRetains guardrail decisions beyond the individual evaluation.\nCurrent evidence does not prove an enterprise persistent audit store.",
-   "grids": 0
+   "text": "AI Guardrails\nACTIONS EVALUATED\n71\nAPPROVAL REQUIRED\n20\nMANUAL REVIEW\n12\nBLOCKED ACTIONS\n8\nPolicy & Autonomy\nHard Stops\nEvidence & Model Use\nApprovals & Overrides\nDecision Log\nGuardrail control status\nFilter\nNo grouping\nGroup by Control\nGroup by Domain\nGroup by State\nGroup by Current evidence\nGroup by Current behaviour / gap\nColumns\nReset layout\nExport CSV\nExport Excel\nControl\nDomain\nState\nCurrent evidence\nCurrent behaviour / gap\nData freshness & validation\nData\nPartially configured\n8 data-quality records\nEvaluates stale/invalid context before consequential action.\nData-quality evidence exists; no recorded runtime enforcement yet.\nSafety / permit / certification hard stop\nSafety\nPartially configured\nPlanning/resource readiness evidence available\nEvaluates permit and mandatory certification context for crew release/assignment.\nReadiness evidence exists; no recorded permit/certification enforcement yet.\nConsequential action approval\nAuthority\nPartially configured\nNo governed approval source · approval routing observed\nRoutes applicable high-impact actions to human approval.\nNo governed approval source is available.\nModel intended-use boundary\nModel\nPartially configured\n26 registry capabilities available\nUses model configuration/status context to constrain model-assisted action.\nRegistry exists; runtime model-status enforcement has not yet been evidenced.\nModel health, drift & review expiry\nModel\nNot configured\nNo model health/drift/review metadata\nRequires model health, drift and review-expiry evidence before reliable operational use.\nDedicated model health/drift/review evidence is absent.\nExternal intelligence validation\nSolar IPP external data\nNot configured\n9 external capabilities · 0 configured\nValidates external intelligence before it is accepted as operational evidence.\nNo external capability is currently configured.\nOptimization acceptance gate\nSolar IPP planning\nNot configured\nOptimization acceptance source unavailable\nAccepts an optimized plan only when solver result, feasibility and governed hard constraints are evidenced.\nOptimization evidence is unavailable.\nAssistant grounding & execution boundary\nAssistant\nPartially configured\nAssistant/runtime boundary present\nBlocks ungrounded assistant output when grounding context is supplied.\nGrounding control exists; no recorded grounding block yet.\nOverride evidence\nGovernance\nPartially configured\nDecision log supports reason/evidence fields; no complete override record observed\nRetains the human override decision and supporting governance evidence.\nA complete override record requires approver, reason, supporting evidence and outcome.\nGuardrail decision persistence\nAudit\nPartially configured\nBrowser-session decision persistence available · 240 governed decision record(s) loaded\nRetains guardrail decisions beyond the individual evaluation.\nCurrent evidence does not prove an enterprise persistent audit store.\n10 rows",
+   "grids": 1
   },
   {
    "v": "actionworkflow",
@@ -851,6 +951,6 @@
    "grids": 0
   }
  ],
- "topbar": "Asset Intelligence Platform\nOperations Hub\n↗\nEnterprise\n📅 All time ▾\nExcel data\n▦ Data Source ▾\nRS",
+ "topbar": "Asset Intelligence Platform\n←\nLEFT\nRIGHT\n→\nOperations Hub\n↗\nEnterprise\n📅 All time ▾\nExcel data\n▦ Data Source ▾\nRS",
  "errors": []
 }
