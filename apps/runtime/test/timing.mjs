@@ -1,7 +1,8 @@
 // Sign-in timing of the runtime, embedded and governed: where a user's wait goes.
 //   node test/timing.mjs [--workbook-ms 5000]
 // Measures, per mode, page load → sign-in ready, sign-in → workspace shown, and → the page settling (no DOM changes
-// for 1.5 s). --workbook-ms delays the governed workbook response, as a server building it would.
+// for 1.5 s). AIP_PROFILE=governed (or embedded, governed+grids) records a CPU profile of that sign-in to
+// AIP_PROFILE_OUT. --workbook-ms delays the governed workbook response, as a server building it would.
 import { execFileSync, spawn } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -51,12 +52,22 @@ async function run(mode, grids) {
   const ready = Date.now() - t0;
   await page.fill("#loginUser", "admin");
   await page.fill("#loginPass", "sustantix2026");
+  const cdp = process.env.AIP_PROFILE === mode + (grids ? "+grids" : "") ? await page.context().newCDPSession(page) : null;
+  if (cdp) {
+    await cdp.send("Profiler.enable");
+    await cdp.send("Profiler.setSamplingInterval", { interval: 1000 });
+    await cdp.send("Profiler.start");
+  }
   const t1 = Date.now();
   await page.click("#loginBtn");
   await page.waitForFunction(() => document.getElementById("loginScreen")?.style.display === "none", null, { timeout: 300000 });
   const shown = Date.now() - t1;
   if (mode === "governed") await page.waitForFunction(() => window.__AIP_GOVERNED_ACTIVE__ === true, null, { timeout: 300000 });
   const data = Date.now() - t1;
+  if (cdp) {
+    const { profile } = await cdp.send("Profiler.stop");
+    writeFileSync(process.env.AIP_PROFILE_OUT ?? "profile.json", JSON.stringify(profile));
+  }
   await page.evaluate(() => new Promise((resolve) => {
     let timer;
     const obs = new MutationObserver(() => { clearTimeout(timer); timer = setTimeout(done, 1500); });
@@ -72,7 +83,8 @@ async function run(mode, grids) {
 
 try {
   const results = [];
-  for (const [mode, grids] of [["embedded", false], ["governed", false], ["governed", true]]) results.push(await run(mode, grids));
+  const modes = process.env.AIP_PROFILE ? [[process.env.AIP_PROFILE.split("+")[0], process.env.AIP_PROFILE.includes("+grids")]] : [["embedded", false], ["governed", false], ["governed", true]];
+  for (const [mode, grids] of modes) results.push(await run(mode, grids));
   console.table(results);
   console.log(`workbook: ${(body.length / 1e6).toFixed(1)} MB JSON, served after ${delay} ms`);
 } finally {
