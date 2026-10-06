@@ -2,44 +2,62 @@ import { createHash } from "node:crypto";
 import { ApiError } from "./http";
 
 /**
- * The runtime's tenant datasets, served from the database after sign-in (tools/schema/src/datasets-sql.ts holds
- * them; packages/host-bridge joins them back). The manifest carries each dataset's frame and a fixed plan that
- * groups the tables' blocks into chunks of about CHUNK_BYTES, small enough for one response each; the browser
- * fetches the chunks in parallel. Chunk answers are immutable for a version, so a later sign-in with unchanged data
- * reads them from the browser's cache.
+ * The runtime catalogue, served from the database after sign-in (tools/schema/src/runtime-catalogue.ts decides what
+ * is held where; packages/host-bridge joins it back). The manifest carries each dataset's layout, the catalogue
+ * sheets (with the groups of those that hold a family of lists), and a fixed plan that groups the sheets' blocks into
+ * chunks of about CHUNK_BYTES, small enough for one response each; the browser fetches the chunks in parallel and the
+ * governed sheets the layouts refer to from GET /api/aip/workbook. Chunk answers are immutable for a version, so a
+ * later sign-in with unchanged data reads them from the browser's cache.
  */
 
-/** A block of one table's rows: dataset, part (JSON Pointer), first ordinal, row count, text size. */
+/** A block of one sheet's rows: sheet, first ordinal, row count, text size. */
 export interface BlockMeta {
-  dataset: string;
-  part: string;
+  sheet: string;
   first: number;
   rows: number;
   bytes: number;
 }
 
-export interface FrameMeta {
+export interface LayoutMeta {
   dataset: string;
-  frame: unknown;
+  layout: unknown;
   updatedAt: string;
 }
 
+export interface SheetMeta {
+  sheet: string;
+  rows: number;
+  updatedAt: string;
+}
+
+export interface GroupMeta {
+  sheet: string;
+  key: string;
+  first: number;
+  rows: number;
+}
+
 export interface DatasetStore {
-  frames(tenantId: string): Promise<FrameMeta[]>;
-  /** The frames' times only (what the version needs), without their content. */
-  stamps(tenantId: string): Promise<Array<Pick<FrameMeta, "dataset" | "updatedAt">>>;
-  /** Every block of the tenant, ordered by dataset, part and first ordinal. */
+  layouts(tenantId: string): Promise<LayoutMeta[]>;
+  /** Every catalogue sheet of the tenant (name, row count, time), ordered by name. */
+  sheets(tenantId: string): Promise<SheetMeta[]>;
+  groups(tenantId: string): Promise<GroupMeta[]>;
+  /** Every block of the tenant, ordered by sheet and first ordinal. */
   blocks(tenantId: string): Promise<BlockMeta[]>;
+  /** The layouts' times only (what the version needs), without their content. */
+  stamps(tenantId: string): Promise<Array<{ dataset: string; updatedAt: string }>>;
   /** The rows of each block asked for, in the order asked (null where a block is not readable). */
-  read(tenantId: string, blocks: Array<Pick<BlockMeta, "dataset" | "part" | "first">>): Promise<Array<unknown[] | null>>;
+  read(tenantId: string, blocks: Array<Pick<BlockMeta, "sheet" | "first">>): Promise<Array<unknown[] | null>>;
 }
 
 export interface DatasetManifest {
   version: string;
-  /** Frame of each dataset, by dataset id. */
-  frames: Record<string, unknown>;
-  /** [dataset, part, first ordinal, row count] of each block. */
-  blocks: Array<[string, string, number, number]>;
+  /** Layout of each dataset, by dataset id. */
+  layouts: Record<string, unknown>;
+  /** Each catalogue sheet: its row count and, for a family of lists, [key, first ordinal, row count] of each group. */
+  sheets: Record<string, { rows: number; groups?: Array<[string, number, number]> }>;
+  /** [sheet, first ordinal, row count] of each block. */
+  blocks: Array<[string, number, number]>;
   /** Block indexes answered by each chunk. */
   chunks: number[][];
 }
@@ -64,38 +82,45 @@ export function chunkPlan(blocks: ReadonlyArray<Pick<BlockMeta, "bytes">>, budge
   return out;
 }
 
-/** Changes whenever any dataset of the tenant is reloaded (a reload rewrites its frame, so its time changes). */
-export function datasetsVersion(tenantId: string, frames: ReadonlyArray<Pick<FrameMeta, "dataset" | "updatedAt">>, blocks: readonly BlockMeta[]): string {
+/** Changes whenever the tenant's catalogue is reloaded (a reload rewrites its layouts, so their times change). */
+export function datasetsVersion(tenantId: string, stamps: ReadonlyArray<{ dataset: string; updatedAt: string }>, blocks: readonly BlockMeta[]): string {
   const h = createHash("sha256").update(tenantId);
-  for (const f of [...frames].sort((a, b) => a.dataset.localeCompare(b.dataset))) h.update(`|${f.dataset}@${f.updatedAt}`);
-  for (const b of blocks) h.update(`|${b.dataset}${b.part}#${b.first}+${b.rows}:${b.bytes}`);
+  for (const s of [...stamps].sort((a, b) => (a.dataset < b.dataset ? -1 : 1))) h.update(`|${s.dataset}@${s.updatedAt}`);
+  for (const b of blocks) h.update(`|${b.sheet}#${b.first}+${b.rows}:${b.bytes}`);
   return h.digest("hex").slice(0, 24);
 }
 
 export async function datasetsManifest(store: DatasetStore, tenantId: string): Promise<DatasetManifest> {
-  const [frames, blocks] = await Promise.all([store.frames(tenantId), store.blocks(tenantId)]);
+  const [layouts, sheets, groups, blocks] = await Promise.all([store.layouts(tenantId), store.sheets(tenantId), store.groups(tenantId), store.blocks(tenantId)]);
+  const bySheet: DatasetManifest["sheets"] = {};
+  for (const s of sheets) bySheet[s.sheet] = { rows: s.rows };
+  for (const g of groups) {
+    const s = bySheet[g.sheet];
+    if (!s) continue;
+    (s.groups ??= []).push([g.key, g.first, g.rows]);
+  }
+  for (const s of Object.values(bySheet)) s.groups?.sort((a, b) => a[1] - b[1]);
   return {
-    version: datasetsVersion(tenantId, frames, blocks),
-    frames: Object.fromEntries(frames.map((f) => [f.dataset, f.frame])),
-    blocks: blocks.map((b) => [b.dataset, b.part, b.first, b.rows]),
+    version: datasetsVersion(tenantId, layouts, blocks),
+    layouts: Object.fromEntries(layouts.map((l) => [l.dataset, l.layout])),
+    sheets: bySheet,
+    blocks: blocks.map((b) => [b.sheet, b.first, b.rows]),
     chunks: chunkPlan(blocks),
   };
 }
+
+const changed = () => new ApiError(409, "datasets_changed", "the data changed while it was loading; load it again");
 
 /** The rows of one chunk of the plan; refused (409) when the data changed since the manifest was read. */
 export async function datasetsChunk(store: DatasetStore, tenantId: string, version: string, index: number): Promise<{ version: string; blocks: unknown[][] }> {
   const [stamps, blocks] = await Promise.all([store.stamps(tenantId), store.blocks(tenantId)]);
   const current = datasetsVersion(tenantId, stamps, blocks);
-  if (version !== current) throw new ApiError(409, "datasets_changed", "the data changed while it was loading; load it again");
-  const plan = chunkPlan(blocks);
-  const chunk = plan[index];
+  if (version !== current) throw changed();
+  const chunk = chunkPlan(blocks)[index];
   if (!chunk) throw new ApiError(404, "no_chunk", `chunk ${index} is not part of this version`);
   const want = chunk.map((i) => blocks[i]!);
   const rows = await store.read(tenantId, want);
-  if (rows.length !== want.length || rows.some((r) => !Array.isArray(r))) throw new ApiError(409, "datasets_changed", "the data changed while it was loading; load it again");
-  rows.forEach((r, i) => {
-    if (r!.length !== want[i]!.rows) throw new ApiError(409, "datasets_changed", "the data changed while it was loading; load it again");
-  });
+  if (rows.length !== want.length || rows.some((r, i) => !Array.isArray(r) || r.length !== want[i]!.rows)) throw changed();
   return { version: current, blocks: rows as unknown[][] };
 }
 
@@ -106,46 +131,42 @@ type Db = {
 
 const PAGE = 1000;
 
+async function all<T>(page: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>, what: string): Promise<T[]> {
+  const out: T[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await page(from, from + PAGE - 1);
+    if (error) throw new Error(`${what}: ${error.message}`);
+    out.push(...(data ?? []));
+    if (!data || data.length < PAGE) return out;
+  }
+}
+
 /** Reads with the caller's client: row-level security limits every answer to the caller's own tenant. */
 export function supabaseDatasetStore(db: Db): DatasetStore {
   return {
-    async frames(tenantId) {
-      const out: FrameMeta[] = [];
-      for (let from = 0; ; from += PAGE) {
-        const { data, error } = await db.from("dataset_part").select("dataset,frame,updated_at").eq("tenant_id", tenantId).eq("part", "$frame").order("dataset").range(from, from + PAGE - 1);
-        if (error) throw new Error(`dataset_part: ${error.message}`);
-        out.push(...(data ?? []).map((r: { dataset: string; frame: unknown; updated_at: string }) => ({ dataset: r.dataset, frame: r.frame, updatedAt: r.updated_at })));
-        if (!data || data.length < PAGE) return out;
-      }
+    async layouts(tenantId) {
+      const rows = await all<{ dataset: string; layout: unknown; updated_at: string }>((a, b) => db.from("runtime_dataset").select("dataset,layout,updated_at").eq("tenant_id", tenantId).order("dataset").range(a, b), "runtime_dataset");
+      return rows.map((r) => ({ dataset: r.dataset, layout: r.layout, updatedAt: r.updated_at }));
     },
     async stamps(tenantId) {
-      const out: Array<Pick<FrameMeta, "dataset" | "updatedAt">> = [];
-      for (let from = 0; ; from += PAGE) {
-        const { data, error } = await db.from("dataset_part").select("dataset,updated_at").eq("tenant_id", tenantId).eq("part", "$frame").order("dataset").range(from, from + PAGE - 1);
-        if (error) throw new Error(`dataset_part: ${error.message}`);
-        out.push(...(data ?? []).map((r: { dataset: string; updated_at: string }) => ({ dataset: r.dataset, updatedAt: r.updated_at })));
-        if (!data || data.length < PAGE) return out;
-      }
+      const rows = await all<{ dataset: string; updated_at: string }>((a, b) => db.from("runtime_dataset").select("dataset,updated_at").eq("tenant_id", tenantId).order("dataset").range(a, b), "runtime_dataset");
+      return rows.map((r) => ({ dataset: r.dataset, updatedAt: r.updated_at }));
+    },
+    async sheets(tenantId) {
+      const rows = await all<{ sheet: string; row_count: number; updated_at: string }>((a, b) => db.from("runtime_sheet").select("sheet,row_count,updated_at").eq("tenant_id", tenantId).order("sheet").range(a, b), "runtime_sheet");
+      return rows.map((r) => ({ sheet: r.sheet, rows: r.row_count, updatedAt: r.updated_at }));
+    },
+    async groups(tenantId) {
+      const rows = await all<{ sheet: string; group_key: string; first_ordinal: number; row_count: number }>((a, b) => db.from("runtime_sheet_group").select("sheet,group_key,first_ordinal,row_count").eq("tenant_id", tenantId).order("sheet").order("first_ordinal").range(a, b), "runtime_sheet_group");
+      return rows.map((r) => ({ sheet: r.sheet, key: r.group_key, first: r.first_ordinal, rows: r.row_count }));
     },
     async blocks(tenantId) {
-      const out: BlockMeta[] = [];
-      for (let from = 0; ; from += PAGE) {
-        const { data, error } = await db
-          .from("dataset_block")
-          .select("dataset,part,first_ordinal,row_count,bytes")
-          .eq("tenant_id", tenantId)
-          .order("dataset")
-          .order("part")
-          .order("first_ordinal")
-          .range(from, from + PAGE - 1);
-        if (error) throw new Error(`dataset_block: ${error.message}`);
-        out.push(...(data ?? []).map((r: { dataset: string; part: string; first_ordinal: number; row_count: number; bytes: number }) => ({ dataset: r.dataset, part: r.part, first: r.first_ordinal, rows: r.row_count, bytes: r.bytes })));
-        if (!data || data.length < PAGE) return out;
-      }
+      const rows = await all<{ sheet: string; first_ordinal: number; row_count: number; bytes: number }>((a, b) => db.from("runtime_sheet_block").select("sheet,first_ordinal,row_count,bytes").eq("tenant_id", tenantId).order("sheet").order("first_ordinal").range(a, b), "runtime_sheet_block");
+      return rows.map((r) => ({ sheet: r.sheet, first: r.first_ordinal, rows: r.row_count, bytes: r.bytes }));
     },
     async read(tenantId, blocks) {
-      const { data, error } = await db.rpc("dataset_blocks", { p_tenant: tenantId, p_blocks: blocks.map((b) => ({ d: b.dataset, p: b.part, f: b.first })) });
-      if (error) throw new Error(`dataset_blocks: ${error.message}`);
+      const { data, error } = await db.rpc("runtime_sheet_blocks", { p_tenant: tenantId, p_blocks: blocks.map((b) => ({ s: b.sheet, f: b.first })) });
+      if (error) throw new Error(`runtime_sheet_blocks: ${error.message}`);
       return (data ?? []) as Array<unknown[] | null>;
     },
   };

@@ -65,20 +65,24 @@ describe("Vercel adapter", () => {
     }
   });
 
-  it("offers the governed workbook when the deployment serves one, and nothing when it serves the bundle", async () => {
+  it("fetches the governed workbook once, overlays it only on a governed deployment, and shares it with the dataset loader", async () => {
     const { vercelAdapter } = await import("../src/adapters/vercel.js");
     const orig = globalThis.fetch;
     const urls: string[] = [];
-    let respond: Response = new Response(null, { status: 204 });
+    let governed = "0";
     globalThis.fetch = (async (u: string) => {
       urls.push(u);
-      return respond;
+      return new Response(JSON.stringify({ label: "Governed data", sheets: { Sites: [{ Plant_ID: "SP-01" }] } }), { status: 200, headers: { "x-aip-governed": governed } });
     }) as typeof fetch;
     try {
-      expect(await vercelAdapter().governed!.load()).toBeNull();
-      expect(urls[0]).toBe("/api/aip/workbook");
-      respond = new Response(JSON.stringify({ label: "Governed data", sheets: { Sites: [{ Plant_ID: "SP-01" }] } }), { status: 200 });
-      expect(await vercelAdapter().governed!.load()).toMatchObject({ sheets: { Sites: [{ Plant_ID: "SP-01" }] } });
+      const a = vercelAdapter();
+      expect(await a.governed!.load()).toBeNull();
+      expect(urls).toEqual(["/api/aip/workbook?for=datasets"]);
+      governed = "1";
+      const b = vercelAdapter();
+      expect(await b.governed!.load()).toMatchObject({ sheets: { Sites: [{ Plant_ID: "SP-01" }] } });
+      expect(await b.governed!.load()).toMatchObject({ label: "Governed data" });
+      expect(urls).toHaveLength(2);
     } finally {
       globalThis.fetch = orig;
     }

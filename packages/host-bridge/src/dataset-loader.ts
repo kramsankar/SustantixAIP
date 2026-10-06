@@ -1,15 +1,16 @@
 /**
- * Database-only data: after sign-in the host loads the tenant's runtime datasets from its database (frames and blocks
- * of rows, see dataset-parts.ts), joins them back and registers each under the id the runtime asks for, before any
- * runtime module runs. The deployment ships no tenant data at all.
+ * Database-only data: after sign-in the host loads the tenant's runtime catalogue (dataset layouts and the sheets they
+ * use, see dataset-parts.ts) and the governed workbook the layouts refer to, joins every dataset back and registers
+ * each under the id the runtime asks for, before any runtime module runs. The deployment ships no tenant data at all.
  */
-import { joinDataset, type Json } from "./dataset-parts.js";
+import { composeDataset, type Json } from "./dataset-parts.js";
 
 export interface DatasetManifest {
   version: string;
-  frames: Record<string, Json>;
-  /** [dataset, part, first ordinal, row count] of each block. */
-  blocks: Array<[string, string, number, number]>;
+  layouts: Record<string, Json>;
+  sheets: Record<string, { rows: number; groups?: Array<[string, number, number]> }>;
+  /** [sheet, first ordinal, row count] of each block. */
+  blocks: Array<[string, number, number]>;
   /** Block indexes answered by each chunk. */
   chunks: number[][];
 }
@@ -17,6 +18,8 @@ export interface DatasetManifest {
 export interface DatasetFetch {
   manifest(): Promise<DatasetManifest>;
   chunk(version: string, index: number): Promise<{ version: string; blocks: Json[][] }>;
+  /** The governed workbook's sheets (the layouts' governed references read them). */
+  governed(): Promise<Record<string, Json[]>>;
 }
 
 /** A failure that a fresh load may cure: the data changed while it was loading. */
@@ -40,8 +43,8 @@ export async function loadDatasets(fetcher: DatasetFetch, progress: Progress = (
 }
 
 async function loadOnce(fetcher: DatasetFetch, progress: Progress, concurrency: number): Promise<Map<string, string>> {
-  const m = await fetcher.manifest();
-  const rows: Array<Json[] | undefined> = new Array(m.blocks.length);
+  const [m, governed] = await Promise.all([fetcher.manifest(), fetcher.governed()]);
+  const blockRows: Array<Json[] | undefined> = new Array(m.blocks.length);
   let done = 0;
   progress(0, m.chunks.length);
   let next = 0;
@@ -53,26 +56,38 @@ async function loadOnce(fetcher: DatasetFetch, progress: Progress, concurrency: 
       if (answer.version !== m.version || answer.blocks.length !== want.length) throw new DatasetsChanged();
       want.forEach((b, i) => {
         const block = answer.blocks[i]!;
-        if (!Array.isArray(block) || block.length !== m.blocks[b]![3]) throw new DatasetsChanged();
-        rows[b] = block;
+        if (!Array.isArray(block) || block.length !== m.blocks[b]![2]) throw new DatasetsChanged();
+        blockRows[b] = block;
       });
       progress(++done, m.chunks.length);
     }
   };
   await Promise.all(Array.from({ length: Math.min(concurrency, Math.max(1, m.chunks.length)) }, worker));
-  // Blocks are listed in order within each table: concatenating them restores each table's rows in order.
-  const tables = new Map<string, Map<string, Json[]>>();
-  m.blocks.forEach(([dataset, part], i) => {
-    const block = rows[i];
-    if (!block) throw new Error(`dataset block ${dataset}${part} #${i} was not loaded`);
-    const byPart = tables.get(dataset) ?? new Map<string, Json[]>();
-    const list = byPart.get(part) ?? [];
-    for (const r of block) list.push(r);
-    byPart.set(part, list);
-    tables.set(dataset, byPart);
+  // Blocks are listed in order within each sheet: concatenating them restores each sheet's rows in order.
+  const sheets = new Map<string, Json[]>();
+  m.blocks.forEach(([sheet], i) => {
+    const block = blockRows[i];
+    if (!block) throw new Error(`block ${i} of sheet "${sheet}" was not loaded`);
+    const rows = sheets.get(sheet) ?? [];
+    for (const r of block) rows.push(r);
+    sheets.set(sheet, rows);
   });
+  for (const [name, s] of Object.entries(m.sheets)) {
+    if ((sheets.get(name)?.length ?? 0) !== s.rows) throw new DatasetsChanged();
+    if (!sheets.has(name)) sheets.set(name, []);
+  }
+  const groups = new Map(Object.entries(m.sheets).map(([name, s]) => [name, new Map((s.groups ?? []).map(([k, first, count]) => [k, [first, count] as const]))]));
+  const source = {
+    sheet(name: string, group?: string) {
+      const rows = sheets.get(name);
+      if (!rows) return undefined;
+      if (group === undefined) return rows;
+      const g = groups.get(name)?.get(group);
+      return g ? rows.slice(g[0], g[0] + g[1]) : undefined;
+    },
+    governed: (sheet: string) => governed[sheet],
+  };
   const out = new Map<string, string>();
-  for (const [id, frame] of Object.entries(m.frames)) out.set(id, JSON.stringify(joinDataset(frame, tables.get(id) ?? new Map())));
-  for (const id of tables.keys()) if (!(id in m.frames)) throw new Error(`dataset ${id} has rows but no frame`);
+  for (const [id, layout] of Object.entries(m.layouts)) out.set(id, JSON.stringify(composeDataset(layout, source)));
   return out;
 }

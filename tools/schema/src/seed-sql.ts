@@ -1,8 +1,8 @@
 /**
  * Emits an idempotent SQL seed that loads the governed workbook into one tenant.
  *   tsx src/seed-sql.ts --tenant <uuid> --name "Tenant name" [--region IN] [--currency INR] [--workbook file] [--no-datasets] > seed.sql
- * The runtime's tenant datasets are included unless --no-datasets is given; --datasets-only emits only them, for a
- * tenant that already exists (its governed tables, and any edits made to them, are left as they are).
+ * The runtime catalogue (the runtime's tenant datasets) is included unless --no-datasets is given; --datasets-only
+ * emits only it, for a tenant that already exists (its governed tables, and any edits made to them, are left as they are).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -13,8 +13,9 @@ import { buildMasters } from "./masters.ts";
 import { loadVocabulary, tenantReferenceRows, type Vocabulary } from "./reference.ts";
 import type { Registry } from "./registry.ts";
 import { pgRecord, readSheets } from "./rows.ts";
-import { datasetSeedSql } from "./datasets-sql.ts";
-import type { Json } from "../../../packages/host-bridge/src/dataset-parts.ts";
+import { catalogueSeedSql } from "./datasets-sql.ts";
+import type { Catalogue } from "./runtime-catalogue.ts";
+import { buildRuntimeCatalogue } from "./runtime-catalogue-cli.ts";
 
 const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -28,17 +29,7 @@ export function literal(v: unknown): string {
   return `'${String(v).replace(/'/g, "''")}'`;
 }
 
-/** The runtime's tenant datasets (every bundled dataset that is not product content), in manifest order. */
-export function runtimeDatasets(root: string): Array<{ id: string; value: Json }> {
-  const src = join(root, "apps/runtime/src");
-  const manifest = JSON.parse(readFileSync(join(src, "manifest.json"), "utf8")) as { datasets: Record<string, unknown> };
-  const { product } = JSON.parse(readFileSync(join(src, "../dataset-classes.json"), "utf8")) as { product: Record<string, string> };
-  return Object.keys(manifest.datasets)
-    .filter((id) => !(id in product))
-    .map((id) => ({ id, value: JSON.parse(readFileSync(join(src, "data", `${id}.json`), "utf8")) as Json }));
-}
-
-export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }, vocab?: Vocabulary, corrections?: CorrectionSet, datasets?: ReadonlyArray<{ id: string; value: Json }>): string {
+export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; name: string; region: string; currency: string }, vocab?: Vocabulary, corrections?: CorrectionSet, catalogue?: Catalogue): string {
   if (!GUID.test(tenant.id)) throw new Error("tenant id must be a GUID");
   if (!/^[A-Z]{3}$/.test(tenant.currency)) throw new Error("currency must be ISO-4217");
   const raw = readSheets(workbook);
@@ -77,8 +68,8 @@ export function seedSql(reg: Registry, workbook: Buffer, tenant: { id: string; n
     if (built.issues.length) throw new Error(`masters have ${built.issues.length} problem(s); run check:data`);
     out.push(masterSeedSql(built.masters, tenant.id, reg.defaultCurrency));
   }
-  // The runtime's tenant datasets: the screens read these from the database after sign-in.
-  if (datasets) out.push(...datasetSeedSql(tenant.id, datasets));
+  // The runtime catalogue: the screens read their datasets from the database after sign-in.
+  if (catalogue) out.push(...catalogueSeedSql(tenant.id, catalogue));
   out.push("commit;");
   return out.join("\n") + "\n";
 }
@@ -97,15 +88,16 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if (process.argv.includes("--datasets-only")) {
     // Only the runtime datasets of an existing tenant: governed tables (and edits made to them) are left untouched.
     if (!GUID.test(tenantId)) throw new Error("tenant id must be a GUID");
-    process.stdout.write(["begin;", ...datasetSeedSql(tenantId, runtimeDatasets(root)), "commit;"].join("\n") + "\n");
-    process.exit(0);
+    // No process.exit here: piped output is written asynchronously and would be cut short.
+    process.stdout.write(["begin;", ...catalogueSeedSql(tenantId, buildRuntimeCatalogue(root)), "commit;"].join("\n") + "\n");
+  } else {
+    process.stdout.write(
+      seedSql(reg, wb, {
+        id: tenantId,
+        name: flag("name", "Seed tenant")!,
+        region: flag("region", "IN")!,
+        currency: flag("currency", reg.defaultCurrency)!,
+      }, loadVocabulary(root), loadCorrections(root), process.argv.includes("--no-datasets") ? undefined : buildRuntimeCatalogue(root)),
+    );
   }
-  process.stdout.write(
-    seedSql(reg, wb, {
-      id: tenantId,
-      name: flag("name", "Seed tenant")!,
-      region: flag("region", "IN")!,
-      currency: flag("currency", reg.defaultCurrency)!,
-    }, loadVocabulary(root), loadCorrections(root), process.argv.includes("--no-datasets") ? undefined : runtimeDatasets(root)),
-  );
 }

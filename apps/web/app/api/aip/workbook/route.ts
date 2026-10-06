@@ -14,14 +14,17 @@ export const maxDuration = 120;
 const PAGE = 1000;
 
 /**
- * GET /api/aip/workbook — the caller's tenant data as the runtime's governed workbook (204 when this deployment
- * serves the bundled data). Read with the caller's client: row-level security decides what is returned.
+ * GET /api/aip/workbook — the caller's tenant data as the runtime's governed workbook. Read with the caller's client:
+ * row-level security decides what is returned. Runtime datasets refer to governed sheets, so the host's dataset loader
+ * reads it on every deployment (?for=datasets); the x-aip-governed header says whether the runtime also overlays it at
+ * boot (AIP_DATA_SOURCE=governed). Without ?for=datasets a deployment that is not governed answers 204, as before.
  */
 export async function GET(req: Request): Promise<Response> {
   const denied = await guard(req);
   if (denied) return denied;
   try {
-    if (serverEnv().AIP_DATA_SOURCE !== "governed") return noContent();
+    const governed = serverEnv().AIP_DATA_SOURCE === "governed";
+    if (!governed && new URL(req.url).searchParams.get("for") !== "datasets") return noContent();
     const { db, membership } = await requestContext();
     // The version is read with the service client (members do not read the audit log); it reveals nothing but a tag.
     const admin = adminClient();
@@ -38,7 +41,7 @@ export async function GET(req: Request): Promise<Response> {
       },
     });
     // Private to this signed-in user, revalidated on every load: an unchanged tenant answers 304 at once.
-    const cache = { "cache-control": "private, no-cache", etag, vary: "accept-encoding, cookie" };
+    const cache = { "cache-control": "private, no-cache", etag, vary: "accept-encoding, cookie", "x-aip-governed": governed ? "1" : "0" };
     if (notModified(req.headers.get("if-none-match"), etag)) return new Response(null, { status: 304, headers: cache });
     const reader: SheetReader = {
       async read(schema, table) {
