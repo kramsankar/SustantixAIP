@@ -16,6 +16,10 @@ export interface GridColumn {
   ref?: string;
   scope?: string;
   fk?: string;
+  /** Sort (and compare) by this field's number instead of the shown text (screen tables of formatted figures). */
+  sortKey?: string;
+  /** Initial width in pixels (screen grids size columns to their content). */
+  width?: number;
 }
 
 export type SourceKind = "entity" | "view" | "sheet" | "registry";

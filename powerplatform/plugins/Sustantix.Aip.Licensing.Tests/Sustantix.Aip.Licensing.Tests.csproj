@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="..\Sustantix.Aip.Licensing\Core\*.cs" Link="Core\%(Filename)%(Extension)" />
     <None Include="fixtures\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\schema\change-model.json" Link="fixtures\change-model.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />

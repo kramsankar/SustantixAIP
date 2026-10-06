@@ -107,6 +107,18 @@ export class SupabaseGridStore implements GridStore, OptionStore {
   }
 }
 
+/** Current governed rows by business code, read as the caller (an import compares against what they may see). */
+export class SupabaseCurrentReader {
+  constructor(private readonly db: AipClient) {}
+
+  async rows(entity: string, codes: string[], tenantId: string): Promise<Array<Record<string, unknown>>> {
+    if (!/^[a-z][a-z0-9_]*$/.test(entity)) throw new Error(`invalid entity ${entity}`);
+    const { data, error } = await this.db.from(`v_${entity}`).select("*").eq("tenant_id", tenantId).in("code", codes);
+    if (error) throw new Error(`v_${entity}: ${error.message}`);
+    return (data ?? []) as Array<Record<string, unknown>>;
+  }
+}
+
 export class SupabaseChangeStore implements ChangeStore {
   constructor(private readonly db: AipClient) {}
 

@@ -25,9 +25,16 @@ if (governed) {
   const body = readFileSync(governed);
   await page.route("**/__aip_governed.json", (route) => route.fulfill({ status: 200, contentType: "application/json", body }));
   await page.addInitScript(() => {
-    window.__AIP_GOVERNED__ = { load: () => fetch("/__aip_governed.json").then((r) => r.json()) };
+    window.__AIP_GOVERNED__ = {
+      load: () => fetch("/__aip_governed.json").then((r) => r.json()),
+      // Phase 4: a save while governed data is active must reach the host (which writes it as a governed change).
+      save: async (state) => { (window.__AIP_GOVERNED_SAVES__ ??= []).push(state); },
+    };
   });
 }
+// Screen grids (phase 4): the host switch a standalone build reads, set before the runtime boots.
+const gridScreens = flag("grid-screens");
+if (gridScreens) await page.addInitScript((v) => localStorage.setItem("sx_aip_grid_screens", v), gridScreens);
 const license = flag("license");
 if (license) await page.addInitScript((t) => localStorage.setItem("sx_aip_license", t), license);
 await page.goto(url, { timeout: 240000, waitUntil: "load" });
@@ -75,11 +82,26 @@ for (const v of views) {
     const el = act[0] || document.getElementById("main");
     const tabs = [...el.querySelectorAll("button")].filter((b) => b.offsetParent && b.innerText.trim().length < 50).map((b) => b.innerText.trim()).filter(Boolean);
     const heads = [...el.querySelectorAll("h1,h2,h3,h4,.aip520-parent-heading")].filter((h) => h.offsetParent).map((h) => h.innerText.trim()).filter(Boolean);
-    return { id: el.id, tabs: [...new Set(tabs)].slice(0, 60), heads: heads.slice(0, 60), text: el.innerText.slice(0, 4000) };
+    return { id: el.id, tabs: [...new Set(tabs)].slice(0, 60), heads: heads.slice(0, 60), text: el.innerText.slice(0, 4000), grids: el.querySelectorAll(".sxg-screen").length };
   });
+  if (!gridScreens) delete info.grids;
   result.push({ ...v, ...info });
 }
 const topbar = await page.evaluate(() => document.querySelector("#topbar")?.innerText ?? "");
-writeFileSync(out, JSON.stringify({ capturedAt: clock ? new Date(clock).toISOString() : new Date().toISOString(), views: result, topbar, errors }, null, 1));
+// Governed mode: an edit to the governed data, saved by the runtime, arrives at the host with the edit in it.
+const governedSave = governed
+  ? await page.evaluate(async () => {
+      const wo = APM_IMPORTED_DATA["Work Orders"]?.[0];
+      if (!wo) return { reached: false };
+      const before = wo.Status;
+      wo.Status = "__crawl_probe__";
+      await saveEamState();
+      const saves = window.__AIP_GOVERNED_SAVES__ ?? [];
+      const reached = saves.length === 1 && saves[0].data["Work Orders"][0].Status === "__crawl_probe__";
+      wo.Status = before;
+      return { reached };
+    })
+  : undefined;
+writeFileSync(out, JSON.stringify({ capturedAt: clock ? new Date(clock).toISOString() : new Date().toISOString(), views: result, topbar, errors, ...(governedSave ? { governedSave } : {}) }, null, 1));
 console.log(`${result.length} views crawled · ${errors.length} page errors → ${out}`);
 await browser.close();

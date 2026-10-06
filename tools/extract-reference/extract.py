@@ -138,8 +138,9 @@ LOADER_NEW = (
 SEAMS = [
     (
         'async function saveEamState(){const db=await openEamDb();',
-        # While governed data is active the database is the system of record: the runtime does not persist snapshots.
-        'async function saveEamState(){if(window.__AIP_GOVERNED_ACTIVE__)return;if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();',
+        # While governed data is active the database is the system of record: no snapshot is kept; a save (a workbook
+        # import) goes to the host, which writes what changed as one governed change (phase 4).
+        'async function saveEamState(){if(window.__AIP_GOVERNED_ACTIVE__)return window.__AIP_GOVERNED__?.save?.({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});if(window.__AIP_PERSISTENCE__)return window.__AIP_PERSISTENCE__.save({data:APM_IMPORTED_DATA,lastImport:APM_LAST_IMPORT,mode:APM_DATA_MODE});const db=await openEamDb();',
     ),
     (
         'async function loadEamState(){const db=await openEamDb();',

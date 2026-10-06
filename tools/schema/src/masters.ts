@@ -1005,19 +1005,7 @@ export function buildMasters(reg: Registry, raw: Record<string, SourceRow[]>, vo
       if (!CODE_PATTERN.test(row.code)) issues.push({ master: def.name, code: row.code, column: "code", value: row.code, problem: "invalid code" });
       if (seen.has(row.code)) issues.push({ master: def.name, code: row.code, column: "code", value: row.code, problem: "duplicate code" });
       seen.add(row.code);
-      for (const c of def.columns) {
-        const v = row.values[c.name];
-        if (v === undefined) { row.values[c.name] = null; continue; }
-        if (c.kind !== "ref" || v === null) continue;
-        const binding: Binding = { column: `${def.name}.${c.name}`, ref: c.ref!, scope: c.scope, nullTokens: c.nullTokens };
-        const res = resolver.resolve(binding, v);
-        if (res.status === "null") row.values[c.name] = null;
-        else if (res.status === "code") row.values[c.name] = res.code;
-        else {
-          if (!c.optionalRef) issues.push({ master: def.name, code: row.code, column: c.name, value: String(v), problem: "unmapped reference" });
-          row.values[c.name] = null;
-        }
-      }
+      issues.push(...resolveControlled(def, row, resolver));
       for (const k of Object.keys(row.values)) if (!def.columns.some((c) => c.name === k)) throw new Error(`${def.name} row ${row.code} sets unknown column ${k}`);
     }
     codes.set(def.name, seen);
@@ -1039,6 +1027,25 @@ export function buildMasters(reg: Registry, raw: Record<string, SourceRow[]>, vo
     }
   }
   return { masters, issues, corrections: entries };
+}
+
+/** Resolves a row's controlled values to vocabulary codes in place; values not in the vocabulary are reported. */
+export function resolveControlled(def: MasterDef, row: MasterRow, resolver: Resolver): MasterIssue[] {
+  const issues: MasterIssue[] = [];
+  for (const c of def.columns) {
+    const v = row.values[c.name];
+    if (v === undefined) { row.values[c.name] = null; continue; }
+    if (c.kind !== "ref" || v === null) continue;
+    const binding: Binding = { column: `${def.name}.${c.name}`, ref: c.ref!, scope: c.scope, nullTokens: c.nullTokens };
+    const res = resolver.resolve(binding, v);
+    if (res.status === "null") row.values[c.name] = null;
+    else if (res.status === "code") row.values[c.name] = res.code;
+    else {
+      if (!c.optionalRef) issues.push({ master: def.name, code: row.code, column: c.name, value: String(v), problem: "unmapped reference" });
+      row.values[c.name] = null;
+    }
+  }
+  return issues;
 }
 
 /** Master codes by master name (for the integrity retarget). */

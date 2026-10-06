@@ -13,3 +13,6 @@ export * from "./analytics-sql.ts";
 export * from "./agents-sql.ts";
 export * from "./sheet-model.ts";
 export * from "./compat.ts";
+export * from "./changes-sql.ts";
+export * from "./sheet-import.ts";
+export * from "./changes-dataverse.ts";

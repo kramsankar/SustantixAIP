@@ -1,0 +1,8695 @@
+{
+ "version": 1,
+ "maxItems": 500,
+ "api": "sus_ApplyChangeSet",
+ "changeSetTable": "sus_changeset",
+ "key": "sus_name",
+ "entities": [
+  {
+   "name": "site",
+   "label": "Site",
+   "layer": "organisation",
+   "table": "sus_site",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "region",
+     "kind": "ref",
+     "attribute": "sus_regionid",
+     "target": "sus_ref_region",
+     "editable": true
+    },
+    {
+     "name": "timezone",
+     "kind": "text",
+     "attribute": "sus_timezone",
+     "editable": true
+    },
+    {
+     "name": "capacity_mw",
+     "kind": "integer",
+     "attribute": "sus_capacitymw",
+     "editable": true
+    },
+    {
+     "name": "inverter_count",
+     "kind": "integer",
+     "attribute": "sus_invertercount",
+     "editable": true
+    },
+    {
+     "name": "tracker_rows",
+     "kind": "integer",
+     "attribute": "sus_trackerrows",
+     "editable": true
+    },
+    {
+     "name": "string_count",
+     "kind": "integer",
+     "attribute": "sus_stringcount",
+     "editable": true
+    },
+    {
+     "name": "commission_year",
+     "kind": "integer",
+     "attribute": "sus_commissionyear",
+     "editable": true
+    },
+    {
+     "name": "grid_connection_k_v",
+     "kind": "integer",
+     "attribute": "sus_gridconnectionkv",
+     "editable": true
+    },
+    {
+     "name": "grid_connection_type",
+     "kind": "text",
+     "attribute": "sus_gridconnectiontype",
+     "editable": true
+    },
+    {
+     "name": "export_limit_mw",
+     "kind": "integer",
+     "attribute": "sus_exportlimitmw",
+     "editable": true
+    },
+    {
+     "name": "import_limit_mw",
+     "kind": "integer",
+     "attribute": "sus_importlimitmw",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "party",
+   "label": "Party",
+   "layer": "organisation",
+   "table": "sus_party",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "party_role",
+   "label": "Party role",
+   "layer": "organisation",
+   "table": "sus_party_role",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "party",
+     "kind": "fk",
+     "attribute": "sus_partyid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "role",
+     "kind": "text",
+     "attribute": "sus_role",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "equipment_model",
+   "label": "Equipment model",
+   "layer": "asset",
+   "table": "sus_equipment_model",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "model_number",
+     "kind": "text",
+     "attribute": "sus_modelnumber",
+     "editable": true
+    },
+    {
+     "name": "manufacturer",
+     "kind": "fk",
+     "attribute": "sus_manufacturerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "asset_class",
+     "kind": "ref",
+     "attribute": "sus_assetclassid",
+     "target": "sus_ref_asset_class",
+     "editable": true
+    },
+    {
+     "name": "technology",
+     "kind": "text",
+     "attribute": "sus_technology",
+     "editable": true
+    },
+    {
+     "name": "rated_power_w",
+     "kind": "decimal",
+     "attribute": "sus_ratedpowerw",
+     "editable": true
+    },
+    {
+     "name": "efficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_efficiencypct",
+     "editable": true
+    },
+    {
+     "name": "temperature_coefficient_pmax_pct_c",
+     "kind": "decimal",
+     "attribute": "sus_temperaturecoefficientpmaxpctc",
+     "editable": true
+    },
+    {
+     "name": "product_warranty_years",
+     "kind": "integer",
+     "attribute": "sus_productwarrantyyears",
+     "editable": true
+    },
+    {
+     "name": "performance_warranty_years",
+     "kind": "integer",
+     "attribute": "sus_performancewarrantyyears",
+     "editable": true
+    },
+    {
+     "name": "planning_service_life_years",
+     "kind": "integer",
+     "attribute": "sus_planningservicelifeyears",
+     "editable": true
+    },
+    {
+     "name": "document_reference",
+     "kind": "text",
+     "attribute": "sus_documentreference",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "asset",
+   "label": "Asset",
+   "layer": "asset",
+   "table": "sus_asset",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "parent",
+     "kind": "fk",
+     "attribute": "sus_parentid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "tag",
+     "kind": "text",
+     "attribute": "sus_tag",
+     "editable": true
+    },
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "asset_class",
+     "kind": "ref",
+     "attribute": "sus_assetclassid",
+     "target": "sus_ref_asset_class",
+     "editable": true
+    },
+    {
+     "name": "equipment_model",
+     "kind": "fk",
+     "attribute": "sus_equipmentmodelid",
+     "target": "sus_equipment_model",
+     "editable": true
+    },
+    {
+     "name": "manufacturer",
+     "kind": "fk",
+     "attribute": "sus_manufacturerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "operating_status",
+     "kind": "ref",
+     "attribute": "sus_operatingstatusid",
+     "target": "sus_ref_status",
+     "scope": "asset_operating",
+     "editable": true
+    },
+    {
+     "name": "install_year",
+     "kind": "integer",
+     "attribute": "sus_installyear",
+     "editable": true
+    },
+    {
+     "name": "rated_capacity_mw",
+     "kind": "decimal",
+     "attribute": "sus_ratedcapacitymw",
+     "editable": true
+    },
+    {
+     "name": "module_quantity",
+     "kind": "integer",
+     "attribute": "sus_modulequantity",
+     "editable": true
+    },
+    {
+     "name": "granularity",
+     "kind": "text",
+     "attribute": "sus_granularity",
+     "editable": true
+    },
+    {
+     "name": "cost_centre",
+     "kind": "text",
+     "attribute": "sus_costcentre",
+     "editable": true
+    },
+    {
+     "name": "health_score",
+     "kind": "decimal",
+     "attribute": "sus_healthscore",
+     "editable": true
+    },
+    {
+     "name": "risk_band",
+     "kind": "ref",
+     "attribute": "sus_riskbandid",
+     "target": "sus_ref_risk_band",
+     "editable": true
+    },
+    {
+     "name": "last_maintenance_date",
+     "kind": "date",
+     "attribute": "sus_lastmaintenancedate",
+     "editable": true
+    },
+    {
+     "name": "capacity_basis",
+     "kind": "text",
+     "attribute": "sus_capacitybasis",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "evidence_reference",
+     "kind": "text",
+     "attribute": "sus_evidencereference",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "asset_inverter",
+   "label": "Inverter configuration",
+   "layer": "asset",
+   "table": "sus_asset_inverter",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "tracker",
+     "kind": "fk",
+     "attribute": "sus_trackerid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "block_id",
+     "kind": "text",
+     "attribute": "sus_blockid",
+     "editable": true
+    },
+    {
+     "name": "ac_rating_mw",
+     "kind": "decimal",
+     "attribute": "sus_acratingmw",
+     "editable": true
+    },
+    {
+     "name": "dc_capacity_mwp",
+     "kind": "decimal",
+     "attribute": "sus_dccapacitymwp",
+     "editable": true
+    },
+    {
+     "name": "dc_ac_ratio",
+     "kind": "decimal",
+     "attribute": "sus_dcacratio",
+     "editable": true
+    },
+    {
+     "name": "strings",
+     "kind": "integer",
+     "attribute": "sus_strings",
+     "editable": true
+    },
+    {
+     "name": "modules_per_string",
+     "kind": "integer",
+     "attribute": "sus_modulesperstring",
+     "editable": true
+    },
+    {
+     "name": "module_wp",
+     "kind": "integer",
+     "attribute": "sus_modulewp",
+     "editable": true
+    },
+    {
+     "name": "mppt_count",
+     "kind": "integer",
+     "attribute": "sus_mpptcount",
+     "editable": true
+    },
+    {
+     "name": "scb_count",
+     "kind": "integer",
+     "attribute": "sus_scbcount",
+     "editable": true
+    },
+    {
+     "name": "nominal_efficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_nominalefficiencypct",
+     "editable": true
+    },
+    {
+     "name": "dc_voltage_nominal_v",
+     "kind": "integer",
+     "attribute": "sus_dcvoltagenominalv",
+     "editable": true
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "asset_bess",
+   "label": "BESS configuration",
+   "layer": "asset",
+   "table": "sus_asset_bess",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "cell_manufacturer",
+     "kind": "fk",
+     "attribute": "sus_cellmanufacturerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "pcs_manufacturer",
+     "kind": "fk",
+     "attribute": "sus_pcsmanufacturerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "ems_vendor",
+     "kind": "fk",
+     "attribute": "sus_emsvendorid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "bms_vendor",
+     "kind": "fk",
+     "attribute": "sus_bmsvendorid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "ltsa_provider",
+     "kind": "fk",
+     "attribute": "sus_ltsaproviderid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "bess_name",
+     "kind": "text",
+     "attribute": "sus_bessname",
+     "editable": true
+    },
+    {
+     "name": "configuration",
+     "kind": "text",
+     "attribute": "sus_configuration",
+     "editable": true
+    },
+    {
+     "name": "rated_power_mw",
+     "kind": "integer",
+     "attribute": "sus_ratedpowermw",
+     "editable": true
+    },
+    {
+     "name": "contracted_energy_mwh",
+     "kind": "integer",
+     "attribute": "sus_contractedenergymwh",
+     "editable": true
+    },
+    {
+     "name": "nameplate_energy_mwh_bol",
+     "kind": "decimal",
+     "attribute": "sus_nameplateenergymwhbol",
+     "editable": true
+    },
+    {
+     "name": "duration_h",
+     "kind": "integer",
+     "attribute": "sus_durationh",
+     "editable": true
+    },
+    {
+     "name": "usable_so_c_min_pct",
+     "kind": "integer",
+     "attribute": "sus_usablesocminpct",
+     "editable": true
+    },
+    {
+     "name": "usable_so_c_max_pct",
+     "kind": "integer",
+     "attribute": "sus_usablesocmaxpct",
+     "editable": true
+    },
+    {
+     "name": "commissioning_date",
+     "kind": "date",
+     "attribute": "sus_commissioningdate",
+     "editable": true
+    },
+    {
+     "name": "design_life_years",
+     "kind": "integer",
+     "attribute": "sus_designlifeyears",
+     "editable": true
+    },
+    {
+     "name": "container_count",
+     "kind": "integer",
+     "attribute": "sus_containercount",
+     "editable": true
+    },
+    {
+     "name": "pcs_count",
+     "kind": "integer",
+     "attribute": "sus_pcscount",
+     "editable": true
+    },
+    {
+     "name": "mv_transformer_count",
+     "kind": "integer",
+     "attribute": "sus_mvtransformercount",
+     "editable": true
+    },
+    {
+     "name": "point_of_interconnection",
+     "kind": "text",
+     "attribute": "sus_pointofinterconnection",
+     "editable": true
+    },
+    {
+     "name": "charging_source",
+     "kind": "text",
+     "attribute": "sus_chargingsource",
+     "editable": true
+    },
+    {
+     "name": "commercial_model",
+     "kind": "text",
+     "attribute": "sus_commercialmodel",
+     "editable": true
+    },
+    {
+     "name": "chemistry",
+     "kind": "text",
+     "attribute": "sus_chemistry",
+     "editable": true
+    },
+    {
+     "name": "cell_format",
+     "kind": "text",
+     "attribute": "sus_cellformat",
+     "editable": true
+    },
+    {
+     "name": "cell_nominal_voltage_v",
+     "kind": "decimal",
+     "attribute": "sus_cellnominalvoltagev",
+     "editable": true
+    },
+    {
+     "name": "cell_capacity_ah",
+     "kind": "integer",
+     "attribute": "sus_cellcapacityah",
+     "editable": true
+    },
+    {
+     "name": "cells_per_module",
+     "kind": "integer",
+     "attribute": "sus_cellspermodule",
+     "editable": true
+    },
+    {
+     "name": "modules_per_rack",
+     "kind": "integer",
+     "attribute": "sus_modulesperrack",
+     "editable": true
+    },
+    {
+     "name": "racks_per_container",
+     "kind": "integer",
+     "attribute": "sus_rackspercontainer",
+     "editable": true
+    },
+    {
+     "name": "container_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_containerenergymwh",
+     "editable": true
+    },
+    {
+     "name": "container_type",
+     "kind": "text",
+     "attribute": "sus_containertype",
+     "editable": true
+    },
+    {
+     "name": "rack_nominal_voltage_v",
+     "kind": "integer",
+     "attribute": "sus_racknominalvoltagev",
+     "editable": true
+    },
+    {
+     "name": "dc_voltage_min_v",
+     "kind": "integer",
+     "attribute": "sus_dcvoltageminv",
+     "editable": true
+    },
+    {
+     "name": "dc_voltage_max_v",
+     "kind": "integer",
+     "attribute": "sus_dcvoltagemaxv",
+     "editable": true
+    },
+    {
+     "name": "pcs_unit_rating_mw",
+     "kind": "decimal",
+     "attribute": "sus_pcsunitratingmw",
+     "editable": true
+    },
+    {
+     "name": "pcs_nominal_efficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_pcsnominalefficiencypct",
+     "editable": true
+    },
+    {
+     "name": "mv_transformer_mva",
+     "kind": "decimal",
+     "attribute": "sus_mvtransformermva",
+     "editable": true
+    },
+    {
+     "name": "mv_transformer_efficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_mvtransformerefficiencypct",
+     "editable": true
+    },
+    {
+     "name": "battery_dc_rte_pct",
+     "kind": "decimal",
+     "attribute": "sus_batterydcrtepct",
+     "editable": true
+    },
+    {
+     "name": "self_discharge_pct_per_day",
+     "kind": "decimal",
+     "attribute": "sus_selfdischargepctperday",
+     "editable": true
+    },
+    {
+     "name": "aux_base_k_w_per_container",
+     "kind": "integer",
+     "attribute": "sus_auxbasekwpercontainer",
+     "editable": true
+    },
+    {
+     "name": "aux_hvac_k_w_per_container_per_10_c",
+     "kind": "decimal",
+     "attribute": "sus_auxhvackwpercontainerper10c",
+     "editable": true
+    },
+    {
+     "name": "aux_throughput_coeff_pct",
+     "kind": "decimal",
+     "attribute": "sus_auxthroughputcoeffpct",
+     "editable": true
+    },
+    {
+     "name": "thermal_management",
+     "kind": "text",
+     "attribute": "sus_thermalmanagement",
+     "editable": true
+    },
+    {
+     "name": "rated_c_rate",
+     "kind": "decimal",
+     "attribute": "sus_ratedcrate",
+     "editable": true
+    },
+    {
+     "name": "so_c_operating_min_pct",
+     "kind": "integer",
+     "attribute": "sus_socoperatingminpct",
+     "editable": true
+    },
+    {
+     "name": "so_c_operating_max_pct",
+     "kind": "integer",
+     "attribute": "sus_socoperatingmaxpct",
+     "editable": true
+    },
+    {
+     "name": "so_c_bms_hard_min_pct",
+     "kind": "integer",
+     "attribute": "sus_socbmshardminpct",
+     "editable": true
+    },
+    {
+     "name": "so_c_bms_hard_max_pct",
+     "kind": "integer",
+     "attribute": "sus_socbmshardmaxpct",
+     "editable": true
+    },
+    {
+     "name": "cell_temp_operating_min_c",
+     "kind": "integer",
+     "attribute": "sus_celltempoperatingminc",
+     "editable": true
+    },
+    {
+     "name": "cell_temp_operating_max_c",
+     "kind": "integer",
+     "attribute": "sus_celltempoperatingmaxc",
+     "editable": true
+    },
+    {
+     "name": "cell_temp_alarm_c",
+     "kind": "integer",
+     "attribute": "sus_celltempalarmc",
+     "editable": true
+    },
+    {
+     "name": "cell_temp_trip_c",
+     "kind": "integer",
+     "attribute": "sus_celltemptripc",
+     "editable": true
+    },
+    {
+     "name": "cell_voltage_min_v",
+     "kind": "decimal",
+     "attribute": "sus_cellvoltageminv",
+     "editable": true
+    },
+    {
+     "name": "cell_voltage_max_v",
+     "kind": "decimal",
+     "attribute": "sus_cellvoltagemaxv",
+     "editable": true
+    },
+    {
+     "name": "max_charge_mw",
+     "kind": "integer",
+     "attribute": "sus_maxchargemw",
+     "editable": true
+    },
+    {
+     "name": "max_discharge_mw",
+     "kind": "integer",
+     "attribute": "sus_maxdischargemw",
+     "editable": true
+    },
+    {
+     "name": "max_c_rate",
+     "kind": "decimal",
+     "attribute": "sus_maxcrate",
+     "editable": true
+    },
+    {
+     "name": "ramp_rate_pct_per_min",
+     "kind": "integer",
+     "attribute": "sus_rampratepctpermin",
+     "editable": true
+    },
+    {
+     "name": "max_cycles_per_day",
+     "kind": "integer",
+     "attribute": "sus_maxcyclesperday",
+     "editable": true
+    },
+    {
+     "name": "residual_tolerance_pct",
+     "kind": "integer",
+     "attribute": "sus_residualtolerancepct",
+     "editable": true
+    },
+    {
+     "name": "so_c_drift_tolerance_pct",
+     "kind": "integer",
+     "attribute": "sus_socdrifttolerancepct",
+     "editable": true
+    },
+    {
+     "name": "source_document",
+     "kind": "text",
+     "attribute": "sus_sourcedocument",
+     "editable": true
+    },
+    {
+     "name": "visual_inspection_interval_days",
+     "kind": "integer",
+     "attribute": "sus_visualinspectionintervaldays",
+     "editable": true
+    },
+    {
+     "name": "thermography_interval_days",
+     "kind": "integer",
+     "attribute": "sus_thermographyintervaldays",
+     "editable": true
+    },
+    {
+     "name": "coolant_hvac_service_interval_days",
+     "kind": "integer",
+     "attribute": "sus_coolanthvacserviceintervaldays",
+     "editable": true
+    },
+    {
+     "name": "capacity_test_interval_days",
+     "kind": "integer",
+     "attribute": "sus_capacitytestintervaldays",
+     "editable": true
+    },
+    {
+     "name": "fire_system_inspection_interval_days",
+     "kind": "integer",
+     "attribute": "sus_firesysteminspectionintervaldays",
+     "editable": true
+    },
+    {
+     "name": "last_visual_inspection",
+     "kind": "date",
+     "attribute": "sus_lastvisualinspection",
+     "editable": true
+    },
+    {
+     "name": "last_thermography",
+     "kind": "date",
+     "attribute": "sus_lastthermography",
+     "editable": true
+    },
+    {
+     "name": "last_hvac_service",
+     "kind": "date",
+     "attribute": "sus_lasthvacservice",
+     "editable": true
+    },
+    {
+     "name": "ltsa_availability_guarantee_pct",
+     "kind": "integer",
+     "attribute": "sus_ltsaavailabilityguaranteepct",
+     "editable": true
+    },
+    {
+     "name": "applicable_regulation",
+     "kind": "text",
+     "attribute": "sus_applicableregulation",
+     "editable": true
+    },
+    {
+     "name": "system_voltage_class",
+     "kind": "text",
+     "attribute": "sus_systemvoltageclass",
+     "editable": true
+    },
+    {
+     "name": "containers_with_auto_suppression",
+     "kind": "integer",
+     "attribute": "sus_containerswithautosuppression",
+     "editable": true
+    },
+    {
+     "name": "suppression_agent",
+     "kind": "text",
+     "attribute": "sus_suppressionagent",
+     "editable": true
+    },
+    {
+     "name": "gas_smoke_heat_flame_detection",
+     "kind": "text",
+     "attribute": "sus_gassmokeheatflamedetection",
+     "editable": true
+    },
+    {
+     "name": "explosion_venting_deflagration_panels",
+     "kind": "text",
+     "attribute": "sus_explosionventingdeflagrationpanels",
+     "editable": true
+    },
+    {
+     "name": "forced_ventilation_auto_louvers",
+     "kind": "text",
+     "attribute": "sus_forcedventilationautolouvers",
+     "editable": true
+    },
+    {
+     "name": "two_fault_tolerance_design_review",
+     "kind": "text",
+     "attribute": "sus_twofaulttolerancedesignreview",
+     "editable": true
+    },
+    {
+     "name": "last_third_party_fire_audit",
+     "kind": "date",
+     "attribute": "sus_lastthirdpartyfireaudit",
+     "editable": true
+    },
+    {
+     "name": "fire_audit_due_by",
+     "kind": "date",
+     "attribute": "sus_fireauditdueby",
+     "editable": true
+    },
+    {
+     "name": "perimeter_fence_m",
+     "kind": "integer",
+     "attribute": "sus_perimeterfencem",
+     "editable": true
+    },
+    {
+     "name": "cctv_motion_detection",
+     "kind": "text",
+     "attribute": "sus_cctvmotiondetection",
+     "editable": true
+    },
+    {
+     "name": "emergency_stop_auto_and_manual",
+     "kind": "text",
+     "attribute": "sus_emergencystopautoandmanual",
+     "editable": true
+    },
+    {
+     "name": "fire_brigade_noc",
+     "kind": "text",
+     "attribute": "sus_firebrigadenoc",
+     "editable": true
+    },
+    {
+     "name": "evidence_document_id",
+     "kind": "text",
+     "attribute": "sus_evidencedocumentid",
+     "editable": true
+    },
+    {
+     "name": "ems_id",
+     "kind": "text",
+     "attribute": "sus_emsid",
+     "editable": true
+    },
+    {
+     "name": "ppc_id",
+     "kind": "text",
+     "attribute": "sus_ppcid",
+     "editable": true
+    },
+    {
+     "name": "scada_protocol",
+     "kind": "text",
+     "attribute": "sus_scadaprotocol",
+     "editable": true
+    },
+    {
+     "name": "bms_to_ems_protocol",
+     "kind": "text",
+     "attribute": "sus_bmstoemsprotocol",
+     "editable": true
+    },
+    {
+     "name": "telemetry_resolution_s",
+     "kind": "integer",
+     "attribute": "sus_telemetryresolutions",
+     "editable": true
+    },
+    {
+     "name": "historian_aggregation",
+     "kind": "text",
+     "attribute": "sus_historianaggregation",
+     "editable": true
+    },
+    {
+     "name": "tag_prefix",
+     "kind": "text",
+     "attribute": "sus_tagprefix",
+     "editable": true
+    },
+    {
+     "name": "tag_map",
+     "kind": "text",
+     "attribute": "sus_tagmap",
+     "editable": true
+    },
+    {
+     "name": "integration_status",
+     "kind": "text",
+     "attribute": "sus_integrationstatus",
+     "editable": true
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "pv_array",
+   "label": "PV array",
+   "layer": "asset",
+   "table": "sus_pv_array",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "module_quantity",
+     "kind": "integer",
+     "attribute": "sus_modulequantity",
+     "editable": true
+    },
+    {
+     "name": "commission_year",
+     "kind": "integer",
+     "attribute": "sus_commissionyear",
+     "editable": true
+    },
+    {
+     "name": "data_status",
+     "kind": "text",
+     "attribute": "sus_datastatus",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "pv_module_group",
+   "label": "PV module group",
+   "layer": "asset",
+   "table": "sus_pv_module_group",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "block",
+     "kind": "text",
+     "attribute": "sus_block",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "reported_quantity",
+     "kind": "integer",
+     "attribute": "sus_reportedquantity",
+     "editable": true
+    },
+    {
+     "name": "commission_year",
+     "kind": "integer",
+     "attribute": "sus_commissionyear",
+     "editable": true
+    },
+    {
+     "name": "notes",
+     "kind": "text",
+     "attribute": "sus_notes",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "pv_population_segment",
+   "label": "PV population segment",
+   "layer": "asset",
+   "table": "sus_pv_population_segment",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "module_group",
+     "kind": "fk",
+     "attribute": "sus_modulegroupid",
+     "target": "sus_pv_module_group",
+     "editable": true
+    },
+    {
+     "name": "equipment_model",
+     "kind": "fk",
+     "attribute": "sus_equipmentmodelid",
+     "target": "sus_equipment_model",
+     "editable": true
+    },
+    {
+     "name": "batch_id",
+     "kind": "text",
+     "attribute": "sus_batchid",
+     "editable": true
+    },
+    {
+     "name": "installation_date",
+     "kind": "date",
+     "attribute": "sus_installationdate",
+     "editable": true
+    },
+    {
+     "name": "balance_as_of",
+     "kind": "date",
+     "attribute": "sus_balanceasof",
+     "editable": true
+    },
+    {
+     "name": "opening_quantity",
+     "kind": "integer",
+     "attribute": "sus_openingquantity",
+     "editable": true
+    },
+    {
+     "name": "evidence_reference",
+     "kind": "text",
+     "attribute": "sus_evidencereference",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "pv_module",
+   "label": "PV module",
+   "layer": "asset",
+   "table": "sus_pv_module",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "segment",
+     "kind": "fk",
+     "attribute": "sus_segmentid",
+     "target": "sus_pv_population_segment",
+     "editable": true
+    },
+    {
+     "name": "serial_number",
+     "kind": "text",
+     "attribute": "sus_serialnumber",
+     "editable": true
+    },
+    {
+     "name": "position",
+     "kind": "text",
+     "attribute": "sus_position",
+     "editable": true
+    },
+    {
+     "name": "installed_date",
+     "kind": "date",
+     "attribute": "sus_installeddate",
+     "editable": true
+    },
+    {
+     "name": "removed_date",
+     "kind": "date",
+     "attribute": "sus_removeddate",
+     "editable": true
+    },
+    {
+     "name": "removal_status",
+     "kind": "text",
+     "attribute": "sus_removalstatus",
+     "editable": true
+    },
+    {
+     "name": "evidence_reference",
+     "kind": "text",
+     "attribute": "sus_evidencereference",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "part",
+   "label": "Part",
+   "layer": "supply",
+   "table": "sus_part",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "category",
+     "kind": "text",
+     "attribute": "sus_category",
+     "editable": true
+    },
+    {
+     "name": "criticality",
+     "kind": "ref",
+     "attribute": "sus_criticalityid",
+     "target": "sus_ref_severity",
+     "editable": true
+    },
+    {
+     "name": "preferred_supplier",
+     "kind": "fk",
+     "attribute": "sus_preferredsupplierid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "unit_cost",
+     "kind": "money",
+     "attribute": "sus_unitcost",
+     "editable": true
+    },
+    {
+     "name": "lead_time_days",
+     "kind": "integer",
+     "attribute": "sus_leadtimedays",
+     "editable": true
+    },
+    {
+     "name": "reorder_point",
+     "kind": "integer",
+     "attribute": "sus_reorderpoint",
+     "editable": true
+    },
+    {
+     "name": "max_level",
+     "kind": "integer",
+     "attribute": "sus_maxlevel",
+     "editable": true
+    },
+    {
+     "name": "storage_location",
+     "kind": "text",
+     "attribute": "sus_storagelocation",
+     "editable": true
+    },
+    {
+     "name": "replenishment_mode",
+     "kind": "text",
+     "attribute": "sus_replenishmentmode",
+     "editable": true
+    },
+    {
+     "name": "shelf_life_control",
+     "kind": "text",
+     "attribute": "sus_shelflifecontrol",
+     "editable": true
+    },
+    {
+     "name": "compatible_model",
+     "kind": "fk",
+     "attribute": "sus_compatiblemodelid",
+     "target": "sus_equipment_model",
+     "editable": true
+    },
+    {
+     "name": "compatibility_notes",
+     "kind": "text",
+     "attribute": "sus_compatibilitynotes",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "part_stock",
+   "label": "Part stock",
+   "layer": "supply",
+   "table": "sus_part_stock",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "part",
+     "kind": "fk",
+     "attribute": "sus_partid",
+     "target": "sus_part",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "on_hand_qty",
+     "kind": "integer",
+     "attribute": "sus_onhandqty",
+     "editable": true
+    },
+    {
+     "name": "reserved_qty",
+     "kind": "integer",
+     "attribute": "sus_reservedqty",
+     "editable": true
+    },
+    {
+     "name": "quality_hold_qty",
+     "kind": "integer",
+     "attribute": "sus_qualityholdqty",
+     "editable": true
+    },
+    {
+     "name": "in_transit_qty",
+     "kind": "integer",
+     "attribute": "sus_intransitqty",
+     "editable": true
+    },
+    {
+     "name": "available_qty",
+     "kind": "integer",
+     "attribute": "sus_availableqty",
+     "editable": true
+    },
+    {
+     "name": "reorder_point_qty",
+     "kind": "integer",
+     "attribute": "sus_reorderpointqty",
+     "editable": true
+    },
+    {
+     "name": "safety_stock_qty",
+     "kind": "integer",
+     "attribute": "sus_safetystockqty",
+     "editable": true
+    },
+    {
+     "name": "lead_time_days",
+     "kind": "integer",
+     "attribute": "sus_leadtimedays",
+     "editable": true
+    },
+    {
+     "name": "supplier_status",
+     "kind": "text",
+     "attribute": "sus_supplierstatus",
+     "editable": true
+    },
+    {
+     "name": "erp_source",
+     "kind": "text",
+     "attribute": "sus_erpsource",
+     "editable": true
+    },
+    {
+     "name": "source_record_id",
+     "kind": "text",
+     "attribute": "sus_sourcerecordid",
+     "editable": true
+    },
+    {
+     "name": "snapshot_at",
+     "kind": "datetime",
+     "attribute": "sus_snapshotat",
+     "editable": true
+    },
+    {
+     "name": "opening_qty",
+     "kind": "integer",
+     "attribute": "sus_openingqty",
+     "editable": true
+    },
+    {
+     "name": "receipts_30_d",
+     "kind": "integer",
+     "attribute": "sus_receipts30d",
+     "editable": true
+    },
+    {
+     "name": "issues_30_d",
+     "kind": "integer",
+     "attribute": "sus_issues30d",
+     "editable": true
+    },
+    {
+     "name": "closing_qty",
+     "kind": "integer",
+     "attribute": "sus_closingqty",
+     "editable": true
+    },
+    {
+     "name": "avg_daily_consumption",
+     "kind": "decimal",
+     "attribute": "sus_avgdailyconsumption",
+     "editable": true
+    },
+    {
+     "name": "days_of_inventory",
+     "kind": "decimal",
+     "attribute": "sus_daysofinventory",
+     "editable": true
+    },
+    {
+     "name": "as_of_date",
+     "kind": "date",
+     "attribute": "sus_asofdate",
+     "editable": true
+    },
+    {
+     "name": "stock_status",
+     "kind": "ref",
+     "attribute": "sus_stockstatusid",
+     "target": "sus_ref_status",
+     "scope": "stock",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "rate_card",
+   "label": "Rate",
+   "layer": "supply",
+   "table": "sus_rate_card",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "rate_type",
+     "kind": "text",
+     "attribute": "sus_ratetype",
+     "editable": true
+    },
+    {
+     "name": "subject_type",
+     "kind": "text",
+     "attribute": "sus_subjecttype",
+     "editable": true
+    },
+    {
+     "name": "subject",
+     "kind": "text",
+     "attribute": "sus_subject",
+     "editable": true
+    },
+    {
+     "name": "component",
+     "kind": "text",
+     "attribute": "sus_component",
+     "editable": true
+    },
+    {
+     "name": "amount",
+     "kind": "money",
+     "attribute": "sus_amount",
+     "editable": true
+    },
+    {
+     "name": "per",
+     "kind": "text",
+     "attribute": "sus_per",
+     "editable": true
+    },
+    {
+     "name": "value",
+     "kind": "decimal",
+     "attribute": "sus_value",
+     "editable": true
+    },
+    {
+     "name": "unit",
+     "kind": "ref",
+     "attribute": "sus_unitid",
+     "target": "sus_ref_unit",
+     "editable": true
+    },
+    {
+     "name": "valid_from",
+     "kind": "date",
+     "attribute": "sus_validfrom",
+     "editable": true
+    },
+    {
+     "name": "valid_to",
+     "kind": "date",
+     "attribute": "sus_validto",
+     "editable": true
+    },
+    {
+     "name": "previous_value",
+     "kind": "decimal",
+     "attribute": "sus_previousvalue",
+     "editable": true
+    },
+    {
+     "name": "basis",
+     "kind": "text",
+     "attribute": "sus_basis",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "source_object",
+     "kind": "text",
+     "attribute": "sus_sourceobject",
+     "editable": true
+    },
+    {
+     "name": "source_url",
+     "kind": "url",
+     "attribute": "sus_sourceurl",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "crew",
+   "label": "Crew",
+   "layer": "workforce",
+   "table": "sus_crew",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "crew_size",
+     "kind": "integer",
+     "attribute": "sus_crewsize",
+     "editable": true
+    },
+    {
+     "name": "standard_hours_day",
+     "kind": "integer",
+     "attribute": "sus_standardhoursday",
+     "editable": true
+    },
+    {
+     "name": "ot_multiplier",
+     "kind": "decimal",
+     "attribute": "sus_otmultiplier",
+     "editable": true
+    },
+    {
+     "name": "holiday_multiplier",
+     "kind": "decimal",
+     "attribute": "sus_holidaymultiplier",
+     "editable": true
+    },
+    {
+     "name": "night_shift_multiplier",
+     "kind": "decimal",
+     "attribute": "sus_nightshiftmultiplier",
+     "editable": true
+    },
+    {
+     "name": "weekly_hours_cap",
+     "kind": "integer",
+     "attribute": "sus_weeklyhourscap",
+     "editable": true
+    },
+    {
+     "name": "ot_approval_required",
+     "kind": "text",
+     "attribute": "sus_otapprovalrequired",
+     "editable": true
+    },
+    {
+     "name": "holiday_work_approval",
+     "kind": "text",
+     "attribute": "sus_holidayworkapproval",
+     "editable": true
+    },
+    {
+     "name": "rate_effective_from",
+     "kind": "date",
+     "attribute": "sus_rateeffectivefrom",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "technician",
+   "label": "Technician",
+   "layer": "workforce",
+   "table": "sus_technician",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "crew",
+     "kind": "fk",
+     "attribute": "sus_crewid",
+     "target": "sus_crew",
+     "editable": true
+    },
+    {
+     "name": "home_site",
+     "kind": "fk",
+     "attribute": "sus_homesiteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "role",
+     "kind": "text",
+     "attribute": "sus_role",
+     "editable": true
+    },
+    {
+     "name": "primary_skill",
+     "kind": "ref",
+     "attribute": "sus_primaryskillid",
+     "target": "sus_ref_skill",
+     "editable": true
+    },
+    {
+     "name": "skill_level",
+     "kind": "text",
+     "attribute": "sus_skilllevel",
+     "editable": true
+    },
+    {
+     "name": "certification_or_control",
+     "kind": "text",
+     "attribute": "sus_certificationorcontrol",
+     "editable": true
+    },
+    {
+     "name": "valid_to",
+     "kind": "date",
+     "attribute": "sus_validto",
+     "editable": true
+    },
+    {
+     "name": "standard_hours_day",
+     "kind": "integer",
+     "attribute": "sus_standardhoursday",
+     "editable": true
+    },
+    {
+     "name": "productivity_factor",
+     "kind": "decimal",
+     "attribute": "sus_productivityfactor",
+     "editable": true
+    },
+    {
+     "name": "default_shift",
+     "kind": "text",
+     "attribute": "sus_defaultshift",
+     "editable": true
+    },
+    {
+     "name": "work_days",
+     "kind": "text",
+     "attribute": "sus_workdays",
+     "editable": true
+    },
+    {
+     "name": "ot_eligible",
+     "kind": "text",
+     "attribute": "sus_oteligible",
+     "editable": true
+    },
+    {
+     "name": "max_ot_hours_day",
+     "kind": "integer",
+     "attribute": "sus_maxothoursday",
+     "editable": true
+    },
+    {
+     "name": "max_ot_hours_week",
+     "kind": "integer",
+     "attribute": "sus_maxothoursweek",
+     "editable": true
+    },
+    {
+     "name": "holiday_work_eligible",
+     "kind": "text",
+     "attribute": "sus_holidayworkeligible",
+     "editable": true
+    },
+    {
+     "name": "travel_eligible",
+     "kind": "text",
+     "attribute": "sus_traveleligible",
+     "editable": true
+    },
+    {
+     "name": "availability_status",
+     "kind": "text",
+     "attribute": "sus_availabilitystatus",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "resource",
+   "label": "Planning resource",
+   "layer": "workforce",
+   "table": "sus_resource",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "resource_type",
+     "kind": "text",
+     "attribute": "sus_resourcetype",
+     "editable": true
+    },
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "crew",
+     "kind": "fk",
+     "attribute": "sus_crewid",
+     "target": "sus_crew",
+     "editable": true
+    },
+    {
+     "name": "home",
+     "kind": "text",
+     "attribute": "sus_home",
+     "editable": true
+    },
+    {
+     "name": "primary_skill_or_type",
+     "kind": "text",
+     "attribute": "sus_primaryskillortype",
+     "editable": true
+    },
+    {
+     "name": "skill_level",
+     "kind": "text",
+     "attribute": "sus_skilllevel",
+     "editable": true
+    },
+    {
+     "name": "certification_or_control",
+     "kind": "text",
+     "attribute": "sus_certificationorcontrol",
+     "editable": true
+    },
+    {
+     "name": "valid_to",
+     "kind": "date",
+     "attribute": "sus_validto",
+     "editable": true
+    },
+    {
+     "name": "availability",
+     "kind": "text",
+     "attribute": "sus_availability",
+     "editable": true
+    },
+    {
+     "name": "capacity_or_payload",
+     "kind": "text",
+     "attribute": "sus_capacityorpayload",
+     "editable": true
+    },
+    {
+     "name": "fuel_type",
+     "kind": "text",
+     "attribute": "sus_fueltype",
+     "editable": true
+    },
+    {
+     "name": "ghg_boundary",
+     "kind": "text",
+     "attribute": "sus_ghgboundary",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "vehicle",
+   "label": "Vehicle",
+   "layer": "workforce",
+   "table": "sus_vehicle",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "home_site",
+     "kind": "fk",
+     "attribute": "sus_homesiteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "home_pool",
+     "kind": "text",
+     "attribute": "sus_homepool",
+     "editable": true
+    },
+    {
+     "name": "vehicle_type",
+     "kind": "text",
+     "attribute": "sus_vehicletype",
+     "editable": true
+    },
+    {
+     "name": "fuel_type",
+     "kind": "text",
+     "attribute": "sus_fueltype",
+     "editable": true
+    },
+    {
+     "name": "payload_kg",
+     "kind": "integer",
+     "attribute": "sus_payloadkg",
+     "editable": true
+    },
+    {
+     "name": "availability",
+     "kind": "text",
+     "attribute": "sus_availability",
+     "editable": true
+    },
+    {
+     "name": "maintenance_status",
+     "kind": "text",
+     "attribute": "sus_maintenancestatus",
+     "editable": true
+    },
+    {
+     "name": "odometer_km",
+     "kind": "integer",
+     "attribute": "sus_odometerkm",
+     "editable": true
+    },
+    {
+     "name": "ghg_boundary_status",
+     "kind": "text",
+     "attribute": "sus_ghgboundarystatus",
+     "editable": true
+    },
+    {
+     "name": "vehicle_use",
+     "kind": "text",
+     "attribute": "sus_vehicleuse",
+     "editable": true
+    },
+    {
+     "name": "fuel_efficiency_km_per_l",
+     "kind": "decimal",
+     "attribute": "sus_fuelefficiencykmperl",
+     "editable": true
+    },
+    {
+     "name": "last_service_date",
+     "kind": "date",
+     "attribute": "sus_lastservicedate",
+     "editable": true
+    },
+    {
+     "name": "next_service_due_km",
+     "kind": "integer",
+     "attribute": "sus_nextserviceduekm",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "tool",
+   "label": "Tool",
+   "layer": "workforce",
+   "table": "sus_tool",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "tool_type",
+     "kind": "text",
+     "attribute": "sus_tooltype",
+     "editable": true
+    },
+    {
+     "name": "home_region",
+     "kind": "text",
+     "attribute": "sus_homeregion",
+     "editable": true
+    },
+    {
+     "name": "calibration_status",
+     "kind": "text",
+     "attribute": "sus_calibrationstatus",
+     "editable": true
+    },
+    {
+     "name": "calibration_expiry",
+     "kind": "date",
+     "attribute": "sus_calibrationexpiry",
+     "editable": true
+    },
+    {
+     "name": "availability",
+     "kind": "text",
+     "attribute": "sus_availability",
+     "editable": true
+    },
+    {
+     "name": "applicable_asset_class",
+     "kind": "text",
+     "attribute": "sus_applicableassetclass",
+     "editable": true
+    },
+    {
+     "name": "control_requirement",
+     "kind": "text",
+     "attribute": "sus_controlrequirement",
+     "editable": true
+    },
+    {
+     "name": "safety_category",
+     "kind": "text",
+     "attribute": "sus_safetycategory",
+     "editable": true
+    },
+    {
+     "name": "storage_location",
+     "kind": "text",
+     "attribute": "sus_storagelocation",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "system",
+   "label": "System",
+   "layer": "integration",
+   "table": "sus_system",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "system_type",
+     "kind": "text",
+     "attribute": "sus_systemtype",
+     "editable": true
+    },
+    {
+     "name": "connection_method",
+     "kind": "text",
+     "attribute": "sus_connectionmethod",
+     "editable": true
+    },
+    {
+     "name": "environment",
+     "kind": "text",
+     "attribute": "sus_environment",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "connector",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "connector",
+   "label": "Connector",
+   "layer": "integration",
+   "table": "sus_connector",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "domain",
+     "kind": "text",
+     "attribute": "sus_domain",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "source_name",
+     "kind": "text",
+     "attribute": "sus_sourcename",
+     "editable": true
+    },
+    {
+     "name": "connector_type",
+     "kind": "text",
+     "attribute": "sus_connectortype",
+     "editable": true
+    },
+    {
+     "name": "content",
+     "kind": "text",
+     "attribute": "sus_content",
+     "editable": true
+    },
+    {
+     "name": "target",
+     "kind": "text",
+     "attribute": "sus_target",
+     "editable": true
+    },
+    {
+     "name": "pattern",
+     "kind": "text",
+     "attribute": "sus_pattern",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "cadence",
+     "kind": "text",
+     "attribute": "sus_cadence",
+     "editable": true
+    },
+    {
+     "name": "authority",
+     "kind": "text",
+     "attribute": "sus_authority",
+     "editable": true
+    },
+    {
+     "name": "control",
+     "kind": "text",
+     "attribute": "sus_control",
+     "editable": true
+    },
+    {
+     "name": "lineage_key",
+     "kind": "text",
+     "attribute": "sus_lineagekey",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "interface",
+   "label": "Interface",
+   "layer": "integration",
+   "table": "sus_interface",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "target_system",
+     "kind": "text",
+     "attribute": "sus_targetsystem",
+     "editable": true
+    },
+    {
+     "name": "direction",
+     "kind": "text",
+     "attribute": "sus_direction",
+     "editable": true
+    },
+    {
+     "name": "data_object",
+     "kind": "text",
+     "attribute": "sus_dataobject",
+     "editable": true
+    },
+    {
+     "name": "frequency",
+     "kind": "text",
+     "attribute": "sus_frequency",
+     "editable": true
+    },
+    {
+     "name": "last_validated",
+     "kind": "datetime",
+     "attribute": "sus_lastvalidated",
+     "editable": true
+    },
+    {
+     "name": "validation_rule",
+     "kind": "text",
+     "attribute": "sus_validationrule",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "connector",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "source_document",
+   "label": "Source document",
+   "layer": "integration",
+   "table": "sus_source_document",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "title",
+     "kind": "text",
+     "attribute": "sus_title",
+     "editable": true
+    },
+    {
+     "name": "source_type",
+     "kind": "text",
+     "attribute": "sus_sourcetype",
+     "editable": true
+    },
+    {
+     "name": "authority",
+     "kind": "text",
+     "attribute": "sus_authority",
+     "editable": true
+    },
+    {
+     "name": "country",
+     "kind": "text",
+     "attribute": "sus_country",
+     "editable": true
+    },
+    {
+     "name": "region",
+     "kind": "text",
+     "attribute": "sus_region",
+     "editable": true
+    },
+    {
+     "name": "version",
+     "kind": "text",
+     "attribute": "sus_version",
+     "editable": true
+    },
+    {
+     "name": "published",
+     "kind": "text",
+     "attribute": "sus_published",
+     "editable": true
+    },
+    {
+     "name": "effective_from",
+     "kind": "text",
+     "attribute": "sus_effectivefrom",
+     "editable": true
+    },
+    {
+     "name": "effective_to",
+     "kind": "text",
+     "attribute": "sus_effectiveto",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "use_in_model",
+     "kind": "text",
+     "attribute": "sus_useinmodel",
+     "editable": true
+    },
+    {
+     "name": "notes",
+     "kind": "text",
+     "attribute": "sus_notes",
+     "editable": true
+    },
+    {
+     "name": "url",
+     "kind": "url",
+     "attribute": "sus_url",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "metric",
+   "label": "ESG metric",
+   "layer": "sustainability",
+   "table": "sus_metric",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "unit",
+     "kind": "ref",
+     "attribute": "sus_unitid",
+     "target": "sus_ref_unit",
+     "editable": true
+    },
+    {
+     "name": "definition",
+     "kind": "text",
+     "attribute": "sus_definition",
+     "editable": true
+    },
+    {
+     "name": "formula",
+     "kind": "text",
+     "attribute": "sus_formula",
+     "editable": true
+    },
+    {
+     "name": "asset_relevance",
+     "kind": "text",
+     "attribute": "sus_assetrelevance",
+     "editable": true
+    },
+    {
+     "name": "applicable_asset_scope",
+     "kind": "text",
+     "attribute": "sus_applicableassetscope",
+     "editable": true
+    },
+    {
+     "name": "frequency",
+     "kind": "text",
+     "attribute": "sus_frequency",
+     "editable": true
+    },
+    {
+     "name": "aip_applicability",
+     "kind": "text",
+     "attribute": "sus_aipapplicability",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "metric_framework_map",
+   "label": "Metric disclosure mapping",
+   "layer": "sustainability",
+   "table": "sus_metric_framework_map",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "metric",
+     "kind": "fk",
+     "attribute": "sus_metricid",
+     "target": "sus_metric",
+     "editable": true
+    },
+    {
+     "name": "framework",
+     "kind": "ref",
+     "attribute": "sus_frameworkid",
+     "target": "sus_ref_framework",
+     "editable": true
+    },
+    {
+     "name": "disclosure_id",
+     "kind": "text",
+     "attribute": "sus_disclosureid",
+     "editable": true
+    },
+    {
+     "name": "applicable",
+     "kind": "text",
+     "attribute": "sus_applicable",
+     "editable": true
+    },
+    {
+     "name": "requirement_or_link",
+     "kind": "text",
+     "attribute": "sus_requirementorlink",
+     "editable": true
+    },
+    {
+     "name": "version",
+     "kind": "text",
+     "attribute": "sus_version",
+     "editable": true
+    },
+    {
+     "name": "effective_from",
+     "kind": "date",
+     "attribute": "sus_effectivefrom",
+     "editable": true
+    },
+    {
+     "name": "mapping_status",
+     "kind": "text",
+     "attribute": "sus_mappingstatus",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ml_model",
+   "label": "Analytical model",
+   "layer": "analytics",
+   "table": "sus_ml_model",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "model_type",
+     "kind": "text",
+     "attribute": "sus_modeltype",
+     "editable": true
+    },
+    {
+     "name": "version",
+     "kind": "text",
+     "attribute": "sus_version",
+     "editable": true
+    },
+    {
+     "name": "owner_foundation",
+     "kind": "text",
+     "attribute": "sus_ownerfoundation",
+     "editable": true
+    },
+    {
+     "name": "training_start",
+     "kind": "date",
+     "attribute": "sus_trainingstart",
+     "editable": true
+    },
+    {
+     "name": "training_end",
+     "kind": "date",
+     "attribute": "sus_trainingend",
+     "editable": true
+    },
+    {
+     "name": "training_record_count",
+     "kind": "integer",
+     "attribute": "sus_trainingrecordcount",
+     "editable": true
+    },
+    {
+     "name": "feature_set",
+     "kind": "text",
+     "attribute": "sus_featureset",
+     "editable": true
+    },
+    {
+     "name": "algorithm",
+     "kind": "text",
+     "attribute": "sus_algorithm",
+     "editable": true
+    },
+    {
+     "name": "validation_method",
+     "kind": "text",
+     "attribute": "sus_validationmethod",
+     "editable": true
+    },
+    {
+     "name": "primary_metric",
+     "kind": "text",
+     "attribute": "sus_primarymetric",
+     "editable": true
+    },
+    {
+     "name": "validation_result",
+     "kind": "decimal",
+     "attribute": "sus_validationresult",
+     "editable": true
+    },
+    {
+     "name": "champion_challenger",
+     "kind": "text",
+     "attribute": "sus_championchallenger",
+     "editable": true
+    },
+    {
+     "name": "approval_status",
+     "kind": "text",
+     "attribute": "sus_approvalstatus",
+     "editable": true
+    },
+    {
+     "name": "last_trained",
+     "kind": "date",
+     "attribute": "sus_lasttrained",
+     "editable": true
+    },
+    {
+     "name": "next_review",
+     "kind": "date",
+     "attribute": "sus_nextreview",
+     "editable": true
+    },
+    {
+     "name": "production_note",
+     "kind": "text",
+     "attribute": "sus_productionnote",
+     "editable": true
+    },
+    {
+     "name": "engine",
+     "kind": "text",
+     "attribute": "sus_engine",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "warranty_contract",
+   "label": "Warranty",
+   "layer": "contract",
+   "table": "sus_warranty_contract",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "provider",
+     "kind": "fk",
+     "attribute": "sus_providerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "equipment_model",
+     "kind": "fk",
+     "attribute": "sus_equipmentmodelid",
+     "target": "sus_equipment_model",
+     "editable": true
+    },
+    {
+     "name": "batch_id",
+     "kind": "text",
+     "attribute": "sus_batchid",
+     "editable": true
+    },
+    {
+     "name": "warranty_type",
+     "kind": "text",
+     "attribute": "sus_warrantytype",
+     "editable": true
+    },
+    {
+     "name": "coverage_type",
+     "kind": "text",
+     "attribute": "sus_coveragetype",
+     "editable": true
+    },
+    {
+     "name": "start_date",
+     "kind": "date",
+     "attribute": "sus_startdate",
+     "editable": true
+    },
+    {
+     "name": "end_date",
+     "kind": "date",
+     "attribute": "sus_enddate",
+     "editable": true
+    },
+    {
+     "name": "claim_notice_days",
+     "kind": "integer",
+     "attribute": "sus_claimnoticedays",
+     "editable": true
+    },
+    {
+     "name": "remaining_coverage_value",
+     "kind": "money",
+     "attribute": "sus_remainingcoveragevalue",
+     "editable": true
+    },
+    {
+     "name": "rca_required",
+     "kind": "boolean",
+     "attribute": "sus_rcarequired",
+     "editable": true
+    },
+    {
+     "name": "work_order_required",
+     "kind": "boolean",
+     "attribute": "sus_workorderrequired",
+     "editable": true
+    },
+    {
+     "name": "invoice_required",
+     "kind": "boolean",
+     "attribute": "sus_invoicerequired",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "warranty",
+     "editable": true
+    },
+    {
+     "name": "performance_guarantee",
+     "kind": "text",
+     "attribute": "sus_performanceguarantee",
+     "editable": true
+    },
+    {
+     "name": "retention_pct_year10",
+     "kind": "decimal",
+     "attribute": "sus_retentionpctyear10",
+     "editable": true
+    },
+    {
+     "name": "retention_pct_eol",
+     "kind": "decimal",
+     "attribute": "sus_retentionpcteol",
+     "editable": true
+    },
+    {
+     "name": "cycle_limit",
+     "kind": "integer",
+     "attribute": "sus_cyclelimit",
+     "editable": true
+    },
+    {
+     "name": "throughput_limit_mwh",
+     "kind": "decimal",
+     "attribute": "sus_throughputlimitmwh",
+     "editable": true
+    },
+    {
+     "name": "guaranteed_rte_pct",
+     "kind": "decimal",
+     "attribute": "sus_guaranteedrtepct",
+     "editable": true
+    },
+    {
+     "name": "conditions",
+     "kind": "text",
+     "attribute": "sus_conditions",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "offtake_contract",
+   "label": "Offtake contract",
+   "layer": "contract",
+   "table": "sus_offtake_contract",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "offtaker",
+     "kind": "fk",
+     "attribute": "sus_offtakerid",
+     "target": "sus_party",
+     "editable": true
+    },
+    {
+     "name": "contract_type",
+     "kind": "text",
+     "attribute": "sus_contracttype",
+     "editable": true
+    },
+    {
+     "name": "commercial_model",
+     "kind": "text",
+     "attribute": "sus_commercialmodel",
+     "editable": true
+    },
+    {
+     "name": "tariff_per_kwh",
+     "kind": "money",
+     "attribute": "sus_tariffperkwh",
+     "editable": true
+    },
+    {
+     "name": "charging_tariff_per_kwh",
+     "kind": "money",
+     "attribute": "sus_chargingtariffperkwh",
+     "editable": true
+    },
+    {
+     "name": "capacity_charge_per_mw_month",
+     "kind": "money",
+     "attribute": "sus_capacitychargepermwmonth",
+     "editable": true
+    },
+    {
+     "name": "vgf_per_mwh",
+     "kind": "money",
+     "attribute": "sus_vgfpermwh",
+     "editable": true
+    },
+    {
+     "name": "contracted_capacity_mw",
+     "kind": "decimal",
+     "attribute": "sus_contractedcapacitymw",
+     "editable": true
+    },
+    {
+     "name": "contracted_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_contractedenergymwh",
+     "editable": true
+    },
+    {
+     "name": "start_date",
+     "kind": "date",
+     "attribute": "sus_startdate",
+     "editable": true
+    },
+    {
+     "name": "end_date",
+     "kind": "date",
+     "attribute": "sus_enddate",
+     "editable": true
+    },
+    {
+     "name": "tenure_years",
+     "kind": "integer",
+     "attribute": "sus_tenureyears",
+     "editable": true
+    },
+    {
+     "name": "availability_obligation_pct",
+     "kind": "decimal",
+     "attribute": "sus_availabilityobligationpct",
+     "editable": true
+    },
+    {
+     "name": "min_rte_pct",
+     "kind": "decimal",
+     "attribute": "sus_minrtepct",
+     "editable": true
+    },
+    {
+     "name": "cycles_per_day",
+     "kind": "decimal",
+     "attribute": "sus_cyclesperday",
+     "editable": true
+    },
+    {
+     "name": "obligations",
+     "kind": "text",
+     "attribute": "sus_obligations",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "intervention",
+   "label": "Intervention",
+   "layer": "register",
+   "table": "sus_intervention",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "work_order_code",
+     "kind": "text",
+     "attribute": "sus_workordercode",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "maintenance_type",
+     "kind": "ref",
+     "attribute": "sus_maintenancetypeid",
+     "target": "sus_ref_maintenance_type",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "priority",
+     "kind": "ref",
+     "attribute": "sus_priorityid",
+     "target": "sus_ref_priority",
+     "editable": true
+    },
+    {
+     "name": "risk_score_pct",
+     "kind": "decimal",
+     "attribute": "sus_riskscorepct",
+     "editable": true
+    },
+    {
+     "name": "value_exposure",
+     "kind": "money",
+     "attribute": "sus_valueexposure",
+     "editable": true
+    },
+    {
+     "name": "planning_as_of",
+     "kind": "datetime",
+     "attribute": "sus_planningasof",
+     "editable": true
+    },
+    {
+     "name": "required_by",
+     "kind": "datetime",
+     "attribute": "sus_requiredby",
+     "editable": true
+    },
+    {
+     "name": "planned_start",
+     "kind": "datetime",
+     "attribute": "sus_plannedstart",
+     "editable": true
+    },
+    {
+     "name": "planned_finish",
+     "kind": "datetime",
+     "attribute": "sus_plannedfinish",
+     "editable": true
+    },
+    {
+     "name": "duration_hours",
+     "kind": "decimal",
+     "attribute": "sus_durationhours",
+     "editable": true
+    },
+    {
+     "name": "required_skill",
+     "kind": "ref",
+     "attribute": "sus_requiredskillid",
+     "target": "sus_ref_skill",
+     "editable": true
+    },
+    {
+     "name": "required_crew_qty",
+     "kind": "integer",
+     "attribute": "sus_requiredcrewqty",
+     "editable": true
+    },
+    {
+     "name": "required_part",
+     "kind": "fk",
+     "attribute": "sus_requiredpartid",
+     "target": "sus_part",
+     "editable": true
+    },
+    {
+     "name": "required_part_qty",
+     "kind": "integer",
+     "attribute": "sus_requiredpartqty",
+     "editable": true
+    },
+    {
+     "name": "required_tool",
+     "kind": "fk",
+     "attribute": "sus_requiredtoolid",
+     "target": "sus_tool",
+     "editable": true
+    },
+    {
+     "name": "vehicle_class",
+     "kind": "text",
+     "attribute": "sus_vehicleclass",
+     "editable": true
+    },
+    {
+     "name": "permit_required",
+     "kind": "boolean",
+     "attribute": "sus_permitrequired",
+     "editable": true
+    },
+    {
+     "name": "outage_required",
+     "kind": "boolean",
+     "attribute": "sus_outagerequired",
+     "editable": true
+    },
+    {
+     "name": "planning_status",
+     "kind": "ref",
+     "attribute": "sus_planningstatusid",
+     "target": "sus_ref_status",
+     "scope": "intervention",
+     "editable": true
+    },
+    {
+     "name": "actual_start",
+     "kind": "datetime",
+     "attribute": "sus_actualstart",
+     "editable": true
+    },
+    {
+     "name": "actual_completion",
+     "kind": "datetime",
+     "attribute": "sus_actualcompletion",
+     "editable": true
+    },
+    {
+     "name": "actual_duration_hours",
+     "kind": "decimal",
+     "attribute": "sus_actualdurationhours",
+     "editable": true
+    },
+    {
+     "name": "erp_execution_status",
+     "kind": "text",
+     "attribute": "sus_erpexecutionstatus",
+     "editable": true
+    },
+    {
+     "name": "calculation_basis",
+     "kind": "text",
+     "attribute": "sus_calculationbasis",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "scenario",
+   "label": "Planning scenario",
+   "layer": "register",
+   "table": "sus_scenario",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "name",
+     "kind": "text",
+     "attribute": "sus_name",
+     "editable": true
+    },
+    {
+     "name": "scenario_type",
+     "kind": "text",
+     "attribute": "sus_scenariotype",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "crew_capacity_multiplier",
+     "kind": "decimal",
+     "attribute": "sus_crewcapacitymultiplier",
+     "editable": true
+    },
+    {
+     "name": "cost_weight_multiplier",
+     "kind": "decimal",
+     "attribute": "sus_costweightmultiplier",
+     "editable": true
+    },
+    {
+     "name": "weather_threshold_pct",
+     "kind": "decimal",
+     "attribute": "sus_weatherthresholdpct",
+     "editable": true
+    },
+    {
+     "name": "cost_cap",
+     "kind": "money",
+     "attribute": "sus_costcap",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "scenario",
+     "editable": true
+    },
+    {
+     "name": "created_by",
+     "kind": "text",
+     "attribute": "sus_createdby",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "scenario_intervention",
+   "label": "Scenario line",
+   "layer": "register",
+   "table": "sus_scenario_intervention",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "scenario",
+     "kind": "fk",
+     "attribute": "sus_scenarioid",
+     "target": "sus_scenario",
+     "editable": true
+    },
+    {
+     "name": "intervention",
+     "kind": "fk",
+     "attribute": "sus_interventionid",
+     "target": "sus_intervention",
+     "editable": true
+    },
+    {
+     "name": "criticality_score",
+     "kind": "decimal",
+     "attribute": "sus_criticalityscore",
+     "editable": true
+    },
+    {
+     "name": "value_score",
+     "kind": "decimal",
+     "attribute": "sus_valuescore",
+     "editable": true
+    },
+    {
+     "name": "readiness_pct",
+     "kind": "decimal",
+     "attribute": "sus_readinesspct",
+     "editable": true
+    },
+    {
+     "name": "estimated_cost",
+     "kind": "money",
+     "attribute": "sus_estimatedcost",
+     "editable": true
+    },
+    {
+     "name": "optimization_score",
+     "kind": "decimal",
+     "attribute": "sus_optimizationscore",
+     "editable": true
+    },
+    {
+     "name": "rank",
+     "kind": "integer",
+     "attribute": "sus_rank",
+     "editable": true
+    },
+    {
+     "name": "proposed_start",
+     "kind": "datetime",
+     "attribute": "sus_proposedstart",
+     "editable": true
+    },
+    {
+     "name": "proposed_end",
+     "kind": "datetime",
+     "attribute": "sus_proposedend",
+     "editable": true
+    },
+    {
+     "name": "calculation_basis",
+     "kind": "text",
+     "attribute": "sus_calculationbasis",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "hse_incident",
+   "label": "HSE incident",
+   "layer": "register",
+   "table": "sus_hse_incident",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "occurred_on",
+     "kind": "date",
+     "attribute": "sus_occurredon",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "work_order_code",
+     "kind": "text",
+     "attribute": "sus_workordercode",
+     "editable": true
+    },
+    {
+     "name": "activity",
+     "kind": "text",
+     "attribute": "sus_activity",
+     "editable": true
+    },
+    {
+     "name": "worker_type",
+     "kind": "text",
+     "attribute": "sus_workertype",
+     "editable": true
+    },
+    {
+     "name": "incident_type",
+     "kind": "ref",
+     "attribute": "sus_incidenttypeid",
+     "target": "sus_ref_event_type",
+     "scope": "hse",
+     "editable": true
+    },
+    {
+     "name": "severity",
+     "kind": "ref",
+     "attribute": "sus_severityid",
+     "target": "sus_ref_severity",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "hse_incident",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "data_status",
+     "kind": "text",
+     "attribute": "sus_datastatus",
+     "editable": true
+    },
+    {
+     "name": "asset_reference_basis",
+     "kind": "text",
+     "attribute": "sus_assetreferencebasis",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "alert",
+   "label": "Predictive alert",
+   "layer": "transaction",
+   "table": "sus_alert",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "component",
+     "kind": "text",
+     "attribute": "sus_component",
+     "editable": true
+    },
+    {
+     "name": "alert_timestamp",
+     "kind": "datetime",
+     "attribute": "sus_alerttimestamp",
+     "editable": true
+    },
+    {
+     "name": "model",
+     "kind": "text",
+     "attribute": "sus_model",
+     "editable": true
+    },
+    {
+     "name": "risk_score",
+     "kind": "decimal",
+     "attribute": "sus_riskscore",
+     "editable": true
+    },
+    {
+     "name": "rul_days",
+     "kind": "integer",
+     "attribute": "sus_ruldays",
+     "editable": true
+    },
+    {
+     "name": "confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_confidencepct",
+     "editable": true
+    },
+    {
+     "name": "risk_tier",
+     "kind": "text",
+     "attribute": "sus_risktier",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "alert",
+     "editable": true
+    },
+    {
+     "name": "evidence_summary",
+     "kind": "text",
+     "attribute": "sus_evidencesummary",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "recommendation",
+   "label": "Recommendation",
+   "layer": "transaction",
+   "table": "sus_recommendation",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "alert",
+     "kind": "fk",
+     "attribute": "sus_alertid",
+     "target": "sus_alert",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "risk_score",
+     "kind": "decimal",
+     "attribute": "sus_riskscore",
+     "editable": true
+    },
+    {
+     "name": "rul_days",
+     "kind": "integer",
+     "attribute": "sus_ruldays",
+     "editable": true
+    },
+    {
+     "name": "recommended_action",
+     "kind": "text",
+     "attribute": "sus_recommendedaction",
+     "editable": true
+    },
+    {
+     "name": "cost_now",
+     "kind": "money",
+     "attribute": "sus_costnow",
+     "editable": true
+    },
+    {
+     "name": "cost_if_deferred",
+     "kind": "money",
+     "attribute": "sus_costifdeferred",
+     "editable": true
+    },
+    {
+     "name": "cost_avoided",
+     "kind": "money",
+     "attribute": "sus_costavoided",
+     "editable": true
+    },
+    {
+     "name": "confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_confidencepct",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "recommendation",
+     "editable": true
+    },
+    {
+     "name": "rationale",
+     "kind": "text",
+     "attribute": "sus_rationale",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "work_order",
+   "label": "Work order",
+   "layer": "transaction",
+   "table": "sus_work_order",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "maintenance_type",
+     "kind": "ref",
+     "attribute": "sus_maintenancetypeid",
+     "target": "sus_ref_maintenance_type",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "priority",
+     "kind": "ref",
+     "attribute": "sus_priorityid",
+     "target": "sus_ref_priority",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "work_order",
+     "editable": true
+    },
+    {
+     "name": "created_date",
+     "kind": "datetime",
+     "attribute": "sus_createddate",
+     "editable": true
+    },
+    {
+     "name": "sla_due",
+     "kind": "datetime",
+     "attribute": "sus_sladue",
+     "editable": true
+    },
+    {
+     "name": "sla_hours",
+     "kind": "integer",
+     "attribute": "sus_slahours",
+     "editable": true
+    },
+    {
+     "name": "actual_resolution_hours",
+     "kind": "decimal",
+     "attribute": "sus_actualresolutionhours",
+     "editable": true
+    },
+    {
+     "name": "sla_result",
+     "kind": "text",
+     "attribute": "sus_slaresult",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "estimated_cost",
+     "kind": "money",
+     "attribute": "sus_estimatedcost",
+     "editable": true
+    },
+    {
+     "name": "technician",
+     "kind": "fk",
+     "attribute": "sus_technicianid",
+     "target": "sus_technician",
+     "editable": true
+    },
+    {
+     "name": "assigned_crew",
+     "kind": "text",
+     "attribute": "sus_assignedcrew",
+     "editable": true
+    },
+    {
+     "name": "pm_frequency_days",
+     "kind": "integer",
+     "attribute": "sus_pmfrequencydays",
+     "editable": true
+    },
+    {
+     "name": "pm_due_date",
+     "kind": "date",
+     "attribute": "sus_pmduedate",
+     "editable": true
+    },
+    {
+     "name": "actual_pm_completion_date",
+     "kind": "date",
+     "attribute": "sus_actualpmcompletiondate",
+     "editable": true
+    },
+    {
+     "name": "pm_compliance_tolerance_days",
+     "kind": "integer",
+     "attribute": "sus_pmcompliancetolerancedays",
+     "editable": true
+    },
+    {
+     "name": "pm_compliance_result",
+     "kind": "text",
+     "attribute": "sus_pmcomplianceresult",
+     "editable": true
+    },
+    {
+     "name": "pm_overdue_days",
+     "kind": "integer",
+     "attribute": "sus_pmoverduedays",
+     "editable": true
+    },
+    {
+     "name": "alert",
+     "kind": "fk",
+     "attribute": "sus_alertid",
+     "target": "sus_alert",
+     "editable": true
+    },
+    {
+     "name": "required_part",
+     "kind": "fk",
+     "attribute": "sus_requiredpartid",
+     "target": "sus_part",
+     "editable": true
+    },
+    {
+     "name": "required_part_qty",
+     "kind": "integer",
+     "attribute": "sus_requiredpartqty",
+     "editable": true
+    },
+    {
+     "name": "pv_module",
+     "kind": "fk",
+     "attribute": "sus_pvmoduleid",
+     "target": "sus_pv_module",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "event",
+   "label": "Operational event",
+   "layer": "transaction",
+   "table": "sus_event",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "incident_id",
+     "kind": "text",
+     "attribute": "sus_incidentid",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "event_date_time",
+     "kind": "datetime",
+     "attribute": "sus_eventdatetime",
+     "editable": true
+    },
+    {
+     "name": "event_type",
+     "kind": "ref",
+     "attribute": "sus_eventtypeid",
+     "target": "sus_ref_event_type",
+     "scope": "operational",
+     "editable": true
+    },
+    {
+     "name": "severity",
+     "kind": "ref",
+     "attribute": "sus_severityid",
+     "target": "sus_ref_severity",
+     "editable": true
+    },
+    {
+     "name": "alarm_code",
+     "kind": "text",
+     "attribute": "sus_alarmcode",
+     "editable": true
+    },
+    {
+     "name": "weather_context",
+     "kind": "text",
+     "attribute": "sus_weathercontext",
+     "editable": true
+    },
+    {
+     "name": "generation_loss_mwh",
+     "kind": "decimal",
+     "attribute": "sus_generationlossmwh",
+     "editable": true
+    },
+    {
+     "name": "revenue_impact",
+     "kind": "money",
+     "attribute": "sus_revenueimpact",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "event",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "event_timestamp",
+     "kind": "datetime",
+     "attribute": "sus_eventtimestamp",
+     "editable": true
+    },
+    {
+     "name": "pv_module",
+     "kind": "fk",
+     "attribute": "sus_pvmoduleid",
+     "target": "sus_pv_module",
+     "editable": true
+    },
+    {
+     "name": "classified_failure",
+     "kind": "text",
+     "attribute": "sus_classifiedfailure",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "rca_case",
+   "label": "Root-cause case",
+   "layer": "transaction",
+   "table": "sus_rca_case",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "event",
+     "kind": "fk",
+     "attribute": "sus_eventid",
+     "target": "sus_event",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "event_type",
+     "kind": "ref",
+     "attribute": "sus_eventtypeid",
+     "target": "sus_ref_event_type",
+     "scope": "operational",
+     "editable": true
+    },
+    {
+     "name": "severity",
+     "kind": "ref",
+     "attribute": "sus_severityid",
+     "target": "sus_ref_severity",
+     "editable": true
+    },
+    {
+     "name": "event_time",
+     "kind": "datetime",
+     "attribute": "sus_eventtime",
+     "editable": true
+    },
+    {
+     "name": "cause_name",
+     "kind": "text",
+     "attribute": "sus_causename",
+     "editable": true
+    },
+    {
+     "name": "reference_id",
+     "kind": "text",
+     "attribute": "sus_referenceid",
+     "editable": true
+    },
+    {
+     "name": "verification_method",
+     "kind": "text",
+     "attribute": "sus_verificationmethod",
+     "editable": true
+    },
+    {
+     "name": "confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_confidencepct",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "rca",
+     "editable": true
+    },
+    {
+     "name": "engineer_approval",
+     "kind": "text",
+     "attribute": "sus_engineerapproval",
+     "editable": true
+    },
+    {
+     "name": "oem_recorded",
+     "kind": "text",
+     "attribute": "sus_oemrecorded",
+     "editable": true
+    },
+    {
+     "name": "model_recorded",
+     "kind": "text",
+     "attribute": "sus_modelrecorded",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "rca_evidence",
+   "label": "Root-cause evidence",
+   "layer": "transaction",
+   "table": "sus_rca_evidence",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "event",
+     "kind": "fk",
+     "attribute": "sus_eventid",
+     "target": "sus_event",
+     "editable": true
+    },
+    {
+     "name": "rca_case",
+     "kind": "fk",
+     "attribute": "sus_rcacaseid",
+     "target": "sus_rca_case",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "signal",
+     "kind": "text",
+     "attribute": "sus_signal",
+     "editable": true
+    },
+    {
+     "name": "actual_value",
+     "kind": "decimal",
+     "attribute": "sus_actualvalue",
+     "editable": true
+    },
+    {
+     "name": "peer_baseline",
+     "kind": "decimal",
+     "attribute": "sus_peerbaseline",
+     "editable": true
+    },
+    {
+     "name": "unit",
+     "kind": "ref",
+     "attribute": "sus_unitid",
+     "target": "sus_ref_unit",
+     "editable": true
+    },
+    {
+     "name": "deviation_pct",
+     "kind": "decimal",
+     "attribute": "sus_deviationpct",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "evidence_role",
+     "kind": "text",
+     "attribute": "sus_evidencerole",
+     "editable": true
+    },
+    {
+     "name": "engineering_interpretation",
+     "kind": "text",
+     "attribute": "sus_engineeringinterpretation",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "vision_inspection",
+   "label": "Vision inspection",
+   "layer": "transaction",
+   "table": "sus_vision_inspection",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "inspection_date_time",
+     "kind": "datetime",
+     "attribute": "sus_inspectiondatetime",
+     "editable": true
+    },
+    {
+     "name": "inspection_type",
+     "kind": "text",
+     "attribute": "sus_inspectiontype",
+     "editable": true
+    },
+    {
+     "name": "device_id",
+     "kind": "text",
+     "attribute": "sus_deviceid",
+     "editable": true
+    },
+    {
+     "name": "panels_inspected",
+     "kind": "integer",
+     "attribute": "sus_panelsinspected",
+     "editable": true
+    },
+    {
+     "name": "images_captured",
+     "kind": "integer",
+     "attribute": "sus_imagescaptured",
+     "editable": true
+    },
+    {
+     "name": "coverage_pct",
+     "kind": "decimal",
+     "attribute": "sus_coveragepct",
+     "editable": true
+    },
+    {
+     "name": "weather",
+     "kind": "text",
+     "attribute": "sus_weather",
+     "editable": true
+    },
+    {
+     "name": "flight_altitude_m",
+     "kind": "integer",
+     "attribute": "sus_flightaltitudem",
+     "editable": true
+    },
+    {
+     "name": "inspection_status",
+     "kind": "text",
+     "attribute": "sus_inspectionstatus",
+     "editable": true
+    },
+    {
+     "name": "inspector",
+     "kind": "text",
+     "attribute": "sus_inspector",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "vision_finding",
+   "label": "Vision finding",
+   "layer": "transaction",
+   "table": "sus_vision_finding",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "inspection",
+     "kind": "fk",
+     "attribute": "sus_inspectionid",
+     "target": "sus_vision_inspection",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "defect_type",
+     "kind": "ref",
+     "attribute": "sus_defecttypeid",
+     "target": "sus_ref_defect_code",
+     "editable": true
+    },
+    {
+     "name": "detection_mode",
+     "kind": "text",
+     "attribute": "sus_detectionmode",
+     "editable": true
+    },
+    {
+     "name": "confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_confidencepct",
+     "editable": true
+    },
+    {
+     "name": "severity",
+     "kind": "ref",
+     "attribute": "sus_severityid",
+     "target": "sus_ref_severity",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "finding",
+     "editable": true
+    },
+    {
+     "name": "estimated_loss_k_wh_day",
+     "kind": "decimal",
+     "attribute": "sus_estimatedlosskwhday",
+     "editable": true
+    },
+    {
+     "name": "annual_revenue_risk",
+     "kind": "money",
+     "attribute": "sus_annualrevenuerisk",
+     "editable": true
+    },
+    {
+     "name": "recommended_action",
+     "kind": "text",
+     "attribute": "sus_recommendedaction",
+     "editable": true
+    },
+    {
+     "name": "work_order",
+     "kind": "fk",
+     "attribute": "sus_workorderid",
+     "target": "sus_work_order",
+     "editable": true
+    },
+    {
+     "name": "affected_area_sqm",
+     "kind": "decimal",
+     "attribute": "sus_affectedareasqm",
+     "editable": true
+    },
+    {
+     "name": "physical_location",
+     "kind": "text",
+     "attribute": "sus_physicallocation",
+     "editable": true
+    },
+    {
+     "name": "inspection_date",
+     "kind": "date",
+     "attribute": "sus_inspectiondate",
+     "editable": true
+    },
+    {
+     "name": "inspector",
+     "kind": "text",
+     "attribute": "sus_inspector",
+     "editable": true
+    },
+    {
+     "name": "pv_module",
+     "kind": "fk",
+     "attribute": "sus_pvmoduleid",
+     "target": "sus_pv_module",
+     "editable": true
+    },
+    {
+     "name": "classified_failure",
+     "kind": "text",
+     "attribute": "sus_classifiedfailure",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "warranty_claim",
+   "label": "Warranty claim",
+   "layer": "transaction",
+   "table": "sus_warranty_claim",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "warranty",
+     "kind": "fk",
+     "attribute": "sus_warrantyid",
+     "target": "sus_warranty_contract",
+     "editable": true
+    },
+    {
+     "name": "incident_id",
+     "kind": "text",
+     "attribute": "sus_incidentid",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "claim_date",
+     "kind": "date",
+     "attribute": "sus_claimdate",
+     "editable": true
+    },
+    {
+     "name": "failure_event_id",
+     "kind": "text",
+     "attribute": "sus_failureeventid",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "warranty_claim",
+     "editable": true
+    },
+    {
+     "name": "claimed_amount",
+     "kind": "money",
+     "attribute": "sus_claimedamount",
+     "editable": true
+    },
+    {
+     "name": "approved_amount",
+     "kind": "money",
+     "attribute": "sus_approvedamount",
+     "editable": true
+    },
+    {
+     "name": "days_open",
+     "kind": "integer",
+     "attribute": "sus_daysopen",
+     "editable": true
+    },
+    {
+     "name": "evidence_completeness_pct",
+     "kind": "integer",
+     "attribute": "sus_evidencecompletenesspct",
+     "editable": true
+    },
+    {
+     "name": "notice_deadline",
+     "kind": "date",
+     "attribute": "sus_noticedeadline",
+     "editable": true
+    },
+    {
+     "name": "oem_response_date",
+     "kind": "date",
+     "attribute": "sus_oemresponsedate",
+     "editable": true
+    },
+    {
+     "name": "rejection_reason",
+     "kind": "text",
+     "attribute": "sus_rejectionreason",
+     "editable": true
+    },
+    {
+     "name": "next_action",
+     "kind": "text",
+     "attribute": "sus_nextaction",
+     "editable": true
+    },
+    {
+     "name": "work_order",
+     "kind": "fk",
+     "attribute": "sus_workorderid",
+     "target": "sus_work_order",
+     "editable": true
+    },
+    {
+     "name": "pv_module",
+     "kind": "fk",
+     "attribute": "sus_pvmoduleid",
+     "target": "sus_pv_module",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "pm_plan",
+   "label": "Preventive maintenance plan",
+   "layer": "transaction",
+   "table": "sus_pm_plan",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "task",
+     "kind": "text",
+     "attribute": "sus_task",
+     "editable": true
+    },
+    {
+     "name": "frequency_days",
+     "kind": "integer",
+     "attribute": "sus_frequencydays",
+     "editable": true
+    },
+    {
+     "name": "last_done",
+     "kind": "date",
+     "attribute": "sus_lastdone",
+     "editable": true
+    },
+    {
+     "name": "next_due",
+     "kind": "date",
+     "attribute": "sus_nextdue",
+     "editable": true
+    },
+    {
+     "name": "overdue_days",
+     "kind": "integer",
+     "attribute": "sus_overduedays",
+     "editable": true
+    },
+    {
+     "name": "standard_labour_hours",
+     "kind": "integer",
+     "attribute": "sus_standardlabourhours",
+     "editable": true
+    },
+    {
+     "name": "primary_part",
+     "kind": "fk",
+     "attribute": "sus_primarypartid",
+     "target": "sus_part",
+     "editable": true
+    },
+    {
+     "name": "required_skill",
+     "kind": "ref",
+     "attribute": "sus_requiredskillid",
+     "target": "sus_ref_skill",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "cbm_assessment",
+   "label": "Condition assessment",
+   "layer": "transaction",
+   "table": "sus_cbm_assessment",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "failure_mode",
+     "kind": "ref",
+     "attribute": "sus_failuremodeid",
+     "target": "sus_ref_failure_mode",
+     "editable": true
+    },
+    {
+     "name": "observed_defect",
+     "kind": "ref",
+     "attribute": "sus_observeddefectid",
+     "target": "sus_ref_defect_code",
+     "editable": true
+    },
+    {
+     "name": "primary_condition",
+     "kind": "text",
+     "attribute": "sus_primarycondition",
+     "editable": true
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": true
+    },
+    {
+     "name": "latest_evidence_time",
+     "kind": "datetime",
+     "attribute": "sus_latestevidencetime",
+     "editable": true
+    },
+    {
+     "name": "freshness_class",
+     "kind": "text",
+     "attribute": "sus_freshnessclass",
+     "editable": true
+    },
+    {
+     "name": "max_deviation_pct",
+     "kind": "decimal",
+     "attribute": "sus_maxdeviationpct",
+     "editable": true
+    },
+    {
+     "name": "evidence_count",
+     "kind": "integer",
+     "attribute": "sus_evidencecount",
+     "editable": true
+    },
+    {
+     "name": "corroboration_count",
+     "kind": "integer",
+     "attribute": "sus_corroborationcount",
+     "editable": true
+    },
+    {
+     "name": "condition_severity",
+     "kind": "text",
+     "attribute": "sus_conditionseverity",
+     "editable": true
+    },
+    {
+     "name": "risk_context",
+     "kind": "text",
+     "attribute": "sus_riskcontext",
+     "editable": true
+    },
+    {
+     "name": "evidence_sufficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_evidencesufficiencypct",
+     "editable": true
+    },
+    {
+     "name": "engineering_physics_fit_pct",
+     "kind": "decimal",
+     "attribute": "sus_engineeringphysicsfitpct",
+     "editable": true
+    },
+    {
+     "name": "confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_confidencepct",
+     "editable": true
+    },
+    {
+     "name": "priority",
+     "kind": "ref",
+     "attribute": "sus_priorityid",
+     "target": "sus_ref_priority",
+     "editable": true
+    },
+    {
+     "name": "condition_state",
+     "kind": "text",
+     "attribute": "sus_conditionstate",
+     "editable": true
+    },
+    {
+     "name": "recommended_action",
+     "kind": "text",
+     "attribute": "sus_recommendedaction",
+     "editable": true
+    },
+    {
+     "name": "governance_class",
+     "kind": "text",
+     "attribute": "sus_governanceclass",
+     "editable": true
+    },
+    {
+     "name": "approval_role",
+     "kind": "text",
+     "attribute": "sus_approvalrole",
+     "editable": true
+    },
+    {
+     "name": "source_module",
+     "kind": "text",
+     "attribute": "sus_sourcemodule",
+     "editable": true
+    },
+    {
+     "name": "source_record_id",
+     "kind": "text",
+     "attribute": "sus_sourcerecordid",
+     "editable": true
+    },
+    {
+     "name": "target_view",
+     "kind": "text",
+     "attribute": "sus_targetview",
+     "editable": true
+    },
+    {
+     "name": "work_order_code",
+     "kind": "text",
+     "attribute": "sus_workordercode",
+     "editable": true
+    },
+    {
+     "name": "reference_id",
+     "kind": "text",
+     "attribute": "sus_referenceid",
+     "editable": true
+    },
+    {
+     "name": "verification_method",
+     "kind": "text",
+     "attribute": "sus_verificationmethod",
+     "editable": true
+    },
+    {
+     "name": "decision_basis",
+     "kind": "text",
+     "attribute": "sus_decisionbasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "condition_evidence",
+   "label": "Condition evidence",
+   "layer": "transaction",
+   "table": "sus_condition_evidence",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "assessment",
+     "kind": "fk",
+     "attribute": "sus_assessmentid",
+     "target": "sus_cbm_assessment",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "evidence_source",
+     "kind": "text",
+     "attribute": "sus_evidencesource",
+     "editable": true
+    },
+    {
+     "name": "arrival_mode",
+     "kind": "text",
+     "attribute": "sus_arrivalmode",
+     "editable": true
+    },
+    {
+     "name": "source_module",
+     "kind": "text",
+     "attribute": "sus_sourcemodule",
+     "editable": true
+    },
+    {
+     "name": "target_view",
+     "kind": "text",
+     "attribute": "sus_targetview",
+     "editable": true
+    },
+    {
+     "name": "source_record_id",
+     "kind": "text",
+     "attribute": "sus_sourcerecordid",
+     "editable": true
+    },
+    {
+     "name": "observed_time",
+     "kind": "datetime",
+     "attribute": "sus_observedtime",
+     "editable": true
+    },
+    {
+     "name": "signal_name",
+     "kind": "text",
+     "attribute": "sus_signalname",
+     "editable": true
+    },
+    {
+     "name": "observed_value",
+     "kind": "decimal",
+     "attribute": "sus_observedvalue",
+     "editable": true
+    },
+    {
+     "name": "baseline_or_peer",
+     "kind": "decimal",
+     "attribute": "sus_baselineorpeer",
+     "editable": true
+    },
+    {
+     "name": "unit",
+     "kind": "ref",
+     "attribute": "sus_unitid",
+     "target": "sus_ref_unit",
+     "editable": true
+    },
+    {
+     "name": "deviation_pct",
+     "kind": "decimal",
+     "attribute": "sus_deviationpct",
+     "editable": true
+    },
+    {
+     "name": "evidence_role",
+     "kind": "text",
+     "attribute": "sus_evidencerole",
+     "editable": true
+    },
+    {
+     "name": "quality_pct",
+     "kind": "decimal",
+     "attribute": "sus_qualitypct",
+     "editable": true
+    },
+    {
+     "name": "engineering_interpretation",
+     "kind": "text",
+     "attribute": "sus_engineeringinterpretation",
+     "editable": true
+    },
+    {
+     "name": "freshness_label",
+     "kind": "text",
+     "attribute": "sus_freshnesslabel",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "part_requirement",
+   "label": "Part requirement",
+   "layer": "transaction",
+   "table": "sus_part_requirement",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "intervention",
+     "kind": "fk",
+     "attribute": "sus_interventionid",
+     "target": "sus_intervention",
+     "editable": true
+    },
+    {
+     "name": "work_order",
+     "kind": "fk",
+     "attribute": "sus_workorderid",
+     "target": "sus_work_order",
+     "editable": true
+    },
+    {
+     "name": "decision_id",
+     "kind": "text",
+     "attribute": "sus_decisionid",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "maintenance_type",
+     "kind": "ref",
+     "attribute": "sus_maintenancetypeid",
+     "target": "sus_ref_maintenance_type",
+     "editable": true
+    },
+    {
+     "name": "part",
+     "kind": "fk",
+     "attribute": "sus_partid",
+     "target": "sus_part",
+     "editable": true
+    },
+    {
+     "name": "required_qty",
+     "kind": "integer",
+     "attribute": "sus_requiredqty",
+     "editable": true
+    },
+    {
+     "name": "required_by",
+     "kind": "datetime",
+     "attribute": "sus_requiredby",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "requirement_source",
+     "kind": "text",
+     "attribute": "sus_requirementsource",
+     "editable": true
+    },
+    {
+     "name": "source_record_id",
+     "kind": "text",
+     "attribute": "sus_sourcerecordid",
+     "editable": true
+    },
+    {
+     "name": "as_of",
+     "kind": "datetime",
+     "attribute": "sus_asof",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "intervention_requirement",
+   "label": "Intervention requirement",
+   "layer": "transaction",
+   "table": "sus_intervention_requirement",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "intervention",
+     "kind": "fk",
+     "attribute": "sus_interventionid",
+     "target": "sus_intervention",
+     "editable": true
+    },
+    {
+     "name": "requirement_type",
+     "kind": "text",
+     "attribute": "sus_requirementtype",
+     "editable": true
+    },
+    {
+     "name": "requirement_ref",
+     "kind": "text",
+     "attribute": "sus_requirementref",
+     "editable": true
+    },
+    {
+     "name": "quantity",
+     "kind": "integer",
+     "attribute": "sus_quantity",
+     "editable": true
+    },
+    {
+     "name": "mandatory",
+     "kind": "boolean",
+     "attribute": "sus_mandatory",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "planned_outage",
+   "label": "Planned outage",
+   "layer": "transaction",
+   "table": "sus_planned_outage",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset_scope",
+     "kind": "text",
+     "attribute": "sus_assetscope",
+     "editable": true
+    },
+    {
+     "name": "capacity_out_mw",
+     "kind": "decimal",
+     "attribute": "sus_capacityoutmw",
+     "editable": true
+    },
+    {
+     "name": "start_at",
+     "kind": "datetime",
+     "attribute": "sus_startat",
+     "editable": true
+    },
+    {
+     "name": "end_at",
+     "kind": "datetime",
+     "attribute": "sus_endat",
+     "editable": true
+    },
+    {
+     "name": "reason",
+     "kind": "text",
+     "attribute": "sus_reason",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "outage",
+     "editable": true
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "capacity_test",
+   "label": "Capacity test",
+   "layer": "transaction",
+   "table": "sus_capacity_test",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "bess",
+     "kind": "fk",
+     "attribute": "sus_bessid",
+     "target": "sus_asset_bess",
+     "editable": true
+    },
+    {
+     "name": "test_date",
+     "kind": "date",
+     "attribute": "sus_testdate",
+     "editable": true
+    },
+    {
+     "name": "test_type",
+     "kind": "text",
+     "attribute": "sus_testtype",
+     "editable": true
+    },
+    {
+     "name": "test_standard",
+     "kind": "text",
+     "attribute": "sus_teststandard",
+     "editable": true
+    },
+    {
+     "name": "rated_power_during_test_mw",
+     "kind": "integer",
+     "attribute": "sus_ratedpowerduringtestmw",
+     "editable": true
+    },
+    {
+     "name": "discharged_energy_poi_mwh",
+     "kind": "decimal",
+     "attribute": "sus_dischargedenergypoimwh",
+     "editable": true
+    },
+    {
+     "name": "charged_energy_poi_mwh",
+     "kind": "decimal",
+     "attribute": "sus_chargedenergypoimwh",
+     "editable": true
+    },
+    {
+     "name": "ac_rte_pct",
+     "kind": "decimal",
+     "attribute": "sus_acrtepct",
+     "editable": true
+    },
+    {
+     "name": "soh_energy_pct",
+     "kind": "decimal",
+     "attribute": "sus_sohenergypct",
+     "editable": true
+    },
+    {
+     "name": "ambient_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_ambienttempc",
+     "editable": true
+    },
+    {
+     "name": "witness",
+     "kind": "text",
+     "attribute": "sus_witness",
+     "editable": true
+    },
+    {
+     "name": "result",
+     "kind": "text",
+     "attribute": "sus_result",
+     "editable": true
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "hse_hours",
+   "label": "Hours worked",
+   "layer": "transaction",
+   "table": "sus_hse_hours",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "period",
+     "kind": "text",
+     "attribute": "sus_period",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "worker_type",
+     "kind": "text",
+     "attribute": "sus_workertype",
+     "editable": true
+    },
+    {
+     "name": "hours_worked",
+     "kind": "integer",
+     "attribute": "sus_hoursworked",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "data_status",
+     "kind": "text",
+     "attribute": "sus_datastatus",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ghg_activity",
+   "label": "GHG activity",
+   "layer": "transaction",
+   "table": "sus_ghg_activity",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "period",
+     "kind": "text",
+     "attribute": "sus_period",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "ghg_scope",
+     "kind": "text",
+     "attribute": "sus_ghgscope",
+     "editable": true
+    },
+    {
+     "name": "emission_source",
+     "kind": "text",
+     "attribute": "sus_emissionsource",
+     "editable": true
+    },
+    {
+     "name": "activity_value",
+     "kind": "decimal",
+     "attribute": "sus_activityvalue",
+     "editable": true
+    },
+    {
+     "name": "activity_unit",
+     "kind": "text",
+     "attribute": "sus_activityunit",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "data_status",
+     "kind": "text",
+     "attribute": "sus_datastatus",
+     "editable": true
+    },
+    {
+     "name": "asset_reference_basis",
+     "kind": "text",
+     "attribute": "sus_assetreferencebasis",
+     "editable": true
+    },
+    {
+     "name": "factor_id",
+     "kind": "text",
+     "attribute": "sus_factorid",
+     "editable": true
+    },
+    {
+     "name": "factor_value",
+     "kind": "decimal",
+     "attribute": "sus_factorvalue",
+     "editable": true
+    },
+    {
+     "name": "factor_unit",
+     "kind": "text",
+     "attribute": "sus_factorunit",
+     "editable": true
+    },
+    {
+     "name": "factor_resolution",
+     "kind": "text",
+     "attribute": "sus_factorresolution",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "water_cleaning",
+   "label": "Module cleaning",
+   "layer": "transaction",
+   "table": "sus_water_cleaning",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "event_date",
+     "kind": "date",
+     "attribute": "sus_eventdate",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "array_designation",
+     "kind": "text",
+     "attribute": "sus_arraydesignation",
+     "editable": true
+    },
+    {
+     "name": "array_name",
+     "kind": "text",
+     "attribute": "sus_arrayname",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "cleaning_type",
+     "kind": "text",
+     "attribute": "sus_cleaningtype",
+     "editable": true
+    },
+    {
+     "name": "water_m3",
+     "kind": "decimal",
+     "attribute": "sus_waterm3",
+     "editable": true
+    },
+    {
+     "name": "soiling_before_pct",
+     "kind": "decimal",
+     "attribute": "sus_soilingbeforepct",
+     "editable": true
+    },
+    {
+     "name": "soiling_after_pct",
+     "kind": "decimal",
+     "attribute": "sus_soilingafterpct",
+     "editable": true
+    },
+    {
+     "name": "mwh_recovered",
+     "kind": "decimal",
+     "attribute": "sus_mwhrecovered",
+     "editable": true
+    },
+    {
+     "name": "water_per_recovered_mwh_l",
+     "kind": "decimal",
+     "attribute": "sus_waterperrecoveredmwhl",
+     "editable": true
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": true
+    },
+    {
+     "name": "data_status",
+     "kind": "text",
+     "attribute": "sus_datastatus",
+     "editable": true
+    },
+    {
+     "name": "asset_reference_basis",
+     "kind": "text",
+     "attribute": "sus_assetreferencebasis",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "execution_feedback",
+   "label": "Execution feedback",
+   "layer": "transaction",
+   "table": "sus_execution_feedback",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "work_order",
+     "kind": "fk",
+     "attribute": "sus_workorderid",
+     "target": "sus_work_order",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "planned_start",
+     "kind": "datetime",
+     "attribute": "sus_plannedstart",
+     "editable": true
+    },
+    {
+     "name": "actual_start",
+     "kind": "datetime",
+     "attribute": "sus_actualstart",
+     "editable": true
+    },
+    {
+     "name": "planned_duration_hours",
+     "kind": "decimal",
+     "attribute": "sus_planneddurationhours",
+     "editable": true
+    },
+    {
+     "name": "actual_duration_hours",
+     "kind": "decimal",
+     "attribute": "sus_actualdurationhours",
+     "editable": true
+    },
+    {
+     "name": "date_variance_hours",
+     "kind": "integer",
+     "attribute": "sus_datevariancehours",
+     "editable": true
+    },
+    {
+     "name": "duration_variance_pct",
+     "kind": "decimal",
+     "attribute": "sus_durationvariancepct",
+     "editable": true
+    },
+    {
+     "name": "conformance_status",
+     "kind": "text",
+     "attribute": "sus_conformancestatus",
+     "editable": true
+    },
+    {
+     "name": "outcome_status",
+     "kind": "text",
+     "attribute": "sus_outcomestatus",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "forecast_run",
+   "label": "Forecast run",
+   "layer": "transaction",
+   "table": "sus_forecast_run",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "forecast_run_timestamp",
+     "kind": "datetime",
+     "attribute": "sus_forecastruntimestamp",
+     "editable": true
+    },
+    {
+     "name": "horizon_hours",
+     "kind": "integer",
+     "attribute": "sus_horizonhours",
+     "editable": true
+    },
+    {
+     "name": "forecast_start",
+     "kind": "datetime",
+     "attribute": "sus_forecaststart",
+     "editable": true
+    },
+    {
+     "name": "forecast_end",
+     "kind": "datetime",
+     "attribute": "sus_forecastend",
+     "editable": true
+    },
+    {
+     "name": "resolution_minutes",
+     "kind": "integer",
+     "attribute": "sus_resolutionminutes",
+     "editable": true
+    },
+    {
+     "name": "physics_forecast_mwh",
+     "kind": "decimal",
+     "attribute": "sus_physicsforecastmwh",
+     "editable": true
+    },
+    {
+     "name": "hybrid_forecast_mwh",
+     "kind": "decimal",
+     "attribute": "sus_hybridforecastmwh",
+     "editable": true
+    },
+    {
+     "name": "operational_energy_at_risk_mwh",
+     "kind": "decimal",
+     "attribute": "sus_operationalenergyatriskmwh",
+     "editable": true
+    },
+    {
+     "name": "calibrated_band_pct",
+     "kind": "decimal",
+     "attribute": "sus_calibratedbandpct",
+     "editable": true
+    },
+    {
+     "name": "data_trust_pct",
+     "kind": "decimal",
+     "attribute": "sus_datatrustpct",
+     "editable": true
+    },
+    {
+     "name": "model_reliability_n_mae_pct",
+     "kind": "decimal",
+     "attribute": "sus_modelreliabilitynmaepct",
+     "editable": true
+    },
+    {
+     "name": "physics_model",
+     "kind": "fk",
+     "attribute": "sus_physicsmodelid",
+     "target": "sus_ml_model",
+     "editable": true
+    },
+    {
+     "name": "residual_model",
+     "kind": "fk",
+     "attribute": "sus_residualmodelid",
+     "target": "sus_ml_model",
+     "editable": true
+    },
+    {
+     "name": "uncertainty_model",
+     "kind": "fk",
+     "attribute": "sus_uncertaintymodelid",
+     "target": "sus_ml_model",
+     "editable": true
+    },
+    {
+     "name": "run_status",
+     "kind": "text",
+     "attribute": "sus_runstatus",
+     "editable": true
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "outcome_validation",
+   "label": "Outcome validation",
+   "layer": "transaction",
+   "table": "sus_outcome_validation",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "execution_feedback",
+     "kind": "fk",
+     "attribute": "sus_executionfeedbackid",
+     "target": "sus_execution_feedback",
+     "editable": true
+    },
+    {
+     "name": "work_order",
+     "kind": "fk",
+     "attribute": "sus_workorderid",
+     "target": "sus_work_order",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": true
+    },
+    {
+     "name": "forecast_run_id",
+     "kind": "text",
+     "attribute": "sus_forecastrunid",
+     "editable": true
+    },
+    {
+     "name": "predicted_avoided_loss_mwh",
+     "kind": "decimal",
+     "attribute": "sus_predictedavoidedlossmwh",
+     "editable": true
+    },
+    {
+     "name": "predicted_value_protected",
+     "kind": "money",
+     "attribute": "sus_predictedvalueprotected",
+     "editable": true
+    },
+    {
+     "name": "actual_validated_recovery_mwh",
+     "kind": "decimal",
+     "attribute": "sus_actualvalidatedrecoverymwh",
+     "editable": true
+    },
+    {
+     "name": "actual_value_realized",
+     "kind": "money",
+     "attribute": "sus_actualvaluerealized",
+     "editable": true
+    },
+    {
+     "name": "execution_cost",
+     "kind": "money",
+     "attribute": "sus_executioncost",
+     "editable": true
+    },
+    {
+     "name": "net_realized_value",
+     "kind": "money",
+     "attribute": "sus_netrealizedvalue",
+     "editable": true
+    },
+    {
+     "name": "realization_pct",
+     "kind": "decimal",
+     "attribute": "sus_realizationpct",
+     "editable": true
+    },
+    {
+     "name": "outcome_confidence_pct",
+     "kind": "decimal",
+     "attribute": "sus_outcomeconfidencepct",
+     "editable": true
+    },
+    {
+     "name": "variance_driver",
+     "kind": "text",
+     "attribute": "sus_variancedriver",
+     "editable": true
+    },
+    {
+     "name": "validation_status",
+     "kind": "text",
+     "attribute": "sus_validationstatus",
+     "editable": true
+    },
+    {
+     "name": "learning_feedback_status",
+     "kind": "text",
+     "attribute": "sus_learningfeedbackstatus",
+     "editable": true
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "ppa_settlement",
+   "label": "PPA settlement",
+   "layer": "transaction",
+   "table": "sus_ppa_settlement",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "contract",
+     "kind": "fk",
+     "attribute": "sus_contractid",
+     "target": "sus_offtake_contract",
+     "editable": true
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": true
+    },
+    {
+     "name": "scheduled_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_scheduledenergymwh",
+     "editable": true
+    },
+    {
+     "name": "delivered_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_deliveredenergymwh",
+     "editable": true
+    },
+    {
+     "name": "deemed_generation_mwh",
+     "kind": "decimal",
+     "attribute": "sus_deemedgenerationmwh",
+     "editable": true
+    },
+    {
+     "name": "shortfall_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_shortfallenergymwh",
+     "editable": true
+    },
+    {
+     "name": "availability_penalty",
+     "kind": "money",
+     "attribute": "sus_availabilitypenalty",
+     "editable": true
+    },
+    {
+     "name": "curtailment_compensation",
+     "kind": "money",
+     "attribute": "sus_curtailmentcompensation",
+     "editable": true
+    },
+    {
+     "name": "invoice_amount",
+     "kind": "money",
+     "attribute": "sus_invoiceamount",
+     "editable": true
+    },
+    {
+     "name": "amount_received",
+     "kind": "money",
+     "attribute": "sus_amountreceived",
+     "editable": true
+    },
+    {
+     "name": "receivable_balance",
+     "kind": "money",
+     "attribute": "sus_receivablebalance",
+     "editable": true
+    },
+    {
+     "name": "days_outstanding",
+     "kind": "integer",
+     "attribute": "sus_daysoutstanding",
+     "editable": true
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    },
+    {
+     "name": "currency",
+     "kind": "text",
+     "attribute": "transactioncurrencyid",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "plant_telemetry",
+   "label": "Plant telemetry",
+   "layer": "series",
+   "table": "sus_plant_telemetry",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "at",
+     "kind": "datetime",
+     "attribute": "sus_at",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "poa_wm2",
+     "kind": "decimal",
+     "attribute": "sus_poawm2",
+     "editable": false
+    },
+    {
+     "name": "ghi_wm2",
+     "kind": "decimal",
+     "attribute": "sus_ghiwm2",
+     "editable": false
+    },
+    {
+     "name": "ambient_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_ambienttempc",
+     "editable": false
+    },
+    {
+     "name": "module_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_moduletempc",
+     "editable": false
+    },
+    {
+     "name": "wind_speed_ms",
+     "kind": "decimal",
+     "attribute": "sus_windspeedms",
+     "editable": false
+    },
+    {
+     "name": "soiling_ratio",
+     "kind": "decimal",
+     "attribute": "sus_soilingratio",
+     "editable": false
+    },
+    {
+     "name": "expected_dc_mw",
+     "kind": "decimal",
+     "attribute": "sus_expecteddcmw",
+     "editable": false
+    },
+    {
+     "name": "expected_ac_mw",
+     "kind": "decimal",
+     "attribute": "sus_expectedacmw",
+     "editable": false
+    },
+    {
+     "name": "actual_ac_mw",
+     "kind": "decimal",
+     "attribute": "sus_actualacmw",
+     "editable": false
+    },
+    {
+     "name": "pr_pct",
+     "kind": "decimal",
+     "attribute": "sus_prpct",
+     "editable": false
+    },
+    {
+     "name": "availability_pct",
+     "kind": "decimal",
+     "attribute": "sus_availabilitypct",
+     "editable": false
+    },
+    {
+     "name": "inverter_efficiency_pct",
+     "kind": "decimal",
+     "attribute": "sus_inverterefficiencypct",
+     "editable": false
+    },
+    {
+     "name": "grid_frequency_hz",
+     "kind": "decimal",
+     "attribute": "sus_gridfrequencyhz",
+     "editable": false
+    },
+    {
+     "name": "power_factor",
+     "kind": "decimal",
+     "attribute": "sus_powerfactor",
+     "editable": false
+    },
+    {
+     "name": "data_quality_pct",
+     "kind": "decimal",
+     "attribute": "sus_dataqualitypct",
+     "editable": false
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": false
+    },
+    {
+     "name": "clear_sky_poa_wm2",
+     "kind": "decimal",
+     "attribute": "sus_clearskypoawm2",
+     "editable": false
+    },
+    {
+     "name": "cloud_cover_pct",
+     "kind": "decimal",
+     "attribute": "sus_cloudcoverpct",
+     "editable": false
+    },
+    {
+     "name": "cloud_transmittance_pct",
+     "kind": "decimal",
+     "attribute": "sus_cloudtransmittancepct",
+     "editable": false
+    },
+    {
+     "name": "clear_sky_ac_potential_mw",
+     "kind": "decimal",
+     "attribute": "sus_clearskyacpotentialmw",
+     "editable": false
+    },
+    {
+     "name": "weather_adjusted_expected_ac_mw",
+     "kind": "decimal",
+     "attribute": "sus_weatheradjustedexpectedacmw",
+     "editable": false
+    },
+    {
+     "name": "weather_loss_mw",
+     "kind": "decimal",
+     "attribute": "sus_weatherlossmw",
+     "editable": false
+    },
+    {
+     "name": "plant_operational_loss_mw",
+     "kind": "decimal",
+     "attribute": "sus_plantoperationallossmw",
+     "editable": false
+    },
+    {
+     "name": "curtailment_pct",
+     "kind": "decimal",
+     "attribute": "sus_curtailmentpct",
+     "editable": false
+    },
+    {
+     "name": "asset_health_score",
+     "kind": "integer",
+     "attribute": "sus_assethealthscore",
+     "editable": false
+    },
+    {
+     "name": "weather_source",
+     "kind": "text",
+     "attribute": "sus_weathersource",
+     "editable": false
+    },
+    {
+     "name": "weather_mode",
+     "kind": "text",
+     "attribute": "sus_weathermode",
+     "editable": false
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "inverter_reading",
+   "label": "Inverter telemetry",
+   "layer": "series",
+   "table": "sus_inverter_reading",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "at",
+     "kind": "datetime",
+     "attribute": "sus_at",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "asset",
+     "kind": "fk",
+     "attribute": "sus_assetid",
+     "target": "sus_asset",
+     "editable": false
+    },
+    {
+     "name": "dc_power_mw",
+     "kind": "decimal",
+     "attribute": "sus_dcpowermw",
+     "editable": false
+    },
+    {
+     "name": "ac_power_mw",
+     "kind": "decimal",
+     "attribute": "sus_acpowermw",
+     "editable": false
+    },
+    {
+     "name": "dc_voltage_v",
+     "kind": "decimal",
+     "attribute": "sus_dcvoltagev",
+     "editable": false
+    },
+    {
+     "name": "dc_current_a",
+     "kind": "decimal",
+     "attribute": "sus_dccurrenta",
+     "editable": false
+    },
+    {
+     "name": "inverter_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_invertertempc",
+     "editable": false
+    },
+    {
+     "name": "status",
+     "kind": "ref",
+     "attribute": "sus_statusid",
+     "target": "sus_ref_status",
+     "scope": "telemetry_state",
+     "editable": false
+    },
+    {
+     "name": "alarm_code",
+     "kind": "text",
+     "attribute": "sus_alarmcode",
+     "editable": false
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "bess_reading",
+   "label": "BESS telemetry",
+   "layer": "series",
+   "table": "sus_bess_reading",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "at",
+     "kind": "datetime",
+     "attribute": "sus_at",
+     "editable": false
+    },
+    {
+     "name": "bess",
+     "kind": "fk",
+     "attribute": "sus_bessid",
+     "target": "sus_asset_bess",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "charge_mw_poi",
+     "kind": "decimal",
+     "attribute": "sus_chargemwpoi",
+     "editable": false
+    },
+    {
+     "name": "discharge_mw_poi",
+     "kind": "decimal",
+     "attribute": "sus_dischargemwpoi",
+     "editable": false
+    },
+    {
+     "name": "charge_source",
+     "kind": "text",
+     "attribute": "sus_chargesource",
+     "editable": false
+    },
+    {
+     "name": "dispatch_schedule_mw",
+     "kind": "integer",
+     "attribute": "sus_dispatchschedulemw",
+     "editable": false
+    },
+    {
+     "name": "available_mw",
+     "kind": "decimal",
+     "attribute": "sus_availablemw",
+     "editable": false
+    },
+    {
+     "name": "so_c_pct",
+     "kind": "decimal",
+     "attribute": "sus_socpct",
+     "editable": false
+    },
+    {
+     "name": "aux_load_mw",
+     "kind": "decimal",
+     "attribute": "sus_auxloadmw",
+     "editable": false
+    },
+    {
+     "name": "cell_temp_max_c",
+     "kind": "decimal",
+     "attribute": "sus_celltempmaxc",
+     "editable": false
+    },
+    {
+     "name": "cell_temp_avg_c",
+     "kind": "decimal",
+     "attribute": "sus_celltempavgc",
+     "editable": false
+    },
+    {
+     "name": "ambient_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_ambienttempc",
+     "editable": false
+    },
+    {
+     "name": "co_located_pv_mw",
+     "kind": "decimal",
+     "attribute": "sus_colocatedpvmw",
+     "editable": false
+    },
+    {
+     "name": "operating_mode",
+     "kind": "text",
+     "attribute": "sus_operatingmode",
+     "editable": false
+    },
+    {
+     "name": "data_quality_pct",
+     "kind": "decimal",
+     "attribute": "sus_dataqualitypct",
+     "editable": false
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "bess_day",
+   "label": "BESS daily operations",
+   "layer": "series",
+   "table": "sus_bess_day",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "day",
+     "kind": "date",
+     "attribute": "sus_day",
+     "editable": false
+    },
+    {
+     "name": "bess",
+     "kind": "fk",
+     "attribute": "sus_bessid",
+     "target": "sus_asset_bess",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "charge_mwh_poi",
+     "kind": "decimal",
+     "attribute": "sus_chargemwhpoi",
+     "editable": false
+    },
+    {
+     "name": "discharge_mwh_poi",
+     "kind": "decimal",
+     "attribute": "sus_dischargemwhpoi",
+     "editable": false
+    },
+    {
+     "name": "aux_mwh",
+     "kind": "decimal",
+     "attribute": "sus_auxmwh",
+     "editable": false
+    },
+    {
+     "name": "start_so_c_pct",
+     "kind": "decimal",
+     "attribute": "sus_startsocpct",
+     "editable": false
+    },
+    {
+     "name": "end_so_c_pct",
+     "kind": "decimal",
+     "attribute": "sus_endsocpct",
+     "editable": false
+    },
+    {
+     "name": "equivalent_full_cycles",
+     "kind": "decimal",
+     "attribute": "sus_equivalentfullcycles",
+     "editable": false
+    },
+    {
+     "name": "availability_pct",
+     "kind": "decimal",
+     "attribute": "sus_availabilitypct",
+     "editable": false
+    },
+    {
+     "name": "scheduled_discharge_mwh",
+     "kind": "integer",
+     "attribute": "sus_scheduleddischargemwh",
+     "editable": false
+    },
+    {
+     "name": "max_cell_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_maxcelltempc",
+     "editable": false
+    },
+    {
+     "name": "cumulative_discharge_mwh_since_cod",
+     "kind": "decimal",
+     "attribute": "sus_cumulativedischargemwhsincecod",
+     "editable": false
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "weather_forecast",
+   "label": "Weather forecast",
+   "layer": "series",
+   "table": "sus_weather_forecast",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "forecast_run_timestamp",
+     "kind": "datetime",
+     "attribute": "sus_forecastruntimestamp",
+     "editable": false
+    },
+    {
+     "name": "interval_start",
+     "kind": "datetime",
+     "attribute": "sus_intervalstart",
+     "editable": false
+    },
+    {
+     "name": "lead_hours",
+     "kind": "decimal",
+     "attribute": "sus_leadhours",
+     "editable": false
+    },
+    {
+     "name": "clear_sky_index",
+     "kind": "decimal",
+     "attribute": "sus_clearskyindex",
+     "editable": false
+    },
+    {
+     "name": "cloud_cover_pct",
+     "kind": "decimal",
+     "attribute": "sus_cloudcoverpct",
+     "editable": false
+    },
+    {
+     "name": "ambient_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_ambienttempc",
+     "editable": false
+    },
+    {
+     "name": "wind_speed_ms",
+     "kind": "decimal",
+     "attribute": "sus_windspeedms",
+     "editable": false
+    },
+    {
+     "name": "forecast_curtailment_pct",
+     "kind": "decimal",
+     "attribute": "sus_forecastcurtailmentpct",
+     "editable": false
+    },
+    {
+     "name": "nwp_source",
+     "kind": "text",
+     "attribute": "sus_nwpsource",
+     "editable": false
+    },
+    {
+     "name": "data_provenance",
+     "kind": "text",
+     "attribute": "sus_dataprovenance",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "forecast_interval",
+   "label": "Forecast interval",
+   "layer": "series",
+   "table": "sus_forecast_interval",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "forecast_run_timestamp",
+     "kind": "datetime",
+     "attribute": "sus_forecastruntimestamp",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "interval_start",
+     "kind": "datetime",
+     "attribute": "sus_intervalstart",
+     "editable": false
+    },
+    {
+     "name": "interval_minutes",
+     "kind": "integer",
+     "attribute": "sus_intervalminutes",
+     "editable": false
+    },
+    {
+     "name": "lead_hours",
+     "kind": "decimal",
+     "attribute": "sus_leadhours",
+     "editable": false
+    },
+    {
+     "name": "clear_sky_poa_wm2",
+     "kind": "decimal",
+     "attribute": "sus_clearskypoawm2",
+     "editable": false
+    },
+    {
+     "name": "forecast_poa_wm2",
+     "kind": "decimal",
+     "attribute": "sus_forecastpoawm2",
+     "editable": false
+    },
+    {
+     "name": "cloud_cover_pct",
+     "kind": "decimal",
+     "attribute": "sus_cloudcoverpct",
+     "editable": false
+    },
+    {
+     "name": "ambient_temp_c",
+     "kind": "decimal",
+     "attribute": "sus_ambienttempc",
+     "editable": false
+    },
+    {
+     "name": "wind_speed_ms",
+     "kind": "decimal",
+     "attribute": "sus_windspeedms",
+     "editable": false
+    },
+    {
+     "name": "soiling_pct",
+     "kind": "decimal",
+     "attribute": "sus_soilingpct",
+     "editable": false
+    },
+    {
+     "name": "availability_pct",
+     "kind": "decimal",
+     "attribute": "sus_availabilitypct",
+     "editable": false
+    },
+    {
+     "name": "curtailment_pct",
+     "kind": "decimal",
+     "attribute": "sus_curtailmentpct",
+     "editable": false
+    },
+    {
+     "name": "asset_health_score",
+     "kind": "integer",
+     "attribute": "sus_assethealthscore",
+     "editable": false
+    },
+    {
+     "name": "clear_sky_ac_potential_mw",
+     "kind": "decimal",
+     "attribute": "sus_clearskyacpotentialmw",
+     "editable": false
+    },
+    {
+     "name": "weather_adjusted_physics_mw",
+     "kind": "decimal",
+     "attribute": "sus_weatheradjustedphysicsmw",
+     "editable": false
+    },
+    {
+     "name": "after_availability_mw",
+     "kind": "decimal",
+     "attribute": "sus_afteravailabilitymw",
+     "editable": false
+    },
+    {
+     "name": "after_curtailment_mw",
+     "kind": "decimal",
+     "attribute": "sus_aftercurtailmentmw",
+     "editable": false
+    },
+    {
+     "name": "after_asset_state_mw",
+     "kind": "decimal",
+     "attribute": "sus_afterassetstatemw",
+     "editable": false
+    },
+    {
+     "name": "ml_residual_pct",
+     "kind": "decimal",
+     "attribute": "sus_mlresidualpct",
+     "editable": false
+    },
+    {
+     "name": "ml_residual_correction_mw",
+     "kind": "decimal",
+     "attribute": "sus_mlresidualcorrectionmw",
+     "editable": false
+    },
+    {
+     "name": "forecast_delivered_mw",
+     "kind": "decimal",
+     "attribute": "sus_forecastdeliveredmw",
+     "editable": false
+    },
+    {
+     "name": "uncertainty_pct",
+     "kind": "decimal",
+     "attribute": "sus_uncertaintypct",
+     "editable": false
+    },
+    {
+     "name": "forecast_lower_mw",
+     "kind": "decimal",
+     "attribute": "sus_forecastlowermw",
+     "editable": false
+    },
+    {
+     "name": "forecast_upper_mw",
+     "kind": "decimal",
+     "attribute": "sus_forecastuppermw",
+     "editable": false
+    },
+    {
+     "name": "model",
+     "kind": "fk",
+     "attribute": "sus_modelid",
+     "target": "sus_ml_model",
+     "editable": false
+    },
+    {
+     "name": "physics_model_version",
+     "kind": "text",
+     "attribute": "sus_physicsmodelversion",
+     "editable": false
+    },
+    {
+     "name": "residual_model_version",
+     "kind": "text",
+     "attribute": "sus_residualmodelversion",
+     "editable": false
+    },
+    {
+     "name": "data_source",
+     "kind": "text",
+     "attribute": "sus_datasource",
+     "editable": false
+    },
+    {
+     "name": "uncertainty_method",
+     "kind": "text",
+     "attribute": "sus_uncertaintymethod",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "plant_actual",
+   "label": "Metered output",
+   "layer": "series",
+   "table": "sus_plant_actual",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "interval_start",
+     "kind": "datetime",
+     "attribute": "sus_intervalstart",
+     "editable": false
+    },
+    {
+     "name": "actual_ac_mw",
+     "kind": "decimal",
+     "attribute": "sus_actualacmw",
+     "editable": false
+    },
+    {
+     "name": "actual_energy_mwh",
+     "kind": "decimal",
+     "attribute": "sus_actualenergymwh",
+     "editable": false
+    },
+    {
+     "name": "observed_poa_wm2",
+     "kind": "decimal",
+     "attribute": "sus_observedpoawm2",
+     "editable": false
+    },
+    {
+     "name": "actual_availability_pct",
+     "kind": "decimal",
+     "attribute": "sus_actualavailabilitypct",
+     "editable": false
+    },
+    {
+     "name": "actual_curtailment_pct",
+     "kind": "decimal",
+     "attribute": "sus_actualcurtailmentpct",
+     "editable": false
+    },
+    {
+     "name": "data_quality_status",
+     "kind": "text",
+     "attribute": "sus_dataqualitystatus",
+     "editable": false
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": false
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "forecast_validation",
+   "label": "Forecast validation",
+   "layer": "series",
+   "table": "sus_forecast_validation",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "forecast_run_code",
+     "kind": "text",
+     "attribute": "sus_forecastruncode",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "interval_start",
+     "kind": "datetime",
+     "attribute": "sus_intervalstart",
+     "editable": false
+    },
+    {
+     "name": "lead_hours",
+     "kind": "decimal",
+     "attribute": "sus_leadhours",
+     "editable": false
+    },
+    {
+     "name": "physics_forecast_mw",
+     "kind": "decimal",
+     "attribute": "sus_physicsforecastmw",
+     "editable": false
+    },
+    {
+     "name": "hybrid_forecast_mw",
+     "kind": "decimal",
+     "attribute": "sus_hybridforecastmw",
+     "editable": false
+    },
+    {
+     "name": "actual_mw",
+     "kind": "decimal",
+     "attribute": "sus_actualmw",
+     "editable": false
+    },
+    {
+     "name": "physics_error_mw",
+     "kind": "decimal",
+     "attribute": "sus_physicserrormw",
+     "editable": false
+    },
+    {
+     "name": "hybrid_error_mw",
+     "kind": "decimal",
+     "attribute": "sus_hybriderrormw",
+     "editable": false
+    },
+    {
+     "name": "physics_abs_error_pct",
+     "kind": "decimal",
+     "attribute": "sus_physicsabserrorpct",
+     "editable": false
+    },
+    {
+     "name": "hybrid_abs_error_pct",
+     "kind": "decimal",
+     "attribute": "sus_hybridabserrorpct",
+     "editable": false
+    },
+    {
+     "name": "inside_80_pct_band",
+     "kind": "text",
+     "attribute": "sus_inside80pctband",
+     "editable": false
+    },
+    {
+     "name": "horizon_bucket_hours",
+     "kind": "integer",
+     "attribute": "sus_horizonbuckethours",
+     "editable": false
+    },
+    {
+     "name": "validation_mode",
+     "kind": "text",
+     "attribute": "sus_validationmode",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "life_observation",
+   "label": "Life observation",
+   "layer": "series",
+   "table": "sus_life_observation",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "asset_code",
+     "kind": "text",
+     "attribute": "sus_assetcode",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "failure_mode",
+     "kind": "ref",
+     "attribute": "sus_failuremodeid",
+     "target": "sus_ref_failure_mode",
+     "editable": false
+    },
+    {
+     "name": "commissioned_date",
+     "kind": "date",
+     "attribute": "sus_commissioneddate",
+     "editable": false
+    },
+    {
+     "name": "observation_date",
+     "kind": "date",
+     "attribute": "sus_observationdate",
+     "editable": false
+    },
+    {
+     "name": "operating_hours",
+     "kind": "decimal",
+     "attribute": "sus_operatinghours",
+     "editable": false
+    },
+    {
+     "name": "event_type",
+     "kind": "ref",
+     "attribute": "sus_eventtypeid",
+     "target": "sus_ref_event_type",
+     "scope": "reliability",
+     "editable": false
+    },
+    {
+     "name": "failed_surviving",
+     "kind": "text",
+     "attribute": "sus_failedsurviving",
+     "editable": false
+    },
+    {
+     "name": "right_censored",
+     "kind": "text",
+     "attribute": "sus_rightcensored",
+     "editable": false
+    },
+    {
+     "name": "replacement_reset",
+     "kind": "text",
+     "attribute": "sus_replacementreset",
+     "editable": false
+    },
+    {
+     "name": "evidence_source",
+     "kind": "text",
+     "attribute": "sus_evidencesource",
+     "editable": false
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": false
+    },
+    {
+     "name": "data_quality_status",
+     "kind": "text",
+     "attribute": "sus_dataqualitystatus",
+     "editable": false
+    },
+    {
+     "name": "module_group",
+     "kind": "fk",
+     "attribute": "sus_modulegroupid",
+     "target": "sus_pv_module_group",
+     "editable": false
+    },
+    {
+     "name": "pv_module",
+     "kind": "fk",
+     "attribute": "sus_pvmoduleid",
+     "target": "sus_pv_module",
+     "editable": false
+    },
+    {
+     "name": "observation_basis",
+     "kind": "text",
+     "attribute": "sus_observationbasis",
+     "editable": false
+    },
+    {
+     "name": "calendar_exposure_hours",
+     "kind": "integer",
+     "attribute": "sus_calendarexposurehours",
+     "editable": false
+    },
+    {
+     "name": "equipment_model",
+     "kind": "fk",
+     "attribute": "sus_equipmentmodelid",
+     "target": "sus_equipment_model",
+     "editable": false
+    },
+    {
+     "name": "batch_id",
+     "kind": "text",
+     "attribute": "sus_batchid",
+     "editable": false
+    },
+    {
+     "name": "evidence_reference",
+     "kind": "text",
+     "attribute": "sus_evidencereference",
+     "editable": false
+    },
+    {
+     "name": "failure_criterion",
+     "kind": "text",
+     "attribute": "sus_failurecriterion",
+     "editable": false
+    },
+    {
+     "name": "data_basis",
+     "kind": "text",
+     "attribute": "sus_databasis",
+     "editable": false
+    },
+    {
+     "name": "asset_tag",
+     "kind": "text",
+     "attribute": "sus_assettag",
+     "editable": false
+    },
+    {
+     "name": "asset_class",
+     "kind": "ref",
+     "attribute": "sus_assetclassid",
+     "target": "sus_ref_asset_class",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "resource_event",
+   "label": "Resource calendar event",
+   "layer": "series",
+   "table": "sus_resource_event",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "resource_type",
+     "kind": "text",
+     "attribute": "sus_resourcetype",
+     "editable": false
+    },
+    {
+     "name": "resource_code",
+     "kind": "text",
+     "attribute": "sus_resourcecode",
+     "editable": false
+    },
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "start_at",
+     "kind": "datetime",
+     "attribute": "sus_startat",
+     "editable": false
+    },
+    {
+     "name": "end_at",
+     "kind": "datetime",
+     "attribute": "sus_endat",
+     "editable": false
+    },
+    {
+     "name": "event_type",
+     "kind": "ref",
+     "attribute": "sus_eventtypeid",
+     "target": "sus_ref_event_type",
+     "scope": "resource_calendar",
+     "editable": false
+    },
+    {
+     "name": "availability",
+     "kind": "text",
+     "attribute": "sus_availability",
+     "editable": false
+    },
+    {
+     "name": "available_hours",
+     "kind": "integer",
+     "attribute": "sus_availablehours",
+     "editable": false
+    },
+    {
+     "name": "committed_hours",
+     "kind": "integer",
+     "attribute": "sus_committedhours",
+     "editable": false
+    },
+    {
+     "name": "capacity_pct",
+     "kind": "integer",
+     "attribute": "sus_capacitypct",
+     "editable": false
+    },
+    {
+     "name": "skill_or_certification",
+     "kind": "text",
+     "attribute": "sus_skillorcertification",
+     "editable": false
+    },
+    {
+     "name": "location",
+     "kind": "text",
+     "attribute": "sus_location",
+     "editable": false
+    },
+    {
+     "name": "reason",
+     "kind": "text",
+     "attribute": "sus_reason",
+     "editable": false
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "site_weather",
+   "label": "Site work-weather forecast",
+   "layer": "series",
+   "table": "sus_site_weather",
+   "writers": [
+    "admin"
+   ],
+   "editable": false,
+   "columns": [
+    {
+     "name": "site",
+     "kind": "fk",
+     "attribute": "sus_siteid",
+     "target": "sus_site",
+     "editable": false
+    },
+    {
+     "name": "forecast_time",
+     "kind": "datetime",
+     "attribute": "sus_forecasttime",
+     "editable": false
+    },
+    {
+     "name": "valid_from",
+     "kind": "datetime",
+     "attribute": "sus_validfrom",
+     "editable": false
+    },
+    {
+     "name": "valid_to",
+     "kind": "datetime",
+     "attribute": "sus_validto",
+     "editable": false
+    },
+    {
+     "name": "rain_probability_pct",
+     "kind": "integer",
+     "attribute": "sus_rainprobabilitypct",
+     "editable": false
+    },
+    {
+     "name": "rainfall_mm",
+     "kind": "decimal",
+     "attribute": "sus_rainfallmm",
+     "editable": false
+    },
+    {
+     "name": "wind_kmh",
+     "kind": "integer",
+     "attribute": "sus_windkmh",
+     "editable": false
+    },
+    {
+     "name": "gust_kmh",
+     "kind": "integer",
+     "attribute": "sus_gustkmh",
+     "editable": false
+    },
+    {
+     "name": "lightning_risk",
+     "kind": "text",
+     "attribute": "sus_lightningrisk",
+     "editable": false
+    },
+    {
+     "name": "temperature_c",
+     "kind": "integer",
+     "attribute": "sus_temperaturec",
+     "editable": false
+    },
+    {
+     "name": "visibility_km",
+     "kind": "integer",
+     "attribute": "sus_visibilitykm",
+     "editable": false
+    },
+    {
+     "name": "work_at_height_status",
+     "kind": "text",
+     "attribute": "sus_workatheightstatus",
+     "editable": false
+    },
+    {
+     "name": "outdoor_electrical_status",
+     "kind": "text",
+     "attribute": "sus_outdoorelectricalstatus",
+     "editable": false
+    },
+    {
+     "name": "access_status",
+     "kind": "text",
+     "attribute": "sus_accessstatus",
+     "editable": false
+    },
+    {
+     "name": "freshness_status",
+     "kind": "text",
+     "attribute": "sus_freshnessstatus",
+     "editable": false
+    },
+    {
+     "name": "source_system",
+     "kind": "ref",
+     "attribute": "sus_sourcesystemid",
+     "target": "sus_ref_source_system",
+     "editable": false
+    },
+    {
+     "name": "source_mode",
+     "kind": "text",
+     "attribute": "sus_sourcemode",
+     "editable": false
+    },
+    {
+     "name": "evidence_id",
+     "kind": "text",
+     "attribute": "sus_evidenceid",
+     "editable": false
+    },
+    {
+     "name": "source_ordinal",
+     "kind": "integer",
+     "attribute": "sus_sourceordinal",
+     "editable": false
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": false
+    }
+   ]
+  },
+  {
+   "name": "record_link",
+   "label": "Record link",
+   "layer": "transaction",
+   "table": "sus_record_link",
+   "writers": [
+    "planner",
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "from_entity",
+     "kind": "text",
+     "attribute": "sus_fromentity",
+     "editable": true
+    },
+    {
+     "name": "from_code",
+     "kind": "text",
+     "attribute": "sus_fromcode",
+     "editable": true
+    },
+    {
+     "name": "link_type",
+     "kind": "text",
+     "attribute": "sus_linktype",
+     "editable": true
+    },
+    {
+     "name": "to_entity",
+     "kind": "text",
+     "attribute": "sus_toentity",
+     "editable": true
+    },
+    {
+     "name": "to_code",
+     "kind": "text",
+     "attribute": "sus_tocode",
+     "editable": true
+    },
+    {
+     "name": "linked_at",
+     "kind": "datetime",
+     "attribute": "sus_linkedat",
+     "editable": true
+    },
+    {
+     "name": "status",
+     "kind": "text",
+     "attribute": "sus_status",
+     "editable": true
+    },
+    {
+     "name": "source_record",
+     "kind": "text",
+     "attribute": "sus_sourcerecord",
+     "editable": true
+    },
+    {
+     "name": "response_time_hours",
+     "kind": "decimal",
+     "attribute": "sus_responsetimehours",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "statecode",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_asset_class",
+   "label": "Asset class (reference)",
+   "layer": "reference",
+   "table": "sus_ref_asset_class",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_maintenance_type",
+   "label": "Maintenance type (reference)",
+   "layer": "reference",
+   "table": "sus_ref_maintenance_type",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_priority",
+   "label": "Priority (reference)",
+   "layer": "reference",
+   "table": "sus_ref_priority",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_severity",
+   "label": "Severity (reference)",
+   "layer": "reference",
+   "table": "sus_ref_severity",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_risk_band",
+   "label": "Risk band (reference)",
+   "layer": "reference",
+   "table": "sus_ref_risk_band",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_status",
+   "label": "Status (reference)",
+   "layer": "reference",
+   "table": "sus_ref_status",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "scoped": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_unit",
+   "label": "Unit of measure (reference)",
+   "layer": "reference",
+   "table": "sus_ref_unit",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_currency",
+   "label": "Currency (reference)",
+   "layer": "reference",
+   "table": "sus_ref_currency",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_region",
+   "label": "Region (reference)",
+   "layer": "reference",
+   "table": "sus_ref_region",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_failure_mode",
+   "label": "Failure mode (reference)",
+   "layer": "reference",
+   "table": "sus_ref_failure_mode",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_defect_code",
+   "label": "Defect and finding type (reference)",
+   "layer": "reference",
+   "table": "sus_ref_defect_code",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_skill",
+   "label": "Skill (reference)",
+   "layer": "reference",
+   "table": "sus_ref_skill",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_event_type",
+   "label": "Event type (reference)",
+   "layer": "reference",
+   "table": "sus_ref_event_type",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "scoped": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_source_system",
+   "label": "Source system (reference)",
+   "layer": "reference",
+   "table": "sus_ref_source_system",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_framework",
+   "label": "Reporting framework (reference)",
+   "layer": "reference",
+   "table": "sus_ref_framework",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  },
+  {
+   "name": "ref_emission_factor",
+   "label": "Emission factor (reference)",
+   "layer": "reference",
+   "table": "sus_ref_emission_factor",
+   "writers": [
+    "admin"
+   ],
+   "editable": true,
+   "columns": [
+    {
+     "name": "label",
+     "kind": "text",
+     "attribute": "sus_label",
+     "editable": true
+    },
+    {
+     "name": "description",
+     "kind": "text",
+     "attribute": "sus_description",
+     "editable": true
+    },
+    {
+     "name": "sort_order",
+     "kind": "integer",
+     "attribute": "sus_sortorder",
+     "editable": true
+    },
+    {
+     "name": "is_active",
+     "kind": "boolean",
+     "attribute": "sus_isactive",
+     "editable": true
+    }
+   ]
+  }
+ ],
+ "platformCodes": {
+  "ref_asset_class": [
+   "PV_ARRAY",
+   "PV_MODULE",
+   "SCB",
+   "INVERTER",
+   "TRANSFORMER",
+   "SWITCHGEAR",
+   "HV_SWITCHGEAR",
+   "TRACKER",
+   "TRACKER_DRIVE",
+   "WEATHER_STATION",
+   "BESS_SYSTEM",
+   "BESS_CONTAINER",
+   "BESS_PCS",
+   "BESS_MV_TRANSFORMER",
+   "BESS_EMS",
+   "BACKUP_DG",
+   "PLANT_AUXILIARIES",
+   "ELECTRICAL_BOP",
+   "INSTRUMENTATION",
+   "SCADA_SYSTEM",
+   "SAFETY_SYSTEM"
+  ],
+  "ref_maintenance_type": [
+   "CORRECTIVE",
+   "PREVENTIVE",
+   "PREDICTIVE",
+   "CONDITION_BASED",
+   "RISK_BASED",
+   "INSPECTION",
+   "INVENTORY_LED"
+  ],
+  "ref_priority": [
+   "CRITICAL",
+   "HIGH",
+   "MEDIUM",
+   "LOW"
+  ],
+  "ref_severity": [
+   "CRITICAL",
+   "HIGH",
+   "MEDIUM",
+   "LOW"
+  ],
+  "ref_risk_band": [
+   "CRITICAL",
+   "HIGH",
+   "MEDIUM",
+   "WATCH",
+   "LOW"
+  ],
+  "ref_status": [
+   "work_order/OPEN",
+   "work_order/SCHEDULED",
+   "work_order/RELEASED",
+   "work_order/IN_PROGRESS",
+   "work_order/AWAITING_PART",
+   "work_order/OVERDUE_ACTIONS",
+   "work_order/COMPLETED",
+   "intervention/UNDER_REVIEW",
+   "intervention/PLANNED",
+   "intervention/RESOURCE_READINESS",
+   "intervention/AIP_OPTIMIZED",
+   "intervention/APPROVED",
+   "intervention/COMPLETED",
+   "plan/DRAFT",
+   "plan/ALTERNATIVE",
+   "plan/UNDER_REVIEW",
+   "plan/SELECTED",
+   "plan/RETURNED_FOR_RE_OPTIMIZATION",
+   "plan/APPROVED",
+   "plan/APPROVED_WITH_EXCEPTION",
+   "readiness/READY",
+   "readiness/CONSTRAINED",
+   "readiness/PENDING",
+   "outage/PLANNED",
+   "outage/APPROVED",
+   "outage/NOTIFIED_BY_UTILITY",
+   "hse_incident/CORRECTIVE_ACTION_OPEN",
+   "hse_incident/CLOSED",
+   "alert/OPEN",
+   "alert/ACKNOWLEDGED",
+   "alert/CONVERTED_TO_WORK_ORDER",
+   "finding/OPEN",
+   "finding/UNDER_REVIEW",
+   "finding/ENGINEERING_REVIEW",
+   "finding/WORK_ORDER_CREATED",
+   "finding/RESOLVED",
+   "event/OPEN",
+   "event/RESOLVED",
+   "event/CLOSED",
+   "rca/UNDER_REVIEW",
+   "rca/VALIDATED",
+   "warranty/ACTIVE",
+   "warranty/EXPIRING",
+   "warranty/EXPIRED",
+   "warranty_claim/OPPORTUNITY",
+   "warranty_claim/EVIDENCE_READY",
+   "warranty_claim/SUBMITTED",
+   "warranty_claim/APPROVED",
+   "stock/ADEQUATE",
+   "stock/BELOW_REORDER",
+   "stock/STOCKOUT",
+   "asset_operating/OPERATIONAL",
+   "asset_operating/FORCED_OUTAGE",
+   "telemetry_state/RUNNING",
+   "telemetry_state/DERATED",
+   "telemetry_state/CURTAILED",
+   "telemetry_state/TRIPPED",
+   "telemetry_state/NO_DATA",
+   "recommendation/UNDER_REVIEW",
+   "scenario/DRAFT",
+   "scenario/FEASIBLE",
+   "scenario/ACTIVE",
+   "connector/NOT_CONFIGURED",
+   "connector/CONFIGURED",
+   "connector/AVAILABLE",
+   "connector/ACTIVE",
+   "connector/STANDBY"
+  ],
+  "ref_unit": [
+   "PERCENT",
+   "INDEX",
+   "RATING",
+   "RATE",
+   "STATE",
+   "COUNT",
+   "DEG_C",
+   "AMPERE",
+   "VOLT",
+   "HERTZ",
+   "DEGREE",
+   "MEGAWATT",
+   "MEGAWATT_HOUR",
+   "KILOWATT_HOUR",
+   "WATT_PER_M2",
+   "SECOND",
+   "HOUR",
+   "DAY",
+   "MONTH",
+   "YEAR",
+   "KM_PER_HOUR",
+   "CUBIC_METRE",
+   "LITRE",
+   "TONNE",
+   "TCO2E",
+   "L_PER_MWH",
+   "TCO2E_PER_MWH",
+   "KGCO2E_PER_L",
+   "KGCO2E_PER_KG",
+   "KG_PER_UNIT",
+   "CURRENCY",
+   "CUR_PER_KWH",
+   "CUR_PER_HOUR",
+   "CUR_PER_INTERVENTION",
+   "CUR_PER_EVENT",
+   "CUR_PER_UNIT",
+   "CUR_PER_KG",
+   "L_PER_RECOVERED_MWH",
+   "STRATEGY",
+   "RULE",
+   "WORKFLOW",
+   "LEXICOGRAPHIC",
+   "STATUS_VALUE",
+   "DATE_TIME",
+   "MODEL_SCORE_SET"
+  ],
+  "ref_currency": [
+   "INR",
+   "USD",
+   "EUR",
+   "GBP",
+   "AED",
+   "SAR",
+   "SGD",
+   "AUD",
+   "JPY",
+   "CNY",
+   "ZAR",
+   "BRL"
+  ],
+  "ref_region": [
+   "IN",
+   "AE",
+   "SA",
+   "SG",
+   "AU",
+   "GB",
+   "DE",
+   "US",
+   "IN-AP",
+   "IN-GJ",
+   "IN-HR",
+   "IN-KA",
+   "IN-MP",
+   "IN-MH",
+   "IN-OD",
+   "IN-PB",
+   "IN-RJ",
+   "IN-TN",
+   "IN-TG",
+   "IN-UP"
+  ],
+  "ref_failure_mode": [
+   "BREAKER_MECHANISM_FAILURE",
+   "BYPASS_DIODE_FAILURE",
+   "BYPASS_DIODE_OR_CONNECTION_ANOMALY",
+   "CELL_INTERCONNECT_FAILURE",
+   "CONFIRMED_MODULE_FUNCTIONAL_FAILURE",
+   "COOLING_FAN_DEGRADATION",
+   "COOLING_FAN_FAILURE",
+   "DC_LINK_THERMAL_DEGRADATION",
+   "DRIVE_MOTOR_OR_GEARBOX_WEAR",
+   "FUSE_TERMINAL_OVERHEATING",
+   "GENERAL_CORRECTIVE_FAILURE",
+   "GRID_OVERVOLTAGE_PROTECTION_TRIP",
+   "IGBT_THERMAL_DEGRADATION",
+   "INSULATION_DETERIORATION",
+   "INSULATION_FAILURE",
+   "INVERTER_PREVENTIVE_DEGRADATION_CONTROL",
+   "IRRADIANCE_SENSOR_DRIFT",
+   "JUNCTION_BOX_FAILURE",
+   "SOILING_AND_DEGRADATION",
+   "STRING_OPEN_CIRCUIT",
+   "SWITCHGEAR_CONTACT_DEGRADATION",
+   "SWITCHGEAR_PREVENTIVE_INSPECTION",
+   "TRACKER_DRIVE_FAULT",
+   "TRACKER_DRIVE_MISALIGNMENT",
+   "TRACKER_GEARBOX_WEAR",
+   "TRACKER_POSITION_SENSOR_DRIFT",
+   "TRANSFORMER_COOLING_SYSTEM_DEGRADATION",
+   "TRANSFORMER_DEFECT_RESPONSE",
+   "TRANSFORMER_INSULATION_CONNECTION_DEFECT"
+  ],
+  "ref_defect_code": [
+   "SOILING",
+   "SHADING",
+   "HOTSPOT",
+   "LOW_OUTPUT",
+   "CELL_CRACK",
+   "GLASS_DAMAGE",
+   "DELAMINATION",
+   "BACKSHEET",
+   "CORROSION",
+   "JUNCTION_BOX",
+   "BYPASS_DIODE",
+   "PID",
+   "LID_LETID",
+   "WEATHER_DAMAGE",
+   "TRACKER_MISALIGNMENT",
+   "COMBINER_THERMAL_ANOMALY",
+   "VEGETATION_ENCROACHMENT",
+   "CABLE_INSULATION_DAMAGE",
+   "WATERLOGGING",
+   "FIRE_SMOKE",
+   "LOOSE_CONNECTOR",
+   "STRING_CURRENT_IMBALANCE"
+  ],
+  "ref_skill": [
+   "POWER_ELECTRONICS",
+   "HIGH_VOLTAGE",
+   "ELECTRICAL",
+   "MECHANICAL",
+   "INSTRUMENTATION",
+   "SCADA",
+   "PV_ELECTRICAL_INSPECTION"
+  ],
+  "ref_event_type": [
+   "operational/EARLY_PRECURSOR",
+   "operational/CONDITION_DEVIATION",
+   "operational/WARNING_THRESHOLD_CROSSED",
+   "operational/OPERATIONAL_IMPACT_CONFIRMED",
+   "operational/RESTORATION_VERIFIED",
+   "operational/INVERTER_COOLING_FAILURE",
+   "operational/TRANSFORMER_INSULATION_DEGRADATION",
+   "operational/COMBINER_CONNECTOR_HOTSPOT",
+   "operational/TRACKER_DRIVE_FAILURE",
+   "operational/SCADA_COMMUNICATION_LOSS",
+   "operational/SWITCHGEAR_RELAY_TRIP",
+   "operational/MODULE_THERMAL_ANOMALY",
+   "hse/OBSERVATION",
+   "hse/NEAR_MISS",
+   "hse/FIRST_AID",
+   "hse/RECORDABLE",
+   "reliability/FAILURE",
+   "reliability/CONFIRMED_FUNCTIONAL_FAILURE",
+   "reliability/RIGHT_CENSORED",
+   "calendar/SITE_MAINTENANCE_WINDOW",
+   "calendar/GRID_OUTAGE_WINDOW",
+   "calendar/ACCESS_RESTRICTION",
+   "calendar/TRAINING",
+   "calendar/LEAVE",
+   "calendar/PUBLIC_HOLIDAY",
+   "calendar/REGIONAL_HOLIDAY",
+   "calendar/OT_RESTRICTION",
+   "calendar/CALIBRATION",
+   "calendar/ASSIGNED",
+   "calendar/SERVICE",
+   "resource_calendar/SHIFT_ASSIGNMENT",
+   "operational/COOLING_SUBSYSTEM_DEGRADATION",
+   "operational/GRID_VOLTAGE_EXCURSION",
+   "operational/INSULATION_DETERIORATION",
+   "operational/POSITION_SENSOR_DRIFT",
+   "operational/DRIVE_MECHANISM_FAULT"
+  ],
+  "ref_source_system": [
+   "SCADA",
+   "REVENUE_METER",
+   "HISTORIAN",
+   "CONDITION_MONITORING",
+   "EAM",
+   "ERP",
+   "WFM",
+   "FSM",
+   "DMS",
+   "FLEET",
+   "OPTIMIZER",
+   "WEATHER_SERVICE",
+   "AI_VISION",
+   "CAMERA",
+   "ANALYTICS_ENGINE",
+   "AIP_CORE",
+   "HSE",
+   "TIMESHEET",
+   "COMMERCIAL_PPA",
+   "CLIMATE_RISK",
+   "REGULATORY_RATES",
+   "LOGISTICS_RATES",
+   "WORKFORCE_COST",
+   "PLANNING_PROFILE",
+   "INSPECTION",
+   "MAINTENANCE_LOG",
+   "FUEL_LOG"
+  ],
+  "ref_framework": [
+   "BRSR",
+   "SASB_IF_EU",
+   "GRI",
+   "ISSB",
+   "TCFD",
+   "CSRD_ESRS",
+   "CDP"
+  ],
+  "ref_emission_factor": []
+ }
+}

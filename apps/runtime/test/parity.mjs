@@ -18,6 +18,7 @@ const { signing, publicJwk } = generateSigningKey("sx-parity");
 writeFileSync(join(tmp, "keys.json"), JSON.stringify([publicJwk]));
 const env = { ...process.env, AIP_EXTRA_TRUSTED_KEYS: join(tmp, "keys.json") };
 execFileSync("node", ["build.mjs"], { cwd: join(root, "packages/host-bridge"), env, stdio: "inherit" });
+execFileSync("node", ["build.mjs"], { cwd: join(root, "packages/grid"), stdio: "inherit" });
 execFileSync("node", ["build.mjs", "--target", "standalone", "--out", "dist/parity"], { cwd: join(here, ".."), env, stdio: "inherit" });
 
 const port = 4300 + Math.floor(Math.random() * 500);

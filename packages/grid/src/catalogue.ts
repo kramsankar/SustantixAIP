@@ -157,7 +157,7 @@ export function resolveCatalogue(cat: Catalogue, model: ChangeModel, registry: R
     grids.push({
       id,
       title: e.label.replace(/ \(reference\)$/, ""),
-      screen: "Reference Data",
+      screen: "New: Reference Data",
       source: { kind: "entity", name: e.name, platformRows: true },
       relation: `aip.${e.view}`,
       columns: e.columns.map((c) => ({ field: c.name, label: c.label, kind: c.kind, editable: e.editable && c.editable })),

@@ -22,3 +22,11 @@ test("requires the runtime state table", () => {
 test("absent file means not yet initialised", () => {
   assert.equal(readGeneratedDataSources("/nonexistent/x.ts"), null);
 });
+
+test("registers every governed table the grids read, and no time series", async () => {
+  const { gridTables } = await import("./grid-datasources.mjs");
+  const tables = gridTables();
+  assert.ok(tables.includes("sus_work_order"));
+  assert.ok(tables.includes("sus_ref_status"));
+  assert.ok(!tables.includes("sus_plant_telemetry"));
+});

@@ -70,6 +70,9 @@ The Sustantix Enterprise Grid workspace is served at `/grids` (static bundle `pu
 | `GET /api/aip/grid/options?kind=ref\|fk&name=&scope=&q=` | Dropdown values for an editable cell | readable |
 | `GET / POST /api/aip/grid/{id}/views`, `PUT / DELETE …/views/{view}` | Saved views (admins share) | writes: `full` |
 | `POST /api/aip/changes` | One change set `{id, source, items[]}`, applied atomically | `full` |
+| `POST /api/aip/workbook/changes` | A workbook import made on governed data, as one change set | `full` |
+| `GET /api/aip/ui` | Deployment switches for the runtime (`gridScreens`) | readable |
+| `POST /api/aip/grid/export-audit` | Audits an export a screen grid made in the browser | readable |
 
 A change set item is `{entity, op: insert|update|delete, code, baseVersion, values}`. References travel as business
 codes, amounts as decimal strings. A stale `baseVersion` answers `409 conflict` with the current row; a repeated `id`
@@ -92,6 +95,8 @@ administrators also write masters; time series are never written cell by cell. T
    - `ANTHROPIC_API_KEY`: optional, server only, mark it *Sensitive*. Enables the AIP agents and the Assistant
      screen's online mode. Without it the agent endpoints answer `503 agents_not_configured`.
    - `AIP_AGENT_MODEL`: optional Claude model for the agents (default `claude-sonnet-5-5`).
+   - `AIP_GRID_SCREENS`: optional. Screens whose tables show as Enterprise Grids: comma-separated screen names
+     (for example `workorderintelligence,guardrails`), `all`, or empty for none (the default).
    - `AIP_DATA_SOURCE`: `embedded` (default: the runtime shows its bundled data) or `governed` (the runtime boots
      on the tenant's governed data through `GET /api/aip/workbook`). Governed mode needs the `aip_compat` schema
      exposed (step 3) and the tenant loaded.

@@ -19,6 +19,7 @@ const { signing, publicJwk } = generateSigningKey("sx-governed");
 writeFileSync(join(tmp, "keys.json"), JSON.stringify([publicJwk]));
 const env = { ...process.env, AIP_EXTRA_TRUSTED_KEYS: join(tmp, "keys.json") };
 execFileSync("node", ["build.mjs"], { cwd: join(root, "packages/host-bridge"), env, stdio: "inherit" });
+execFileSync("node", ["build.mjs"], { cwd: join(root, "packages/grid"), stdio: "inherit" });
 execFileSync("node", ["build.mjs", "--target", "standalone", "--out", "dist/governed"], { cwd: join(here, ".."), env, stdio: "inherit" });
 const workbook = join(tmp, "governed.json");
 execFileSync("pnpm", ["--silent", "--filter", "@sustantix/schema", "governed:json", workbook], { cwd: root, stdio: "inherit" });
@@ -89,6 +90,7 @@ for (const v of got.views) {
     console.log(`    at ${e.at}\n      baseline: ${e.reference}\n      got:      ${e.governed}`);
   }
 }
+if (got.governedSave?.reached !== true) { console.log("✗ a runtime save in governed mode did not reach the host"); failures++; } else console.log("✓ a runtime save in governed mode reaches the host as a governed change");
 if (got.errors.length > (reference.errors?.length ?? 0)) { console.log(`✗ governed mode raised ${got.errors.length} page error(s): ${got.errors.slice(0, 3).join(" | ")}`); failures++; }
 console.log(failures ? `\n${failures} governed check(s) FAILED` : "\ngoverned parity: all checks passed");
 process.exit(failures ? 1 : 0);

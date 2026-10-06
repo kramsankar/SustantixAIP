@@ -161,6 +161,9 @@ importers:
       '@microsoft/power-apps':
         specifier: 1.4.0
         version: 1.4.0
+      '@sustantix/grid':
+        specifier: workspace:*
+        version: link:../grid
       '@sustantix/license':
         specifier: workspace:*
         version: link:../license

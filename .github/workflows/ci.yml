@@ -166,6 +166,10 @@ jobs:
           AIP_PARITY_OUT: ${{ runner.temp }}/governed
       - name: Enterprise Grid in a real browser (workspace bundle against a mocked grid API)
         run: pnpm --filter @sustantix/grid test:browser
+      - name: Screen grids (every screen switched on, against its reviewed baseline)
+        run: pnpm --filter @sustantix/aip-runtime test:grids
+        env:
+          AIP_PARITY_OUT: ${{ runner.temp }}/grids
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -173,4 +177,5 @@ jobs:
           path: |
             ${{ runner.temp }}/parity/crawl.json
             ${{ runner.temp }}/governed/governed-crawl.json
+            ${{ runner.temp }}/grids/grid-crawl.json
           retention-days: 14

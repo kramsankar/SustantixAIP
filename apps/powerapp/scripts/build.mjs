@@ -26,6 +26,7 @@ if (generated) {
 }
 const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, env, stdio: "inherit" });
 run("node", ["build.mjs"], join(root, "packages/host-bridge"));
+run("node", ["build.mjs"], join(root, "packages/grid"));
 run("node", ["build.mjs", "--target", "powerapps", "--out", join(app, "dist")], join(root, "apps/runtime"));
 if (!existsSync(join(app, "dist/index.html"))) throw new Error("runtime build produced no index.html");
 console.log(`code app bundle ready → ${join(app, "dist")}${release ? " (release)" : ""}`);

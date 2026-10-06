@@ -1,5 +1,6 @@
 import { MODULES, grantedModules, type LicenseStatus, type TrustedKey } from "@sustantix/license";
 import { resolveLicense } from "./license-gate.js";
+import { installScreenGrids } from "./screen-switch.js";
 import type { HostAdapter } from "./types.js";
 
 const RECHECK_MS = 15 * 60 * 1000;
@@ -82,7 +83,11 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
     style.id = "sx-host-bridge-style";
     style.textContent = STYLE;
     document.head.appendChild(style);
-    void current.then((lic) => applyLicense(lic, adapter));
+    void current.then((lic) => {
+      applyLicense(lic, adapter);
+      // Phase 4: the Enterprise Grid in the screens the host switched on (none unless configured).
+      if (lic.access !== "none" && adapter.grid) installScreenGrids(adapter.grid).catch((e) => console.warn("[aip-host] screen grids unavailable", e));
+    });
   });
 
   if (adapter.governed) {

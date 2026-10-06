@@ -23,6 +23,23 @@ export interface GovernedWorkbook {
 export interface GovernedSource {
   /** Resolves null when this deployment serves the bundled data. */
   load(): Promise<GovernedWorkbook | null>;
+  /**
+   * Phase 4: the runtime saved while showing governed data (a workbook import). The host writes what changed as one
+   * governed change, or rejects, in which case the changed sheets are restored to what was loaded.
+   */
+  save?(state: RuntimeState): Promise<void>;
+}
+
+/** Phase 4: the Enterprise Grid inside the runtime's screens, switched on per screen by the host. */
+export interface GridHost {
+  /** Screens (data-view names) whose tables become grids, or "all"; empty means none. */
+  screens(): Promise<string[] | "all">;
+  /** The governed grid workspace, on hosts that serve it. */
+  workspaceUrl?: string;
+  /** Where governed grids read and write: the host's grid API ("http" on Vercel) or a host-side implementation. */
+  api?: "http" | object;
+  /** Audits an export of a screen grid. */
+  recordExport?(grid: string, format: "csv" | "xlsx", rows: number): Promise<void>;
 }
 
 export interface Identity {
@@ -49,4 +66,5 @@ export interface HostAdapter {
   signOut?(): Promise<void>;
   persistence?: StatePersistence;
   governed?: GovernedSource;
+  grid?: GridHost;
 }

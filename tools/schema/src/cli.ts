@@ -25,6 +25,7 @@ import { mastersSql } from "./master-sql.ts";
 import { buildMasters, masterDefs, masterManifest } from "./masters.ts";
 import { compatSql, compatTestSql, rebuildSheets } from "./compat.ts";
 import { changeModel, changesSql } from "./changes-sql.ts";
+import { changeSetPlan, dataverseChangeModel } from "./changes-dataverse.ts";
 import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
 
@@ -62,13 +63,14 @@ writeFileSync(join(root, "supabase/tests/95_compat_equivalence.sql"), compatTest
 // Phase 4: the change-set write path over every master, register and transaction, and the model the hosts validate against.
 writeFileSync(join(root, "supabase/migrations/20261007000100_aip_changes.sql"), changesSql([...masterDefs(reg), ...transactionDefs(reg)], vocab));
 writeFileSync(join(root, "schema/aip-change-model.json"), JSON.stringify(changeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
 
 mkdirSync(join(root, "powerplatform/schema"), { recursive: true });
 writeFileSync(join(root, "powerplatform/schema/platform-tables.json"), JSON.stringify(platformPlan(), null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/reference-tables.json"), JSON.stringify([...referencePlan(vocab), correctionLogPlan()], null, 1) + "\n");
-writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan(), ...agentsPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
+writeFileSync(join(root, "powerplatform/schema/master-tables.json"), JSON.stringify({ tables: [...masterPlan(masterDefs(reg)), ...analyticsPlan(), ...agentsPlan(), changeSetPlan()], relationships: masterRelationships(masterDefs(reg)) }, null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/transaction-tables.json"), JSON.stringify({ tables: masterPlan(transactionDefs(reg), { lineage: false, external: masterNames }), relationships: masterRelationships(transactionDefs(reg), masterNames) }, null, 1) + "\n");
 writeFileSync(join(root, "powerplatform/schema/data-model-tables.json"), JSON.stringify(dataModelPlan(reg).map(({ source, ...p }) => ({ ...p, sheet: source?.sheet })), null, 1) + "\n");
 

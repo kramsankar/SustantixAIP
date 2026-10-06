@@ -1,6 +1,8 @@
 import { getContext, type IContext } from "@microsoft/power-apps/app";
 import { getClient, type DataClient } from "@microsoft/power-apps/data";
 import type { LicensePayload, LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
+import { localGridHost, parseScreens } from "../screen-switch.js";
+import { dataverseGridApi, type DataverseGridClient } from "./dataverse-grid.js";
 import type { HostAdapter, Identity, RuntimeState } from "../types.js";
 
 /** Dataverse artefacts provisioned by powerplatform/provision (see schema/aip-platform.json). */
@@ -83,8 +85,37 @@ export function powerAppsAdapter(dataSourcesInfo: Parameters<typeof getClient>[0
     return rows?.[0]?.[STATE_ID_COLUMN];
   }
 
+  /** The code app's data client as the grid adapter needs it. */
+  function gridClient(): DataverseGridClient {
+    const sources = new Set(Object.keys(dataSourcesInfo ?? {}));
+    return {
+      entitySet: (logical) => [`${logical}s`, `${logical}es`, logical].find((n) => sources.has(n)) ?? `${logical}s`,
+      async list(table, select, skipToken) {
+        const r = await dc().retrieveMultipleRecordsAsync<Record<string, unknown>>(table, { select, maxPageSize: 5000, ...(skipToken ? { skipToken } : {}) });
+        return { rows: unwrap(r, `read ${table}`) ?? [], ...(r.skipToken ? { skipToken: r.skipToken } : {}) };
+      },
+      async customApi(name, body) {
+        const r = await dc().executeAsync<unknown, Record<string, unknown>>({ dataverseRequest: { action: "customapi", parameters: { operationName: name, tableName: STATE_TABLE, body } } });
+        return unwrap(r, name) ?? {};
+      },
+    };
+  }
+
   return {
     name: "powerapps",
+    // Phase 4: screen grids (switched on in this browser for now) and governed grids over Dataverse.
+    grid: (() => {
+      const api = dataverseGridApi(gridClient());
+      const local = localGridHost();
+      return {
+        // The environment variable sus_GridScreens decides; a browser setting applies only where it is unset.
+        screens: async () => {
+          const env = parseScreens((await api.probe()).gridScreens);
+          return env === "all" || env.length ? env : local.screens();
+        },
+        api,
+      };
+    })(),
     async init() {
       ctx = await getContext();
     },

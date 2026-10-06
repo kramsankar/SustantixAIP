@@ -1,9 +1,10 @@
 /** Browser bundle: window.AIPGrid for hosts and runtime screens; mounts the workspace when the page asks for it. */
 import { httpGridApi } from "./ui/api.ts";
 import { SustantixGrid } from "./ui/grid.ts";
+import { mountScreenGrids, SCREEN_GRIDS } from "./ui/screen.ts";
 import { mountWorkspace } from "./ui/workspace.ts";
 
-const AIPGrid = { SustantixGrid, httpGridApi, mountWorkspace };
+const AIPGrid = { SustantixGrid, httpGridApi, mountWorkspace, mountScreenGrids, SCREEN_GRIDS };
 (globalThis as { AIPGrid?: typeof AIPGrid }).AIPGrid = AIPGrid;
 
 const root = document.getElementById("sxg-workspace");

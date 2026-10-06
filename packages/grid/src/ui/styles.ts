@@ -59,6 +59,7 @@ export const GRID_CSS = `
 .sxg-panel .sxg-inline{flex-direction:row;align-items:center}
 .sxg-cols li{display:flex;gap:6px;align-items:center;padding:2px 0}
 .sxg-cols{list-style:none;padding:0;margin:0}
+.sxg-tall .sxg-body .sxg-cell{line-height:1.3;padding-top:5px;padding-bottom:5px}
 .sxg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 `;
 

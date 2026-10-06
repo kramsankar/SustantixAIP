@@ -1,4 +1,7 @@
 import type { LicenseStatus, RuntimeEnvironment } from "@sustantix/license";
+import { governedSync, type ImportResult } from "../governed-sync.js";
+import { showNotice } from "../notice.js";
+import { parseScreens } from "../screen-switch.js";
 import type { GovernedWorkbook, HostAdapter, Identity, RuntimeState } from "../types.js";
 
 export async function gzipJson(value: unknown): Promise<Uint8Array<ArrayBuffer>> {
@@ -18,7 +21,11 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
       headers: { "content-type": "application/json", "x-aip-client": "runtime", ...(init?.headers as Record<string, string> | undefined) },
     });
     if (res.status === 204) return undefined as T;
-    if (!res.ok) throw new Error(`${path} → ${res.status}`);
+    if (!res.ok) {
+      // The API's own message (a conflict, a value outside the vocabulary) is what the user needs to read.
+      const body = (await res.json().catch(() => null)) as { message?: string } | null;
+      throw new Error(body?.message ?? `${path} → ${res.status}`);
+    }
     return (await res.json()) as T;
   };
 
@@ -63,6 +70,21 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
       clear: () => call<void>("/state", { method: "DELETE" }),
     },
     // 204 (bundled data) resolves to undefined → null: the runtime boots as before.
-    governed: { load: async () => (await call<GovernedWorkbook | undefined>("/workbook")) ?? null },
+    // Phase 4: screen grids switched on by the deployment (AIP_GRID_SCREENS), the governed workspace, audited exports.
+    grid: {
+      screens: async () => parseScreens((await call<{ gridScreens: string }>("/ui")).gridScreens),
+      workspaceUrl: "grid/index.html",
+      api: "http",
+      recordExport: async (grid, format, rows) => {
+        await call("/grid/export-audit", { method: "POST", body: JSON.stringify({ grid, format, rows }) });
+      },
+    },
+    // Phase 4: a workbook import made on governed data is written back as one governed change.
+    governed: governedSync({
+      load: async () => (await call<GovernedWorkbook | undefined>("/workbook")) ?? null,
+      // Gzip keeps large imports under the platform request-body limit, as for the runtime state.
+      post: async (body) => call<ImportResult>("/workbook/changes", { method: "POST", body: await gzipJson(body), headers: { "content-type": "application/json", "content-encoding": "gzip", "x-aip-client": "runtime" } }),
+      notify: showNotice,
+    }),
   };
 }

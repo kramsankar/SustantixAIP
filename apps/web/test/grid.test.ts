@@ -46,8 +46,8 @@ describe("grid catalogue", () => {
   it("resolves every grid of the census against the governed model", () => {
     const all = grids();
     // 20 grids from the screen census, plus one administrator grid per vocabulary table.
-    expect(all.filter((g) => g.screen !== "Reference Data")).toHaveLength(20);
-    expect(all.filter((g) => g.screen === "Reference Data")).toHaveLength(16);
+    expect(all.filter((g) => !g.id.startsWith("ref-"))).toHaveLength(20);
+    expect(all.filter((g) => g.id.startsWith("ref-") && g.screen === "New: Reference Data")).toHaveLength(16);
     for (const g of all) expect(g.columns.length, g.id).toBeGreaterThan(0);
     const wo = gridById("work-orders");
     expect(wo.relation).toBe("aip.v_work_order");
@@ -242,5 +242,25 @@ describe("gate", () => {
     expect(requirementFor("/api/aip/grid/work-orders/views", "GET")).toBe("readable");
     expect(requirementFor("/api/aip/grid/work-orders/rows", "POST")).toBe("readable");
     expect(requirementFor("/api/aip/grid/work-orders/export", "POST")).toBe("readable");
+  });
+});
+
+describe("screen grid switch", () => {
+  it("accepts all, none or a list of screens, and nothing else", async () => {
+    const { parseServerEnv } = await import("../lib/env");
+    const base = { NEXT_PUBLIC_SUPABASE_URL: "https://x.supabase.co", NEXT_PUBLIC_SUPABASE_ANON_KEY: "a".repeat(40), SUPABASE_SERVICE_ROLE_KEY: "b".repeat(40), AIP_LICENSE_KEY: "SXL1.x.y" };
+    const parse = (v?: string) => {
+      try {
+        return parseServerEnv({ ...base, AIP_GRID_SCREENS: v }).AIP_GRID_SCREENS;
+      } catch (e) {
+        return (e as Error).name;
+      }
+    };
+    expect(parse(undefined)).toBe("");
+    expect(parse("all")).toBe("all");
+    expect(parse("workorderintelligence, guardrails")).toBe("workorderintelligence, guardrails");
+    expect(parse("<script>")).toBe("EnvError");
+    expect(requirementFor("/api/aip/ui", "GET")).toBe("readable");
+    expect(requirementFor("/api/aip/grid/export-audit", "POST")).toBe("readable");
   });
 });

@@ -216,6 +216,10 @@ describe("provision", () => {
     const r = await provision(api, { version: "9.15.0.0", registry, vocabulary, corrections, masters: true, seedWorkbook: wb, pluginDll: dll, dataModel: false, guardDataModel: false, fx: {} }, () => {});
     const lookups = [...defs, ...transactionDefs(registry)].reduce((n, d) => n + d.columns.filter((c) => c.kind === "fk" || c.kind === "ref").length, 0);
     expect(r.relationshipsCreated).toBe(lookups);
+    // Phase 4: the change-set API and its replay log ship with the governed tables.
+    expect(dv.sets.customapis?.map((a) => a.uniquename)).toEqual(["sus_GetLicenseStatus", "sus_ApplyChangeSet"]);
+    expect(dv.sets.customapis?.[1]).toMatchObject({ isfunction: false, CustomAPIRequestParameters: [expect.objectContaining({ uniquename: "ChangeSetJson", type: 10 })] });
+    expect(dv.entities.get("sus_changeset")?.keys.has("sus_changeset_bk")).toBe(true);
     expect(dv.entities.get("sus_asset")?.keys.has("sus_asset_bk")).toBe(true);
     expect(dv.entities.get("sus_asset")?.attrs.has("sus_parentid")).toBe(true);
     expect(r.masterRecords).toBe(built.masters.reduce((n, m) => n + m.rows.length, 0));

@@ -20343,6 +20343,216 @@
      ]
     }
    ]
+  },
+  {
+   "logicalName": "sus_changeset",
+   "entity": {
+    "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata",
+    "SchemaName": "sus_changeset",
+    "DisplayName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Change set",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "DisplayCollectionName": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "Change sets",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "Description": {
+     "@odata.type": "Microsoft.Dynamics.CRM.Label",
+     "LocalizedLabels": [
+      {
+       "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+       "Label": "A governed change applied through sus_ApplyChangeSet; a repeated id replays this result.",
+       "LanguageCode": 1033
+      }
+     ]
+    },
+    "OwnershipType": "UserOwned",
+    "IsActivity": false,
+    "HasActivities": false,
+    "HasNotes": false,
+    "ChangeTrackingEnabled": true,
+    "Attributes": [
+     {
+      "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+      "SchemaName": "sus_name",
+      "IsPrimaryName": true,
+      "AttributeType": "String",
+      "AttributeTypeName": {
+       "Value": "StringType"
+      },
+      "MaxLength": 200,
+      "FormatName": {
+       "Value": "Text"
+      },
+      "RequiredLevel": {
+       "Value": "ApplicationRequired",
+       "CanBeChanged": true,
+       "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+      },
+      "DisplayName": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Change set id",
+         "LanguageCode": 1033
+        }
+       ]
+      },
+      "Description": {
+       "@odata.type": "Microsoft.Dynamics.CRM.Label",
+       "LocalizedLabels": [
+        {
+         "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+         "Label": "Change set id",
+         "LanguageCode": 1033
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "attributes": [
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+     "SchemaName": "sus_source",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Source",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Source",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "String",
+     "AttributeTypeName": {
+      "Value": "StringType"
+     },
+     "MaxLength": 20,
+     "FormatName": {
+      "Value": "Text"
+     }
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+     "SchemaName": "sus_itemcount",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Items",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Items",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Integer",
+     "AttributeTypeName": {
+      "Value": "IntegerType"
+     },
+     "Format": "None",
+     "MinValue": -2147483648,
+     "MaxValue": 2147483647
+    },
+    {
+     "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata",
+     "SchemaName": "sus_result",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Result (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "Description": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Result (JSON)",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "RequiredLevel": {
+      "Value": "None",
+      "CanBeChanged": true,
+      "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings"
+     },
+     "AttributeType": "Memo",
+     "AttributeTypeName": {
+      "Value": "MemoType"
+     },
+     "Format": "TextArea",
+     "MaxLength": 1000000
+    }
+   ],
+   "keys": [
+    {
+     "SchemaName": "sus_changeset_bk",
+     "DisplayName": {
+      "@odata.type": "Microsoft.Dynamics.CRM.Label",
+      "LocalizedLabels": [
+       {
+        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+        "Label": "Change set id",
+        "LanguageCode": 1033
+       }
+      ]
+     },
+     "KeyAttributes": [
+      "sus_name"
+     ]
+    }
+   ]
   }
  ],
  "relationships": [

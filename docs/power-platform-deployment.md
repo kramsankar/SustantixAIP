@@ -34,6 +34,7 @@ pnpm --filter @sustantix/pp-provision sx-pp provision --env $PP_ENV_URL --versio
 
 cd apps/powerapp
 pac code add-data-source -a dataverse -t sus_runtimestate
+node scripts/grid-datasources.mjs --run   # phase 4: the governed tables the Enterprise Grid reads
 node scripts/build.mjs --release          # refuses test keys in release builds
 pac code push --solutionName SustantixAIP
 
@@ -52,6 +53,9 @@ Before exporting, set the plug-in steps and the Custom API as **not customisable
 3. Read the organisation id from `sx-pp whoami --env <url>` or from Settings → Session details. Send it to Sustantix.
 4. Sustantix issues a trial or paid license bound to that organisation id. The customer pastes it into the environment variable **Sustantix AIP license key**.
 5. Assign *Sustantix AIP User* or *Sustantix AIP Administrator* to users or teams, and share the app.
+   Users hold the planner role in the grids (they write registers and transactions); administrators also write
+   masters and the tenant's vocabulary. Optionally set the environment variable **Sustantix AIP screen grids**
+   (`sus_GridScreens`) to `all` or a list of screens to show their tables as Enterprise Grids.
 6. Optional: load the governed workbook through **Data Management** in the app (admin role), or seed the relational model with `sx-pp provision --seed <workbook.xlsx>`.
 
 **Upgrades:** import the newer managed package (`pac solution import --stage-and-upgrade`). The license stays valid, because it is bound to the organisation, not to the solution version.

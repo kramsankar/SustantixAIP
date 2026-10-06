@@ -10,6 +10,10 @@ import { injectStyles } from "./styles.ts";
 export interface WorkspaceOptions {
   api: GridApi;
   currency?: string;
+  /** Keep the open grid in the URL hash (the standalone workspace page); off when embedded in another page. */
+  useHash?: boolean;
+  /** The grid to open first when the hash does not name one. */
+  initial?: string;
 }
 
 export async function mountWorkspace(root: HTMLElement, opts: WorkspaceOptions): Promise<{ open(id: string, filters?: GridFilter[]): void }> {
@@ -68,7 +72,9 @@ export async function mountWorkspace(root: HTMLElement, opts: WorkspaceOptions):
     void current.load();
   };
 
+  const useHash = opts.useHash !== false;
   const navigate = (id: string, filters: GridFilter[] = []) => {
+    if (!useHash) return open(id, filters);
     const hash = `#grid=${encodeURIComponent(id)}${filters.length ? `&filters=${encodeURIComponent(JSON.stringify(filters))}` : ""}`;
     if (location.hash === hash) open(id, filters);
     else location.hash = hash;
@@ -101,11 +107,13 @@ export async function mountWorkspace(root: HTMLElement, opts: WorkspaceOptions):
     }
     open(p.get("grid") ?? catalogue.grids[0]?.id ?? "", filters);
   };
-  addEventListener("hashchange", fromHash);
-  addEventListener("beforeunload", (e) => {
-    if (current?.pendingCount()) e.preventDefault();
-  });
-  fromHash();
+  if (useHash) {
+    addEventListener("hashchange", fromHash);
+    addEventListener("beforeunload", (e) => {
+      if (current?.pendingCount()) e.preventDefault();
+    });
+    fromHash();
+  } else open(opts.initial ?? catalogue.grids[0]?.id ?? "");
   return { open: navigate };
 }
 

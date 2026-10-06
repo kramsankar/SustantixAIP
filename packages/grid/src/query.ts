@@ -58,15 +58,17 @@ export function matches(row: Row, f: GridFilter, kind: GridColumn["kind"] | unde
 }
 
 export function sortRows(rows: Row[], sort: SortSpec[], columns: GridColumn[], key: string): Row[] {
-  const kinds = new Map(columns.map((c) => [c.field, c.kind]));
+  const byField = new Map(columns.map((c) => [c.field, c]));
   const specs = [...sort, ...(sort.some((s) => s.field === key) ? [] : [{ field: key, dir: "asc" as const }])];
   return [...rows].sort((a, b) => {
     for (const s of specs) {
-      const av = a[s.field];
-      const bv = b[s.field];
+      const col = byField.get(s.field);
+      const f = col?.sortKey ?? s.field;
+      const av = a[f];
+      const bv = b[f];
       // Empty values sort last in both directions, as the database orders them (nulls last).
       if (isEmpty(av) !== isEmpty(bv)) return isEmpty(av) ? 1 : -1;
-      const c = compareValues(kinds.get(s.field), av, bv);
+      const c = compareValues(col?.sortKey ? "decimal" : col?.kind, av, bv);
       if (c) return s.dir === "desc" ? -c : c;
     }
     return 0;

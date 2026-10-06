@@ -1,4 +1,5 @@
 import type { RuntimeEnvironment } from "@sustantix/license";
+import { localGridHost } from "../screen-switch.js";
 import type { HostAdapter } from "../types.js";
 
 export const STANDALONE_LICENSE_KEY = "sx_aip_license";
@@ -28,5 +29,6 @@ export function standaloneAdapter(): HostAdapter {
     async signIn(login, secret) {
       return login.trim().length > 0 && secret.length > 0;
     },
+    grid: localGridHost(),
   };
 }

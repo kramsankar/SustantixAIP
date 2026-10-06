@@ -1,5 +1,6 @@
 import {
   agentsPlan,
+  changeSetPlan,
   analyticsPlan,
   applyCorrections,
   buildMasters,
@@ -23,6 +24,8 @@ import {
 } from "@sustantix/schema";
 import {
   GUARD_TYPE,
+  CHANGESET_TYPE,
+  ensureChangeSetApi,
   ROLES,
   STATUS_TYPE,
   ensureCurrencies,
@@ -94,7 +97,7 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const reference = [...(o.vocabulary ? referencePlan(o.vocabulary) : []), ...(o.corrections ? [correctionLogPlan()] : [])];
   const masterNames = masterDefs(o.registry).map((d) => d.name);
   const masters = o.masters
-    ? [...masterPlan(masterDefs(o.registry)), ...masterPlan(transactionDefs(o.registry), { lineage: false, external: masterNames }), ...analyticsPlan(), ...agentsPlan()]
+    ? [...masterPlan(masterDefs(o.registry)), ...masterPlan(transactionDefs(o.registry), { lineage: false, external: masterNames }), ...analyticsPlan(), ...agentsPlan(), changeSetPlan()]
     : [];
   for (const p of [...platform, ...reference, ...masters, ...model]) await ensureTable(api, p, log);
   let relationshipsCreated = 0;
@@ -107,6 +110,8 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
   const guardId = await ensurePluginType(api, assemblyId, GUARD_TYPE, log);
   const statusId = await ensurePluginType(api, assemblyId, STATUS_TYPE, log);
   await ensureLicenseApi(api, statusId, log);
+  // Phase 4: the change-set API writes the governed tables, so it ships with them.
+  if (o.masters) await ensureChangeSetApi(api, await ensurePluginType(api, assemblyId, CHANGESET_TYPE, log), log);
 
   const guarded = ["sus_runtimestate", ...(o.guardDataModel ? [...reference, ...masters, ...model].map((m) => m.logicalName) : [])];
   const guardStepsCreated = await ensureGuardSteps(api, guardId, guarded, log);

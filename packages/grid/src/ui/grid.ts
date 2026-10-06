@@ -50,6 +50,19 @@ export interface GridOptions {
   /** Viewport size before layout is measured (tests and hidden containers). */
   initialRect?: { width: number; height: number };
   newId?: () => string;
+  /**
+   * Draws a cell itself (a screen grid shows the screen's own cell content, buttons included); return false to fall
+   * back to the formatted value.
+   */
+  renderCell?: (row: Record<string, unknown>, field: string, cell: HTMLElement) => boolean;
+  /** Saved views through the host (default); off for grids that are not in the catalogue. */
+  savedViews?: boolean;
+  /** Remembers this grid's layout, sort and filters in the browser under this key. */
+  stateKey?: string;
+  /** Further toolbar actions. */
+  actions?: Array<{ label: string; onClick: () => void }>;
+  /** Row height in pixels (screen grids use taller rows, so two-line cells are not cut). */
+  rowHeight?: number;
 }
 
 export interface GridViewState {
@@ -79,6 +92,7 @@ export class SustantixGrid {
   private readonly cols: Map<string, GridColumn>;
   private readonly edits: EditBuffer | null;
   private readonly currency: string;
+  private readonly rowHeight: number;
 
   private state: GridViewState;
   private mode: "client" | "server" = "client";
@@ -121,6 +135,7 @@ export class SustantixGrid {
     this.def = opts.def;
     this.api = opts.api;
     this.currency = opts.currency ?? "INR";
+    this.rowHeight = opts.rowHeight ?? ROW_HEIGHT;
     this.cols = new Map(this.def.columns.map((c) => [c.field, c]));
     this.edits = this.def.canEdit && this.def.entity ? new EditBuffer(this.def.entity, opts.newId) : null;
     this.state = {
@@ -133,6 +148,14 @@ export class SustantixGrid {
       pinned: this.def.columns[0] ? [this.def.columns[0].field] : [],
       sizing: {},
     };
+    if (opts.stateKey) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(opts.stateKey) ?? "null") as Partial<GridViewState> | null;
+        if (saved) this.state = this.cleanState(saved);
+      } catch {
+        /* storage unavailable or corrupt: start from the default view */
+      }
+    }
     this.el = this.doc.createElement("div");
     this.el.className = "sxg";
     this.el.style.position = "relative";
@@ -162,7 +185,7 @@ export class SustantixGrid {
         this.mode = "server";
         this.all = [];
       }
-      this.views = await this.api.views(this.def.id).catch(() => []);
+      this.views = this.opts.savedViews === false ? [] : await this.api.views(this.def.id).catch(() => []);
       await this.loadLabels();
       await this.refresh();
       this.setStatus("");
@@ -201,7 +224,12 @@ export class SustantixGrid {
     return { sort: this.state.sort, filters: this.state.filters, ...(this.state.search ? { search: this.state.search } : {}) };
   }
 
-  viewState(): GridViewState {
+  /** Redraws the rows in view (a screen grid after its table changed state in place). */
+  redraw(): void {
+    this.renderBody();
+  }
+
+    viewState(): GridViewState {
     return JSON.parse(JSON.stringify(this.state)) as GridViewState;
   }
 
@@ -226,6 +254,13 @@ export class SustantixGrid {
     }
     this.syncTable();
     this.render();
+    if (this.opts.stateKey) {
+      try {
+        localStorage.setItem(this.opts.stateKey, JSON.stringify(this.state));
+      } catch {
+        /* storage unavailable: the layout lasts for this visit */
+      }
+    }
   }
 
   // ── Construction ─────────────────────────────────────────────────────────
@@ -275,10 +310,10 @@ export class SustantixGrid {
     this.virtualizer = new Virtualizer<HTMLElement, HTMLElement>({
       count: 0,
       getScrollElement: () => this.scroll,
-      estimateSize: () => ROW_HEIGHT,
+      estimateSize: () => this.rowHeight,
       overscan: 12,
       scrollMargin: 0,
-      paddingStart: ROW_HEIGHT,
+      paddingStart: this.rowHeight,
       // A container not yet laid out measures 0×0; with an explicit initial size the grid renders to that until it is.
       observeElementRect: (inst, cb) => observeElementRect(inst, (rect) => cb(rect.width === 0 && rect.height === 0 && this.opts.initialRect ? this.opts.initialRect : rect)),
       observeElementOffset,
@@ -503,7 +538,7 @@ export class SustantixGrid {
     const cols = this.visibleColumns();
     const template = this.template(cols);
     const width = cols.reduce((n, c) => n + c.getSize(), this.edits ? SELECT_WIDTH : 0);
-    this.body.style.height = `${this.virtualizer.getTotalSize() - ROW_HEIGHT}px`;
+    this.body.style.height = `${this.virtualizer.getTotalSize() - this.rowHeight}px`;
     this.body.style.minWidth = `${width}px`;
     this.body.replaceChildren();
     let activeId = "";
@@ -513,8 +548,8 @@ export class SustantixGrid {
       const rowEl = div("sxg-row");
       rowEl.setAttribute("role", "row");
       rowEl.setAttribute("aria-rowindex", String(r + 2));
-      rowEl.style.top = `${item.start - ROW_HEIGHT}px`;
-      rowEl.style.height = `${ROW_HEIGHT}px`;
+      rowEl.style.top = `${item.start - this.rowHeight}px`;
+      rowEl.style.height = `${this.rowHeight}px`;
       rowEl.style.gridTemplateColumns = template;
       rowEl.style.width = `${width}px`;
       if (d.kind === "group") {
@@ -582,7 +617,7 @@ export class SustantixGrid {
           }
           const v = this.edits ? this.edits.value(row, meta.field) : row[meta.field];
           const text = this.text(meta, v, row);
-          cell.append(this.doc.createTextNode(text));
+          if (!this.opts.renderCell?.(row, meta.field, cell)) cell.append(this.doc.createTextNode(text));
           cell.title = meta.kind === "ref" && text !== String(v ?? "") ? `${text} (${String(v)})` : text;
           if (meta.kind === "fk" && v && this.opts.onNavigate) {
             const go = this.doc.createElement("button");
@@ -710,14 +745,19 @@ export class SustantixGrid {
     }
     t.append(this.button("Columns", () => void this.columnsDialog()));
 
-    const views = this.doc.createElement("select");
-    views.className = "sxg-select";
-    views.setAttribute("aria-label", "Saved views");
-    views.append(option("", "Default view"), ...this.views.map((v) => option(v.id, `${v.name}${v.shared ? " (shared)" : ""}`)));
-    views.value = this.currentView?.id ?? "";
-    views.addEventListener("change", () => this.applyView(this.views.find((v) => v.id === views.value) ?? null));
-    t.append(views, this.button("Save view", () => void this.saveViewDialog()));
+    if (this.opts.savedViews !== false) {
+      const views = this.doc.createElement("select");
+      views.className = "sxg-select";
+      views.setAttribute("aria-label", "Saved views");
+      views.append(option("", "Default view"), ...this.views.map((v) => option(v.id, `${v.name}${v.shared ? " (shared)" : ""}`)));
+      views.value = this.currentView?.id ?? "";
+      views.addEventListener("change", () => this.applyView(this.views.find((v) => v.id === views.value) ?? null));
+      t.append(views, this.button("Save view", () => void this.saveViewDialog()));
+    } else if (this.opts.stateKey) {
+      t.append(this.button("Reset layout", () => this.applyView(null)));
+    }
     t.append(this.button("Export CSV", () => void this.exportAs("csv")), this.button("Export Excel", () => void this.exportAs("xlsx")));
+    for (const a of this.opts.actions ?? []) t.append(this.button(a.label, a.onClick));
 
     if (this.edits) {
       t.append(div("sxg-spacer"));
@@ -830,7 +870,7 @@ export class SustantixGrid {
     if (this.editing) return; // the editor handles its own keys
     const cols = this.visibleColumns().length;
     const rows = this.count();
-    const page = Math.max(1, Math.floor(this.scroll.clientHeight / ROW_HEIGHT) - 1);
+    const page = Math.max(1, Math.floor(this.scroll.clientHeight / this.rowHeight) - 1);
     let { r, c } = this.active;
     switch (e.key) {
       case "ArrowDown": r++; break;
@@ -1191,9 +1231,14 @@ export class SustantixGrid {
 
   private applyView(v: SavedView | null): void {
     this.currentView = v;
-    const s = (v?.state ?? {}) as Partial<GridViewState>;
+    this.state = this.cleanState((v?.state ?? {}) as Partial<GridViewState>);
+    void this.refresh();
+  }
+
+  /** A stored view state, kept to the columns this grid still has. */
+  private cleanState(s: Partial<GridViewState>): GridViewState {
     const known = (f: string) => this.cols.has(f);
-    this.state = {
+    return {
       sort: (s.sort ?? this.def.defaultSort).filter((x) => known(x.field)),
       filters: (s.filters ?? []).filter((x) => known(x.field)),
       search: typeof s.search === "string" ? s.search : "",
@@ -1203,7 +1248,6 @@ export class SustantixGrid {
       pinned: (s.pinned ?? (this.def.columns[0] ? [this.def.columns[0].field] : [])).filter(known),
       sizing: Object.fromEntries(Object.entries(s.sizing ?? {}).filter(([k, n]) => known(k) && typeof n === "number")),
     };
-    void this.refresh();
   }
 
   private async saveViewDialog(): Promise<void> {
@@ -1354,6 +1398,7 @@ const OP_LABEL: Record<GridFilter["op"], string> = {
 };
 
 function defaultWidth(c: GridColumn): number {
+  if (c.width) return c.width;
   if (c.kind === "memo") return 280;
   if (c.kind === "boolean") return 90;
   if (c.kind === "date") return 120;

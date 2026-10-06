@@ -21,8 +21,9 @@ mkdirSync(join(out, "data"), { recursive: true });
 for (const dir of ["assets"]) cpSync(join(src, dir), join(out, dir), { recursive: true });
 cpSync(join(here, "static"), out, { recursive: true });
 cpSync(bridge, join(out, "host", "aip-host-bridge.js"));
-// The Enterprise Grid workspace (phase 4) ships beside the runtime on hosts that serve the grid API.
-if (target === "vercel") {
+// The Enterprise Grid (phase 4) ships beside the runtime on every host: screen grids load it when a screen is
+// switched on; the governed workspace page (grid/index.html) works where the host serves the grid API.
+{
   const grid = join(here, "../../packages/grid/dist");
   if (!existsSync(join(grid, "aip-grid.js"))) throw new Error("grid not built — run `pnpm --filter @sustantix/grid build`");
   mkdirSync(join(out, "grid"), { recursive: true });

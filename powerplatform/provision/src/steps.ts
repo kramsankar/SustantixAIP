@@ -6,11 +6,14 @@ export const SOLUTION = { uniquename: "SustantixAIP", friendlyname: "Sustantix A
 export const ASSEMBLY = "Sustantix.Aip.Licensing";
 export const GUARD_TYPE = "Sustantix.Aip.Licensing.Plugins.LicenseGuard";
 export const STATUS_TYPE = "Sustantix.Aip.Licensing.Plugins.GetLicenseStatus";
+export const CHANGESET_TYPE = "Sustantix.Aip.Licensing.Plugins.ApplyChangeSet";
+export const CHANGESET_API = "sus_ApplyChangeSet";
 export const LICENSE_API = "sus_GetLicenseStatus";
 export const GUARD_MESSAGES = ["Create", "Update", "Delete", "Retrieve", "RetrieveMultiple"] as const;
 export const ENV_VARS = [
   { schemaname: "sus_LicenseKey", displayname: "Sustantix AIP license key", description: "Signed SXL1 license issued by Sustantix for this environment." },
   { schemaname: "sus_LicenseRevocationList", displayname: "Sustantix AIP revocation list", description: "Optional signed SXR1 revocation list distributed by Sustantix." },
+  { schemaname: "sus_GridScreens", displayname: "Sustantix AIP screen grids", description: "Screens whose tables show as Enterprise Grids: comma-separated screen names, all, or empty for none." },
 ];
 export const ROLES = {
   user: "Sustantix AIP User",
@@ -205,6 +208,31 @@ export async function ensureLicenseApi(api: WebApi, statusTypeId: string, log: L
     CustomAPIResponseProperties: [{ uniquename: "StatusJson", name: "StatusJson", displayname: "Status JSON", description: "LicenseStatus serialised as JSON.", type: 10 }],
   });
   log(`+ custom API ${LICENSE_API}`);
+}
+
+/** Phase 4: the change-set write path (one governed change per call, applied in the message's transaction). */
+export async function ensureChangeSetApi(api: WebApi, typeId: string, log: Log): Promise<void> {
+  const found = await api.first("customapis", `uniquename eq '${CHANGESET_API}'`, ["customapiid"]);
+  if (found) {
+    log(`✓ custom API ${CHANGESET_API}`);
+    return;
+  }
+  await api.create("customapis", {
+    uniquename: CHANGESET_API,
+    name: CHANGESET_API,
+    displayname: "Sustantix AIP change set",
+    description: "Applies one change set (inserts, updates, deletes by business code, with row versions) atomically.",
+    bindingtype: 0,
+    isfunction: false,
+    isprivate: false,
+    allowedcustomprocessingsteptype: 0,
+    "PluginTypeId@odata.bind": `/plugintypes(${typeId})`,
+    CustomAPIRequestParameters: [
+      { uniquename: "ChangeSetJson", name: "ChangeSetJson", displayname: "Change set JSON", description: "{id, source, items[]} as the grid contract defines it.", type: 10, isoptional: false },
+    ],
+    CustomAPIResponseProperties: [{ uniquename: "ResultJson", name: "ResultJson", displayname: "Result JSON", description: "{id, items, replayed}.", type: 10 }],
+  });
+  log(`+ custom API ${CHANGESET_API}`);
 }
 
 const messageIds = new Map<string, string>();

@@ -162,6 +162,42 @@ analytics view, a sheet table not yet normalized, or the registry.
 On Vercel the workspace is served at `/grids`. Tests: the grid package's unit and DOM tests, a real-browser check in
 CI (`pnpm --filter @sustantix/grid test:browser`), the web API tests and the DB proof above.
 
+**Reference Data.** Every vocabulary table is a change-set entity (`ref_*`) that only administrators write. They add
+the tenant's own codes and maintain label, description, order and the active flag. Platform codes change only with a
+Sustantix release: a change answers 42501 on Supabase and `forbidden` on Dataverse. A scoped table (status) addresses
+its rows as `scope:CODE`. A new tenant code is usable at once in the tenant's records; a code in use cannot be
+deleted. The workspace has one administrator grid per vocabulary table, with platform rows locked.
+
+**Workbook imports on governed data.** Records in the runtime change only through workbook import (screen settings
+live in the browser). In governed mode an import's save now reaches the host instead of being dropped:
+- The bridge sends the rows the import added or changed, with the loaded rows they replace.
+- The server maps rows back to records through the same sheet specs that built the tables (references by business
+  code, vocabulary resolved), and writes only the fields that differ, as one change set (source `import`).
+- A field someone else changed since the runtime loaded it is a conflict, never overwritten.
+- Masters, time series and rows an import removes are reported and left untouched.
+- A refused import restores the screens to the stored data. The governed crawl proves a runtime save reaches the host.
+
+**Screen grids.** Behind a per-screen switch, the Enterprise Grid presents the tables of 14 runtime screens:
+- The screen still computes its table exactly as the reference build does. The grid reads that table (headers,
+  values, the cells' own badges and buttons) and adds sort, filter, group, search, column control and audited export.
+- The original table stays in the page, hidden; a click on a copied button acts on the original, so the screen's
+  actions keep working. When the screen redraws its table, the grid follows.
+- "Edit in governed grid" opens the governed grids over the screen; Asset Explorer gains the asset hierarchy grid.
+- The switch is `AIP_GRID_SCREENS` on Vercel and the environment variable `sus_GridScreens` on Dataverse (screen
+  names, `all`, or empty). With it off (the default) every screen is identical to the reference. With every screen
+  on, `pnpm --filter @sustantix/aip-runtime test:grids` holds the screens to a reviewed baseline
+  (`docs/parity/grid-baseline.md`).
+
+**Power Apps edition.** The same grid runs in the code app over Dataverse:
+- Reads go through the code app's data client: a grid loads its table once and works in the browser with the shared
+  semantics.
+- Writes go to the Custom API `sus_ApplyChangeSet`, in the signed plug-in assembly. It validates against the embedded
+  change model (`powerplatform/schema/change-model.json`, generated) and checks row versions before writing.
+- It applies the set in the message's transaction with the caller's security roles, and replays a repeated id from
+  `sus_changeset`.
+- Its planner is platform-neutral and unit-tested with the licensing tests; provisioning registers the API and the
+  table. `apps/powerapp/scripts/grid-datasources.mjs --run` registers the governed tables with the code app.
+
 ## Analytics (`packages/analytics`)
 
 The reference app displayed model results (forecast bands, remaining life, risk, state of health) that were precomputed in the workbook. `@sustantix/analytics` computes them from each tenant's own data, deterministically (seeded):
@@ -225,12 +261,9 @@ The Dataverse edition provisions the same run, output, agent-run and proposal ta
 ## Roadmap
 
 - **Phase 3 (done):** transactions, time series, `record_link`, compatibility views and the governed-data boot seam. Next within it: rebuild the master-replaced sheets (sites, assets, parts…) through compatibility views too, and move the modules that still read only their bundled datasets onto the governed workbook.
-- **Phase 4 (started):** the change-set write path, the grid API and the Sustantix Enterprise Grid with its
-  20-grid catalogue are live on Vercel at `/grids`. Next within it:
-  - embed the grid in the 14 runtime screens behind a per-screen switch, re-baselining each screen deliberately;
-  - route runtime edits through change sets;
-  - the Dataverse grid adapter (Power Apps code app) and the Dataverse change-set validation;
-  - Reference Data editing for administrators.
+- **Phase 4 (done):** the change-set write path on both editions, the Sustantix Enterprise Grid (20 governed grids plus
+  16 Reference Data grids), screen grids in 14 runtime screens behind a switch, governed workbook imports, and
+  administrator vocabulary maintenance.
 - **Phase 5:** staging and data-quality quarantine, outbox (approved proposals to ERP/EAM), realtime, Dataverse sync, and scheduled agent runs.
 
 ## Evolution path
