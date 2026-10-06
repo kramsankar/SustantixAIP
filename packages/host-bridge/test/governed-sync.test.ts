@@ -32,3 +32,47 @@ describe("governed sync", () => {
     expect(notes[0]).toEqual(["Import not saved: 1 field(s) were changed by someone else", "error"]);
   });
 });
+
+describe("governed workbook prefetch", () => {
+  const wb = { label: "Governed data", sheets: { Sites: [{ Plant_ID: "SP-01" }] }, omitted: [] };
+
+  it("starts the download once at sign-in, and the runtime's load takes it instead of fetching again", async () => {
+    let calls = 0;
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    const g = governedSync({ load: async () => (calls++, await gate, structuredClone(wb)), post: async () => ({ inserted: 0, updated: 0, unchanged: 0, skipped: [] }), notify: () => {} });
+    g.prefetch!();
+    g.prefetch!(); // a second sign-in signal does not start a second download
+    const loading = g.load();
+    release();
+    expect(await loading).toEqual(wb);
+    expect(calls).toBe(1);
+    // A later load (a reload of the data) fetches afresh.
+    await g.load();
+    expect(calls).toBe(2);
+  });
+
+  it("asks again when the prefetch failed, so a sign-in race never boots on nothing", async () => {
+    let calls = 0;
+    const g = governedSync({
+      load: async () => {
+        if (++calls === 1) throw new Error("401 before the session cookie was set");
+        return structuredClone(wb);
+      },
+      post: async () => ({ inserted: 0, updated: 0, unchanged: 0, skipped: [] }),
+      notify: () => {},
+    });
+    g.prefetch!();
+    expect(await g.load()).toEqual(wb);
+    expect(calls).toBe(2);
+  });
+
+  it("keeps the baseline of the prefetched workbook for the next save", async () => {
+    const posts: unknown[] = [];
+    const g = governedSync({ load: async () => structuredClone(wb), post: async (b) => (posts.push(b), { inserted: 1, updated: 0, unchanged: 0, skipped: [] }), notify: () => {}, newId: () => "id-1" });
+    g.prefetch!();
+    await g.load();
+    await g.save!({ data: { Sites: [{ Plant_ID: "SP-01" }, { Plant_ID: "SP-02" }] }, mode: "Uploaded data", lastImport: null });
+    expect(posts).toEqual([{ id: "id-1", sheets: { Sites: { after: [{ Plant_ID: "SP-02" }], before: [] } } }]);
+  });
+});

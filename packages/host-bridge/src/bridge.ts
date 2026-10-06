@@ -56,10 +56,16 @@ export function installBridge(adapter: HostAdapter, trustedKeys: TrustedKey[]) {
       if (lic.access === "none") return false;
       if (adapter.ssoIdentity) {
         const sso = await adapter.ssoIdentity();
-        if (sso) return true;
+        if (sso) {
+          adapter.governed?.prefetch?.();
+          return true;
+        }
       }
       if (!login || !secret) return false;
-      return adapter.signIn(login, secret);
+      const ok = await adapter.signIn(login, secret);
+      // Signed in: start loading the governed workbook while the runtime builds its workspace.
+      if (ok) adapter.governed?.prefetch?.();
+      return ok;
     },
     async signOut() {
       await adapter.signOut?.();
@@ -130,6 +136,8 @@ async function autoSignIn(adapter: HostAdapter) {
   if (!adapter.ssoIdentity) return;
   const who = await adapter.ssoIdentity();
   if (!who) return;
+  // A session exists: the governed workbook can load while the sign-in completes.
+  adapter.governed?.prefetch?.();
   const user = document.getElementById("loginUser") as HTMLInputElement | null;
   const btn = document.getElementById("loginBtn") as HTMLButtonElement | null;
   if (!user || !btn) return;

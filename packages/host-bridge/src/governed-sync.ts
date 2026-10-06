@@ -25,9 +25,18 @@ export interface GovernedSyncDeps {
 
 export function governedSync(deps: GovernedSyncDeps): GovernedSource {
   let baseline = new Map<string, string[]>();
+  // A prefetch in flight; undefined when it failed (for example before the session was established), so load() asks
+  // again rather than booting on nothing.
+  let pending: Promise<GovernedWorkbook | null | undefined> | null = null;
   return {
+    prefetch() {
+      pending ??= deps.load().catch(() => undefined);
+    },
     async load() {
-      const wb = await deps.load();
+      const early = pending;
+      pending = null;
+      let wb = early ? await early : undefined;
+      if (wb === undefined) wb = await deps.load();
       baseline = new Map(Object.entries(wb?.sheets ?? {}).map(([name, rows]) => [name, (rows as Row[]).map((r) => JSON.stringify(r))]));
       return wb;
     },

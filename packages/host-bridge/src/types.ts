@@ -28,6 +28,11 @@ export interface GovernedSource {
    * governed change, or rejects, in which case the changed sheets are restored to what was loaded.
    */
   save?(state: RuntimeState): Promise<void>;
+  /**
+   * Starts loading the workbook now (a session is known), so the runtime's load() after sign-in finds it ready or in
+   * flight instead of starting it then.
+   */
+  prefetch?(): void;
 }
 
 /** Phase 4: the Enterprise Grid inside the runtime's screens, switched on per screen by the host. */

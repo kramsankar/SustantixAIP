@@ -1,8 +1,10 @@
-import { acceptsGzip, errorResponse, NO_STORE, noContent } from "@/lib/http";
+import { acceptsGzip, errorResponse, noContent } from "@/lib/http";
 import { requestContext } from "@/lib/analytics/context";
 import { serverEnv } from "@/lib/env";
 import { guard } from "@/lib/server";
+import { adminClient } from "@/lib/supabase/admin";
 import { COMPAT_SHEETS, governedWorkbook, type Row, type SheetReader } from "@/lib/workbook";
+import { notModified, workbookVersion } from "@/lib/workbook-version";
 import { gzipSync } from "node:zlib";
 
 export const runtime = "nodejs";
@@ -21,6 +23,23 @@ export async function GET(req: Request): Promise<Response> {
   try {
     if (serverEnv().AIP_DATA_SOURCE !== "governed") return noContent();
     const { db, membership } = await requestContext();
+    // The version is read with the service client (members do not read the audit log); it reveals nothing but a tag.
+    const admin = adminClient();
+    const etag = await workbookVersion(membership.tenantId, {
+      async latestAudit(t) {
+        const { data, error } = await admin.from("audit_log").select("id").eq("tenant_id", t).order("at", { ascending: false }).order("id", { ascending: false }).limit(1).maybeSingle();
+        if (error) throw new Error(`audit_log: ${error.message}`);
+        return data ? String(data.id) : null;
+      },
+      async latestChangeSet(t) {
+        const { data, error } = await admin.from("change_set").select("applied_at").eq("tenant_id", t).order("applied_at", { ascending: false }).limit(1).maybeSingle();
+        if (error) throw new Error(`change_set: ${error.message}`);
+        return data ? String(data.applied_at) : null;
+      },
+    });
+    // Private to this signed-in user, revalidated on every load: an unchanged tenant answers 304 at once.
+    const cache = { "cache-control": "private, no-cache", etag, vary: "accept-encoding, cookie" };
+    if (notModified(req.headers.get("if-none-match"), etag)) return new Response(null, { status: 304, headers: cache });
     const reader: SheetReader = {
       async read(schema, table) {
         const out: Row[] = [];
@@ -33,7 +52,7 @@ export async function GET(req: Request): Promise<Response> {
       },
     };
     const body = Buffer.from(JSON.stringify(await governedWorkbook(reader, COMPAT_SHEETS, "Governed data")));
-    const headers: Record<string, string> = { ...NO_STORE, "content-type": "application/json; charset=utf-8", vary: "accept-encoding" };
+    const headers: Record<string, string> = { ...cache, "content-type": "application/json; charset=utf-8" };
     if (acceptsGzip(req)) return new Response(new Uint8Array(gzipSync(body)), { status: 200, headers: { ...headers, "content-encoding": "gzip" } });
     return new Response(new Uint8Array(body), { status: 200, headers });
   } catch (err) {
