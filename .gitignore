@@ -23,3 +23,8 @@ out/
 
 # Local agent worktrees
 .claude/worktrees/
+
+# Generated tenant seed (tenant data; never committed): pnpm --filter @sustantix/schema seed:sql
+supabase/seed.sql
+# Data bundles hold tenant data
+*.aipbundle
