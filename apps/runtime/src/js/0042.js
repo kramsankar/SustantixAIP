@@ -12,7 +12,30 @@
    try{if(Array.isArray(window.ACTIVE_DATASET?.[sheet]))out.push(...window.ACTIVE_DATASET[sheet])}catch(_){}
    return out;
  }
+ // Sustantix: axCollectRows is called once per asset for every panel, and each call de-duplicated every source row
+ // (JSON-serialising each). The result depends only on the source arrays, so it is reused while every source is the
+ // very same array at the same length; a replaced, grown or shrunk source rebuilds it. Each caller gets its own copy.
+ const axCollectMemo=new Map();
+ function axCollectSources(sheetNames,globalNames){
+   const src=[];globalNames.forEach(n=>{try{const v=eval(n);src.push(Array.isArray(v)?v:null)}catch(_){src.push(null)}});
+   for(const sh of sheetNames){
+     try{const d=(typeof APM_IMPORTED_DATA!=='undefined'&&APM_IMPORTED_DATA)||window.APM_IMPORTED_DATA||{};src.push(Array.isArray(d[sh])?d[sh]:null)}catch(_){src.push(null)}
+     for(const g of ['EXCEL_DATA','WORKBOOK_DATA','ACTIVE_DATASET']){try{const v=window[g]?.[sh];src.push(Array.isArray(v)?v:null)}catch(_){src.push(null)}}
+     try{src.push((typeof EMBEDDED_EXCEL_DATA!=='undefined'&&EMBEDDED_EXCEL_DATA&&Array.isArray(EMBEDDED_EXCEL_DATA[sh]))?EMBEDDED_EXCEL_DATA[sh]:null)}catch(_){src.push(null)}
+   }
+   return src;
+ }
  function axCollectRows(sheetNames,globalNames=[]){
+   const memoKey=sheetNames.join('\u0001')+'\u0002'+globalNames.join('\u0001');
+   const sources=axCollectSources(sheetNames,globalNames);
+   const lengths=sources.map(a=>a?a.length:-1);
+   const hit=axCollectMemo.get(memoKey);
+   if(hit&&hit.sources.length===sources.length&&hit.sources.every((a,i)=>a===sources[i]&&hit.lengths[i]===lengths[i]))return hit.out.slice();
+   const out=axCollectRowsFresh(sheetNames,globalNames);
+   axCollectMemo.set(memoKey,{sources,lengths,out});
+   return out.slice();
+ }
+ function axCollectRowsFresh(sheetNames,globalNames){
    const rows=[]; globalNames.forEach(n=>rows.push(...arr(n)));
    for(const sh of sheetNames){rows.push(...axImportedRows(sh),...axWorkbookRows(sh),...axEmbeddedRows(sh));}
    const seen=new Set(),out=[];
@@ -47,7 +70,9 @@
    const ids=new Set(base.map(x=>String(x.assetId)));
    return base.concat(axContextBridgeAssets.filter(x=>x&&x.assetId&&!ids.has(String(x.assetId))));
  }
- function assetKey(v){return String(v??'').trim().toLowerCase().replace(/[^a-z0-9]/g,'')}
+ // Pure in its input string; memoised (bounded) because it runs for every row against every asset.
+ const assetKeyMemo=new Map();
+ function assetKey(v){const sv=String(v??'');let k=assetKeyMemo.get(sv);if(k===undefined){k=sv.trim().toLowerCase().replace(/[^a-z0-9]/g,'');if(assetKeyMemo.size>200000)assetKeyMemo.clear();assetKeyMemo.set(sv,k)}return k}
  function matchAsset(r,a){
    const wantedId=assetKey(a?.assetId),wantedTag=assetKey(a?.tag);
    const rowId=assetKey(r?.assetId??r?.asset_id??r?.Asset_ID);
