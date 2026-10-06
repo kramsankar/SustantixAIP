@@ -2,7 +2,7 @@
 // host (manifest + chunks, exactly as the database serves them) and only then runs the runtime. Every screen must
 // match the v915 reference crawl, except the data-source label, which reads as the database.
 //   node test/database-only.mjs
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { createReadStream, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
@@ -102,9 +102,16 @@ const LABELS = [
   ["the bundled Excel workbook", "your organisation's database"],
 ];
 const asReference = (s) => LABELS.reduce((t, [ref, db]) => t.split(db).join(ref), s);
+if (process.env.AIP_SERVE_ONLY) {
+  // Debugging: keep the stand-in host running for a browser.
+  console.log(`serving http://localhost:${port}/`);
+  await new Promise(() => undefined);
+}
 try {
   const out = join(tmp, "crawl.json");
-  execFileSync("node", [join(here, "crawl.mjs"), `http://localhost:${port}/`, out, "--license", token, "--clock", reference.capturedAt], { stdio: "inherit" });
+  // Asynchronously: the stand-in host runs in this process and must keep answering while the crawler works.
+  const code = await new Promise((resolve) => spawn("node", [join(here, "crawl.mjs"), `http://localhost:${port}/`, out, "--license", token, "--clock", reference.capturedAt], { stdio: "inherit" }).on("exit", resolve));
+  if (code !== 0) throw new Error(`crawl exited with ${code}`);
   const ref = Object.fromEntries(reference.views.map((v) => [v.v, v]));
   const got = JSON.parse(readFileSync(out, "utf8")).views;
   check(served.manifest >= 1 && served.chunks >= 1, `data loaded from the host after sign-in (${served.manifest} manifest, ${served.chunks} chunk requests)`);
