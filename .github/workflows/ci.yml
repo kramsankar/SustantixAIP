@@ -154,8 +154,37 @@ jobs:
           test "$(psql -At -c "select count(*) from aip.staging_row")" = "1"
           test "$(psql -At -c "select count(*) from aip.grid_view")" = "2"
 
+  # The parity crawls (bundled and governed data, screen grids) take most of a CI run. They guard the runtime and what
+  # ships with it, so they run on main always and elsewhere only when one of those changed.
+  changes:
+    name: What changed
+    runs-on: ubuntu-latest
+    outputs:
+      runtime: ${{ steps.diff.outputs.runtime }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - id: diff
+        shell: bash
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ] || [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "runtime=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed=$(git diff --name-only "$BASE" HEAD)
+          echo "$changed"
+          if echo "$changed" | grep -qE '^(apps/runtime/|tools/extract-reference/|packages/(host-bridge|grid|license)/|reference/|\.github/workflows/ci\.yml$|pnpm-lock\.yaml$)'; then
+            echo "runtime=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "runtime=false" >> "$GITHUB_OUTPUT"
+          fi
+
   parity:
     name: reference screen parity + license gate
+    needs: changes
+    if: needs.changes.outputs.runtime == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 100
     steps:
