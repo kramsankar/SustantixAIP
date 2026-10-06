@@ -77,6 +77,11 @@ for (const v of views) {
     document.querySelector(`#sidebar .nav-item[data-view="${v}"]`).click();
   }, v.v);
   await settle();
+  if (gridScreens) {
+    // Screens can redraw a table late; scan now and let the grids settle, so the snapshot never races a redraw.
+    await page.evaluate(() => window.__AIP_SCREEN_GRIDS__?.scan());
+    await settle();
+  }
   const info = await page.evaluate(() => {
     const act = [...document.querySelectorAll("#main .view")].filter((x) => x.offsetParent !== null || getComputedStyle(x).display !== "none");
     const el = act[0] || document.getElementById("main");

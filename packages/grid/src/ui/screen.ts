@@ -348,5 +348,8 @@ export class ScreenGrids {
 }
 
 export function mountScreenGrids(doc: Document, opts: ScreenGridOptions): ScreenGrids {
-  return new ScreenGrids(doc, opts);
+  const grids = new ScreenGrids(doc, opts);
+  // Reachable for tests that need a scan now rather than at the next throttle tick (the screen-grid crawl).
+  (globalThis as { __AIP_SCREEN_GRIDS__?: ScreenGrids }).__AIP_SCREEN_GRIDS__ = grids;
+  return grids;
 }
