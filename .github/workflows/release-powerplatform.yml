@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: |
           pnpm --filter @sustantix/pp-provision sx-pp provision --env "$PP_ENV_URL" --version "${{ inputs.version }}" \
-            ${{ inputs.data_model && '--data-model' || '' }} --report "$GITHUB_WORKSPACE/out/provision-report.json"
+            ${{ inputs.data_model && '--data-model' || '' }} --guard-data-model true --report "$GITHUB_WORKSPACE/out/provision-report.json"
       - name: Push code app into the solution
         shell: bash
         working-directory: apps/powerapp

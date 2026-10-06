@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { fileURLToPath } from "node:url";
 import { buildMasters, loadCorrections, loadVocabulary, masterDefs, readSheets, transactionDefs, type Registry } from "@sustantix/schema";
-import { provision } from "../src/provision.ts";
+import { guardDataModelFlag, provision } from "../src/provision.ts";
 import { GUARD_MESSAGES, guardStepName, rolePrivileges } from "../src/steps.ts";
 import { WebApi, type Fetcher } from "../src/webapi.ts";
 
@@ -134,6 +134,13 @@ describe("provision", () => {
     const secondCreates = dv.calls.slice(before).filter((c) => c.method === "POST" && !["PublishAllXml"].includes(c.path) && !c.path.endsWith("AddPrivilegesRole"));
     expect(second.guardStepsCreated).toBe(0);
     expect(secondCreates).toEqual([]);
+  });
+
+  it("guards the data tables unless an operator explicitly turns the guard off", () => {
+    // An expired or revoked license must block AIP data: forgetting a switch may not leave tables unguarded.
+    expect(guardDataModelFlag(undefined)).toBe(true);
+    expect(guardDataModelFlag("true")).toBe(true);
+    expect(guardDataModelFlag("false")).toBe(false);
   });
 
   it("guards every data-model table when requested", async () => {

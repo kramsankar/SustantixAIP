@@ -54,7 +54,7 @@ export interface ProvisionOptions {
   pluginDll: Buffer;
   /** Create the 107 governed data-model tables (in addition to the platform tables). */
   dataModel: boolean;
-  /** Guard every data-model table with the license plug-in (platform tables are always guarded). */
+  /** Guard every data-model table with the license plug-in (platform tables are always guarded); see guardDataModelFlag. */
   guardDataModel: boolean;
   /** Load the governed workbook rows into the data-model tables. */
   seedWorkbook?: Buffer;
@@ -212,3 +212,9 @@ export async function provision(api: WebApi, o: ProvisionOptions, log: Log): Pro
     seedFailures,
   };
 }
+
+/**
+ * The --guard-data-model switch. The guard is what blocks AIP data once a license is missing, expired or revoked, so
+ * every table the roles can reach is guarded unless an operator explicitly passes --guard-data-model false.
+ */
+export const guardDataModelFlag = (value: string | undefined): boolean => value !== "false";

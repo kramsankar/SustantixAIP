@@ -4,10 +4,11 @@
  *   whoami     --env https://<org>.crm.dynamics.com
  *              Prints the organisation id to bind a license to.
  *   provision  --env <url> --version 9.15.0.0 --plugin <Sustantix.Aip.Licensing.dll>
- *              [--data-model] [--guard-data-model] [--masters false] [--seed [workbook.xlsx]] [--fx INR=83.2 ...]
+ *              [--data-model] [--guard-data-model false] [--masters false] [--seed [workbook.xlsx]] [--fx INR=83.2 ...]
  *              [--report out/provision-report.json]
  *   set-license --env <url> --token <SXL1...>   (writes the environment variable value)
  *
+ * The license guard covers every AIP data table by default; --guard-data-model false limits it to the runtime state.
  * Authentication: see src/auth.ts (PP_ACCESS_TOKEN, service principal or device code).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -15,7 +16,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCorrections, loadVocabulary, type Registry } from "@sustantix/schema";
 import { tokenProvider } from "./auth.ts";
-import { provision } from "./provision.ts";
+import { guardDataModelFlag, provision } from "./provision.ts";
 import { ENV_VARS, whoAmI } from "./steps.ts";
 import { WebApi } from "./webapi.ts";
 
@@ -69,7 +70,7 @@ async function main() {
           pluginDll: readFileSync(pluginPath),
           dataModel: flag("data-model") === "true" || !!seedArg,
           masters: flag("masters") !== "false",
-          guardDataModel: flag("guard-data-model") === "true",
+          guardDataModel: guardDataModelFlag(flag("guard-data-model")),
           seedWorkbook: seedArg ? (seedArg === "true" ? workbook : readFileSync(seedArg)) : undefined,
           fx,
         },
