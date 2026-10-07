@@ -152,6 +152,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000200_aip_outbox.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000300_aip_feed.sql
           psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261008000400_aip_schedules.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/20261011000100_aip_runtime_datasets_retired.sql
           # Change sets, saved views, staged rows, outbound events and their audit trail survive a re-apply.
           test "$(psql -At -c "select count(*) from aip.change_set")" = "11"
           test "$(psql -At -c "select count(*) || '/' || count(*) filter (where status = 'delivered') from aip.outbox")" = "4/1"

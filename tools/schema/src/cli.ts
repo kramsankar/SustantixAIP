@@ -30,7 +30,7 @@ import { changeSetPlan, dataverseChangeModel } from "./changes-dataverse.ts";
 import { integrationSql } from "./integration-sql.ts";
 import { feedSql } from "./feed-sql.ts";
 import { scheduleSql } from "./schedule-sql.ts";
-import { catalogueSql } from "./datasets-sql.ts";
+import { catalogueSql, firstStoreRetirementSql } from "./datasets-sql.ts";
 import { outboxSql } from "./outbox-sql.ts";
 import { SHEET_SPECS, transactionDefs } from "./sheet-model.ts";
 import { readSheets } from "./rows.ts";
@@ -76,6 +76,7 @@ writeFileSync(join(root, "supabase/migrations/20261008000300_aip_feed.sql"), fee
 writeFileSync(join(root, "supabase/migrations/20261008000400_aip_schedules.sql"), scheduleSql());
 // 20261009000100_aip_runtime_datasets.sql (the first runtime-data store) is applied history, kept as committed.
 writeFileSync(join(root, "supabase/migrations/20261010000100_aip_runtime_catalogue.sql"), catalogueSql());
+writeFileSync(join(root, "supabase/migrations/20261011000100_aip_runtime_datasets_retired.sql"), firstStoreRetirementSql());
 writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");
