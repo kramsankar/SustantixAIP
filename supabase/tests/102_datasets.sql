@@ -1,7 +1,15 @@
+\set ON_ERROR_STOP 1
+
+-- The first store (one entry per table) is gone: nothing of it is left to read or write.
+do $$
+begin
+  if to_regclass('aip.dataset_part') is not null or to_regclass('aip.dataset_block') is not null then raise exception 'the first store''s tables are still there'; end if;
+  if to_regprocedure('aip.dataset_blocks(uuid, jsonb)') is not null or to_regprocedure('aip.audit_dataset_write()') is not null then raise exception 'the first store''s functions are still there'; end if;
+end $$;
+
 -- Runtime catalogue proof: each tenant's dataset layouts and named sheets are its own; a member reads only their own
 -- tenant's and writes none; blocks come back in the order asked with each record's keys as written; the row view gives
 -- one row per record with its group; every write statement is audited once per tenant.
-\set ON_ERROR_STOP 1
 
 -- Two tenants, each with a sheet of the same name but different rows (keys deliberately out of alphabetical order).
 set role service_role;

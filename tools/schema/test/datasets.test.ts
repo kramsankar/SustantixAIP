@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { blocksOf, catalogueSeedSql, catalogueSql } from "../src/datasets-sql.ts";
+import { blocksOf, catalogueSeedSql, catalogueSql, firstStoreRetirementSql } from "../src/datasets-sql.ts";
 import { buildCatalogue } from "../src/runtime-catalogue.ts";
 import { buildRuntimeCatalogue, catalogueMap } from "../src/runtime-catalogue-cli.ts";
 
@@ -72,6 +72,17 @@ describe("runtime catalogue", () => {
     expect(sql).not.toMatch(/drop table/);
     expect(sql).toMatch(/grant select on aip\.runtime_dataset, aip\.runtime_sheet, aip\.runtime_sheet_group, aip\.runtime_sheet_block to authenticated/);
     expect(sql).not.toMatch(/jsonb not null/);
+  });
+
+  it("retires the first store idempotently and touches nothing the catalogue holds", () => {
+    const sql = firstStoreRetirementSql();
+    const statements = sql.split("\n").filter((l) => l && !l.startsWith("--"));
+    expect(statements).toEqual([
+      "drop function if exists aip.dataset_blocks(uuid, jsonb);",
+      "drop table if exists aip.dataset_block, aip.dataset_part;",
+      "drop function if exists aip.audit_dataset_write();",
+    ]);
+    expect(sql).not.toMatch(/runtime_|cascade/);
   });
 
   it("builds from the real datasets as recorded in schema/runtime-sheets.json (regenerate with runtime:catalogue)", () => {
