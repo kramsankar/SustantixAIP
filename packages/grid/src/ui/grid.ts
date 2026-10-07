@@ -339,6 +339,9 @@ export class SustantixGrid {
       manualFiltering: true,
       groupedColumnMode: false,
       autoResetExpanded: false,
+      // The grid draws every row itself (virtualised), so the table's page index never applies. Left on, a state change
+      // that hands the table new row data queues a page-index reset, whose state change hands it new data again.
+      autoResetPageIndex: false,
     });
     this.syncTable();
 
@@ -414,7 +417,11 @@ export class SustantixGrid {
     return !!this.def.tree && this.mode === "client" && !this.state.groupBy.length && !this.state.filters.length && !this.state.search;
   }
 
+  /** The roots of the current view, rebuilt only when the view is (state changes keep handing the table the same data). */
+  private treeCache: { view: Row[]; roots: Row[] } | null = null;
+
   private treeRoots(): Row[] {
+    if (this.treeCache?.view === this.view) return this.treeCache.roots;
     const parent = this.def.tree!.parent;
     const codes = new Set(this.view.map((r) => String(r[this.def.key])));
     this.children = new Map();
@@ -427,6 +434,7 @@ export class SustantixGrid {
         this.children.set(String(p), list);
       } else roots.push(r);
     }
+    this.treeCache = { view: this.view, roots };
     return roots;
   }
 

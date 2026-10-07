@@ -16,7 +16,7 @@ import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dataModelPlan, platformPlan } from "./dataverse.ts";
 import { inferRegistry, runtimeDeclaredKeys } from "./infer.ts";
-import { dataModelSql, platformSql } from "./postgres.ts";
+import { auditLatestSql, dataModelSql, platformSql } from "./postgres.ts";
 import { correctionLogPlan, correctionLogSql, applyCorrections, loadCorrections } from "./corrections.ts";
 import { loadVocabulary, referencePlan, referenceSql, validateVocabulary } from "./reference.ts";
 import { masterPlan, masterRelationships } from "./master-dataverse.ts";
@@ -77,6 +77,7 @@ writeFileSync(join(root, "supabase/migrations/20261008000400_aip_schedules.sql")
 // 20261009000100_aip_runtime_datasets.sql (the first runtime-data store) is applied history, kept as committed.
 writeFileSync(join(root, "supabase/migrations/20261010000100_aip_runtime_catalogue.sql"), catalogueSql());
 writeFileSync(join(root, "supabase/migrations/20261011000100_aip_runtime_datasets_retired.sql"), firstStoreRetirementSql());
+writeFileSync(join(root, "supabase/migrations/20261012000100_aip_audit_latest.sql"), auditLatestSql());
 writeFileSync(join(root, "powerplatform/schema/change-model.json"), JSON.stringify(dataverseChangeModel([...masterDefs(reg), ...transactionDefs(reg)], vocab), null, 1) + "\n");
 // Master manifest: what each master holds, for hosts and agents that read the code views without this package.
 writeFileSync(join(root, "schema/aip-masters.json"), JSON.stringify(masterManifest([...masterDefs(reg), ...transactionDefs(reg)]), null, 1) + "\n");

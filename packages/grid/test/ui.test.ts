@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from "vitest";
 import { GridApiError } from "../src/ui/api.ts";
+import { SustantixGrid } from "../src/ui/grid.ts";
 import { button, cells, columns, def, FakeApi, flush, mount, sample, type Row } from "./helpers.ts";
 
 beforeEach(() => {
@@ -164,6 +165,37 @@ describe("Sustantix Enterprise Grid", () => {
     expect(active.dataset.r).toBe("1");
     expect(active.dataset.c).toBe("1");
     expect(scroll.getAttribute("aria-activedescendant")).toBe(active.id);
+  });
+
+  it("draws a tree (rows under their parent) and settles: a state change does not redraw it forever", async () => {
+    // A tree grid used to hand the table new row data on every state change; the table answered with a page-index
+    // reset, itself a state change, and the page froze. Redraws are counted here so a regression fails rather than hangs.
+    const proto = SustantixGrid.prototype as unknown as { render(): void };
+    const render = proto.render;
+    let renders = 0;
+    proto.render = function (this: unknown) {
+      if (++renders > 200) throw new Error("the grid keeps redrawing");
+      render.call(this);
+    };
+    try {
+      const rows = sample(40).map((r, i) => ({ ...r, parent: i >= 10 ? `WO-${String((i % 10) + 1).padStart(4, "0")}` : null }));
+      const api = new FakeApi(rows);
+      const g = await mount(api, { columns: [...columns, { field: "parent", label: "Parent", kind: "fk", fk: "work_order", editable: false }], tree: { parent: "parent" } });
+      await flush();
+      // Expanded: each parent, then its children.
+      expect(cells(g, 0).slice(0, 5)).toEqual(["▾WO-0001", "WO-0011", "WO-0021", "WO-0031", "▾WO-0002"]);
+      // Collapsing the first parent (a state change) hides its children.
+      g.el.querySelector<HTMLElement>(".sxg-toggle")!.click();
+      await flush();
+      await flush();
+      expect(cells(g, 0)[1]).toBe("▾WO-0002");
+      const settled = renders;
+      await flush();
+      await flush();
+      expect(renders).toBe(settled);
+    } finally {
+      proto.render = render;
+    }
   });
 
   it("groups rows with counts and per-currency money totals", async () => {

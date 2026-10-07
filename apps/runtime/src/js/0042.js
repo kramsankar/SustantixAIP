@@ -51,7 +51,11 @@
  let axContextBridgeAssets=[];
  let axRenderGeneration=0;
  let axOperatingStateTimers=[];
- function plantName(id){const p=arr('PLANTS').find(x=>x.id===id);return p?.name||id||'Unknown site'}
+ // Sustantix: plantName runs for every work order against every asset, and each call evaluated PLANTS afresh. The
+ // plant table is read once per task (the next task reads it again) and looked up by id; the first plant with an id
+ // wins, as find did.
+ let axPlantIndex=null;
+ function plantName(id){if(!axPlantIndex){axPlantIndex=new Map();for(const x of arr('PLANTS'))if(x&&!axPlantIndex.has(x.id))axPlantIndex.set(x.id,x);setTimeout(()=>{axPlantIndex=null},0)}const p=axPlantIndex.get(id);return p?.name||id||'Unknown site'}
  function assets(){
    const base=axCollectRows(['Asset Master','Asset Explorer View','Graph Asset Selector','Assets','Asset Registry'],['ASSET_REGISTRY']).map(x=>{
      const governedId=x.Asset_ID??x.assetId??x.id??x.asset_id;
@@ -105,10 +109,11 @@
    });
  }
  function workOrders(a){
-   const pools=axCollectRows(['Work Orders','Work_Orders','Intelligent WO Header','WO Ledger Runtime'],['ALL_WOS']);
+   // Indexed as telemetry is (above); plant names come from PLANTS, so a new plant table re-normalises.
+   const pools=axCandidates(axShared(['Work Orders','Work_Orders','Intelligent WO Header','WO Ledger Runtime'],['ALL_WOS']),a,normalizeWorkOrder,arr('PLANTS'));
    const seen=new Set(),out=[];
-   pools.forEach(raw=>{
-     const w=normalizeWorkOrder(raw);
+   pools.forEach(norm=>{
+     const w=Object.assign({},norm);
      if(!matchAsset(w,a))return;
      // A work order may appear in more than one runtime pool (for example
      // ALL_WOS and the active workbook) with Asset_ID in one source and
@@ -139,8 +144,32 @@
      signal:r?.signal??r?.Signal_Status??r?.signalStatus??''
    });
  }
+ // Sustantix: telemetry and work orders were collected and normalised in full for every asset (every row against
+ // every asset, on each render). Each source set is normalised once and indexed by the asset keys its rows carry;
+ // an asset tests only the rows carrying its id or tag, in source order, against the same rule as before.
+ function axShared(sheetNames,globalNames){
+   const memoKey=sheetNames.join('\u0001')+'\u0002'+globalNames.join('\u0001');
+   const sources=axCollectSources(sheetNames,globalNames);
+   const lengths=sources.map(a=>a?a.length:-1);
+   const hit=axCollectMemo.get(memoKey);
+   if(hit&&hit.sources.length===sources.length&&hit.sources.every((a,i)=>a===sources[i]&&hit.lengths[i]===lengths[i]))return hit.out;
+   const out=axCollectRowsFresh(sheetNames,globalNames);
+   axCollectMemo.set(memoKey,{sources,lengths,out});
+   return out;
+ }
+ const axIndexMemo=new WeakMap();
+ function axCandidates(rows,a,normalize,dep){
+   let m=axIndexMemo.get(rows);
+   if(!m||m.normalize!==normalize||m.dep!==dep){
+     const list=rows.map(normalize),index=new Map();
+     list.forEach((r,i)=>{for(const k of new Set([assetKey(r?.assetId??r?.asset_id??r?.Asset_ID),assetKey(r?.assetTag??r?.asset_tag??r?.Asset_Tag??r?.tag??r?.asset??r?.Asset),assetKey(r?.asset)])){let b=index.get(k);if(!b)index.set(k,b=[]);b.push(i)}});
+     m={normalize,dep,list,index};axIndexMemo.set(rows,m);
+   }
+   const at=new Set([...(m.index.get(assetKey(a?.assetId))||[]),...(m.index.get(assetKey(a?.tag))||[])]);
+   return [...at].sort((x,y)=>x-y).map(i=>m.list[i]);
+ }
  function telemetry(a){
-   const matched=axCollectRows(['Telemetry'],['TELEMETRY_LOG']).map(normalizeTelemetry).filter(t=>matchAsset(t,a)||assetKey(t.asset)===assetKey(a.assetId)||assetKey(t.asset)===assetKey(a.tag));
+   const matched=axCandidates(axShared(['Telemetry'],['TELEMETRY_LOG']),a,normalizeTelemetry).filter(t=>matchAsset(t,a)||assetKey(t.asset)===assetKey(a.assetId)||assetKey(t.asset)===assetKey(a.tag));
    const byKey=new Map();
    matched.forEach(t=>{const k=assetKey(t.ts)||JSON.stringify([t.irradiance,t.acPower,t.efficiency,t.signal]);const prior=byKey.get(k);const quality=[t.acPower,t.irradiance,t.efficiency].filter(Number.isFinite).length;if(!prior||quality>prior._quality)byKey.set(k,Object.assign({_quality:quality},t));});
    return [...byKey.values()].sort((x,y)=>String(x.ts).localeCompare(String(y.ts))).slice(-24);
