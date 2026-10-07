@@ -187,10 +187,10 @@ PP_ACCESS_TOKEN=… pnpm --filter @sustantix/bundle sx-bundle import --to datave
    - `CRON_SECRET`: at least 24 characters, mark it *Sensitive*. Vercel Cron sends it to the outbox and
      agent-schedule workers, both scheduled in `vercel.json` (daily on Hobby; see "Worker cadence"). Without it the workers answer
      `503` and nothing runs. Scheduled work is licensed against the first domain the deployment's license binds.
-   - `AIP_DATA_SOURCE`: `governed` (recommended: the screens also read the governed tables through
-     `GET /api/aip/workbook`, so edits made in the grids show everywhere) or `embedded` (the default: the screens read
-     only the tenant's runtime datasets). Either way every value comes from the database (see "Database-only data").
-     Governed mode needs the `aip_compat` schema exposed (step 3).
+   - `AIP_DATA_SOURCE`: `governed` (recommended: the runtime also overlays the governed workbook on its imported
+     data at boot) or `embedded` (the default). Either way every value comes from the database, and the runtime's
+     datasets read the governed sheets they hold copies of (see "Database-only data"). The `aip_compat` schema must
+     be exposed (step 3).
 3. **Supabase schema**: from the monorepo root, `supabase link --project-ref <ref>` and then `supabase db push`.
    This applies `supabase/migrations/*`. Then in the Supabase dashboard go to **Settings → API → Exposed schemas**
    and add `aip` and `aip_compat`, because the API reads `aip.*` (and, in governed mode, the compatibility views in
@@ -224,33 +224,45 @@ PP_ACCESS_TOKEN=… pnpm --filter @sustantix/bundle sx-bundle import --to datave
 
 ## Database-only data
 
-The deployment ships no tenant data. Everything the screens show is read from Supabase after sign-in:
+The deployment ships no tenant data. Everything the screens show is read from Supabase after sign-in, and each table
+is held once, by name (the runtime catalogue, `docs/data/runtime-sheets.md`):
 
-- **Runtime datasets.** The runtime's 36 tenant datasets (the workbook sheets, time series and module data the
-  screens compute from) are held per tenant in `aip.dataset_part` (each dataset's frame) and `aip.dataset_block` (each
-  table's rows, in order, as compressed blocks; about 19 MB in Postgres for the demo tenant). After sign-in the host
-  bridge reads `GET /api/aip/datasets` (frames and the chunk plan) and `GET /api/aip/datasets/chunk` (about 2.5 MB
-  each, cached by the browser per data version), joins the datasets back and only then starts the runtime. Members
-  read their own tenant only; nothing in the application writes these tables.
-- **Governed tables.** With `AIP_DATA_SOURCE=governed`, the screens also read the governed workbook (`GET
-  /api/aip/workbook`), so changes made in the grids are what the screens show.
+- **Governed sheets.** Where a runtime dataset holds a copy of a governed workbook sheet (Work Orders, Asset Master…),
+  it reads the governed sheet instead (`GET /api/aip/workbook`), with the columns it uses. Edits made in the grids or
+  through change sets therefore reach every screen. 241 of the runtime's tables read 105 governed sheets this way.
+- **Catalogue sheets.** Every other table is a named sheet in `aip.runtime_sheet` (229 for the demo tenant), held once
+  whichever datasets carry it; a family of like lists (the same list per decision, per asset…) is one sheet grouped
+  by key (`aip.runtime_sheet_group`). Rows are stored in order as compressed blocks (`aip.runtime_sheet_block`).
+  Read any sheet in SQL: `select ordinal, group_key, record from aip.runtime_sheet_rows where sheet = 'Crew Assignments · Excel' order by ordinal;`
+- **Layouts.** Each runtime dataset keeps only its layout (`aip.runtime_dataset`): its own structure and values, with
+  references in place of tables.
+- After sign-in the host bridge reads `GET /api/aip/datasets` (layouts, sheets and the chunk plan), its chunks (about
+  2.5 MB each, cached by the browser per data version) and the governed workbook (once, shared with the governed boot
+  overlay), joins every dataset back and only then starts the runtime. Members read their own tenant only; nothing in
+  the application writes these tables.
 - **Product content** ships with the application: screen help, KPI dictionaries, engineering rules, model
-  configuration and validation messages (`apps/runtime/dataset-classes.json`). It is the same for every tenant.
+  configuration and validation messages (`apps/runtime/dataset-classes.json`, which also names each tenant dataset).
 - The Data Source menu offers no workbook, upload or built-in dataset, and the source reads as *Database*. If the data
   cannot be loaded, the application says so and shows nothing in its place.
 
-**Loading a tenant's datasets.** For a new tenant, `pnpm --filter @sustantix/schema seed:sql --tenant <uuid> --name
-"<name>"` produces a seed that loads the governed tables and the datasets together. For a tenant that already exists
-(its governed tables loaded, possibly edited since), load only the datasets; this leaves the governed tables as they
-are:
+`schema/runtime-sheets.json` records where every table is held; regenerate it with
+`pnpm --filter @sustantix/schema runtime:catalogue` after a runtime or governed-schema change (a test fails while it
+is out of date). Known limit: the governed workbook serves sheets of up to 5,000 rows, so a dataset can only read a
+governed sheet within that limit; larger copies stay catalogue sheets.
+
+**Loading a tenant's catalogue.** For a new tenant, `pnpm --filter @sustantix/schema seed:sql --tenant <uuid> --name
+"<name>"` produces a seed that loads the governed tables and the catalogue together. For a tenant that already exists,
+load only the catalogue; this leaves the governed tables (and any edits made to them) as they are:
 
 ```bash
-pnpm --silent --filter @sustantix/schema seed:sql --tenant <uuid> --datasets-only > datasets.sql
-psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f datasets.sql      # idempotent: replaces that tenant's datasets
+pnpm --silent --filter @sustantix/schema seed:sql --tenant <uuid> --datasets-only > supabase/seed.sql
+# The Supabase CLI runs a seed file it has seen before only if its record is cleared first (SQL editor):
+#   delete from supabase_migrations.seed_files where path = 'supabase/seed.sql';
+npx --yes supabase db push --include-seed     # idempotent: replaces that tenant's catalogue
 ```
 
-Load the datasets before deploying a build with database-only data; until they are loaded, signing in shows that the
-data could not be loaded.
+Load the catalogue before deploying a build that reads it; until it is loaded, signing in shows that the data could
+not be loaded.
 
 ## Security notes
 

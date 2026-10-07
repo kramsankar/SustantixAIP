@@ -31,6 +31,23 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
     return (await res.json()) as T;
   };
 
+  // The governed workbook, fetched once per page: the dataset loader reads its sheets (layouts refer to them) and, on a
+  // governed deployment (x-aip-governed: 1), the runtime's boot overlays it.
+  let workbook: Promise<{ governed: boolean; wb: GovernedWorkbook }> | null = null;
+  const governedWorkbook = () =>
+    (workbook ??= (async () => {
+      const res = await fetch(apiBase + "/workbook?for=datasets", { credentials: "same-origin", headers: { "x-aip-client": "runtime" } });
+      if (res.status === 204) return { governed: false, wb: { label: "Governed data", sheets: {} } };
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(body?.message ?? `/workbook → ${res.status}`);
+      }
+      return { governed: res.headers.get("x-aip-governed") === "1", wb: (await res.json()) as GovernedWorkbook };
+    })().catch((e: unknown) => {
+      workbook = null;
+      throw e;
+    }));
+
   return {
     name: "vercel",
     async init() {},
@@ -71,7 +88,6 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
       },
       clear: () => call<void>("/state", { method: "DELETE" }),
     },
-    // 204 (bundled data) resolves to undefined → null: the runtime boots as before.
     // Phase 4: screen grids switched on by the deployment (AIP_GRID_SCREENS), the governed workspace, audited exports.
     grid: {
       screens: async () => parseScreens((await call<{ gridScreens: string }>("/ui")).gridScreens),
@@ -97,13 +113,17 @@ export function vercelAdapter(apiBase = "/api/aip"): HostAdapter {
               }
               return (await res.json()) as { version: string; blocks: Json[][] };
             },
+            governed: async () => (await governedWorkbook()).wb.sheets as Record<string, Json[]>,
           },
           progress,
         ),
     },
     // Phase 4: a workbook import made on governed data is written back as one governed change.
     governed: governedSync({
-      load: async () => (await call<GovernedWorkbook | undefined>("/workbook")) ?? null,
+      load: async () => {
+        const r = await governedWorkbook();
+        return r.governed ? r.wb : null;
+      },
       // Gzip keeps large imports under the platform request-body limit, as for the runtime state.
       post: async (body) => call<ImportResult>("/workbook/changes", { method: "POST", body: await gzipJson(body), headers: { "content-type": "application/json", "content-encoding": "gzip", "x-aip-client": "runtime" } }),
       notify: showNotice,

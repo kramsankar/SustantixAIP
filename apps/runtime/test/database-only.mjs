@@ -1,7 +1,10 @@
-// Database-only parity: the Vercel build ships no tenant data; after sign-in it loads every tenant dataset from the
-// host (manifest + chunks, exactly as the database serves them) and only then runs the runtime. Every screen must
-// match the v915 reference crawl, except the data-source label, which reads as the database.
-//   node test/database-only.mjs
+// Database-only parity: the Vercel build ships no tenant data; after sign-in it loads the runtime catalogue (dataset
+// layouts and sheets, exactly as the database serves them) and the governed workbook its layouts read, and only then
+// runs the runtime. Screens read governed sheets where a dataset holds a copy of one, so they show the governed values;
+// every screen is held to its own reviewed baseline:
+//   node test/database-only.mjs            exact check against reference/v915-database-crawl.json
+//   node test/database-only.mjs --rebase   writes that baseline and docs/parity/database-baseline.md (what differs from
+//                                          the v915 reference, screen by screen, for review)
 import { execFileSync, spawn } from "node:child_process";
 import { createReadStream, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
@@ -12,6 +15,7 @@ import { verifyLicense } from "@sustantix/license";
 import { generateSigningKey, issueLicense } from "@sustantix/license/issuer";
 
 const here = dirname(fileURLToPath(import.meta.url));
+const rebase = process.argv.includes("--rebase");
 const root = join(here, "../../..");
 const tmp = process.env.AIP_PARITY_OUT ?? mkdtempSync(join(tmpdir(), "aip-dbonly-"));
 mkdirSync(tmp, { recursive: true });
@@ -42,7 +46,7 @@ const token = issueLicense(signing, { customer: { id: "QA", name: "Database-only
 
 // A stand-in for the Vercel host: the static build, plus the API calls the bridge makes.
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".css": "text/css" };
-const served = { manifest: 0, chunks: 0 };
+const served = { manifest: 0, chunks: 0, workbook: 0 };
 let signedIn = false;
 const server = createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", "http://x");
@@ -63,7 +67,13 @@ const server = createServer(async (req, res) => {
       return send(200, { ok: true });
     }
     if (api === "/ui") return send(200, { gridScreens: "" });
-    if (api === "/state" || api === "/workbook") return send(204);
+    if (api === "/state") return send(204);
+    if (api === "/workbook") {
+      if (!signedIn) return send(401, { error: "unauthenticated", message: "sign in required" });
+      // A governed deployment (as in production): the loader reads its sheets and the runtime overlays it at boot.
+      served.workbook++;
+      return send(200, readFileSync(join(fixture, "governed.json"), "utf8"), { "x-aip-governed": "1", "cache-control": "private, no-cache" });
+    }
     if (api === "/datasets" || api === "/datasets/chunk") {
       if (!signedIn) return send(401, { error: "unauthenticated", message: "sign in required" });
       if (api === "/datasets") {
@@ -96,12 +106,6 @@ const check = (ok, what) => {
 };
 check(leaked.length === 0, `the build ships no tenant dataset (${Object.keys(classes.product).length} product datasets only)${leaked.length ? `: ${leaked.join(", ")}` : ""}`);
 
-// The data-source label is the one intended difference: the database instead of the bundled workbook.
-const LABELS = [
-  ["Excel data", "Database"],
-  ["the bundled Excel workbook", "your organisation's database"],
-];
-const asReference = (s) => LABELS.reduce((t, [ref, db]) => t.split(db).join(ref), s);
 if (process.env.AIP_SERVE_ONLY) {
   // Debugging: keep the stand-in host running for a browser.
   console.log(`serving http://localhost:${port}/`);
@@ -112,28 +116,52 @@ try {
   // Asynchronously: the stand-in host runs in this process and must keep answering while the crawler works.
   const code = await new Promise((resolve) => spawn("node", [join(here, "crawl.mjs"), `http://localhost:${port}/`, out, "--license", token, "--clock", reference.capturedAt], { stdio: "inherit" }).on("exit", resolve));
   if (code !== 0) throw new Error(`crawl exited with ${code}`);
-  const ref = Object.fromEntries(reference.views.map((v) => [v.v, v]));
-  const got = JSON.parse(readFileSync(out, "utf8")).views;
-  check(served.manifest >= 1 && served.chunks >= 1, `data loaded from the host after sign-in (${served.manifest} manifest, ${served.chunks} chunk requests)`);
-  check(got.length === Object.keys(ref).length, `all ${Object.keys(ref).length} screens reachable`);
-  // Data Management keeps its loaded-data summary and data dictionary; the workbook upload, import, worksheet and
-  // validation panels (and "Restore demo data") are withdrawn, so the reference is compared without them.
-  const WITHDRAWN_HEADS = ["Upload Excel Workbook", "Import & Commit", "Detected worksheets", "Validation and preview"];
-  const WITHDRAWN_TABS = ["Choose Excel file", "Select all worksheets", "Clear selection", "Validate & Commit", "Download JSON backup", "Restore demo data"];
-  const dm = ref.datamanagement;
-  if (dm) {
-    const cut = dm.text.indexOf("Loaded Data Summary");
-    ref.datamanagement = { ...dm, text: dm.text.slice(0, dm.text.indexOf("\n") + 1) + dm.text.slice(cut), heads: dm.heads.filter((h) => !WITHDRAWN_HEADS.includes(h)), tabs: dm.tabs.filter((t) => !WITHDRAWN_TABS.includes(t)) };
-  }
-  for (const v of got) {
-    const r = ref[v.v];
-    const text = asReference(v.text ?? "");
-    const ok = !!r && r.text === text && JSON.stringify(r.tabs) === JSON.stringify(v.tabs) && JSON.stringify(r.heads) === JSON.stringify(v.heads);
-    check(ok, `screen parity · ${v.t}`);
-    if (!ok && r) {
-      let i = 0;
-      while (i < r.text.length && r.text[i] === text[i]) i++;
-      console.log(`    text differs at ${i}\n      reference: ${JSON.stringify(r.text.slice(Math.max(0, i - 120), i + 200))}\n      got:       ${JSON.stringify(text.slice(Math.max(0, i - 120), i + 200))}`);
+  const got = JSON.parse(readFileSync(out, "utf8"));
+  check(served.manifest >= 1 && served.chunks >= 1 && served.workbook === 1, `data loaded from the host after sign-in (${served.manifest} manifest, ${served.chunks} chunk requests, ${served.workbook} governed workbook)`);
+  check(got.views.length === reference.views.length, `all ${reference.views.length} screens reachable`);
+  const same = (a, b) => a && b && a.text === b.text && JSON.stringify(a.tabs) === JSON.stringify(b.tabs) && JSON.stringify(a.heads) === JSON.stringify(b.heads);
+  const excerpt = (a, b) => {
+    let i = 0;
+    while (i < a.length && a[i] === b[i]) i++;
+    const cut = (x) => x.slice(Math.max(0, i - 60), i + 140).replace(/\s+/g, " ").replace(/\|/g, "\\|");
+    return { at: i, reference: cut(a), got: cut(b) };
+  };
+  if (rebase) {
+    const ref = Object.fromEntries(reference.views.map((v) => [v.v, v]));
+    const rows = got.views.map((v) => {
+      if (same(ref[v.v], v)) return `| ${v.t} | unchanged | | |`;
+      const e = excerpt(ref[v.v]?.text ?? "", v.text ?? "");
+      return `| ${v.t} | **changed** | ${e.reference} | ${e.got} |`;
+    });
+    const changed = rows.filter((r) => r.includes("**changed**")).length;
+    writeFileSync(join(root, "reference/v915-database-crawl.json"), JSON.stringify(got, null, 1));
+    mkdirSync(join(root, "docs/parity"), { recursive: true });
+    writeFileSync(
+      join(root, "docs/parity/database-baseline.md"),
+      [
+        "# Database-only baseline (for review)",
+        "",
+        "Every screen of the Vercel build with all data read from the database: the runtime catalogue, and the governed sheets its datasets read (copies of governed sheets are not held twice). Screens show the governed values where those differ from the v915 workbook copies (corrected records, canonical labels, masters replacing stale copies, rows the governed data adds), the data source reads as the database, and Data Management offers no workbook upload. Each change below is reviewed before this baseline is accepted; from then on CI requires the database-only crawl to match it exactly.",
+        "",
+        `${changed} of ${got.views.length} screens differ from the v915 reference.`,
+        "",
+        "| Screen | Status | v915 reference (at first difference) | Database-only |",
+        "|---|---|---|---|",
+        ...rows,
+        "",
+      ].join("\n"),
+    );
+    console.log(`database-only baseline written: ${changed} of ${got.views.length} screens differ from the v915 reference`);
+  } else {
+    const base = JSON.parse(readFileSync(join(root, "reference/v915-database-crawl.json"), "utf8"));
+    const want = Object.fromEntries(base.views.map((v) => [v.v, v]));
+    for (const v of got.views) {
+      const ok = same(want[v.v], v);
+      check(ok, `database-only parity · ${v.t}`);
+      if (!ok && want[v.v]) {
+        const e = excerpt(want[v.v].text ?? "", v.text ?? "");
+        console.log(`    at ${e.at}\n      baseline: ${e.reference}\n      got:      ${e.got}`);
+      }
     }
   }
   writeFileSync(join(tmp, "served.json"), JSON.stringify(served));

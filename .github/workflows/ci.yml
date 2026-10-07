@@ -131,9 +131,11 @@ jobs:
           # Phase 3: transactions and time series, the link ledger, and every compatibility view rebuilding its sheet
           test "$(psql -At -c "select count(*) from aip.plant_telemetry where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "19944"
           test "$(psql -At -c "select count(*) from aip.record_link where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "350"
-          # Database-only data: the runtime's 36 tenant datasets (764 tables, 170,440 records), held as compressed blocks
-          test "$(psql -At -c "select count(distinct dataset) || '/' || count(*) filter (where part <> '\$frame') || '/' || sum(row_count) from aip.dataset_part where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "36/764/170440"
-          test "$(psql -At -c "select sum(row_count) from aip.dataset_block where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "170440"
+          # Database-only data: the runtime catalogue (36 dataset layouts; 229 named sheets, 133,045 records, 90 groups;
+          # copies of governed sheets read the governed tables instead)
+          test "$(psql -At -c "select (select count(*) from aip.runtime_dataset where tenant_id='00000000-0000-0000-0000-0000000000c1') || '/' || count(*) || '/' || sum(row_count) from aip.runtime_sheet where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "36/229/133045"
+          test "$(psql -At -c "select count(*) from aip.runtime_sheet_group where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "90"
+          test "$(psql -At -c "select count(*) from aip.runtime_sheet_rows where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "133045"
           psql -v ON_ERROR_STOP=1 -q -f supabase/tests/95_compat_equivalence.sql
           # 4 workbook forecasting models + the 10 AIP engines (schema/analytics/models.json)
           test "$(psql -At -c "select count(*) || '/' || count(engine) from aip.ml_model where tenant_id='00000000-0000-0000-0000-0000000000c1'")" = "14/10"
@@ -236,7 +238,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @sustantix/license build
       - run: pnpm --filter @sustantix/aip-runtime exec playwright install --with-deps chromium
-      - name: Vercel build loads every tenant dataset from the host after sign-in, every screen as in the reference
+      - name: Vercel build loads the runtime catalogue and governed sheets after sign-in, every screen as in its reviewed baseline
         run: pnpm --filter @sustantix/aip-runtime test:database-only
         env:
           AIP_PARITY_OUT: ${{ runner.temp }}/database-only
